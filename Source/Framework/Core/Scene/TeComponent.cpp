@@ -28,6 +28,7 @@ namespace te
 
     void Component::Initialize()
     {
+        CoreObject::Initialize();
         OnInitialized();
     }
 

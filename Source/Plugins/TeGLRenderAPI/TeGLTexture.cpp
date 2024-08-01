@@ -23,6 +23,8 @@ namespace te
 
     void GLTexture::Initialize()
     {
+        Texture::Initialize();
+
         UINT32 width = _properties.GetWidth();
         UINT32 height = _properties.GetHeight();
         UINT32 depth = _properties.GetDepth();
@@ -282,8 +284,6 @@ namespace te
         }
 
         CreateSurfaceList();
-
-        Texture::Initialize();
     }
 
     GLenum GLTexture::GetGLTextureTarget() const

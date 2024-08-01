@@ -41,10 +41,10 @@ namespace te
 
     void Light::Initialize()
     {
+        CoreObject::Initialize();
+
         UpdateBounds();
         if (_renderer) _renderer->NotifyLightAdded(const_cast<Light*>(this));
-
-        CoreObject::Initialize();
     }
 
     void Light::_markCoreDirty(ActorDirtyFlag flag) 

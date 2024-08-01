@@ -18,8 +18,8 @@ namespace te
 
     void AudioClip::Initialize()
     {
-        _length = _numSamples / _desc.NumChannels / (float)_desc.Frequency;
         Resource::Initialize();
+        _length = _numSamples / _desc.NumChannels / (float)_desc.Frequency;
     }
 
     HAudioClip AudioClip::Create(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples, const AUDIO_CLIP_DESC& desc)

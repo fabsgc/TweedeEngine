@@ -47,8 +47,8 @@ namespace te
 
     void SamplerState::Initialize()
     {
-        CreateInternal();
         CoreObject::Initialize();
+        CreateInternal();
     }
 
     const SPtr<SamplerState>& SamplerState::GetDefault()

@@ -30,6 +30,8 @@ namespace te
 
     void LinuxRenderWindow::Initialize()
     {
+        RenderWindow::Initialize();
+
         LinuxPlatform::LockX();
 
         XVisualInfo visualInfoTempl = {};
@@ -83,8 +85,6 @@ namespace te
 
         if(_desc.Fullscreen)
             SetFullscreen(_desc.Mode);
-
-        RenderWindow::Initialize();
     }
 
     void LinuxRenderWindow::InitializeGui() const

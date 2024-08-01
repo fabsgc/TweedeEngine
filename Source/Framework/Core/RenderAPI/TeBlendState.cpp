@@ -98,8 +98,8 @@ namespace te
 
     void BlendState::Initialize()
     {
-        CreateInternal();
         CoreObject::Initialize();
+        CreateInternal();
     }
 
     const SPtr<BlendState>& BlendState::GetDefault()

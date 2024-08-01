@@ -19,11 +19,12 @@ namespace te
 
     void D3D11GpuParamBlockBuffer::Initialize()
     {
+        GpuParamBlockBuffer::Initialize();
+
         D3D11RenderAPI* d3d11rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
         D3D11Device& device = d3d11rs->GetPrimaryDevice();
 
-        _buffer = te_pool_new<D3D11HardwareBuffer>(D3D11HardwareBuffer::BT_CONSTANT, _usage, 1, _size, device, "[CONSTANT]");
-        GpuParamBlockBuffer::Initialize();
+        _buffer = te_pool_new<D3D11HardwareBuffer>(D3D11HardwareBuffer::BT_CONSTANT, _usage, 1, _size, device, "[CONSTANT]");        
     }
 
     ID3D11Buffer* D3D11GpuParamBlockBuffer::GetD3D11Buffer() const

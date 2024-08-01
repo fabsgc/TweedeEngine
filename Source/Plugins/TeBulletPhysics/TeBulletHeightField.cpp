@@ -40,10 +40,10 @@ namespace te
 
     void BulletHeightField::Initialize()
     {
+        PhysicsHeightField::Initialize();
+
         if (_internal == nullptr) // Could be not-null if we're deserializing
             _internal = te_shared_ptr_new<BulletFHeightField>(_initTexture);
-
-        PhysicsHeightField::Initialize();
     }
 
     void BulletHeightField::Destroy()

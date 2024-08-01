@@ -99,8 +99,8 @@ namespace te
 
     void Viewport::Destroy()
     {
-        CoreObject::Destroy();
         _target = nullptr;
+        CoreObject::Destroy();
     }
 
     SPtr<Viewport> Viewport::Create(const SPtr<RenderTarget>& target, float x, float y, float width, float height)

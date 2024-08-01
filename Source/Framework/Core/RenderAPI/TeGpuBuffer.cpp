@@ -76,8 +76,8 @@ namespace te
 
     void GpuBuffer::Initialize()
     {
-        TE_INC_PROFILER_GPU(ResCreated);
         CoreObject::Initialize();
+        TE_INC_PROFILER_GPU(ResCreated);
     }
 
     void* GpuBuffer::Map(UINT32 offset, UINT32 length, GpuLockOptions options, UINT32 deviceIdx, UINT32 queueIdx)

@@ -21,10 +21,10 @@ namespace te
 
     void GLVertexBuffer::Initialize()
     {
-        _buffer = te_new<GLHardwareBuffer>(GL_ARRAY_BUFFER, _size, _usage);
-        _bufferDeleter = &DeleteBuffer;
-
         VertexBuffer::Initialize();
+
+        _buffer = te_new<GLHardwareBuffer>(GL_ARRAY_BUFFER, _size, _usage);
+        _bufferDeleter = &DeleteBuffer;        
     }
 
     void GLVertexBuffer::RegisterVAO(const GLVertexArrayObject& vao)

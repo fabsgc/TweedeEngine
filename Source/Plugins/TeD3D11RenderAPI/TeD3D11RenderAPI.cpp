@@ -54,6 +54,8 @@ namespace te
 
     void D3D11RenderAPI::Initialize()
     {
+        RenderAPI::Initialize();
+
         HRESULT hr = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&_DXGIFactory);
         if (FAILED(hr))
         {
@@ -144,8 +146,6 @@ namespace te
             TE_ASSERT_ERROR(false, "Failed to retrieve ID3DUserDefinedAnnotation object : " + ToString(hr));
         }
 #endif
-
-        RenderAPI::Initialize();
     }
 
     void D3D11RenderAPI::Destroy()

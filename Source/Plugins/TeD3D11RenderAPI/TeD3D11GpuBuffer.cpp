@@ -28,6 +28,8 @@ namespace te
 
     void D3D11GpuBuffer::Initialize()
     {
+        GpuBuffer::Initialize();
+
         String debugName = "";
         const GpuBufferProperties& props = GetProperties();
         _bufferDeleter = &DeleteBuffer;
@@ -71,8 +73,6 @@ namespace te
 
         // Keep a single view of the entire buffer, we don't support views of sub-sets (yet)
         _bufferView = RequestView(this, 0, props.GetElementCount(), (GpuViewUsage)usage, "");
-
-        GpuBuffer::Initialize();
     }
 
     ID3D11Buffer* D3D11GpuBuffer::GetDX11Buffer() const

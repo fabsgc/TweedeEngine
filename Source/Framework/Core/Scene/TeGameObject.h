@@ -73,7 +73,7 @@ namespace te
         friend class GameObjectManager;
 
         /**	Initializes the GameObject after construction. */
-        void Initialize(const SPtr<GameObject>& object, UINT64 instanceId);
+        virtual void Initialize(const SPtr<GameObject>& object, UINT64 instanceId);
 
         /**
          * Destroys this object.

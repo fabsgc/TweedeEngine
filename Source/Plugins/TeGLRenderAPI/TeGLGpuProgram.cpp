@@ -30,6 +30,8 @@ namespace te
 
     void GLGpuProgram::Initialize()
     {
+        GpuProgram::Initialize();
+
         if (!IsSupported())
         {
             _status.Successful = false;
@@ -83,8 +85,6 @@ namespace te
         }
 
         _programId = GlobalProgramId++;
-
-        GpuProgram::Initialize();
     }
 
     bool GLGpuProgram::IsSupported() const

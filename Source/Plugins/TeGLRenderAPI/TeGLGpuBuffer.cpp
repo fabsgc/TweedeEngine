@@ -34,6 +34,8 @@ namespace te
 
     void GLGpuBuffer::Initialize()
     {
+        GpuBuffer::Initialize();
+
         _bufferDeleter = &DeleteBuffer;
 
         // Create a new buffer if not wrapping an external one
@@ -69,7 +71,5 @@ namespace te
             glTexBuffer(GL_TEXTURE_BUFFER, _format, static_cast<GLHardwareBuffer*>(_buffer)->GetGLBufferId());
             TE_CHECK_GL_ERROR();
         }
-
-        GpuBuffer::Initialize();
     }
 }

@@ -27,8 +27,8 @@ namespace te
 
     void Skybox::Initialize()
     {
-        if (_renderer) _renderer->NotifySkyboxAdded(this);
         CoreObject::Initialize();
+        if (_renderer) _renderer->NotifySkyboxAdded(this);
     }
 
     void Skybox::SetTexture(const HTexture& texture)

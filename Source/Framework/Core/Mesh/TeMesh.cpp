@@ -108,6 +108,8 @@ namespace te
 
     void Mesh::Initialize()
     { 
+        Resource::Initialize();
+
         if (_CPUData != nullptr)
         {
             UpdateBounds(*_CPUData);
@@ -155,9 +157,6 @@ namespace te
             WriteData(*_tempInitialMeshData, isDynamic);
             _tempInitialMeshData = nullptr;
         }
-
-        Resource::Initialize();
-        CoreObject::Initialize();
     }
 
     void Mesh::UpdateBounds(const MeshData& meshData)

@@ -31,8 +31,8 @@ namespace te
 
     void DepthStencilState::Initialize()
     {
-        CreateInternal();
         CoreObject::Initialize();
+        CreateInternal();
     }
 
     const SPtr<DepthStencilState>& DepthStencilState::GetDefault()

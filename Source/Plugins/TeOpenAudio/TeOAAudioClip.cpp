@@ -19,6 +19,8 @@ namespace te
 
     void OAAudioClip::Initialize()
     {
+        AudioClip::Initialize();
+
         {
             Lock lock(_mutex); // Needs to be called even if stream data is null, to ensure memory fence is added so the
                                // other thread sees properly initialized AudioClip members

@@ -167,6 +167,8 @@ namespace te
 
     void GLRenderAPI::Initialize()
     {
+        RenderAPI::Initialize();
+
         _GLSupport->Start();
         _videoModeInfo = _GLSupport->GetVideoModeInfo();
 
@@ -174,9 +176,7 @@ namespace te
         RenderStateManager::StartUp<GLRenderStateManager>();
 
         // Create hardware buffer manager
-        HardwareBufferManager::StartUp<GLHardwareBufferManager>();
-
-        RenderAPI::Initialize();
+        HardwareBufferManager::StartUp<GLHardwareBufferManager>();        
     }
 
     void GLRenderAPI::InitCapabilities(RenderAPICapabilities& caps) const

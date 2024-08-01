@@ -46,6 +46,8 @@ namespace te
 
     void D3D11RenderWindow::Initialize()
     {
+        RenderWindow::Initialize();
+
         ZeroMemory(&_swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 
         _multisampleType.Count = 1;
@@ -119,8 +121,6 @@ namespace te
 
         CreateSizeDependedD3DResources();
         _DXGIFactory->MakeWindowAssociation(_window->GetHWnd(), NULL);
-
-        RenderWindow::Initialize();
     }
 
     void D3D11RenderWindow::InitializeGui() const

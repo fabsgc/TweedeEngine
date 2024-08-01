@@ -47,6 +47,8 @@ namespace te
 
     void Win32RenderWindow::Initialize()
     {
+        RenderWindow::Initialize();
+
         WINDOW_DESC windowDesc;
         windowDesc.ShowTitleBar = _desc.ShowTitleBar;
         windowDesc.ShowBorder = _desc.ShowBorder;
@@ -152,8 +154,6 @@ namespace te
         _context = _GLSupport.CreateContext(_HDC, nullptr);
 
         _GLSupport.NotifyWindowCreated(this);
-
-        RenderWindow::Initialize();
     }
 
     void Win32RenderWindow::InitializeGui() const

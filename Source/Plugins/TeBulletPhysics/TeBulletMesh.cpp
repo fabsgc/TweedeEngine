@@ -9,10 +9,12 @@ namespace te
 
     void BulletMesh::Initialize()
     {
+        PhysicsMesh::Initialize();
+
         if (_internal == nullptr) // Could be not-null if we're deserializing
             _internal = te_shared_ptr_new<BulletFMesh>(_initMeshData);
 
-        PhysicsMesh::Initialize();
+        
     }
 
     void BulletMesh::Destroy()

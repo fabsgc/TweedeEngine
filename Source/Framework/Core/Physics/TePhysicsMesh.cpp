@@ -47,7 +47,7 @@ namespace te
 
     void PhysicsMesh::Initialize()
     {
-        _initMeshData = nullptr;
         Resource::Initialize();
+        _initMeshData = nullptr;
     }
 }

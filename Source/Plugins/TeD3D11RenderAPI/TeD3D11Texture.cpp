@@ -28,6 +28,8 @@ namespace te
 
     void D3D11Texture::Initialize()
     {
+        Texture::Initialize();
+
         switch (_properties.GetTextureType())
         {
         case TEX_TYPE_1D:
@@ -45,7 +47,6 @@ namespace te
         }
 
         TE_INC_PROFILER_GPU(ResCreated);
-        Texture::Initialize();
     }
 
     ID3D11ShaderResourceView* D3D11Texture::GetSRV() const

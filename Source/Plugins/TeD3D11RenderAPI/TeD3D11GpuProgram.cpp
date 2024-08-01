@@ -24,12 +24,12 @@ namespace te
 
     void D3D11GpuProgram::Initialize()
     {
+        GpuProgram::Initialize();
+
         if (!IsSupported())
         {
             _status.Successful = false;
             _status.Message = "Specified program is not supported by the current render system.";
-
-            GpuProgram::Initialize();
             return;
         }
 
@@ -69,8 +69,6 @@ namespace te
         }
 
         _programId = GlobalProgramId++;
-
-        GpuProgram::Initialize();
     }
 
     D3D11GpuVertexProgram::D3D11GpuVertexProgram(const GPU_PROGRAM_DESC& desc, GpuDeviceFlags deviceMask)

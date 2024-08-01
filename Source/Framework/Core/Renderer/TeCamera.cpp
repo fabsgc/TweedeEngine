@@ -44,6 +44,7 @@ namespace te
     void Camera::Initialize()
     {
         CoreObject::Initialize();
+
         gSceneManager()._registerCamera(std::static_pointer_cast<Camera>(GetThisPtr()));
         if (_renderer) _renderer->NotifyCameraAdded(this);
     }

@@ -44,8 +44,8 @@ namespace te
 
     void Renderable::Initialize()
     {
-        if (_renderer) _renderer->NotifyRenderableAdded(this);
         CoreObject::Initialize();
+        if (_renderer) _renderer->NotifyRenderableAdded(this);
     }
 
     void Renderable::SetMobility(ObjectMobility mobility)

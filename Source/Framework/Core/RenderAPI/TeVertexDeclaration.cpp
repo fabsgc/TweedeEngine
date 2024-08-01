@@ -261,8 +261,8 @@ namespace te
 
     void VertexDeclaration::Initialize()
     {
-        _id = NextFreeId++;
         CoreObject::Initialize();
+        _id = NextFreeId++;        
     }
 
     SPtr<VertexDeclaration> VertexDeclaration::Create(const SPtr<VertexDataDesc>& desc, GpuDeviceFlags deviceMask)

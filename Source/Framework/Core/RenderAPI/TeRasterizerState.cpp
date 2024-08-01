@@ -21,8 +21,8 @@ namespace te
 
     void RasterizerState::Initialize()
     {
-        CreateInternal();
         CoreObject::Initialize();
+        CreateInternal();
     }
 
     const SPtr<RasterizerState>& RasterizerState::GetDefault()

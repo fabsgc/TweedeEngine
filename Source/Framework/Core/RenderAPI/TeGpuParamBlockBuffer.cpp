@@ -30,9 +30,8 @@ namespace te
 
     void GpuParamBlockBuffer::Initialize()
     {
-        TE_INC_PROFILER_GPU(ResCreated);
-
         CoreObject::Initialize();
+        TE_INC_PROFILER_GPU(ResCreated);
     }
 
     void GpuParamBlockBuffer::Write(UINT32 offset, const void* data, UINT32 size)

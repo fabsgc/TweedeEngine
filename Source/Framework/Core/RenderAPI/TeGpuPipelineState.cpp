@@ -19,6 +19,8 @@ namespace te
 
     void GraphicsPipelineState::Initialize()
     {
+        CoreObject::Initialize();
+
         GPU_PIPELINE_PARAMS_DESC paramsDesc;
 
         if (_data.vertexProgram != nullptr)
@@ -32,9 +34,7 @@ namespace te
         if (_data.domainProgram != nullptr)
             paramsDesc.DomainParams = _data.domainProgram->GetParamDesc();
 
-        _paramInfo = GpuPipelineParamInfo::Create(paramsDesc);
-
-        CoreObject::Initialize();
+        _paramInfo = GpuPipelineParamInfo::Create(paramsDesc);        
     }
 
     SPtr<GraphicsPipelineState> GraphicsPipelineState::Create(const PIPELINE_STATE_DESC& desc, GpuDeviceFlags deviceMask)
@@ -53,12 +53,12 @@ namespace te
 
     void ComputePipelineState::Initialize()
     {
+        CoreObject::Initialize();
+
         GPU_PIPELINE_PARAMS_DESC paramsDesc;
         paramsDesc.ComputeParams = _program->GetParamDesc();
 
-        _paramInfo = GpuPipelineParamInfo::Create(paramsDesc, _deviceMask);
-
-        CoreObject::Initialize();
+        _paramInfo = GpuPipelineParamInfo::Create(paramsDesc, _deviceMask);        
     }
 
     SPtr<ComputePipelineState> ComputePipelineState::Create(const SPtr<GpuProgram>& program,

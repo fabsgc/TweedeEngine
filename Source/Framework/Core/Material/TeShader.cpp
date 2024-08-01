@@ -151,7 +151,9 @@ namespace te
     { }
 
     void Shader::Initialize()
-    { }
+    { 
+        Resource::Initialize();
+    }
 
     void Shader::GetCompatibleTechniques(Map<UINT32, SPtr<Technique>>& oTechniques) const
     {

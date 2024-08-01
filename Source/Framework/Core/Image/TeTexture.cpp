@@ -75,6 +75,8 @@ namespace te
 
     void Texture::Initialize()
     {
+        Resource::Initialize();
+
         _size = CalculateSize();
 
         // Allocate CPU buffers if needed
@@ -87,8 +89,6 @@ namespace te
                 UpdateCPUBuffers(0, *_initData);
             }
         }
-
-        Resource::Initialize();
     }
 
     PixelData Texture::Lock(GpuLockOptions options, UINT32 mipLevel, UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)

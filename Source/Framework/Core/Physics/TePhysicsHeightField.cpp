@@ -56,7 +56,7 @@ namespace te
 
     void PhysicsHeightField::Initialize()
     {
-        _initTexture = nullptr;
         Resource::Initialize();
+        _initTexture = nullptr;
     }
 }

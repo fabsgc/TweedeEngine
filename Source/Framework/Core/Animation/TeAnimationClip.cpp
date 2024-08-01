@@ -228,8 +228,8 @@ namespace te
 
     void AnimationClip::Initialize()
     {
-        BuildNameMapping();
         Resource::Initialize();
+        BuildNameMapping();
     }
 
     void AnimationClip::GetBoneMapping(const Skeleton& skeleton, AnimationCurveMapping* mapping) const

@@ -34,11 +34,11 @@ namespace te
     }
 
     void Decal::Initialize()
-    { 
+    {
+        CoreObject::Initialize();
+
         UpdateBounds();
         if (_renderer) _renderer->NotifyDecalAdded(this);
-
-        CoreObject::Initialize();
     }
 
     void Decal::SetLayer(UINT32 layer)

@@ -87,7 +87,6 @@ namespace te
     void RenderWindow::Destroy()
     {
         NotifyCloseRequested();
-
         RenderTarget::Destroy();
     }
 

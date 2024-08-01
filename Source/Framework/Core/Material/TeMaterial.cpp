@@ -53,12 +53,13 @@ namespace te
 
     void Material::Initialize()
     {
+        Resource::Initialize();
+
         SetSamplerState("AnisotropicSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
         SetSamplerState("BilinearSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Bilinear));
         SetSamplerState("NoFilterSampler", gBuiltinResources().GetBuiltinSampler(BuiltinSampler::NoFilter));
 
         InitializeTechniques();
-        CoreObject::Initialize();
     }
 
     void Material::InitializeTechniques()
