@@ -682,7 +682,7 @@ namespace te
     {
         const Script* script = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetScript();
         
-        FileStream file(_script->GetPath(), FileStream::WRITE);
+        FileStream file(script->GetPath(), FileStream::WRITE);
         if (!file.Fail())
         {
             file.WriteString(std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetContent());
