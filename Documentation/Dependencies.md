@@ -61,7 +61,7 @@ Additionally, if the dependency structure still isn't clear, download one of the
 - Compile as a static library
 
 **OpenAL**
-- OpenAL Soft 1.17.2
+- OpenAL Soft 1.23.1 commit : 0b528bc2e5baff9c2845ded395600f298cd3619f
 - https://github.com/kcat/openal-soft
 - Required by OpenAudio
 - **Linux only**
