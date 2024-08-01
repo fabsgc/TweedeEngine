@@ -11,10 +11,8 @@ The dependencies are searched for in these locations:
 Note that on Windows most dependencies do not have default install paths and should therefore be placed in the `/Dependency` folder. In order to avoid problems with dependency versions this should be the preferred behaviour on Linux as well. 
 
 `/Dependency` folder breakdown:
-- Static & shared libraries (.lib, .a, .so): 
-  - Pick one of:
-    - (TeSource)/Dependencies/(Win32|Linux)/(MSVC/GNU)/(DepName)/lib
-    - (TeSource)/Dependencies/(MSVC/GNU)/(DepName)/lib/(Debug|Release)
+- Static & shared libraries (.lib, .a, .so, .h): 
+  - Place in (TeSource)/Dependencies/(Linux|Win32).(MSVC/GNU)/(DepName)/lib/((Debug|Release))
 - Dynamic libraries (.dll)
   - Place in (TeSource)/Dependencies/(Win32|Linux)/(MSVC/GNU)/binairies/(Debug|Release)
 - Includes
