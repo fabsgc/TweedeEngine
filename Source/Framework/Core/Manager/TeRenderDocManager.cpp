@@ -13,18 +13,16 @@ namespace te
 
     void RenderDocManager::OnStartUp()
     {
-#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED && TE_PLATFORM == TE_PLATFORM_WIN32
         _rdcLib = gDynLibManager().Load(RENDERDOC_PATH);
 
         if (_rdcLib != nullptr && _rdcLib->IsLoaded())
         {
-#if TE_PLATFORM == TE_PLATFORM_WIN32
             pRENDERDOC_GetAPI rdcGetAPI = nullptr;
             rdcGetAPI = (pRENDERDOC_GetAPI)_rdcLib->GetSymbol("RENDERDOC_GetAPI");
 
             TE_ASSERT_ERROR(rdcGetAPI != nullptr, "Failed to RENDERDOC_GetAPI function address from renderdoc.dll");
             TE_ASSERT_ERROR(rdcGetAPI(eRENDERDOC_API_Version_1_6_0, (void**)&_rdcAPI) != 0, "Failed to get RenderDoc API pointer");
-#endif
         }
 
         if (_rdcAPI)
@@ -48,8 +46,10 @@ namespace te
 
     void RenderDocManager::OnShutDown()
     {
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED && TE_PLATFORM == TE_PLATFORM_WIN32
         if (_rdcLib != nullptr && _rdcLib->IsLoaded())
             gDynLibManager().Unload(_rdcLib);
+#endif
     }
 
     void RenderDocManager::FrameCapture()

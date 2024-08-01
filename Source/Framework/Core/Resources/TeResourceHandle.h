@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utility/TeUUID.h"
+#include <utility>
 
 namespace te
 {

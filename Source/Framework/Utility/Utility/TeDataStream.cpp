@@ -1,6 +1,9 @@
 #include "TeDataStream.h"
+
 #include "String/TeUnicode.h"
 #include "Math/TeMath.h"
+
+#include <utility>
 
 namespace te
 {

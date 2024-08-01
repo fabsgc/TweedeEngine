@@ -69,7 +69,7 @@ The following dependencies will need to be installed manually. Which ones are re
 **Linux**
   - **OpenGL**
     - Required by default, but optional if you have chosen a different RenderAPI in *CMake* options
-    - Debian/Ubuntu: `apt-get install libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev`
+    - Debian/Ubuntu: `apt-get install libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev libglfw3 libglfw3-dev` 
   - **X11**
     - Debian/Ubuntu: `apt-get install libx11-dev libxcursor-dev libxrandr-dev libxi-dev`
   - **LibUUID**
