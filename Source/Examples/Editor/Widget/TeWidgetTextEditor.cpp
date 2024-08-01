@@ -22,9 +22,6 @@ namespace te
     void WidgetTextEditor::Initialize()
     {
         _editor = te_shared_ptr_new<ImGuiTextEditor>();
-
-        OnBuild = Event<void()>();
-        OnSave = Event<void()>();
     }
 
     void WidgetTextEditor::Update()
