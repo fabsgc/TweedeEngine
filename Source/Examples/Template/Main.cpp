@@ -26,7 +26,7 @@ int main()
         "TeObjectImporter",
         "TeShaderImporter",
         "TeFontImporter",
-        "TeProjectImporter"
+        "TeProjectImporter",
         "TeResourceImporter"
     };
 
