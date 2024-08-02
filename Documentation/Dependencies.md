@@ -35,7 +35,7 @@ Additionally, if the dependency structure still isn't clear, download one of the
 - Required by TeFreeImgImporter
 
 **Assimp**
-- assimp 5.2
+- assimp (5.2 on Windows, 5.4.2 on Linux) commit : e63d3ed8e78a2ca5b93eff5c3943636249da2203
 - http://www.assimp.org/
 - Required by TeObjectImpoter
 
@@ -93,7 +93,7 @@ Additionally, if the dependency structure still isn't clear, download one of the
   - Requires libogg, as described in its readme file.
 
 **Bullet**
-- bullet 3.08 commit : 93be7e644024e92df13b454a4a0b0fcd02b21b10
+- bullet 3.2.5 commit : e9c461b0ace140d5c73972760781d94b7b5eee53
 - https://github.com/bulletphysics/bullet3
 - Required by BulletPhysics
 - Compile as a static library on both Windows and Linux
