@@ -313,6 +313,7 @@ set (TE_CORE_INC_SERIALIZATION
     "Core/Serialization/TeJsonSerializer.h"
 )
 set (TE_CORE_SRC_SERIALIZATION
+    "Core/Serialization/TeSerializer.cpp"
     "Core/Serialization/TeJsonSerializer.cpp"
 )
 

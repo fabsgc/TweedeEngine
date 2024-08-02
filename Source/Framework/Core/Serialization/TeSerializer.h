@@ -7,6 +7,6 @@ namespace te
     class TE_CORE_EXPORT Serializer
     {
     public:
-        virtual ~Serializer() = 0 { };
+        virtual ~Serializer() = 0;
     };
 }
