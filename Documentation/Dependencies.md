@@ -35,7 +35,7 @@ Additionally, if the dependency structure still isn't clear, download one of the
 - Required by TeFreeImgImporter
 
 **Assimp**
-- assimp (5.2 on Windows, 5.4.2 on Linux) commit : e63d3ed8e78a2ca5b93eff5c3943636249da2203
+- assimp 5.4.2 commit : e63d3ed8e78a2ca5b93eff5c3943636249da2203
 - http://www.assimp.org/
 - Required by TeObjectImpoter
 
