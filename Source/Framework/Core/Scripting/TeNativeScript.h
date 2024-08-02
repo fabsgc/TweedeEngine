@@ -9,11 +9,11 @@ namespace te
     /**
      * A native script is the base class of all scripts that can be written, loaded and executed inside the engine
      */
-    class TE_CORE_EXPORT NativeScript : public Serializable, public NonCopyable
+    class TE_CORE_EXPORT NativeScript : public NonCopyable
     {
     public:
-        NativeScript();
-        virtual ~NativeScript() = 0;
+        NativeScript() = default;
+        virtual ~NativeScript() { };
 
         /** 
          * Called when a new script using this native script is created

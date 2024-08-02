@@ -95,6 +95,13 @@ namespace te
 
             if (ImGui::BeginMenu("View"))
             {
+                if (ImGui::MenuItem(ICON_FA_THEATER_MASKS "  " ICON_FA_GRIP_LINES_VERTICAL "  Scene"))
+                {
+                    Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Scene));
+                    if(widget)
+                        widget->SetVisible(!widget->GetVisible());
+                }
+
                 if (ImGui::MenuItem(ICON_FA_BONG "  " ICON_FA_GRIP_LINES_VERTICAL "  Project"))
                 {
                     Widget* widget = static_cast<Widget*>(gEditor().GetWidget(WidgetType::Project));
@@ -414,7 +421,7 @@ namespace te
 
     void WidgetMenuBar::ShowSavePreviousModal()
     {
-        if (_settings.SavePreviousModalNewProject || _settings.SavePreviousModalOpenProject)
+        if (_settings.SavePreviousModalNewProject || _settings.SavePreviousModalOpenProject || _settings.SavePreviousModalQuit)
             ImGui::OpenPopup("Current project not saved");
 
         ImGuiExt::RenderYesNo("Current project not saved",
@@ -428,18 +435,22 @@ namespace te
                     gEditor().SaveProject(gEditor().GetProject()->GetPath());
 
                     if (_settings.SavePreviousModalNewProject) _settings.NewProject = true;
-                    else _settings.OpenProject = true;
+                    else if (_settings.SavePreviousModalOpenProject) _settings.OpenProject = true;
+                    else if (_settings.SavePreviousModalQuit) gCoreApplication().OnStopRequested();;
                 }
 
                 _settings.SavePreviousModalNewProject = false;
                 _settings.SavePreviousModalOpenProject = false;
+                _settings.SavePreviousModalQuit = false;
             },
             [&]() {
                 if (_settings.SavePreviousModalNewProject) _settings.NewProject = true;
-                else _settings.OpenProject = true;
+                else if (_settings.SavePreviousModalOpenProject) _settings.OpenProject = true;
+                else if (_settings.SavePreviousModalQuit) gCoreApplication().OnStopRequested();;
 
                 _settings.SavePreviousModalNewProject = false;
                 _settings.SavePreviousModalOpenProject = false;
+                _settings.SavePreviousModalQuit = false;
             },
             []() {},
             "Your current project is not saved. Do you want to save it before creating a new project ?"
@@ -490,9 +501,11 @@ namespace te
     {
         if (gEditor().GetSettings().State == Editor::EditorState::Modified)
         {
-            // TODO quit app
+            _settings.SavePreviousModalQuit = true;
         }
-
-        gCoreApplication().OnStopRequested();
+        else
+        {
+            gCoreApplication().OnStopRequested();
+        }
     }
 }

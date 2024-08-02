@@ -5,6 +5,7 @@
 
 #include "Widget/TeWidgetMenuBar.h"
 #include "Widget/TeWidgetToolBar.h"
+#include "Widget/TeWidgetScene.h"
 #include "Widget/TeWidgetProject.h"
 #include "Widget/TeWidgetProperties.h"
 #include "Widget/TeWidgetProfiler.h"
@@ -169,7 +170,8 @@ namespace te
         gCoreApplication().GetState().SetFlag(ApplicationState::Mode::Scripting, false);
 
         _project = Project::Create();
-        _project->SetPath(std::filesystem::absolute("Data/Project/project.json").generic_string());
+        _project->SetName("Project");
+        _project->SetPath(std::filesystem::absolute("Data/Project/default.project").generic_string());
 
         InitializeInput();
         InitializeScene();
@@ -216,6 +218,15 @@ namespace te
                 {
                     widget->UpdateBackground();
                 }
+            }
+
+            if (_firstUpdate)
+            {
+                PutFocus(WindowType::Scene);
+                PutFocus(WindowType::Properties);
+                PutFocus(WindowType::Materials);
+
+                _firstUpdate = false;
             }
 
             if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
@@ -298,9 +309,10 @@ namespace te
                     _selections.ClickedComponent = component;
                     _selections.ClickedSceneObject = component->GetSceneObject().GetInternalPtr();
 
-                    if (_settings.WProject)
-                        std::static_pointer_cast<WidgetProject>(_settings.WProject)->ForceExpandToSelection();
+                    if (_settings.WScene)
+                        std::static_pointer_cast<WidgetScene>(_settings.WScene)->ForceExpandToSelection();
 
+                    gEditor().PutFocus(Editor::WindowType::Scene);
                     gEditor().PutFocus(Editor::WindowType::Properties);
                     gEditor().PutFocus(Editor::WindowType::Viewport);
                 }
@@ -399,7 +411,7 @@ namespace te
 
     void Editor::InitializeUICamera()
     {
-        _uiCameraSO = SceneObject::Create("UICamera");
+        _uiCameraSO = SceneObject::Create("UICamera", (UINT32) SOF_Internal | SOF_Persistent | SOF_DontSave);
         _uiCamera = _uiCameraSO->AddComponent<CCamera>();
         _uiCamera->GetViewport()->SetClearColorValue(Color(0.2f, 0.2f, 0.2f, 1.0f));
         _uiCamera->GetViewport()->SetTarget(gCoreApplication().GetWindow());
@@ -420,9 +432,9 @@ namespace te
 
     void Editor::InitializeViewportCamera()
     {
-        _viewportSO = SceneObject::Create("UIViewport");
+        _viewportSO = SceneObject::Create("UIViewport", (UINT32)SOF_Internal | SOF_Persistent | SOF_DontSave);
 
-        _viewportCameraSO = SceneObject::Create("UIViewportCamera");
+        _viewportCameraSO = SceneObject::Create("UIViewportCamera", (UINT32)SOF_Internal | SOF_Persistent | SOF_DontSave);
         _viewportCameraSO->SetParent(_viewportSO);
 
         _viewportCameraSO->SetPosition(Vector3(2.5f, 1.5f, -2.5f));
@@ -465,6 +477,7 @@ namespace te
 
         _widgets.emplace_back(te_unique_ptr_new<WidgetMenuBar>()); _settings.WMenuBar = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetToolBar>()); _settings.WToolbar = _widgets.back();
+        _widgets.emplace_back(te_unique_ptr_new<WidgetScene>()); _settings.WScene = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetProject>()); _settings.WProject = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetProperties>()); _settings.WProperties = _widgets.back();
         _widgets.emplace_back(te_unique_ptr_new<WidgetProfiler>()); _settings.WProfiler = _widgets.back();
@@ -645,6 +658,7 @@ namespace te
                 const ImGuiID dockRightBottomId = ImGui::DockBuilderSplitNode(dockRightId, ImGuiDir_Down, 0.6f, nullptr, &dockRightId);
 
                 // Dock windows
+                ImGui::DockBuilderDockWindow(SCENE_TITLE, dockLeftId);
                 ImGui::DockBuilderDockWindow(PROJECT_TITLE, dockLeftId);
                 ImGui::DockBuilderDockWindow(PROFILER_TITLE, dockRightId);
                 ImGui::DockBuilderDockWindow(SETTINGS_TITLE, dockRightId);
@@ -658,6 +672,9 @@ namespace te
                 ImGui::DockBuilderDockWindow(SCRIPTS_TITLE, dockLeftBottomId);
                 ImGui::DockBuilderDockWindow(PROPERTIES_TITLE, dockLeftBottomId);
                 ImGui::DockBuilderFinish(dockMainId);
+
+
+                PutFocus(WindowType::Scene);
             }
 
             ImGui::DockSpace(windowId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
@@ -705,6 +722,9 @@ namespace te
     {
         switch (type)
         {
+        case WindowType::Scene:
+            _settings.WScene->PutFocus();
+            break;
         case WindowType::Project:
             _settings.WProject->PutFocus();
             break;
@@ -918,6 +938,7 @@ namespace te
         _settings.State = EditorState::Modified;
 
         _project = Project::Create();
+        _project->SetName("Project");
 
         return true;
     }
@@ -966,8 +987,14 @@ namespace te
             return false;
         }
 
+        _project->ClearResources();
+        for (auto& resource : EditorResManager().GetAllResources())
+        {
+            _project->AddResource(resource);
+        }
+
         SPtr<ProjectExportOptions> options = te_shared_ptr_new<ProjectExportOptions>();
-        if (!gExporter().Export(nullptr, _project->GetPath(), options))
+        if (!gExporter().Export(_project.GetInternalPtr().get(), _project->GetPath(), options))
         {
             TE_DEBUG("Fail to save your project at the specified path : " + _project->GetPath());
             return false;

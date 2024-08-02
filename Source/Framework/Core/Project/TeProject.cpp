@@ -29,4 +29,9 @@ namespace te
 
         return newProject;
     }
+
+    void Project::Serialize(Serializer& serializer)
+    {
+        Resource::Serialize(serializer);
+    }
 }

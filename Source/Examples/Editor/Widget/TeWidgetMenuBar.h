@@ -49,6 +49,7 @@ namespace te
             bool LoadResource = false;
             bool SavePreviousModalNewProject = false;
             bool SavePreviousModalOpenProject = false;
+            bool SavePreviousModalQuit = false;
         };
 
     protected:

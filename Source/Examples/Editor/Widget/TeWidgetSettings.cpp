@@ -26,82 +26,88 @@ namespace te
 
         if (ImGui::CollapsingHeader("Physics", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            bool physicsStarted = !gPhysics().IsPaused();
+
             // Physic paused
             {
-                bool physicsStarted = !gPhysics().IsPaused();
-                if (ImGuiExt::RenderOptionBool(physicsStarted, "##settings_physics_enable", "Enable Physic"))
+                if (ImGuiExt::RenderOptionBool(physicsStarted, "##settings_physics_enable", "Enable Physics"))
                 {
                     gPhysics().SetPaused(!physicsStarted);
                     gEditor().NeedsRedraw();
                 }
             }
 
-            // Debug paused
+            if (physicsStarted)
             {
-                bool physicsDebug = gPhysics().IsDebug();
-                if (ImGuiExt::RenderOptionBool(physicsDebug, "##settings_physics_enable", "Enable Physic Debug"))
+                // Debug paused
                 {
-                    gPhysics().SetDebug(physicsDebug);
-                    gEditor().NeedsRedraw();
+                    bool physicsDebug = gPhysics().IsDebug();
+                    if (ImGuiExt::RenderOptionBool(physicsDebug, "##settings_physics_enable", "Enable Physic Debug"))
+                    {
+                        gPhysics().SetDebug(physicsDebug);
+                        gEditor().NeedsRedraw();
+                    }
                 }
-            }
-            ImGui::Separator();
-            
-            // Gravity
-            {
-                Vector3 gravity = gPhysics().GetDesc().Gravity;
-                if (ImGuiExt::RenderVector3(gravity, "##settings_physics_gravity", " Gravity", width))
+                ImGui::Separator();
+                
+                // Gravity
                 {
-                    gPhysics().SetGravity(gravity);
-                    gEditor().NeedsRedraw();
+                    Vector3 gravity = gPhysics().GetDesc().Gravity;
+                    if (ImGuiExt::RenderVector3(gravity, "##settings_physics_gravity", " Gravity", width))
+                    {
+                        gPhysics().SetGravity(gravity);
+                        gEditor().NeedsRedraw();
+                    }
                 }
-            }
-            ImGui::Separator();
+                ImGui::Separator();
 
-            // Water Normal
-            {
-                Vector3 waterNormal = gPhysics().GetDesc().WaterNormal;
-                if (ImGuiExt::RenderVector3(waterNormal, "##settings_physics_water_normal", " Water Normal", width))
+                // Water Normal
                 {
-                    gPhysics().SetWaterNormal(waterNormal);
-                    gEditor().NeedsRedraw();
+                    Vector3 waterNormal = gPhysics().GetDesc().WaterNormal;
+                    if (ImGuiExt::RenderVector3(waterNormal, "##settings_physics_water_normal", " Water Normal", width))
+                    {
+                        gPhysics().SetWaterNormal(waterNormal);
+                        gEditor().NeedsRedraw();
+                    }
                 }
-            }
-            ImGui::Separator();
+                ImGui::Separator();
 
-            // Air Density
-            {
-                float airDensity = gPhysics().GetDesc().AirDensity;
-                if (ImGuiExt::RenderOptionFloat(airDensity, "##settings_physics_air_density", " Air Density", 0.0f, 32.0f, width))
+                // Air Density
                 {
-                    gPhysics().SetAirDensity(airDensity);
-                    gEditor().NeedsRedraw();
+                    float airDensity = gPhysics().GetDesc().AirDensity;
+                    if (ImGuiExt::RenderOptionFloat(airDensity, "##settings_physics_air_density", " Air Density", 0.0f, 32.0f, width))
+                    {
+                        gPhysics().SetAirDensity(airDensity);
+                        gEditor().NeedsRedraw();
+                    }
                 }
-            }
 
-            // Water Density
-            {
-                float waterDensity = gPhysics().GetDesc().WaterDensity;
-                if (ImGuiExt::RenderOptionFloat(waterDensity, "##settings_physics_water_density", " Water Density", 0.0f, 32.0f, width))
+                // Water Density
                 {
-                    gPhysics().SetWaterDensity(waterDensity);
-                    gEditor().NeedsRedraw();
+                    float waterDensity = gPhysics().GetDesc().WaterDensity;
+                    if (ImGuiExt::RenderOptionFloat(waterDensity, "##settings_physics_water_density", " Water Density", 0.0f, 32.0f, width))
+                    {
+                        gPhysics().SetWaterDensity(waterDensity);
+                        gEditor().NeedsRedraw();
+                    }
                 }
-            }
 
-            // Water Offset
-            {
-                float waterOffset = gPhysics().GetDesc().WaterOffset;
-                if (ImGuiExt::RenderOptionFloat(waterOffset, "##settings_physics_water_offset", " Water Offset", 0.0f, 32.0f, width))
+                // Water Offset
                 {
-                    gPhysics().SetWaterOffset(waterOffset);
-                    gEditor().NeedsRedraw();
+                    float waterOffset = gPhysics().GetDesc().WaterOffset;
+                    if (ImGuiExt::RenderOptionFloat(waterOffset, "##settings_physics_water_offset", " Water Offset", 0.0f, 32.0f, width))
+                    {
+                        gPhysics().SetWaterOffset(waterOffset);
+                        gEditor().NeedsRedraw();
+                    }
                 }
             }
         }
 
         if (ImGui::CollapsingHeader("Animations", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            bool animationsStarted = !gAnimationManager().IsPaused();
+
             // Animations paused
             {
                 bool animationsStarted = !gAnimationManager().IsPaused();
@@ -112,55 +118,61 @@ namespace te
                 }
             }
 
-            // Debug paused
+            if (animationsStarted)
             {
-                bool animationDebug = gEditor().IsAnimationDebug();
-                if (ImGuiExt::RenderOptionBool(animationDebug, "##settings_physics_enable", "Enable Animations Debug"))
+                // Debug paused
                 {
-                    gEditor().SetAnimationDebug(animationDebug);
-                    gEditor().NeedsRedraw();
+                    bool animationDebug = gEditor().IsAnimationDebug();
+                    if (ImGuiExt::RenderOptionBool(animationDebug, "##settings_physics_enable", "Enable Animations Debug"))
+                    {
+                        gEditor().SetAnimationDebug(animationDebug);
+                        gEditor().NeedsRedraw();
+                    }
                 }
             }
-            ImGui::Separator();
         }
 
         if (ImGui::CollapsingHeader("Audio", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            // Device
-            {
-                AudioDevice activeDevice = gAudio().GetActiveDevice();
-                ImGuiExt::ComboOptions<AudioDevice> options;
-
-                const Vector<AudioDevice>& devices = gAudio().GetAllDevices();
-
-                options.AddOption(AudioDevice(), "Default");
-                for (const auto device : devices)
-                {
-                    if (device.Name != "")
-                        options.AddOption(device, device.Name != "" ? device.Name : "Default");
-                }
-
-                if (ImGuiExt::RenderOptionCombo<AudioDevice>(&activeDevice, "##settings_audio_device", "Audio output", options, width))
-                {
-                    gAudio().SetActiveDevice(activeDevice);
-                }
-            }
-
-            // Volume
-            {
-                float volume = gAudio().GetVolume();
-                if (ImGuiExt::RenderOptionFloat(volume, "##settings_audio_volume", "Volume", 0.f, 1.f))
-                {
-                    gAudio().SetVolume(volume);
-                }
-            }
+            bool running = !gAudio().IsPaused();
 
             // Audio pause
             {
-                bool running = !gAudio().IsPaused();
                 if (ImGuiExt::RenderOptionBool(running, "##settings_audio_enable", "Enable Audio"))
                 {
                     gAudio().SetPaused(!running);
+                }
+            }
+
+            if (running)
+            {
+                // Device
+                {
+                    AudioDevice activeDevice = gAudio().GetActiveDevice();
+                    ImGuiExt::ComboOptions<AudioDevice> options;
+
+                    const Vector<AudioDevice>& devices = gAudio().GetAllDevices();
+
+                    options.AddOption(AudioDevice(), "Default");
+                    for (const auto device : devices)
+                    {
+                        if (device.Name != "")
+                            options.AddOption(device, device.Name != "" ? device.Name : "Default");
+                    }
+
+                    if (ImGuiExt::RenderOptionCombo<AudioDevice>(&activeDevice, "##settings_audio_device", "Audio output", options, width))
+                    {
+                        gAudio().SetActiveDevice(activeDevice);
+                    }
+                }
+
+                // Volume
+                {
+                    float volume = gAudio().GetVolume();
+                    if (ImGuiExt::RenderOptionFloat(volume, "##settings_audio_volume", "Volume", 0.f, 1.f, width))
+                    {
+                        gAudio().SetVolume(volume);
+                    }
                 }
             }
         }

@@ -309,8 +309,11 @@ set (TE_CORE_SRC_MATERIAL
 
 set (TE_CORE_INC_SERIALIZATION
     "Core/Serialization/TeSerializable.h"
+    "Core/Serialization/TeSerializer.h"
+    "Core/Serialization/TeJsonSerializer.h"
 )
 set (TE_CORE_SRC_SERIALIZATION
+    "Core/Serialization/TeJsonSerializer.cpp"
 )
 
 set (TE_CORE_INC_COMPONENTS

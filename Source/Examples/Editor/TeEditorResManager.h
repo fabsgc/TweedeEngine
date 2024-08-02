@@ -3,6 +3,7 @@
 #include "TeCorePrerequisites.h"
 #include "Utility/TeModule.h"
 #include "Resources/TeResourceManager.h"
+#include "Resources/TeResource.h"
 
 namespace te
 {
@@ -85,6 +86,9 @@ namespace te
         {
             HResource resource = handle.GetNewHandleFromExisting();
             _resources[T::GetResourceType()].Add(resource);
+
+            if (resource.IsLoaded())
+                _resourcesIndex.push_back(resource.GetInternalPtr().get());
         }
 
         template <class T>
@@ -92,12 +96,24 @@ namespace te
         {
             HResource resource = handle.GetNewHandleFromExisting();
             _resources[T::GetResourceType()].Remove(resource);
+
+            if (resource.IsLoaded())
+            {
+                auto it = std::find(_resourcesIndex.begin(), _resourcesIndex.end(), resource.GetInternalPtr().get());
+                if (it != _resourcesIndex.end())
+                    _resourcesIndex.erase(it);
+            }
         }
 
         template <class T>
         ResourcesContainer& Get()
         {
             return _resources[T::GetResourceType()];
+        }
+
+        Vector<Resource*>& GetAllResources() 
+        {
+            return _resourcesIndex; 
         }
 
         template <class T>
@@ -130,5 +146,6 @@ namespace te
 
     protected:
         UnorderedMap<UINT32, ResourcesContainer> _resources;
+        Vector<Resource*> _resourcesIndex;
     };
 }

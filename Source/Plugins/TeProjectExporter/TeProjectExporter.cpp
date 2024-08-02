@@ -1,5 +1,8 @@
 #include "TeProjectExporter.h"
+
 #include "Exporter/TeProjectExportOptions.h"
+#include "Serialization/TeJsonSerializer.h"
+#include "Project/TeProject.h"
 
 namespace te
 { 
@@ -25,6 +28,17 @@ namespace te
     bool ProjectExporter::Export(void* object, const String& filePath, SPtr<const ExportOptions> exportOptions, bool force)
     {
         const ProjectExportOptions* projectExportOptions = static_cast<const ProjectExportOptions*>(exportOptions.get());
+        JsonSerializer serializer;
+
+        Project* project = static_cast<Project*>(object);
+
+        project->Serialize(serializer);
+
+        for (auto& resource : project->GetAllResources())
+        {
+            JsonSerializer resourceSerializer;
+            resource->Serialize(resourceSerializer);
+        }
 
         return true;
     }

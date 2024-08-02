@@ -25,8 +25,22 @@ namespace te
         /** Creates a Project without initializing it. */
         static SPtr<Project> CreateEmpty();
 
-    protected:
+        /** A project can store all resources currently used */
+        Vector<Resource*> GetAllResources() const { return _resources; }
+
+        /** @copydoc GetAllResources  */
+        void AddResource(Resource* resource) { _resources.push_back(resource); }
+
+        /** @copydoc GetAllResources  */
+        void ClearResources() { _resources.clear(); }
+
+    public:
+        void Serialize(Serializer& serialize) override;
+
+    private:
         Project();
 
+    private:
+        Vector<Resource*> _resources;
     };
 }

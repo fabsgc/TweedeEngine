@@ -12,6 +12,7 @@
 
 #define CONSOLE_TITLE ICON_FA_TERMINAL " Console"
 #define MENUBAR_TITLE "MenuBar"
+#define SCENE_TITLE ICON_FA_THEATER_MASKS " Scene"
 #define PROJECT_TITLE ICON_FA_BONG " Project"
 #define PROPERTIES_TITLE ICON_FA_TOOLS " Properties"
 #define RENDER_OPTIONS_TITLE ICON_FA_COG " Render Options"
@@ -40,6 +41,7 @@ namespace te
         {
             Console,
             MenuBar,
+            Scene,
             Project,
             Properties,
             RenderOptions,

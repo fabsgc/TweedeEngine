@@ -30,6 +30,7 @@ namespace te
 
         enum class WindowType
         {
+            Scene,
             Project,
             Profiler,
             Settings,
@@ -68,6 +69,7 @@ namespace te
         {
             SPtr<Widget> WMenuBar = nullptr;
             SPtr<Widget> WToolbar = nullptr;
+            SPtr<Widget> WScene = nullptr;
             SPtr<Widget> WProject = nullptr;
             SPtr<Widget> WProfiler = nullptr;
             SPtr<Widget> WSettings = nullptr;
@@ -252,6 +254,7 @@ namespace te
         static const Vector<UINT32> ComponentsWhichNeedGuizmo;
 
         bool _editorBegun;
+        bool _firstUpdate = true;
 
         std::vector<SPtr<Widget>> _widgets;
 

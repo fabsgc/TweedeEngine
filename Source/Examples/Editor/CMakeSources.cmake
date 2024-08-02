@@ -63,6 +63,7 @@ set (TE_EDITOR_INC_WIDGET
     "Widget/TeWidgetSettings.h"
     "Widget/TeWidgetShaders.h"
     "Widget/TeWidgetScripts.h"
+    "Widget/TeWidgetScene.h"
 )
 
 set (TE_EDITOR_SRC_WIDGET
@@ -81,6 +82,7 @@ set (TE_EDITOR_SRC_WIDGET
     "Widget/TeWidgetSettings.cpp"
     "Widget/TeWidgetShaders.cpp"
     "Widget/TeWidgetScripts.cpp"
+    "Widget/TeWidgetScene.cpp"
 )
 
 set (TE_EDITOR_INC_MATERIALS_PREVIEW

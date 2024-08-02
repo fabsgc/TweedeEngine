@@ -68,7 +68,6 @@ namespace te
         TID_Technique                 = 1014,
         TID_Mesh                      = 1015,
         TID_Font                      = 1016,
-        TID_NativeScript              = 1017,
         TID_Resource                  = 1018,
         TID_Skeleton                  = 1019,
         TID_ImportOptions             = 1020,
@@ -327,6 +326,7 @@ namespace te
     struct PASS_DESC;
 
     class Serializable;
+    class Serializer;
 
     class CCamera;
     class CCameraFlyer;
