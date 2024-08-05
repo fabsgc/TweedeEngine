@@ -14,7 +14,7 @@ namespace te
 
         UINT32 GetCoreType() const { return _coreType; }
 
-        virtual void Serialize(Serializer& serializer) { }
+        virtual void Serialize(Serializer* serializer) const { }
 
         // TODO Serialization : Unserialize
 

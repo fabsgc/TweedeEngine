@@ -143,6 +143,9 @@ namespace te
         /** Returns the current byte offset from beginning. */
         virtual size_t Tell() const = 0;
 
+        /** Returns the current state of the stream. */
+        virtual bool Good() const = 0;
+
         /**
          * Aligns the read/write cursor to a byte boundary. @p count determines the alignment in bytes. Note the
          * requested alignment might not be achieved if count > 1 and it would move the cursor past the capacity of the
@@ -200,6 +203,9 @@ namespace te
         
         /** @copydoc DataStream::Tell */
         virtual size_t Tell() const override;
+
+        /** @copydoc DataStream::Tell */
+        virtual bool Good() const override;
 
         /** @copydoc DataStream::Eof */
         virtual bool Eof() const override;
@@ -300,6 +306,9 @@ namespace te
 
         /** @copydoc DataStream::Tell */
         virtual size_t Tell() const override;
+
+        /** @copydoc DataStream::Tell */
+        virtual bool Good() const override;
 
         /** @copydoc DataStream::Eof */
         virtual bool Eof() const override;

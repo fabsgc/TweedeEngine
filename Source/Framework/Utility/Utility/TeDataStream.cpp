@@ -291,6 +291,14 @@ namespace te
         return (size_t)_inStream->tellg();
     }
 
+    bool FileStream::Good() const
+    {
+        if (((_access & WRITE) != 0))
+            return _FStream->good();
+
+        return _inStream->good();
+    }
+
     bool FileStream::Eof() const
     {
         if (_inStream->fail())
@@ -549,6 +557,11 @@ namespace te
     size_t MemoryDataStream::Tell() const
     {
         return _cursor - _data;
+    }
+
+    bool MemoryDataStream::Good() const
+    {
+        return true;
     }
 
     bool MemoryDataStream::Eof() const

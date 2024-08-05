@@ -483,7 +483,7 @@ namespace te
 
     void WidgetMenuBar::SaveProject()
     {
-        if (gEditor().GetSettings().State == Editor::EditorState::Modified)
+        if (gEditor().GetSettings().State == Editor::EditorState::Modified || true)
         {
             if (gEditor().GetProject()->GetPath().empty())
                 _settings.SaveProject = true;

@@ -988,7 +988,7 @@ namespace te
         }
 
         _project->ClearResources();
-        for (auto& resource : EditorResManager().GetAllResources())
+        for (auto& resource : EditorResManager::Instance().GetAllResources())
         {
             _project->AddResource(resource);
         }

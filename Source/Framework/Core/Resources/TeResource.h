@@ -31,6 +31,9 @@ namespace te
         /** Allow to dynamically retrieve resource type */
         static UINT32 GetResourceType() { return TypeID_Core::TID_Resource; }
 
+    public:
+        void Serialize(Serializer* serializer) const override;
+
     protected:
         friend class ResourceManager;
         friend class ResourceHandleBase;
