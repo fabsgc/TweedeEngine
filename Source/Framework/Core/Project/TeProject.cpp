@@ -30,7 +30,7 @@ namespace te
         return newProject;
     }
 
-    void Project::Serialize(Serializer* serializer) const
+    void Project::Serialize(StreamWriter* serializer) const
     {
         Resource::Serialize(serializer);
     }

@@ -326,7 +326,10 @@ namespace te
     struct PASS_DESC;
 
     class Serializable;
-    class Serializer;
+    class StreamWriter;
+    class StreamReader;
+    class BinaryWriter;
+    class BinaryReader;
 
     class CCamera;
     class CCameraFlyer;

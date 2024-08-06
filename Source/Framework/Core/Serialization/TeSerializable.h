@@ -2,7 +2,8 @@
 
 #include "TeCorePrerequisites.h"
 
-#include "TeSerializer.h"
+#include "Serialization/TeStreamWriter.h"
+#include "Serialization/TeStreamReader.h"
 
 namespace te
 {
@@ -14,9 +15,10 @@ namespace te
 
         UINT32 GetCoreType() const { return _coreType; }
 
-        virtual void Serialize(Serializer* serializer) const { }
-
-        // TODO Serialization : Unserialize
+        virtual void Serialize(StreamWriter* serializer) const
+        {
+            serializer->WriteRaw<UINT32>(_coreType);
+        }
 
     protected:
         UINT32 _coreType;

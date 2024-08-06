@@ -32,7 +32,7 @@ namespace te
         static UINT32 GetResourceType() { return TypeID_Core::TID_Resource; }
 
     public:
-        void Serialize(Serializer* serializer) const override;
+        void Serialize(StreamWriter* serializer) const override;
 
     protected:
         friend class ResourceManager;

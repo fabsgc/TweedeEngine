@@ -1,7 +1,8 @@
 #include "TeProjectExporter.h"
 
+#include "ThirdParty/Slugify/slugify.hpp"
 #include "Exporter/TeProjectExportOptions.h"
-#include "Serialization/TeBinarySerializer.h"
+#include "Serialization/TeBinaryWriter.h"
 #include "Project/TeProject.h"
 
 #include <filesystem>
@@ -34,28 +35,18 @@ namespace te
 
         Project* project = static_cast<Project*>(object);
         const ProjectExportOptions* projectExportOptions = static_cast<const ProjectExportOptions*>(exportOptions.get());
-        BinarySerializer* serializer = te_new<BinarySerializer>(std::filesystem::path(projectPath));
+        BinaryWriter* serializer = te_new<BinaryWriter>(projectPath);
 
         project->Serialize(serializer);
 
         for (auto& resource : project->GetAllResources())
         {
-            std::string name = resource->GetName();
+            std::string name = slugify(resource->GetName());
             std::filesystem::path resourcePath = workingDirectory;
             resourcePath += std::filesystem::path::preferred_separator;
-            
-            ToLowerCase(name);
-            name = ReplaceAll(name, " ", "-");
-            name = ReplaceAll(name, ".", "-");
-            name = ReplaceAll(name, "\\", "-");
-            name = ReplaceAll(name, "/", "-");
-            name = ReplaceAll(name, "*", "");
-            name = ReplaceAll(name, "+", "");
-            name = ReplaceAll(name, "*", "");
-
             resourcePath += name + ".resource";
 
-            BinarySerializer* resourceSerializer = te_new<BinarySerializer>(resourcePath);
+            BinaryWriter* resourceSerializer = te_new<BinaryWriter>(resourcePath);
             resource->Serialize(resourceSerializer);
 
             te_delete(resourceSerializer);

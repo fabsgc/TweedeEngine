@@ -2,27 +2,25 @@
 
 #include "TeCorePrerequisites.h"
 
-#include "Serialization/TeSerializer.h"
+#include "Serialization/TeStreamReader.h"
 #include "Utility/TeDataStream.h"
-
-#include "Json/json.h"
 
 #include <iostream>
 #include <filesystem>
 
 namespace te
 {
-    class TE_CORE_EXPORT BinarySerializer : public Serializer
+    class TE_CORE_EXPORT BinaryReader : public StreamReader
     {
     public:
-        BinarySerializer();
-        BinarySerializer(std::filesystem::path& path);
-        ~BinarySerializer();
+        BinaryReader();
+        BinaryReader(std::filesystem::path& path);
+        ~BinaryReader();
 
         bool IsStreamGood() const final { return _stream->Good(); }
 		UINT64 GetStreamPosition() const override final { return _stream->Tell(); }
 		void SetStreamPosition(UINT64 position) final { _stream->Seek(position); }
-		bool WriteData(const UINT8* data, size_t size) final;
+		bool ReadData(UINT8* dest, size_t size) override;
 
     private:
         std::filesystem::path _path;

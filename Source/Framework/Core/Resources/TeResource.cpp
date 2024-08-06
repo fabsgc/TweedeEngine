@@ -10,8 +10,10 @@ namespace te
         , _UUID(UUID::EMPTY)
     { }
 
-    void Resource::Serialize(Serializer* serializer) const
+    void Resource::Serialize(StreamWriter* serializer) const
     {
+        Serializable::Serialize(serializer);
+
         serializer->WriteString(_name);
         serializer->WriteString(_path);
         serializer->WriteRaw<UINT32>(_size);

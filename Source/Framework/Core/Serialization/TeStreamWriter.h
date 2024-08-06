@@ -4,20 +4,23 @@
 
 namespace te
 {
-    class TE_CORE_EXPORT Serializer : public NonCopyable
+    class TE_CORE_EXPORT StreamWriter : public NonCopyable
     {
     public:
-        virtual ~Serializer() = 0;
+        virtual ~StreamWriter() = 0;
         
         virtual bool IsStreamGood() const = 0;
+
         virtual UINT64 GetStreamPosition() const = 0;
+        
         virtual void SetStreamPosition(UINT64 position) = 0;
-        virtual bool WriteData(const UINT8* data, size_t size) = 0;
 
         operator bool() const { return IsStreamGood(); }
 
-        void WriteBuffer(UINT8* buffer, size_t size);
         void WriteZero(uint64_t size);
+
+        void WriteBuffer(const UINT8* buffer, size_t size);
+
         void WriteString(const std::string& string);
 
         template<typename T>
@@ -32,5 +35,8 @@ namespace te
         {
             obj.Serialize(this);
         }
+
+    protected:
+        virtual bool WriteData(const UINT8* data, size_t size) = 0;
     };
 }

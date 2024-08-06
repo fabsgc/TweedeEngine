@@ -309,12 +309,16 @@ set (TE_CORE_SRC_MATERIAL
 
 set (TE_CORE_INC_SERIALIZATION
     "Core/Serialization/TeSerializable.h"
-    "Core/Serialization/TeSerializer.h"
-    "Core/Serialization/TeBinarySerializer.h"
+    "Core/Serialization/TeStreamWriter.h"
+    "Core/Serialization/TeStreamReader.h"
+    "Core/Serialization/TeBinaryWriter.h"
+    "Core/Serialization/TeBinaryReader.h"
 )
 set (TE_CORE_SRC_SERIALIZATION
-    "Core/Serialization/TeSerializer.cpp"
-    "Core/Serialization/TeBinarySerializer.cpp"
+    "Core/Serialization/TeStreamWriter.cpp"
+    "Core/Serialization/TeStreamReader.cpp"
+    "Core/Serialization/TeBinaryWriter.cpp"
+    "Core/Serialization/TeBinaryReader.cpp"
 )
 
 set (TE_CORE_INC_COMPONENTS

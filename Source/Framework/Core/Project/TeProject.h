@@ -35,7 +35,7 @@ namespace te
         void ClearResources() { _resources.clear(); }
 
     public:
-        void Serialize(Serializer* serialize) const override;
+        void Serialize(StreamWriter* serializer) const override;
 
     private:
         Project();
