@@ -24,14 +24,14 @@ namespace te
         void ReadString(std::string& string);
 
         template<typename T>
-        void Readeraw(const T& value)
+        void ReadRaw(T& value)
         {
-            bool success = ReadData(reinterpret_cast<const UINT8*>(&value), sizeof(T));
+            bool success = ReadData(reinterpret_cast<UINT8*>(&value), sizeof(T));
             TE_ASSERT_ERROR_SHORT(success);
         }
 
         template<typename T>
-        void ReadObject(const T& obj)
+        void ReadObject(T& obj)
         {
             // TODO Serialization
         }
