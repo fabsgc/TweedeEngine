@@ -4,6 +4,7 @@
 #include "Exporter/TeProjectExportOptions.h"
 #include "Serialization/TeBinaryWriter.h"
 #include "Project/TeProject.h"
+#include "Utility/TeFileSystem.h"
 
 #include <filesystem>
 
@@ -44,7 +45,11 @@ namespace te
             std::string name = slugify(resource->GetName());
             std::filesystem::path resourcePath = workingDirectory;
             resourcePath += std::filesystem::path::preferred_separator;
+            resourcePath += "resources";
+            resourcePath += std::filesystem::path::preferred_separator;
             resourcePath += name + ".resource";
+
+            FileSystem::CreateDir(resourcePath.parent_path().generic_string());
 
             BinaryWriter* resourceSerializer = te_new<BinaryWriter>(resourcePath);
             resource->Serialize(resourceSerializer);

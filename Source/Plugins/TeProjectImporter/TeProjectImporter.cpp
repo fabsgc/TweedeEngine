@@ -1,6 +1,8 @@
 #include "TeProjectImporter.h"
+
 #include "Project/TeProject.h"
 #include "Importer/TeProjectImportOptions.h"
+#include "Serialization/TeBinaryReader.h"
 #include "Utility/TeDataStream.h"
 
 #include <iostream>
@@ -33,50 +35,12 @@ namespace te
         auto path = std::filesystem::absolute(filePath);
         const ProjectImportOptions* projectImportOptions = static_cast<const ProjectImportOptions*>(importOptions.get());
 
-        if (std::filesystem::exists(path))
-        {
-            project = Project::CreatePtr();
+        if (!std::filesystem::exists(path))
+            return project;
 
-            nlohmann::json jsonDocument;
-            FileStream file(filePath);
+        project = Project::CreatePtr();
 
-            if (file.Fail())
-            {
-                TE_ASSERT_ERROR(false, "Cannot open file: " + filePath);
-                return nullptr;
-            }
-
-            size_t size = file.Size();
-
-            if (size > std::numeric_limits<UINT32>::max())
-            {
-                TE_ASSERT_ERROR(false, "File size larger than supported!");
-            }
-
-            uint8_t* data = static_cast<uint8_t*>(te_allocate(static_cast<UINT32>(size) + 1));
-            memset(data, 0, size);
-            file.Read(static_cast<char*>((void*)data), static_cast<std::streamsize>(size));
-            data[size] = (uint8_t)'\0';
-
-            String dataStr((char*)data);
-
-#if (defined(__cpp_exceptions) || defined(__EXCEPTIONS) || defined(_CPPUNWIND)) && !defined(JSON_NOEXCEPTION)
-            try
-            {
-                jsonDocument = nlohmann::json::parse(dataStr);
-            }
-            catch (...)
-            {
-                TE_ASSERT_ERROR(false, "Can't read shader file " + filePath);
-            }
-#else
-            jsonDocument = nlohmann::json::parse(dataStr);
-#endif
-            te_delete(data);
-
-            project->SetName(path.filename().generic_string());
-            project->SetPath(path.generic_string());
-        }
+        // TODO serialization
 
         return project;
     }

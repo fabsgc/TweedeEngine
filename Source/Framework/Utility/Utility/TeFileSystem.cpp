@@ -50,7 +50,7 @@ namespace te
 
     bool FileSystem::CreateDir(const String& path)
     {
-        if(std::filesystem::is_directory(path) && !std::filesystem::exists(path))
+        if(!std::filesystem::exists(path))
             return std::filesystem::create_directories(path);
 
         if(std::filesystem::exists(path))

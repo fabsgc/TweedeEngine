@@ -19,4 +19,21 @@ namespace te
         serializer->WriteRaw<UINT32>(_size);
         serializer->WriteString(_UUID.ToString());
     }
+
+    void Resource::Deserialize(StreamReader* deserializer, Resource* object)
+    {
+        if (!object)
+            return;
+
+        Serializable::Deserialize(deserializer, object);
+
+        String uuid;
+
+        deserializer->ReadString(object->_name);
+        deserializer->ReadString(object->_path);
+        deserializer->ReadRaw<UINT32>(object->_size);
+        deserializer->ReadString(uuid);
+
+        object->_UUID = UUID(uuid);
+    }
 }

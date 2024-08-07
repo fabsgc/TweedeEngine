@@ -23,7 +23,7 @@ namespace te
 
     bool BinaryReader::ReadData(UINT8* dest, size_t size)
     {
-        
+        _stream->Read(dest, size);
         return true;
     }
 }

@@ -20,6 +20,14 @@ namespace te
             serializer->WriteRaw<UINT32>(_coreType);
         }
 
+        static void Deserialize(StreamReader* deserialize, Serializable* object)
+        {
+            if (!object)
+                return;
+
+            deserialize->ReadRaw<UINT32>(object->_coreType);
+        }
+
     protected:
         UINT32 _coreType;
     };

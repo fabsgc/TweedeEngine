@@ -1,8 +1,9 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
-#include "CoreUtility/TeCoreObject.h"
+
 #include "Utility/TeNonCopyable.h"
+#include "CoreUtility/TeCoreObject.h"
 #include "Serialization/TeSerializable.h"
 
 namespace te
@@ -32,7 +33,11 @@ namespace te
         static UINT32 GetResourceType() { return TypeID_Core::TID_Resource; }
 
     public:
+        /** @copydoc Serializable::Serialize */
         void Serialize(StreamWriter* serializer) const override;
+
+        /** @copydoc Serializable::Deserialize */
+        static void Deserialize(StreamReader* deserializer, Resource* object);
 
     protected:
         friend class ResourceManager;

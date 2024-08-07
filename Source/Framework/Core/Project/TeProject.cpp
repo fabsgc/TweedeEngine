@@ -1,5 +1,7 @@
 #include "Project/TeProject.h"
+
 #include "Resources/TeResourceManager.h"
+#include "ThirdParty/Slugify/slugify.hpp"
 
 namespace te
 {
@@ -33,5 +35,27 @@ namespace te
     void Project::Serialize(StreamWriter* serializer) const
     {
         Resource::Serialize(serializer);
+
+        Vector<String> resources;
+
+        for (auto& resource : _resources)
+        {
+            resources.push_back(slugify(resource->GetName()) + ".resource");
+        }
+
+        serializer->WriteArray(resources);
+    }
+
+    void Project::Deserialize(StreamReader* deserializer, Project* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
+
+        Vector<String> resources;
+        deserializer->ReadArray(resources);
     }
 }

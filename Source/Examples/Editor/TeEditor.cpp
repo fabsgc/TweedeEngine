@@ -994,7 +994,11 @@ namespace te
         }
 
         SPtr<ProjectExportOptions> options = te_shared_ptr_new<ProjectExportOptions>();
-        if (!gExporter().Export(_project.GetInternalPtr().get(), _project->GetPath(), options))
+        if (gExporter().Export(_project.GetInternalPtr().get(), _project->GetPath(), options))
+        {
+            TE_DEBUG("Project saved at the specified path : " + _project->GetPath());
+        }
+        else
         {
             TE_DEBUG("Fail to save your project at the specified path : " + _project->GetPath());
             return false;

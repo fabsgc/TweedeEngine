@@ -36,6 +36,100 @@ namespace te
             obj.Serialize(this);
         }
 
+        template<typename Key, typename Value>
+        void WriteMap(const Map<Key, Value>& map)
+        {
+            WriteRaw<uint32_t>((uint32_t)map.size());
+
+            for (const auto& [key, value] : map)
+            {
+                if constexpr (std::is_trivial<Key>())
+                    WriteRaw<Key>(key);
+                else
+                    WriteObject<Key>(key);
+
+                if constexpr (std::is_trivial<Value>())
+                    WriteRaw<Value>(value);
+                else
+                    WriteObject<Value>(value);
+            }
+        }
+
+        template<typename Key, typename Value>
+        void WriteMap(const UnorderedMap<Key, Value>& map)
+        {
+            WriteRaw<uint32_t>((uint32_t)map.size());
+
+            for (const auto& [key, value] : map)
+            {
+                if constexpr (std::is_trivial<Key>())
+                    WriteRaw<Key>(key);
+                else
+                    WriteObject<Key>(key);
+
+                if constexpr (std::is_trivial<Value>())
+                    WriteRaw<Value>(value);
+                else
+                    WriteObject<Value>(value);
+            }
+        }
+
+        template<typename Value>
+        void WriteMap(const Map<String, Value>& map)
+        {
+            WriteRaw<uint32_t>((uint32_t)map.size());
+
+            for (const auto& [key, value] : map)
+            {
+                WriteString(key);
+
+                if constexpr (std::is_trivial<Value>())
+                    WriteRaw<Value>(value);
+                else
+                    WriteObject<Value>(value);
+            }
+        }
+
+        template<typename Value>
+        void WriteMap(const UnorderedMap<String, Value>& map)
+        {
+            WriteRaw<uint32_t>((uint32_t)map.size());
+
+            for (const auto& [key, value] : map)
+            {
+                WriteString(key);
+
+                if constexpr (std::is_trivial<Value>())
+                    WriteRaw<Value>(value);
+                else
+                    WriteObject<Value>(value);
+            }
+        }
+
+        template<typename T>
+        void WriteArray(const std::vector<T>& array)
+        {
+            WriteRaw<uint32_t>((uint32_t)array.size());
+
+            for (const auto& element : array)
+            {
+                if constexpr (std::is_trivial<T>())
+                    WriteRaw<T>(element);
+                else
+                    WriteObject<T>(element);
+            }
+        }
+
+        void WriteArray(const std::vector<String>& array)
+        {
+            WriteRaw<uint32_t>((uint32_t)array.size());
+
+            for (const auto& element : array)
+            {
+                WriteString(element);
+            }
+        }
+
     protected:
         virtual bool WriteData(const UINT8* data, size_t size) = 0;
     };

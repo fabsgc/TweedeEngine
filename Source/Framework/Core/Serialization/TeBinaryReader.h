@@ -18,12 +18,14 @@ namespace te
         ~BinaryReader();
 
         bool IsStreamGood() const final { return _stream->Good(); }
-		UINT64 GetStreamPosition() const override final { return _stream->Tell(); }
-		void SetStreamPosition(UINT64 position) final { _stream->Seek(position); }
-		bool ReadData(UINT8* dest, size_t size) override;
+        UINT64 GetStreamPosition() const override final { return _stream->Tell(); }
+        void SetStreamPosition(UINT64 position) final { _stream->Seek(position); }
+
+    private:
+        bool ReadData(UINT8* dest, size_t size) override;
 
     private:
         std::filesystem::path _path;
-		DataStream* _stream;
+        DataStream* _stream;
     };
 }
