@@ -258,6 +258,12 @@ namespace te
             CalculteSize();
         }
 
+        if (_FStream->fail())
+            TE_DEBUG("Logical error on i/o operation");
+
+        if (_FStream->bad())
+            TE_DEBUG("ead/writing error on i/o operation");
+
         return written;
     }
 

@@ -5,6 +5,9 @@
 #include "Serialization/TeBinaryReader.h"
 #include "Utility/TeDataStream.h"
 
+#include "Material/TeMaterial.h"
+
+//#include <ranges>
 #include <iostream>
 #include <filesystem>
 
@@ -32,15 +35,62 @@ namespace te
     SPtr<Resource> ProjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
     {
         SPtr<Project> project = nullptr;
-        auto path = std::filesystem::absolute(filePath);
+        std::filesystem::path projectPath = std::filesystem::absolute(filePath);
+        std::filesystem::path workingDirectory = projectPath.parent_path();
         const ProjectImportOptions* projectImportOptions = static_cast<const ProjectImportOptions*>(importOptions.get());
 
-        if (!std::filesystem::exists(path))
+        if (!std::filesystem::exists(projectPath))
             return project;
 
         project = Project::CreatePtr();
 
-        // TODO serialization
+        /*auto enumerate = [](const auto& data) {
+            return data | std::views::transform([i = 0](const auto& value) mutable {
+                return std::make_pair(i++, value);
+            });
+        };*/
+
+        BinaryReader* deserializer = te_new<BinaryReader>(projectPath);
+        project->Deserialize(deserializer, project.get());
+
+        Vector<String> resourceNames = project->GetAllResourceNames();
+        Vector<UINT32> resourceTypes = project->GetAllResourceTypes();
+        project->ClearResources();
+        int i = 0;
+
+        for (const auto& name : resourceNames)
+        {
+            std::filesystem::path resourcePath = workingDirectory;
+            resourcePath += std::filesystem::path::preferred_separator;
+            resourcePath += "resources";
+            resourcePath += std::filesystem::path::preferred_separator;
+            resourcePath += name;
+
+            BinaryReader* resourceDeserializer = te_new<BinaryReader>(resourcePath);
+
+            SPtr<Resource> resource = nullptr;
+
+            switch (resourceTypes[i])
+            {
+            case TID_Material:
+                resource = Material::CreateEmpty();
+                Material::Deserialize(resourceDeserializer, resource.get());
+                break;
+
+            default:
+                break;
+            }
+
+            if (resource)
+            {
+                project->AddResource(resource.get());
+            }
+
+            te_delete(resourceDeserializer);
+            i++;
+        }
+
+        te_delete(deserializer);
 
         return project;
     }

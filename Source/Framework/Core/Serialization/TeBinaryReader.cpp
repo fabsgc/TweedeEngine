@@ -12,7 +12,12 @@ namespace te
         : StreamReader()
         , _path(path)
     {
-        _stream = te_new<FileStream>(path.generic_string(), DataStream::AccessMode::WRITE);
+        _stream = te_new<FileStream>(path.generic_string(), DataStream::AccessMode::READ);
+
+        if (IsStreamGood())
+        {
+            ReadHeader();
+        }
     }
 
     BinaryReader::~BinaryReader()
@@ -23,7 +28,12 @@ namespace te
 
     bool BinaryReader::ReadData(UINT8* dest, size_t size)
     {
-        _stream->Read(dest, size);
-        return true;
+        return _stream->Read(dest, size);
+    }
+
+    void BinaryReader::ReadHeader()
+    {
+        ReadRaw<UINT32>(_versionMajor);
+        ReadRaw<UINT32>(_versionMinor);
     }
 }

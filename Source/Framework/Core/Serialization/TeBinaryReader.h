@@ -14,18 +14,30 @@ namespace te
     {
     public:
         BinaryReader();
+
         BinaryReader(std::filesystem::path& path);
+
         ~BinaryReader();
 
         bool IsStreamGood() const final { return _stream->Good(); }
+
         UINT64 GetStreamPosition() const override final { return _stream->Tell(); }
+
         void SetStreamPosition(UINT64 position) final { _stream->Seek(position); }
+
+        UINT32 GetVersionMajor() const { return _versionMajor; }
+
+        UINT32 GetVersionMinor() const { return _versionMinor; }
 
     private:
         bool ReadData(UINT8* dest, size_t size) override;
 
+        void ReadHeader();
+
     private:
         std::filesystem::path _path;
         DataStream* _stream;
+        UINT32 _versionMajor;
+        UINT32 _versionMinor;
     };
 }

@@ -26,13 +26,19 @@ namespace te
         static SPtr<Project> CreateEmpty();
 
         /** A project can store all resources currently used */
-        Vector<Resource*> GetAllResources() const { return _resources; }
+        const Vector<Resource*>& GetAllResources() const { return _resources; }
+        
+        /** @copydoc GetAllResources */
+        const Vector<String>& GetAllResourceNames() const { return _resourceNames; }
 
-        /** @copydoc GetAllResources  */
-        void AddResource(Resource* resource) { _resources.push_back(resource); }
+        /** @copydoc GetAllResources */
+        const Vector<UINT32>& GetAllResourceTypes() const { return _resourceTypes; }
 
-        /** @copydoc GetAllResources  */
-        void ClearResources() { _resources.clear(); }
+        /** Add a resource to the project */
+        void AddResource(Resource* resource);
+
+        /** Remove all resources from the project */
+        void ClearResources() { _resources.clear(); _resourceNames.clear(); }
 
     public:
         void Serialize(StreamWriter* serializer) const override;
@@ -44,5 +50,7 @@ namespace te
 
     private:
         Vector<Resource*> _resources;
+        Vector<String> _resourceNames;
+        Vector<UINT32> _resourceTypes;
     };
 }

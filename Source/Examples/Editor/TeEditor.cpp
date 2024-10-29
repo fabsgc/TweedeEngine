@@ -952,7 +952,7 @@ namespace te
         }
 
         SPtr<ProjectImportOptions> options = te_shared_ptr_new<ProjectImportOptions>();
-        SPtr<MultiResource> multiResourceScene = EditorResManager::Instance().LoadAll(path, options, true);
+        SPtr<MultiResource> multiResourceScene = gResourceManager().LoadAll(path, options, true);
 
         if (multiResourceScene->Entries.size() == 0 || !multiResourceScene->Entries[0].Res.IsLoaded())
         {
@@ -965,6 +965,7 @@ namespace te
         EditorResManager::Instance().RemoveAndClear();
         std::static_pointer_cast<WidgetShaders>(_settings.WShaders)->Initialize();
         std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->Initialize();
+        std::static_pointer_cast<WidgetScripts>(_settings.WScripts)->Initialize();
 
         LoadEngineResources();
 

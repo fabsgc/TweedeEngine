@@ -22,6 +22,6 @@ namespace te
     {
         size_t size = string.size();
         WriteData(reinterpret_cast<const UINT8*>(&size), sizeof(size_t));
-        WriteData(reinterpret_cast<const UINT8*>(string.data()), sizeof(char) * string.size());
+        WriteData(reinterpret_cast<const UINT8*>(string.data()), sizeof(char) * size);
     }
 }

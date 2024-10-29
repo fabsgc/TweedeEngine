@@ -28,8 +28,7 @@ namespace te
 
     bool BinaryWriter::WriteData(const UINT8* data, size_t size)
     {
-        _stream->Write(data, static_cast<UINT32>(size));
-        return true;
+        return _stream->Write(data, static_cast<UINT32>(size));
     }
 
     void BinaryWriter::WriteHeader()

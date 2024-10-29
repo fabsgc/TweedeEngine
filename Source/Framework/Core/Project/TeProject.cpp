@@ -32,18 +32,19 @@ namespace te
         return newProject;
     }
 
+    void Project::AddResource(Resource* resource)
+    { 
+        _resources.push_back(resource);
+        _resourceNames.push_back(slugify(resource->GetName()) + ".resource");
+        _resourceTypes.push_back(resource->GetCoreType());
+    }
+
     void Project::Serialize(StreamWriter* serializer) const
     {
         Resource::Serialize(serializer);
 
-        Vector<String> resources;
-
-        for (auto& resource : _resources)
-        {
-            resources.push_back(slugify(resource->GetName()) + ".resource");
-        }
-
-        serializer->WriteArray(resources);
+        serializer->WriteArray(_resourceNames);
+        serializer->WriteArray(_resourceTypes);
     }
 
     void Project::Deserialize(StreamReader* deserializer, Project* object)
@@ -55,7 +56,7 @@ namespace te
 
         Resource::Deserialize(deserializer, object);
 
-        Vector<String> resources;
-        deserializer->ReadArray(resources);
+        deserializer->ReadArray(object->_resourceNames);
+        deserializer->ReadArray(object->_resourceTypes);
     }
 }
