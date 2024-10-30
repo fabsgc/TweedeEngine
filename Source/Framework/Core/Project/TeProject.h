@@ -31,9 +31,6 @@ namespace te
         /** @copydoc GetAllResources */
         const Vector<String>& GetAllResourceNames() const { return _resourceNames; }
 
-        /** @copydoc GetAllResources */
-        const Vector<UINT32>& GetAllResourceTypes() const { return _resourceTypes; }
-
         /** Add a resource to the project */
         void AddResource(Resource* resource);
 
@@ -51,6 +48,5 @@ namespace te
     private:
         Vector<Resource*> _resources;
         Vector<String> _resourceNames;
-        Vector<UINT32> _resourceTypes;
     };
 }

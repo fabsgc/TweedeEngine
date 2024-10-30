@@ -951,6 +951,13 @@ namespace te
             return false;
         }
 
+        DestroyRunningScene();
+        DestroyScene();
+        EditorResManager::Instance().RemoveAndClear();
+        std::static_pointer_cast<WidgetShaders>(_settings.WShaders)->Initialize();
+        std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->Initialize();
+        std::static_pointer_cast<WidgetScripts>(_settings.WScripts)->Initialize();
+
         SPtr<ProjectImportOptions> options = te_shared_ptr_new<ProjectImportOptions>();
         SPtr<MultiResource> multiResourceScene = gResourceManager().LoadAll(path, options, true);
 
@@ -960,13 +967,6 @@ namespace te
             return false;
         }
 
-        DestroyRunningScene();
-        DestroyScene();
-        EditorResManager::Instance().RemoveAndClear();
-        std::static_pointer_cast<WidgetShaders>(_settings.WShaders)->Initialize();
-        std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->Initialize();
-        std::static_pointer_cast<WidgetScripts>(_settings.WScripts)->Initialize();
-
         LoadEngineResources();
 
         _sceneSO = SceneObject::Create("Scene");
@@ -974,6 +974,8 @@ namespace te
 
         _project = static_resource_cast<Project>(multiResourceScene->Entries[0].Res);
         _project->SetPath(path);
+
+        // TODO : add resources to EditorResManager
 
         OnOpen();
 

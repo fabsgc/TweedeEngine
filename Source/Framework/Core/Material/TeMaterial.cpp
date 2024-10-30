@@ -564,4 +564,19 @@ namespace te
     {
         MarkCoreDirty((UINT32)flags);
     }
+
+    void Material::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+    }
+
+    void Material::Deserialize(StreamReader* deserializer, Material* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
+    }
 }

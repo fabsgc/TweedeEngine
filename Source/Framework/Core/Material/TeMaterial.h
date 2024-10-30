@@ -600,6 +600,11 @@ namespace te
         /** Marks the contents of the sim thread object as dirty, causing it to sync with its core thread counterpart. */
         virtual void _markCoreDirty(MaterialDirtyFlags flags = MaterialDirtyFlags::Param);
 
+    public:
+        void Serialize(StreamWriter* serializer) const override;
+
+        static void Deserialize(StreamReader* deserializer, Material* object);
+
     protected:
         Material();
         Material(UINT32 id, const ShaderVariation& variation);

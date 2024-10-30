@@ -15,7 +15,7 @@ namespace te
     public:
         BinaryReader();
 
-        BinaryReader(std::filesystem::path& path);
+        BinaryReader(const std::filesystem::path& path);
 
         ~BinaryReader();
 

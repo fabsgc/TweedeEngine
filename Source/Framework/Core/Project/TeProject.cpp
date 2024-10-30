@@ -36,7 +36,6 @@ namespace te
     { 
         _resources.push_back(resource);
         _resourceNames.push_back(slugify(resource->GetName()) + ".resource");
-        _resourceTypes.push_back(resource->GetCoreType());
     }
 
     void Project::Serialize(StreamWriter* serializer) const
@@ -44,7 +43,6 @@ namespace te
         Resource::Serialize(serializer);
 
         serializer->WriteArray(_resourceNames);
-        serializer->WriteArray(_resourceTypes);
     }
 
     void Project::Deserialize(StreamReader* deserializer, Project* object)
@@ -57,6 +55,5 @@ namespace te
         Resource::Deserialize(deserializer, object);
 
         deserializer->ReadArray(object->_resourceNames);
-        deserializer->ReadArray(object->_resourceTypes);
     }
 }

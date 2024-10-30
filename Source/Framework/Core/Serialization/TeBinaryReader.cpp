@@ -8,7 +8,7 @@ namespace te
         _stream = te_new<MemoryDataStream>();
     }
     
-    BinaryReader::BinaryReader(std::filesystem::path& path)
+    BinaryReader::BinaryReader(const std::filesystem::path& path)
         : StreamReader()
         , _path(path)
     {

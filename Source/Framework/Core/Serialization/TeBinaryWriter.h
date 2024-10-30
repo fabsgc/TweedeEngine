@@ -15,7 +15,7 @@ namespace te
     public:
         BinaryWriter();
         
-        BinaryWriter(std::filesystem::path& path);
+        BinaryWriter(const std::filesystem::path& path);
         
         ~BinaryWriter();
 

@@ -4,6 +4,7 @@
 #include "Importer/TeProjectImportOptions.h"
 #include "Serialization/TeBinaryReader.h"
 #include "Utility/TeDataStream.h"
+#include "Resources/TeResourceManager.h"
 
 #include "Material/TeMaterial.h"
 
@@ -32,6 +33,17 @@ namespace te
         return te_shared_ptr_new<ProjectImportOptions>();
     }
 
+    template<typename T>
+    SPtr<T> DeserializeOneResource(const std::filesystem::path& resourcePath)
+    {
+        SPtr<T> resource = T::CreateEmpty();
+        BinaryReader* deserializer = te_new<BinaryReader>(resourcePath);
+
+        T::Deserialize(deserializer, resource.get());
+
+        return resource;
+    }
+
     SPtr<Resource> ProjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
     {
         SPtr<Project> project = nullptr;
@@ -44,19 +56,13 @@ namespace te
 
         project = Project::CreatePtr();
 
-        /*auto enumerate = [](const auto& data) {
-            return data | std::views::transform([i = 0](const auto& value) mutable {
-                return std::make_pair(i++, value);
-            });
-        };*/
-
         BinaryReader* deserializer = te_new<BinaryReader>(projectPath);
         project->Deserialize(deserializer, project.get());
 
         Vector<String> resourceNames = project->GetAllResourceNames();
-        Vector<UINT32> resourceTypes = project->GetAllResourceTypes();
         project->ClearResources();
-        int i = 0;
+
+        Resource* resourceMetaData = new Resource(TID_Resource);
 
         for (const auto& name : resourceNames)
         {
@@ -67,29 +73,33 @@ namespace te
             resourcePath += name;
 
             BinaryReader* resourceDeserializer = te_new<BinaryReader>(resourcePath);
+            Resource::Deserialize(resourceDeserializer, resourceMetaData);
 
-            SPtr<Resource> resource = nullptr;
-
-            switch (resourceTypes[i])
+            if (!gResourceManager().Get(resourceMetaData->GetUUID()).IsLoaded())
             {
-            case TID_Material:
-                resource = Material::CreateEmpty();
-                Material::Deserialize(resourceDeserializer, resource.get());
+                SPtr<Resource> resource = nullptr;
+
+                switch (resourceMetaData->GetCoreType())
+                {
+                case TID_Material:
+                    resource = DeserializeOneResource<Material>(resourcePath);
+                    gResourceManager().RegisterEngineResource(resourcePath.generic_string(), resource);
                 break;
 
-            default:
-                break;
-            }
+                default:
+                    break;
+                }
 
-            if (resource)
-            {
-                project->AddResource(resource.get());
+                if (resource)
+                {
+                    project->AddResource(resource.get());
+                }
             }
 
             te_delete(resourceDeserializer);
-            i++;
         }
 
+        te_delete(resourceMetaData);
         te_delete(deserializer);
 
         return project;

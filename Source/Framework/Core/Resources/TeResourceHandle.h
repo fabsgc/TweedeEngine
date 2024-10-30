@@ -104,7 +104,7 @@ namespace te
         }
 
         /** Move assignment. */
-        TResourceHandle& operator=(TResourceHandle&& other)
+        TResourceHandle& operator=(TResourceHandle&& other) noexcept
         {
             if(this == &other)
             {

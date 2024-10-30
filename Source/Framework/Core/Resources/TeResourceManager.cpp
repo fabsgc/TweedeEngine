@@ -234,7 +234,6 @@ namespace te
         auto path = std::filesystem::weakly_canonical(filePath, e);
         String absolutePath = path.generic_string();
         _loadingResourceMutex.lock();
-        
 
         auto iterFind = _UUIDToFile.find(uuid);
 

@@ -42,6 +42,7 @@ namespace te
     protected:
         friend class ResourceManager;
         friend class ResourceHandleBase;
+        friend class ProjectImporter;
 
         Resource(UINT32 type);
 

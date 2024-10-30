@@ -8,7 +8,7 @@ namespace te
         _stream = te_new<MemoryDataStream>();
     }
     
-    BinaryWriter::BinaryWriter(std::filesystem::path& path)
+    BinaryWriter::BinaryWriter(const std::filesystem::path& path)
         : StreamWriter()
         , _path(path)
     {

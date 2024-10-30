@@ -68,6 +68,19 @@ namespace te
             return static_resource_cast<T>(Get(uuid));
         }
 
+        void RegisterEngineResource(const String& filePath, SPtr<Resource>& resource, bool force = false)
+        {
+            UUID uuid;
+            GetUUIDFromFile(filePath, uuid); // TODO : wroing get uuid from resource directly
+
+            if ((uuid.Empty() || force) && resource)
+            {
+                uuid = resource->GetUUID();
+                RegisterResource(uuid, filePath);
+                _createResourceHandle(resource);
+            }
+        }
+
         /**
          * By using this importer, because non primary resources are not linked to a file, we need to 
          * find associated subResources and return a MultiResource instance
