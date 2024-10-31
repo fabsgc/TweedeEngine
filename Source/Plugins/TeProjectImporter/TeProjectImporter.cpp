@@ -133,9 +133,9 @@ namespace te
                     resource = DeserializeOneResource<Font>(resourcePath);
                     break;
 
-                default:
-                    TE_DEBUG("Undefined resource type")
-                    break;
+                default: {
+                        TE_DEBUG("Undefined resource type")
+                    } break;
                 }
 
                 if (resource)
