@@ -16,9 +16,9 @@ namespace te
     OAImporter::OAImporter()
         : BaseImporter()
     {
-        _extensions.push_back(u8"wav");
-        _extensions.push_back(u8"ogg");
-        _extensions.push_back(u8"flac");
+        _extensions.push_back("wav");
+        _extensions.push_back("ogg");
+        _extensions.push_back("flac");
     }
 
     bool OAImporter::IsExtensionSupported(const String& ext) const
@@ -62,11 +62,11 @@ namespace te
             Util::ToLowerCase(extension);
 
             UPtr<AudioDecoder> reader;
-            if (extension == u8".ogg")
+            if (extension == ".ogg")
                 reader = te_unique_ptr_new<OggVorbisDecoder>();
-            else if (extension == u8".wav")
+            else if (extension == ".wav")
                 reader = te_unique_ptr_new<WaveDecoder>();
-            else if (extension == u8".flac")
+            else if (extension == ".flac")
                 reader = te_unique_ptr_new<FLACDecoder>();
 
             if (reader == nullptr)

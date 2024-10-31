@@ -17,12 +17,12 @@ namespace te
     ObjectImporter::ObjectImporter()
         : BaseImporter()
     {
-        _extensions.push_back(u8"obj");
-        _extensions.push_back(u8"dae");
-        _extensions.push_back(u8"fbx");
-        _extensions.push_back(u8"stl");
-        _extensions.push_back(u8"gltf");
-        _extensions.push_back(u8"glb");
+        _extensions.push_back("obj");
+        _extensions.push_back("dae");
+        _extensions.push_back("fbx");
+        _extensions.push_back("stl");
+        _extensions.push_back("gltf");
+        _extensions.push_back("glb");
     }
 
     ObjectImporter::~ObjectImporter()
@@ -87,7 +87,7 @@ namespace te
 
             if (mesh != nullptr)
             {
-                output.push_back({ u8"primary", mesh });
+                output.push_back({ "primary", mesh });
 
                 if(meshImportOptions->ImportCollisionShape && !Physics::IsStarted())
                 {
@@ -134,7 +134,7 @@ namespace te
                             {
                                 physicsMesh->SetName("Collision - " + mesh->GetName());
                                 physicsMesh->SetPath(path.generic_string());
-                                output.push_back({ u8"collision", physicsMesh });
+                                output.push_back({ "collision", physicsMesh });
                             }
                             else
                             {
@@ -150,7 +150,7 @@ namespace te
 
                             if (zPrepassMesh)
                             {
-                                output.push_back({ u8"zPrepassMesh", zPrepassMesh });
+                                output.push_back({ "zPrepassMesh", zPrepassMesh });
                             }
                             else
                             {

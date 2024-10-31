@@ -109,7 +109,7 @@ namespace te
 
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Failed to create Direct3D11 object. D3D11CreateDeviceN returned this error code: " + ToString(hr));
+            TE_ASSERT_ERROR(false, "Failed to create Direct3D11 object. D3D11CreateDeviceN returned this error code: " + ToString(static_cast<UINT64>(hr)));
         }
 
         _device = te_new<D3D11Device>(device, debugLayerAvailable);
@@ -143,7 +143,7 @@ namespace te
 
         if (FAILED(hr))
         {
-            TE_ASSERT_ERROR(false, "Failed to retrieve ID3DUserDefinedAnnotation object : " + ToString(hr));
+            TE_ASSERT_ERROR(false, "Failed to retrieve ID3DUserDefinedAnnotation object : " + ToString(static_cast<UINT64>(hr)));
         }
 #endif
     }
@@ -689,9 +689,9 @@ namespace te
                 ". Valid range is 0 .. " + ToString(maxBoundVertexBuffers - 1));
         }
 
-        ID3D11Buffer* dx11buffers[D3D11_MAX_BOUND_VERTEX_BUFFER];
-        UINT32 strides[D3D11_MAX_BOUND_VERTEX_BUFFER];
-        UINT32 offsets[D3D11_MAX_BOUND_VERTEX_BUFFER];
+        ID3D11Buffer* dx11buffers[D3D11_MAX_BOUND_VERTEX_BUFFER] = { nullptr };
+        UINT32 strides[D3D11_MAX_BOUND_VERTEX_BUFFER] = { 0 };
+        UINT32 offsets[D3D11_MAX_BOUND_VERTEX_BUFFER] = { 0 };
 
         for (UINT32 i = 0; i < numBuffers; i++)
         {

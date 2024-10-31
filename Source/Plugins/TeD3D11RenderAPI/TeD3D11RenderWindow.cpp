@@ -533,7 +533,7 @@ namespace te
         SAFE_RELEASE(pDXGIDevice);
 
         if (FAILED(hr))
-            TE_ASSERT_ERROR(false, "Unable to create swap chain. Error code: " + ToString(hr));
+            TE_ASSERT_ERROR(false, "Unable to create swap chain. Error code: " + ToString(static_cast<UINT64>(hr)));
     }
 
     IDXGIDevice* D3D11RenderWindow::QueryDxgiDevice()

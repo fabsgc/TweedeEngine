@@ -82,8 +82,8 @@ endif ()
 
 # Global compile & linker flags
 ## Compiler-agnostic settings
-### Target at least C++17
-set (CMAKE_CXX_STANDARD 17)
+### Target at least C++20
+set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set (CMAKE_INSTALL_RPATH "\$ORIGIN")

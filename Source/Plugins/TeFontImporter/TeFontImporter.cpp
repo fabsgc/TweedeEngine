@@ -17,8 +17,8 @@ namespace te
     FontImporter::FontImporter()
         : BaseImporter()
     {
-        _extensions.push_back(u8"ttf");
-        _extensions.push_back(u8"otf");
+        _extensions.push_back("ttf");
+        _extensions.push_back("otf");
     }
 
     bool FontImporter::IsExtensionSupported(const String& ext) const

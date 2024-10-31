@@ -131,7 +131,7 @@ namespace te
 
                     // Clean up the name to get the actual hardware name
                     String fixedName(deviceName.data(), deviceName.size());
-                    fixedName = ReplaceAll(fixedName, u8"OpenAL Soft on ", u8"");
+                    fixedName = ReplaceAll(fixedName, "OpenAL Soft on ", "");
 
                     _allDevices.push_back({ fixedName });
                     deviceName.clear();
@@ -145,12 +145,12 @@ namespace te
             }
 
             const ALCchar* defaultDevice = alcGetString(nullptr, ALC_DEFAULT_ALL_DEVICES_SPECIFIER);
-            _defaultDevice.Name = ReplaceAll(String(defaultDevice), u8"OpenAL Soft on ", u8"");
+            _defaultDevice.Name = ReplaceAll(String(defaultDevice), "OpenAL Soft on ", "");
         }
         else
         {
             _defaultDevice.Name = "";
-            _allDevices.push_back({ u8"" });
+            _allDevices.push_back({ "" });
         }
     }
 

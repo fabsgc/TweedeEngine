@@ -19,7 +19,7 @@ namespace te
 
     ShaderImporter::ShaderImporter()
     {
-        _extensions.push_back(u8"shader");
+        _extensions.push_back("shader");
     }
 
     ShaderImporter::~ShaderImporter()

@@ -25,7 +25,7 @@ namespace te
     ProjectImporter::ProjectImporter()
         : BaseImporter()
     {
-        _extensions.push_back(u8"project");
+        _extensions.push_back("project");
     }
 
     bool ProjectImporter::IsExtensionSupported(const String& ext) const

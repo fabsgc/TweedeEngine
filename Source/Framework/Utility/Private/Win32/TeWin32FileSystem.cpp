@@ -216,7 +216,7 @@ namespace te
                 String fullPath;
                 if (!onlyFileName) fullPath = dirPath;
                 if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
-                    directories.push_back(fullPath.append(UTF8::FromWide(tempName) + u8"/"));
+                    directories.push_back(fullPath.append(UTF8::FromWide(tempName) + "/"));
                 else
                     files.push_back(fullPath.append(UTF8::FromWide(tempName)));
             }
@@ -263,7 +263,7 @@ namespace te
                 String fullPath = dirPath;
                 if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
                 {
-                    String childDir = fullPath.append(UTF8::FromWide(tempName) + u8"/");
+                    String childDir = fullPath.append(UTF8::FromWide(tempName) + "/");
                     if (dirCallback != nullptr)
                     {
                         if (!dirCallback(childDir))

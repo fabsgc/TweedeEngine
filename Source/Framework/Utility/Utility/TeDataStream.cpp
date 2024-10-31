@@ -65,7 +65,7 @@ namespace te
             else if (IsUTF32BE(headerBytes))
             {
                 TE_DEBUG("UTF-32 big endian decoding not supported");
-                return u8"";
+                return "";
             }
         }
 
@@ -82,7 +82,7 @@ namespace te
             else if (IsUTF16BE(headerBytes))
             {
                 TE_DEBUG("UTF-16 big endian decoding not supported");
-                return u8"";
+                return "";
             }
         }
 

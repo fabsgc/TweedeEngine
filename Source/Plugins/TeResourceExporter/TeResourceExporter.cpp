@@ -6,7 +6,7 @@ namespace te
     ResourceExporter::ResourceExporter()
         : BaseExporter()
     {
-        _extensions.push_back(u8"resource");
+        _extensions.push_back("resource");
     }
 
     bool ResourceExporter::IsExtensionSupported(const String& ext) const

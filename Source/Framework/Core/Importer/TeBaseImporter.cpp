@@ -8,7 +8,7 @@ namespace te
         if (resource == nullptr)
             return Vector<SubResourceRaw>();
 
-        return { { u8"primary", resource } };
+        return { { "primary", resource } };
     }
 
     SPtr<ImportOptions> BaseImporter::CreateImportOptions() const

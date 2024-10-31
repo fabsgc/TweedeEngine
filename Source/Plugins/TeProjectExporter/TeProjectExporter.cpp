@@ -13,7 +13,7 @@ namespace te
     ProjectExporter::ProjectExporter()
         : BaseExporter()
     {
-        _extensions.push_back(u8"project");
+        _extensions.push_back("project");
     }
 
     bool ProjectExporter::IsExtensionSupported(const String& ext) const

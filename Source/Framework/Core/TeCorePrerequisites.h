@@ -45,10 +45,6 @@
 #  define TE_CORE_HIDDEN __attribute__ ((visibility ("hidden")))
 #endif
 
-#ifdef _ITERATOR_DEBUG_LEVEL
-#undef _ITERATOR_DEBUG_LEVEL
-#endif
-
 namespace te
 {
     enum TypeID_Core

@@ -6,7 +6,7 @@ namespace te
     ResourceImporter::ResourceImporter()
         : BaseImporter()
     {
-        _extensions.push_back(u8"resource");
+        _extensions.push_back("resource");
     }
 
     bool ResourceImporter::IsExtensionSupported(const String& ext) const

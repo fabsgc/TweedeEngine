@@ -50,7 +50,7 @@ namespace te
             strExt << exts;
 
             // Pull off individual formats (separated by comma by FI)
-            Vector<String> extsVector = Util::Split(exts, u8",");
+            Vector<String> extsVector = Util::Split(exts, ",");
             for (const auto& v : extsVector)
             {
                 auto findIter = std::find(_extensions.begin(), _extensions.end(), v);
