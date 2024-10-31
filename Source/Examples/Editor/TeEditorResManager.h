@@ -129,6 +129,7 @@ namespace te
         void Clear()
         {
             _resources.clear();
+            _resourcesIndex.clear();
         }
 
         void RemoveAndClear()

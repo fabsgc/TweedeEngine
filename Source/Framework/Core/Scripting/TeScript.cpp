@@ -37,4 +37,19 @@ namespace te
         Resource::SetPath(path);
         gScriptManager().LoadScriptLibrary(this); // If we change the path of the attached script, we build the library and update all running scripts
     }
+
+    void Script::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+    }
+
+    void Script::Deserialize(StreamReader* deserializer, Script* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
+    }
 }

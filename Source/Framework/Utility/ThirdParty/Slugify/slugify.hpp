@@ -7,7 +7,7 @@
 #include <algorithm>
 
 // SLUGIFY
-std::string slugify(std::string input)
+inline std::string slugify(std::string input)
 {
 	static std::unordered_map<std::string, std::string> charMap {
 		// latin

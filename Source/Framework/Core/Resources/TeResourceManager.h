@@ -71,7 +71,7 @@ namespace te
         void RegisterEngineResource(const String& filePath, SPtr<Resource>& resource, bool force = false)
         {
             UUID uuid;
-            GetUUIDFromFile(filePath, uuid); // TODO : wroing get uuid from resource directly
+            GetUUIDFromFile(filePath, uuid);
 
             if ((uuid.Empty() || force) && resource)
             {

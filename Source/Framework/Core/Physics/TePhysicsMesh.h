@@ -38,8 +38,16 @@ namespace te
          */
         static SPtr<PhysicsMesh> CreatePtr(const SPtr<MeshData>& meshData);
 
+        /**	Creates a new empty object but doesn't initialize it. */
+        static SPtr<PhysicsMesh> CreateEmpty();
+
         /** Returns the internal implementation of the physics mesh. */
         virtual FPhysicsMesh* GetInternal() { return _internal.get(); }
+
+    public:
+        void Serialize(StreamWriter* serializer) const override;
+
+        static void Deserialize(StreamReader* deserializer, PhysicsMesh* object);
 
     protected:
         SPtr<FPhysicsMesh> _internal;

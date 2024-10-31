@@ -259,4 +259,19 @@ namespace te
             mapping = { (UINT32)-1, (UINT32)-1, (UINT32)-1 };
         }
     }
+
+    void AnimationClip::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+    }
+
+    void AnimationClip::Deserialize(StreamReader* deserializer, AnimationClip* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
+    }
 }

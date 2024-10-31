@@ -42,8 +42,16 @@ namespace te
          */
         static SPtr<PhysicsHeightField> CreatePtr(const SPtr<Texture>& texture);
 
+        /**	Creates a new empty object but doesn't initialize it. */
+        static SPtr<PhysicsHeightField> CreateEmpty();
+
         /** Returns the internal implementation of the physics height field. */
         virtual FPhysicsHeightField* GetInternal() { return _internal.get(); }
+
+    public:
+        void Serialize(StreamWriter* serializer) const override;
+
+        static void Deserialize(StreamReader* deserializer, PhysicsHeightField* object);
 
     protected:
         SPtr<FPhysicsHeightField> _internal;

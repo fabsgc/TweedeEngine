@@ -314,6 +314,9 @@ namespace te
         /** Same as create() excepts it creates a pointer to the texture instead of a texture handle. */
         static SPtr<Texture> CreatePtr(const SPtr<PixelData>& pixelData, int usage = TU_DEFAULT, bool hwGammaCorrection = false);
 
+        /**	Creates a new empty texture but doesn't initialize it. */
+        static SPtr<Texture> CreateEmpty();
+
         /**
          * Requests a texture view for the specified mip and array ranges. Returns an existing view of one for the specified
          * ranges already exists, otherwise creates a new one. You must release all views by calling releaseView() when done.

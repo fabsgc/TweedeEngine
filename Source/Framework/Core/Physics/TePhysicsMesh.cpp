@@ -45,9 +45,30 @@ namespace te
         return nullptr;
     }
 
+    SPtr<PhysicsMesh> PhysicsMesh::CreateEmpty()
+    {
+        // TODO serialization
+        return {};
+    }
+
     void PhysicsMesh::Initialize()
     {
         Resource::Initialize();
         _initMeshData = nullptr;
+    }
+
+    void PhysicsMesh::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+    }
+
+    void PhysicsMesh::Deserialize(StreamReader* deserializer, PhysicsMesh* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
     }
 }

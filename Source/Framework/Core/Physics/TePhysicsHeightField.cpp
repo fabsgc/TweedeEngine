@@ -54,9 +54,30 @@ namespace te
         return nullptr;
     }
 
+    SPtr<PhysicsHeightField> PhysicsHeightField::CreateEmpty()
+    {
+        // TODO serialization
+        return {};
+    }
+
     void PhysicsHeightField::Initialize()
     {
         Resource::Initialize();
         _initTexture = nullptr;
+    }
+
+    void PhysicsHeightField::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+    }
+
+    void PhysicsHeightField::Deserialize(StreamReader* deserializer, PhysicsHeightField* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
     }
 }

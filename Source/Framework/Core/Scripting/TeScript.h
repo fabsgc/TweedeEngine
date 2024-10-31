@@ -28,6 +28,11 @@ namespace te
         /** Creates a script without initializing it. */
         static SPtr<Script> CreateEmpty();
 
+    public:
+        void Serialize(StreamWriter* serializer) const override;
+
+        static void Deserialize(StreamReader* deserializer, Script* object);
+
     private:
         Script();
 

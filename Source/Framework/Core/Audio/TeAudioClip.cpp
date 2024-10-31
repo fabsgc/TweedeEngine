@@ -44,4 +44,19 @@ namespace te
 
         return newClip;
     }
+
+    void AudioClip::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+    }
+
+    void AudioClip::Deserialize(StreamReader* deserializer, AudioClip* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
+    }
 }

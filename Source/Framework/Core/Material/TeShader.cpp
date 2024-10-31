@@ -470,4 +470,19 @@ namespace te
 
         return 0;
     }
+
+    void Shader::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+    }
+
+    void Shader::Deserialize(StreamReader* deserializer, Shader* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
+    }
 }

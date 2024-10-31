@@ -6,9 +6,17 @@
 #include "Utility/TeDataStream.h"
 #include "Resources/TeResourceManager.h"
 
+#include "Animation/TeAnimationClip.h"
+#include "Audio/TeAudioClip.h"
+#include "Image/TeTexture.h"
 #include "Material/TeMaterial.h"
+#include "Material/TeShader.h"
+#include "Mesh/TeMesh.h"
+#include "Physics/TePhysicsHeightField.h"
+#include "Physics/TePhysicsMesh.h"
+#include "Scripting/TeScript.h"
+#include "Text/TeFont.h"
 
-//#include <ranges>
 #include <iostream>
 #include <filesystem>
 
@@ -47,8 +55,8 @@ namespace te
     SPtr<Resource> ProjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
     {
         SPtr<Project> project = nullptr;
-        std::filesystem::path projectPath = std::filesystem::absolute(filePath);
-        std::filesystem::path workingDirectory = projectPath.parent_path();
+        const std::filesystem::path projectPath = std::filesystem::absolute(filePath);
+        const std::filesystem::path workingDirectory = projectPath.parent_path();
         const ProjectImportOptions* projectImportOptions = static_cast<const ProjectImportOptions*>(importOptions.get());
 
         if (!std::filesystem::exists(projectPath))
@@ -81,17 +89,58 @@ namespace te
 
                 switch (resourceMetaData->GetCoreType())
                 {
+                case TID_AnimationClip:
+                    resource = DeserializeOneResource<AnimationClip>(resourcePath);
+                    break;
+                
+                case TID_AudioClip:
+                    resource = DeserializeOneResource<AudioClip>(resourcePath);
+                    break;
+
+                case TID_Texture:
+                    resource = DeserializeOneResource<Texture>(resourcePath);
+                    break;
+
                 case TID_Material:
                     resource = DeserializeOneResource<Material>(resourcePath);
-                    gResourceManager().RegisterEngineResource(resourcePath.generic_string(), resource);
-                break;
+                    break;
+
+                case TID_Shader:
+                    resource = DeserializeOneResource<Shader>(resourcePath);
+                    break;
+
+                case TID_Mesh:
+                    resource = DeserializeOneResource<Mesh>(resourcePath);
+                    break;
+
+                case TID_ZPrepassMesh:
+                    resource = DeserializeOneResource<ZPrepassMesh>(resourcePath);
+                    break;
+
+                case TID_PhysicsHeightField:
+                    resource = DeserializeOneResource<PhysicsHeightField>(resourcePath);
+                    break;
+
+                case TID_PhysicsMesh:
+                    resource = DeserializeOneResource<PhysicsMesh>(resourcePath);
+                    break;
+
+                case TID_Script:
+                    resource = DeserializeOneResource<Script>(resourcePath);
+                    break;
+
+                case TID_Font:
+                    resource = DeserializeOneResource<Font>(resourcePath);
+                    break;
 
                 default:
+                    TE_DEBUG("Undefined resource type")
                     break;
                 }
 
                 if (resource)
                 {
+                    gResourceManager().RegisterEngineResource(resourcePath.generic_string(), resource);
                     project->AddResource(resource.get());
                 }
             }

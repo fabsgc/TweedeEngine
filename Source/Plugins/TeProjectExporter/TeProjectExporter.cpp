@@ -31,18 +31,19 @@ namespace te
 
     bool ProjectExporter::Export(void* object, const String& filePath, SPtr<const ExportOptions> exportOptions, bool force)
     {
-        std::filesystem::path projectPath = std::filesystem::path(filePath);
-        std::filesystem::path workingDirectory = projectPath.parent_path();
+        const std::filesystem::path projectPath = std::filesystem::path(filePath);
+        const std::filesystem::path workingDirectory = projectPath.parent_path();
+        const ProjectExportOptions* projectExportOptions = static_cast<const ProjectExportOptions*>(exportOptions.get());
 
         Project* project = static_cast<Project*>(object);
-        const ProjectExportOptions* projectExportOptions = static_cast<const ProjectExportOptions*>(exportOptions.get());
         BinaryWriter* serializer = te_new<BinaryWriter>(projectPath);
 
+        project->SetPath(filePath);
         project->Serialize(serializer);
 
         for (auto& resource : project->GetAllResources())
         {
-            std::string name = slugify(resource->GetName());
+            const std::string name = slugify(resource->GetName());
             std::filesystem::path resourcePath = workingDirectory;
             resourcePath += std::filesystem::path::preferred_separator;
             resourcePath += "resources";
@@ -52,6 +53,7 @@ namespace te
             FileSystem::CreateDir(resourcePath.parent_path().generic_string());
 
             BinaryWriter* resourceSerializer = te_new<BinaryWriter>(resourcePath);
+            resource->SetPath(resourcePath.generic_string());
             resource->Serialize(resourceSerializer);
 
             te_delete(resourceSerializer);

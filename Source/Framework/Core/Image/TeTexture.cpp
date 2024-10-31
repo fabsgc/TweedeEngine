@@ -359,6 +359,12 @@ namespace te
         return TextureManager::Instance().CreateTexture(desc, pixelData);
     }
 
+    SPtr<Texture> Texture::CreateEmpty()
+    {
+        // TODO serialization
+        return {};
+    }
+
     SPtr<TextureView> Texture::CreateView(const TEXTURE_VIEW_DESC& desc)
     {
         return te_shared_ptr<TextureView>(new (te_allocate<TextureView>()) TextureView(desc));

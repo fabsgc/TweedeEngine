@@ -283,6 +283,11 @@ namespace te
          */
         virtual void ReadData(MeshData& data, UINT32 deviceIdx = 0, UINT32 queueIdx = 0);
 
+    public:
+        void Serialize(StreamWriter* serializer) const override;
+
+        static void Deserialize(StreamReader* deserializer, Mesh* object);
+
     protected:
         friend class MeshManager;
 
@@ -339,8 +344,13 @@ namespace te
          */
         static SPtr<ZPrepassMesh> CreatePtr(const SPtr<MeshData>& initialData, const MESH_DESC& desc, GpuDeviceFlags deviceMask = GDF_DEFAULT);
 
+        /** @copydoc Mesh::CreateEmpty */
+        static SPtr<ZPrepassMesh> CreateEmpty();
+
     protected:
         friend class MeshManager;
+
+        ZPrepassMesh();
 
         ZPrepassMesh(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask);
     };

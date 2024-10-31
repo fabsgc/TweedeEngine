@@ -50,4 +50,19 @@ namespace te
 
         return newFont;
     }
+
+    void Font::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+    }
+
+    void Font::Deserialize(StreamReader* deserializer, Font* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
+    }
 }

@@ -233,6 +233,11 @@ namespace te
         static SPtr<AnimationClip> CreatePtr(const SPtr<AnimationCurves>& curves, bool isAdditive = false,
             float sampleRate = 1.0f, const SPtr<RootMotion>& rootMotion = nullptr);
 
+    public:
+        void Serialize(StreamWriter* serializer) const override;
+
+        static void Deserialize(StreamReader* deserializer, AnimationClip* object);
+
     protected:
         AnimationClip();
         AnimationClip(const SPtr<AnimationCurves>& curves, bool isAdditive, float sampleRate,

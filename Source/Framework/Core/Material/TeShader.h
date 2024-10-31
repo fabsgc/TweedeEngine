@@ -437,6 +437,11 @@ namespace te
          */
         SPtr<Technique> CreateTechnique(const ShaderVariation& iVariation, const Vector<String>& iTags);
 
+    public:
+        void Serialize(StreamWriter* serializer) const override;
+
+        static void Deserialize(StreamReader* deserializer, Shader* object);
+
     protected:
         Shader(UINT32 id);
         Shader(const SHADER_DESC& desc, const String& name, UINT32 id);

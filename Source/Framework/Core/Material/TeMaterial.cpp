@@ -1,4 +1,5 @@
 #include "TeMaterial.h"
+
 #include "TeShader.h"
 #include "TePass.h"
 #include "TeTechnique.h"
@@ -8,6 +9,7 @@
 #include "Resources/TeResourceHandle.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
+#include "ThirdParty/Slugify/slugify.hpp"
 
 namespace te
 {
@@ -568,6 +570,9 @@ namespace te
     void Material::Serialize(StreamWriter* serializer) const
     {
         Resource::Serialize(serializer);
+
+        serializer->WriteString(_shader ? _shader->GetUUID().ToString() : UUID::EMPTY.ToString());
+        serializer->WriteString(_shader ? slugify(_shader->GetName()) : "");
     }
 
     void Material::Deserialize(StreamReader* deserializer, Material* object)
@@ -578,5 +583,15 @@ namespace te
         }
 
         Resource::Deserialize(deserializer, object);
+
+        String shaderIdentifier, shaderName;
+        deserializer->ReadString(shaderIdentifier);
+        deserializer->ReadString(shaderName);
+
+        const UUID shaderUUID = UUID(shaderIdentifier);
+        if (shaderUUID != UUID::EMPTY)
+        {
+            // todo load shader
+        }
     }
 }

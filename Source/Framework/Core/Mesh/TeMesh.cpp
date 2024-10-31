@@ -485,6 +485,25 @@ namespace te
         }
     }
 
+    void Mesh::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+    }
+
+    void Mesh::Deserialize(StreamReader* deserializer, Mesh* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
+    }
+
+    ZPrepassMesh::ZPrepassMesh()
+        : Mesh()
+    { }
+
     ZPrepassMesh::ZPrepassMesh(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
         : Mesh(initialMeshData, desc, deviceMask)
     {
@@ -496,6 +515,14 @@ namespace te
         SPtr<ZPrepassMesh> mesh = te_core_ptr<ZPrepassMesh>(new (te_allocate<ZPrepassMesh>()) ZPrepassMesh(initialMeshData, desc, deviceMask));
         mesh->SetThisPtr(mesh);
         mesh->Initialize();
+
+        return mesh;
+    }
+
+    SPtr<ZPrepassMesh> ZPrepassMesh::CreateEmpty()
+    {
+        SPtr<ZPrepassMesh> mesh = te_core_ptr<ZPrepassMesh>(new (te_allocate<ZPrepassMesh>()) ZPrepassMesh());
+        mesh->SetThisPtr(mesh);
 
         return mesh;
     }

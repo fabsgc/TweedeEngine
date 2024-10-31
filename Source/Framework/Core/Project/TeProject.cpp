@@ -2,6 +2,7 @@
 
 #include "Resources/TeResourceManager.h"
 #include "ThirdParty/Slugify/slugify.hpp"
+#include "Json/json.h"
 
 namespace te
 {
@@ -42,7 +43,10 @@ namespace te
     {
         Resource::Serialize(serializer);
 
+        nlohmann::json sceneJsonDocument;
+
         serializer->WriteArray(_resourceNames);
+        serializer->WriteString(sceneJsonDocument.dump());
     }
 
     void Project::Deserialize(StreamReader* deserializer, Project* object)
@@ -54,6 +58,11 @@ namespace te
 
         Resource::Deserialize(deserializer, object);
 
+        String sceneJsonString;
+
         deserializer->ReadArray(object->_resourceNames);
+        deserializer->ReadString(sceneJsonString);
+
+        nlohmann::json sceneJsonDocument = nlohmann::json::parse(sceneJsonString);
     }
 }
