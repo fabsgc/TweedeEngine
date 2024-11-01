@@ -195,4 +195,13 @@ namespace te
         if (_internal != nullptr)
             std::static_pointer_cast<ConeTwistJoint>(_internal)->SetMaxMotorImpulse(motorImpulse);
     }
+
+    void CConeTwistJoint::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        CJoint::ExportComponent(coJsonDocument);
+
+        coJsonDocument["type"] = GetComponentType();
+
+        // TODO serialization
+    }
 }

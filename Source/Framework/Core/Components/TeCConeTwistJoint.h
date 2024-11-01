@@ -83,6 +83,9 @@ namespace te
         /** @copydoc ConeTwistJoint::GetMaxMotorImpulse */
         bool GetMaxMotorImpulse() const { return _motorImpulse; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

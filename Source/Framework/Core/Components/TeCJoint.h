@@ -77,7 +77,7 @@ namespace te
         Joint* GetInternal() const { return _internal.get(); }
 
     public:
-        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+        virtual void ExportComponent(nlohmann::json& coJsonDocument) const override;
 
     protected:
         friend class SceneObject;

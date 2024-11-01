@@ -23,6 +23,9 @@ namespace te
         /** @copydoc Component::Clone */
         bool Clone(const HComponent& c, const String& suffix = "") override;
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

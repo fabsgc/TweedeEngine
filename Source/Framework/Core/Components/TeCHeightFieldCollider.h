@@ -43,6 +43,9 @@ namespace te
         /** @copydoc HeightFieldCollider::GetMaxHeight */
         float GetMaxHeight() const { return _maxHeight; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

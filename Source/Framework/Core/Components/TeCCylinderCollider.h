@@ -29,6 +29,9 @@ namespace te
         /** @copydoc CylinderCollider::GetExtents */
         Vector3 GetExtents() const { return _extents; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

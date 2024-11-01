@@ -77,6 +77,9 @@ namespace te
         /** @copydoc HingeJoint::GetMotorVelocity */
         bool GetMotorVelocity() const { return _motorVelocity; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

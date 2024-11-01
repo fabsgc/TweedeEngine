@@ -33,6 +33,9 @@ namespace te
 
         PhysicsMeshType GetCollisionType() const { return _collisionType; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

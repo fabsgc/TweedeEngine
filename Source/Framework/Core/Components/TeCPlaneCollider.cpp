@@ -85,4 +85,13 @@ namespace te
                 _parent->AddCollider(static_object_cast<CCollider>(GetHandle()));
         }
     }
+
+    void CPlaneCollider::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        CCollider::ExportComponent(coJsonDocument);
+
+        coJsonDocument["type"] = GetComponentType();
+
+        // TODO serialization
+    }
 }

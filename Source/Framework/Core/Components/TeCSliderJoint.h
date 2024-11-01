@@ -191,6 +191,9 @@ namespace te
         /** @copydoc GetMaxAngMotorForce */
         float GetMaxAngMotorForce() const { return _maxAngMotorForce; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

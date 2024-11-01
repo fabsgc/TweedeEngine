@@ -184,4 +184,13 @@ namespace te
         if (_internal != nullptr)
             std::static_pointer_cast<HingeJoint>(_internal)->SetMotorVelocity(motorVelocity);
     }
+
+    void CHingeJoint::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        CJoint::ExportComponent(coJsonDocument);
+
+        coJsonDocument["type"] = GetComponentType();
+
+        // TODO serialization
+    }
 }

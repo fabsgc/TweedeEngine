@@ -35,6 +35,9 @@ namespace te
         /** @copydoc CapsuleCollider::GetHeight */
         float GetHeight() const { return _height;  }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

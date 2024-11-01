@@ -29,6 +29,9 @@ namespace te
         /** @copydoc PlaneCollider::GetNormal */
         const Vector3& GetNormal() const { return _normal; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

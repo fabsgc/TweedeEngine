@@ -429,4 +429,13 @@ namespace te
         if (_internal != nullptr)
             std::static_pointer_cast<SliderJoint>(_internal)->SetMaxAngMotorForce(maxAngMotorForce);
     }
+
+    void CSliderJoint::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        CJoint::ExportComponent(coJsonDocument);
+
+        coJsonDocument["type"] = GetComponentType();
+
+        // TODO serialization
+    }
 }

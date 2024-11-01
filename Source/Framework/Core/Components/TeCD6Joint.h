@@ -83,6 +83,9 @@ namespace te
         /** @copydoc D6Joint::GetAngularDamping */
         float GetAngularDamping() const { return _angularDamping; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

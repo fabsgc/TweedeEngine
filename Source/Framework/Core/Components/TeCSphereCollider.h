@@ -14,8 +14,6 @@ namespace te
     class TE_CORE_EXPORT CSphereCollider : public CCollider
     {
     public:
-        
-
         /** Return Component type */
         static UINT32 GetComponentType() { return TypeID_Core::TID_CSphereCollider; }
 
@@ -30,6 +28,9 @@ namespace te
 
         /** @copydoc SphereCollider::GetRadius */
         float GetRadius() const { return _radius; }
+
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
 
     protected:
         friend class SceneObject;
