@@ -3,10 +3,12 @@
 #include "ThirdParty/Slugify/slugify.hpp"
 #include "Exporter/TeProjectExportOptions.h"
 #include "Serialization/TeBinaryWriter.h"
+#include "Serialization/TeUtility.h"
 #include "Project/TeProject.h"
 #include "Utility/TeFileSystem.h"
 
 #include <filesystem>
+#
 
 namespace te
 { 
@@ -43,12 +45,7 @@ namespace te
 
         for (auto& resource : project->GetAllResources())
         {
-            const std::string name = slugify(resource->GetName());
-            std::filesystem::path resourcePath = workingDirectory;
-            resourcePath += std::filesystem::path::preferred_separator;
-            resourcePath += "resources";
-            resourcePath += std::filesystem::path::preferred_separator;
-            resourcePath += name + ".resource";
+            const std::filesystem::path resourcePath = serialization::GetProjectResourcePath(workingDirectory, resource);
 
             FileSystem::CreateDir(resourcePath.parent_path().generic_string());
 

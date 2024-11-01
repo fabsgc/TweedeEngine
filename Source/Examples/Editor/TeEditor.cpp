@@ -969,11 +969,11 @@ namespace te
 
         LoadEngineResources();
 
-        _sceneSO = SceneObject::Create("Scene");
-        _settings.State = EditorState::Saved;
-
         _project = static_resource_cast<Project>(multiResourceScene->Entries[0].Res);
         _project->SetPath(path);
+
+        _sceneSO = _project->GetSceneObject();
+        _settings.State = EditorState::Saved;
 
         // TODO : add resources to EditorResManager
 
@@ -991,6 +991,8 @@ namespace te
         }
 
         _project->ClearResources();
+        _project->SetSceneObject(_sceneSO);
+
         for (auto& resource : EditorResManager::Instance().GetAllResources())
         {
             _project->AddResource(resource);

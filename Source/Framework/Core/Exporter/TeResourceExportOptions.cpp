@@ -3,7 +3,6 @@
 namespace te
 {
     ResourceExportOptions::ResourceExportOptions()
-        : ExportOptions(TID_ResourceExportOptions)
     { }
 
     SPtr<ResourceExportOptions> ResourceExportOptions::Create()

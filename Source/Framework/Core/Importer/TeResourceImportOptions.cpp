@@ -3,7 +3,6 @@
 namespace te
 {
     ResourceImportOptions::ResourceImportOptions()
-        : ImportOptions(TID_ResourceImportOptions)
     { }
 
     SPtr<ResourceImportOptions> ResourceImportOptions::Create()

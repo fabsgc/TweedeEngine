@@ -3,6 +3,7 @@
 #include "Project/TeProject.h"
 #include "Importer/TeProjectImportOptions.h"
 #include "Serialization/TeBinaryReader.h"
+#include "Serialization/TeUtility.h"
 #include "Utility/TeDataStream.h"
 #include "Resources/TeResourceManager.h"
 
@@ -74,11 +75,12 @@ namespace te
 
         for (const auto& name : resourceNames)
         {
-            std::filesystem::path resourcePath = workingDirectory;
-            resourcePath += std::filesystem::path::preferred_separator;
-            resourcePath += "resources";
-            resourcePath += std::filesystem::path::preferred_separator;
-            resourcePath += name;
+            const std::filesystem::path resourcePath = serialization::GetProjectResourcePath(workingDirectory, name);
+            if (!std::filesystem::exists(resourcePath))
+            {
+                TE_DEBUG("Resource with path \"" + resourcePath.generic_string() + "\" does not exist.");
+                continue;
+            }
 
             BinaryReader* resourceDeserializer = te_new<BinaryReader>(resourcePath);
             Resource::Deserialize(resourceDeserializer, resourceMetaData);
@@ -133,9 +135,9 @@ namespace te
                     resource = DeserializeOneResource<Font>(resourcePath);
                     break;
 
-                default: {
-                        TE_DEBUG("Undefined resource type")
-                    } break;
+                default:
+                    TE_DEBUG("Undefined resource type");
+                    break;
                 }
 
                 if (resource)

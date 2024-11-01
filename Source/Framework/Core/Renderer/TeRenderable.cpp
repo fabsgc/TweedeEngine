@@ -6,6 +6,7 @@
 #include "Animation/TeAnimation.h"
 #include "Animation/TeAnimationManager.h"
 #include "RenderAPI/TeGpuBuffer.h"
+#include "Serialization/TeUtility.h"
 
 namespace te
 {
@@ -560,5 +561,18 @@ namespace te
         }
 
         _oldActive = _active;
+    }
+
+    void Renderable::ExportRenderable(nlohmann::json& coJsonDocument) const
+    {
+        coJsonDocument["mesh"] = _mesh ? serialization::GetResourceName(_mesh.get()) : nullptr;
+        coJsonDocument["zPrepassMesh"] = _ZPrepassMesh ? serialization::GetResourceName(_ZPrepassMesh.get()) : nullptr;
+
+        for (const auto& material : _materials)
+        {
+            coJsonDocument["materials"].push_back(serialization::GetResourceName(material.get()));
+        }
+
+        // TODO serialization
     }
 }

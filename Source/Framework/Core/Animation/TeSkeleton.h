@@ -10,6 +10,7 @@
 #include "CoreUtility/TeCoreObject.h"
 #include "Animation/TeSkeletonMask.h"
 #include "Animation/TeAnimationClip.h"
+#include "ThirdParty/Json/json.h"
 
 namespace te
 {
@@ -166,6 +167,9 @@ namespace te
          * @note	For serialization use only.
          */
         static SPtr<Skeleton> CreateEmpty();
+
+    public:
+        void ExportSkeleton(nlohmann::json& coJsonDocument) const;
 
     private:
         Skeleton();

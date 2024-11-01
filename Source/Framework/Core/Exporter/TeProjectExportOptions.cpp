@@ -3,7 +3,6 @@
 namespace te
 {
     ProjectExportOptions::ProjectExportOptions()
-        : ExportOptions(TID_ProjectExportOptions)
     { }
 
     SPtr<ProjectExportOptions> ProjectExportOptions::Create()

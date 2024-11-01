@@ -1347,4 +1347,28 @@ namespace te
             RemoveRunningScript(script);
         }
     }
+
+    void SceneObject::ExportScene(nlohmann::json& soJsonDocument) const
+    {
+        nlohmann::json componentsJsonDocument;
+        nlohmann::json childrenJsonDocument;
+
+        for (auto& component : _components)
+        {
+            componentsJsonDocument.push_back({});
+            component->ExportComponent(componentsJsonDocument.back());
+        }
+
+        for (auto& children : _children)
+        {
+            children->ExportScene(childrenJsonDocument);
+        }
+
+        soJsonDocument.push_back({
+            { "name", GetName() },
+            { "uuid", GetUUID().ToString() },
+            { "components", componentsJsonDocument },
+            { "children", childrenJsonDocument },
+        });
+    }
 }

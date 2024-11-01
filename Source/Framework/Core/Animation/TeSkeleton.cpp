@@ -358,4 +358,9 @@ namespace te
         newSkeleton->Initialize();
         return newSkeleton;
     }
+
+    void Skeleton::ExportSkeleton(nlohmann::json& coJsonDocument) const
+    {
+        // TODO Serialization
+    }
 }

@@ -174,6 +174,9 @@ namespace te
             _internal->_markCoreDirty(); 
         }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         /** Registers an Animation component that will be used for animating the renderable's mesh. */
         void RegisterAnimation(const HAnimation& animation);

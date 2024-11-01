@@ -164,4 +164,12 @@ namespace te
 
         return false;
     }
+
+    void CRenderable::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        coJsonDocument["type"] = GetComponentType();
+        coJsonDocument["renderable"] = nlohmann::json();
+
+        _internal->ExportRenderable(coJsonDocument["renderable"]);
+    }
 }

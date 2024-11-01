@@ -5,6 +5,7 @@
 #include "Scene/TeSceneActor.h"
 #include "Math/TeBounds.h"
 #include "Serialization/TeSerializable.h"
+#include "ThirdParty/Json/json.h"
 
 namespace te
 {
@@ -251,6 +252,9 @@ namespace te
 
         /**	Creates a new renderable instance without initializing it. */
         static SPtr<Renderable> CreateEmpty();
+
+    public:
+        void ExportRenderable(nlohmann::json& coJsonDocument) const;
 
     protected:
         friend class CRenderable;

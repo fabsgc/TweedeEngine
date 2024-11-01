@@ -12,8 +12,7 @@ namespace te
 
     void Resource::Serialize(StreamWriter* serializer) const
     {
-        Serializable::Serialize(serializer);
-
+        serializer->WriteRaw<UINT32>(_coreType);
         serializer->WriteString(_name);
         serializer->WriteString(_path);
         serializer->WriteRaw<UINT32>(_size);
@@ -25,10 +24,9 @@ namespace te
         if (!object)
             return;
 
-        Serializable::Deserialize(deserializer, object);
+        String uuid; 
 
-        String uuid;
-
+        deserializer->ReadRaw<UINT32>(object->_coreType);
         deserializer->ReadString(object->_name);
         deserializer->ReadString(object->_path);
         deserializer->ReadRaw<UINT32>(object->_size);

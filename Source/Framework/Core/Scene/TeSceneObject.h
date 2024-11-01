@@ -8,6 +8,7 @@
 #include "Scene/TeComponent.h"
 #include "Scene/TeTransform.h"
 #include "Serialization/TeSerializable.h"
+#include "ThirdParty/Json/json.h"
 
 #include <any>
 
@@ -601,6 +602,9 @@ namespace te
 
         /* Return all scripts used by this SceneObject instance */
         const Vector<HScript>& GetScripts() const { return _scripts; }
+
+    public:
+         void ExportScene(nlohmann::json& soJsonDocument) const;
 
     private:
         /**

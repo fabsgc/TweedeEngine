@@ -34,6 +34,12 @@ namespace te
         /** Add a resource to the project */
         void AddResource(Resource* resource);
 
+        /** Add the scene to save */
+        void SetSceneObject(HSceneObject& so) { _sceneObject = so; }
+
+        /** @copydoc SetScene */
+        const HSceneObject& GetSceneObject() const { return _sceneObject; }
+
         /** Remove all resources from the project */
         void ClearResources() { _resources.clear(); _resourceNames.clear(); }
 
@@ -48,5 +54,6 @@ namespace te
     private:
         Vector<Resource*> _resources;
         Vector<String> _resourceNames;
+        HSceneObject _sceneObject;
     };
 }

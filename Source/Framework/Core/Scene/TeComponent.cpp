@@ -146,4 +146,10 @@ namespace te
 
         return false;
     }
+
+    void Component::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        coJsonDocument["flags"] = _flags;
+        coJsonDocument["notifyFlags"] = _notifyFlags;
+    }
 }

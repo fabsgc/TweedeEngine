@@ -2,6 +2,8 @@
 
 #include "Resources/TeResourceManager.h"
 #include "ThirdParty/Slugify/slugify.hpp"
+#include "Serialization/TeUtility.h"
+#include "Scene/TeSceneObject.h"
 #include "Json/json.h"
 
 namespace te
@@ -36,17 +38,21 @@ namespace te
     void Project::AddResource(Resource* resource)
     { 
         _resources.push_back(resource);
-        _resourceNames.push_back(slugify(resource->GetName()) + ".resource");
+        _resourceNames.push_back(serialization::GetResourceName(resource));
     }
 
     void Project::Serialize(StreamWriter* serializer) const
     {
         Resource::Serialize(serializer);
 
-        nlohmann::json sceneJsonDocument;
+        nlohmann::json projectJsonDocument;
+        
+        projectJsonDocument["resources"] = _resourceNames;
+        projectJsonDocument["scene"] = nlohmann::json();
 
-        serializer->WriteArray(_resourceNames);
-        serializer->WriteString(sceneJsonDocument.dump());
+        _sceneObject->ExportScene(projectJsonDocument["scene"]);
+
+        serializer->WriteString(projectJsonDocument.dump());
     }
 
     void Project::Deserialize(StreamReader* deserializer, Project* object)
@@ -58,11 +64,17 @@ namespace te
 
         Resource::Deserialize(deserializer, object);
 
-        String sceneJsonString;
+        String projectJsonString;
+        deserializer->ReadString(projectJsonString);
 
-        deserializer->ReadArray(object->_resourceNames);
-        deserializer->ReadString(sceneJsonString);
+        nlohmann::json projectJsonDocument = nlohmann::json::parse(projectJsonString);
 
-        nlohmann::json sceneJsonDocument = nlohmann::json::parse(sceneJsonString);
+        for (auto& resource : projectJsonDocument["resources"])
+        {
+            object->_resourceNames.push_back(resource.get<String>());
+        }
+
+        object->_sceneObject = SceneObject::Create(projectJsonDocument["scene"][0]["name"].get<String>());
+        object->_sceneObject->SetUUID(UUID(projectJsonDocument["scene"][0]["uuid"].get<String>()));
     }
 }

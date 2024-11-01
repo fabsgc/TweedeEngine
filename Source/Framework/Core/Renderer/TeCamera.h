@@ -14,6 +14,7 @@
 #include "Math/TeRay.h"
 #include "Math/TeConvexVolume.h"
 #include "Serialization/TeSerializable.h"
+#include "ThirdParty/Json/json.h"
 
 namespace te
 {
@@ -480,6 +481,9 @@ namespace te
 
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
+
+    public:
+        void ExportCamera(nlohmann::json& coJsonDocument) const;
 
     protected:
         friend class CCamera;

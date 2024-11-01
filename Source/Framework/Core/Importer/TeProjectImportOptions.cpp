@@ -3,7 +3,6 @@
 namespace te
 {
     ProjectImportOptions::ProjectImportOptions()
-        : ImportOptions(TID_ProjectImportOptions)
     { }
 
     SPtr<ProjectImportOptions> ProjectImportOptions::Create()

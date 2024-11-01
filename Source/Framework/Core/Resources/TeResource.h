@@ -5,6 +5,8 @@
 #include "Utility/TeNonCopyable.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "Serialization/TeSerializable.h"
+#include "Serialization/TeStreamWriter.h"
+#include "Serialization/TeStreamReader.h"
 
 namespace te
 {
@@ -34,7 +36,7 @@ namespace te
 
     public:
         /** @copydoc Serializable::Serialize */
-        void Serialize(StreamWriter* serializer) const override;
+        virtual void Serialize(StreamWriter* serializer) const;
 
         /** @copydoc Serializable::Deserialize */
         static void Deserialize(StreamReader* deserializer, Resource* object);

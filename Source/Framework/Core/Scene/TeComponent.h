@@ -4,6 +4,7 @@
 #include "Scene/TeGameObject.h"
 #include "Utility/TeEvent.h"
 #include "Serialization/TeSerializable.h"
+#include "ThirdParty/Json/json.h"
 
 namespace te
 {
@@ -115,6 +116,9 @@ namespace te
 
         /** Called when the component is disabled */
         static Event<void(const HComponent&)> OnComponentDisabled;
+
+    public:
+        virtual void ExportComponent(nlohmann::json& coJsonDocument) const;
 
     protected:
         Component(HSceneObject parent, UINT32 type);
