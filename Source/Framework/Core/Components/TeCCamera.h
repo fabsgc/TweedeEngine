@@ -217,6 +217,9 @@ namespace te
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         /** Checks if the world transform of the camera changed, and if needed updates the view matrix. */
         void UpdateView() const;

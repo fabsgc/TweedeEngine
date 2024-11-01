@@ -76,6 +76,9 @@ namespace te
          /** Returns the Joint implementation wrapped by this component. */
         Joint* GetInternal() const { return _internal.get(); }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
         friend class CRigidBody;

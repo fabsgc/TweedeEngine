@@ -118,6 +118,9 @@ namespace te
         /** Returns the body implementation wrapped by this component. */
         virtual Body* GetInternal() const = 0;
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
         using Component::DestroyInternal;

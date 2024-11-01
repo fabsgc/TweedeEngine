@@ -29,6 +29,9 @@ namespace te
         /** Returns current yaw angle (for editor) */
         const Degree& GetYaw() const { return _yaw; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 

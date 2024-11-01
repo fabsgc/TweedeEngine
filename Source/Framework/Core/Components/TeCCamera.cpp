@@ -121,4 +121,13 @@ namespace te
 
         return false;
     }
+
+    void CCamera::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        Component::ExportComponent(coJsonDocument);
+
+        coJsonDocument["type"] = GetComponentType();
+
+        // TODO serialization
+    }
 }

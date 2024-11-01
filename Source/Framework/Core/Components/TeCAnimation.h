@@ -127,6 +127,9 @@ namespace te
         /** Returns the Animation implementation wrapped by this component. */
         SPtr<Animation> GetInternal() const { return _internal; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class CBone;
         friend class CRenderable;

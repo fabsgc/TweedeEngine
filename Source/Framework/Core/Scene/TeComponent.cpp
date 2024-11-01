@@ -151,5 +151,7 @@ namespace te
     {
         coJsonDocument["flags"] = _flags;
         coJsonDocument["notifyFlags"] = _notifyFlags;
+
+        // TODO serialization
     }
 }

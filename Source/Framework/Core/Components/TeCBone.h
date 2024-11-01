@@ -29,6 +29,9 @@ namespace te
         /** @copydoc SetBoneName */
         const String& GetBoneName() const { return _boneName; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class CAnimation;
 

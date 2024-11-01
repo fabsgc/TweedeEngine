@@ -4,6 +4,7 @@
 #include "Math/TeMatrix4.h"
 #include "Math/TeVector3.h"
 #include "Math/TeQuaternion.h"
+#include "ThirdParty/Json/json.h"
 
 namespace te
 {
@@ -153,6 +154,9 @@ namespace te
 
     public:
         static Transform IDENTITY;
+
+    public:
+        void ExportTransform(nlohmann::json& jsonDocument) const;
 
     private:
         Vector3 _position = Vector3::ZERO;

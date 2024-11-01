@@ -323,4 +323,13 @@ namespace te
 
         return false;
     }
+
+    void CCameraUI::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        Component::ExportComponent(coJsonDocument);
+
+        coJsonDocument["type"] = GetComponentType();
+
+        // TODO serialization
+    }
 }

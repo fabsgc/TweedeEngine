@@ -565,8 +565,8 @@ namespace te
 
     void Renderable::ExportRenderable(nlohmann::json& coJsonDocument) const
     {
-        coJsonDocument["mesh"] = _mesh ? serialization::GetResourceName(_mesh.get()) : nullptr;
-        coJsonDocument["zPrepassMesh"] = _ZPrepassMesh ? serialization::GetResourceName(_ZPrepassMesh.get()) : nullptr;
+        coJsonDocument["mesh"] = _mesh ? serialization::GetResourceName(_mesh.get()) : "";
+        coJsonDocument["zPrepassMesh"] = _ZPrepassMesh ? serialization::GetResourceName(_ZPrepassMesh.get()) : "";
 
         for (const auto& material : _materials)
         {

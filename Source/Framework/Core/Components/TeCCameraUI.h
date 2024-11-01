@@ -40,6 +40,9 @@ namespace te
         bool NeedsRedraw() const { return _needsRedraw; }
 
     public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
+    public:
         static const String ROTATE_BINDING;
         static const String MOVE_BINDING;
         static const String ZOOM_BINDING;

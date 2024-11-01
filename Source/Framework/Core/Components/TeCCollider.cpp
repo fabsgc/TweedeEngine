@@ -228,4 +228,11 @@ namespace te
         // Not found
         SetBody(HRigidBody());
     }
+
+    void CCollider::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        Component::ExportComponent(coJsonDocument);
+
+        coJsonDocument["type"] = GetComponentType();
+    }
 }

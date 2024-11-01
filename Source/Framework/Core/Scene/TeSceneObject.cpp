@@ -40,6 +40,10 @@
 #include "Scripting/TeScriptManager.h"
 #include "Scripting/TeScript.h"
 
+#include "Serialization/TeUtility.h"
+
+#include  <utility>
+
 namespace te
 {
     SceneObject::SceneObject(const String& name, UINT32 flags)
@@ -1351,6 +1355,7 @@ namespace te
     void SceneObject::ExportScene(nlohmann::json& soJsonDocument) const
     {
         nlohmann::json componentsJsonDocument;
+        nlohmann::json scriptsJsonDocument;
         nlohmann::json childrenJsonDocument;
 
         for (auto& component : _components)
@@ -1361,14 +1366,31 @@ namespace te
 
         for (auto& children : _children)
         {
-            children->ExportScene(childrenJsonDocument);
+            childrenJsonDocument.push_back({});
+            children->ExportScene(childrenJsonDocument.back());
         }
 
-        soJsonDocument.push_back({
-            { "name", GetName() },
-            { "uuid", GetUUID().ToString() },
-            { "components", componentsJsonDocument },
-            { "children", childrenJsonDocument },
-        });
+        for (auto& script : _scripts)
+        {
+            scriptsJsonDocument.push_back(serialization::GetResourceName(script.GetInternalPtr().get()));
+        }
+
+        soJsonDocument["name"] = GetName();
+        soJsonDocument["uuid"] = GetUUID().ToString();
+
+        soJsonDocument["flags"] = GetFlags();
+        soJsonDocument["mobility"] = static_cast<int>(GetMobility());
+        soJsonDocument["activeSelf"] = _activeSelf;
+        soJsonDocument["activeHierarchy"] = _activeHierarchy;
+
+        soJsonDocument["components"] = componentsJsonDocument;
+        soJsonDocument["scripts"] = scriptsJsonDocument;
+        soJsonDocument["children"] = childrenJsonDocument;
+
+        soJsonDocument["localTransform"] = nlohmann::json();
+        soJsonDocument["worldTransform"] = nlohmann::json();
+
+        _localTfrm.ExportTransform(soJsonDocument["localTransform"]);
+        _worldTfrm.ExportTransform(soJsonDocument["worldTransform"]);
     }
 }

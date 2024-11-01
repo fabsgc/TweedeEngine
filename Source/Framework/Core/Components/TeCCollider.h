@@ -54,6 +54,9 @@ namespace te
          /** Returns the Collider implementation wrapped by this component. */
         Collider* GetInternal() const { return _internal.get(); }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
         friend class CBody;

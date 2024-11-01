@@ -272,4 +272,13 @@ namespace te
         _internal->SetTransform(tfrm);
         _internal->SetVelocity(_velocity);
     }
+
+    void CAudioSource::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        Component::ExportComponent(coJsonDocument);
+
+        coJsonDocument["type"] = GetComponentType();
+
+        // TODO serialization
+    }
 }

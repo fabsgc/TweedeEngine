@@ -180,4 +180,11 @@ namespace te
     {
         return !(*this == rhs);
     }
+
+    void Transform::ExportTransform(nlohmann::json& jsonDocument) const
+    {
+        jsonDocument["position"] = { { "x", _position.x }, { "y", _position.y }, { "z", _position.z } };
+        jsonDocument["rotation"] = { { "x", _rotation.x }, { "y", _rotation.y }, { "z", _rotation.z }, { "w", _rotation.w } };
+        jsonDocument["scale"]    = { { "x", _scale.x }, { "y", _scale.y }, { "z", _scale.z } };
+    }
 }

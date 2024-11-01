@@ -97,6 +97,9 @@ namespace te
             _internal->_markCoreDirty();
         }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         mutable SPtr<Light> _internal;
 

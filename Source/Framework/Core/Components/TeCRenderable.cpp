@@ -167,9 +167,13 @@ namespace te
 
     void CRenderable::ExportComponent(nlohmann::json& coJsonDocument) const
     {
+        Component::ExportComponent(coJsonDocument);
+
         coJsonDocument["type"] = GetComponentType();
         coJsonDocument["renderable"] = nlohmann::json();
 
         _internal->ExportRenderable(coJsonDocument["renderable"]);
+
+        // TODO serialization
     }
 }

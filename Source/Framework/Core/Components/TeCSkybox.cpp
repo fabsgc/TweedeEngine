@@ -99,4 +99,13 @@ namespace te
 
         return false;
     }
+
+    void CSkybox::ExportComponent(nlohmann::json& coJsonDocument) const
+    {
+        Component::ExportComponent(coJsonDocument);
+
+        coJsonDocument["type"] = GetComponentType();
+
+        // TODO serialization
+    }
 }

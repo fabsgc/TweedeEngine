@@ -48,9 +48,9 @@ namespace te
         nlohmann::json projectJsonDocument;
         
         projectJsonDocument["resources"] = _resourceNames;
-        projectJsonDocument["scene"] = nlohmann::json();
+        projectJsonDocument["scene"].push_back(nlohmann::json());
 
-        _sceneObject->ExportScene(projectJsonDocument["scene"]);
+        _sceneObject->ExportScene(projectJsonDocument["scene"].back());
 
         serializer->WriteString(projectJsonDocument.dump());
     }

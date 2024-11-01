@@ -42,6 +42,9 @@ namespace te
         /** @copydoc SceneActor::GetActive */
         bool GetActive() const { return _internal != nullptr; }
 
+    public:
+        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+
     protected:
         friend class SceneObject;
 
