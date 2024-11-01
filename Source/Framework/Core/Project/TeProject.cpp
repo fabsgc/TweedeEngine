@@ -74,6 +74,8 @@ namespace te
             object->_resourceNames.push_back(resource.get<String>());
         }
 
+        // Should I load resources here ?
+
         if (projectJsonDocument["scene"][0])
         {
             object->_sceneObject = SceneObject::Create(projectJsonDocument["scene"][0]["name"].get<String>());
