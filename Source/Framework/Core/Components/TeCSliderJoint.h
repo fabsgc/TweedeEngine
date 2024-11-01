@@ -192,7 +192,8 @@ namespace te
         float GetMaxAngMotorForce() const { return _maxAngMotorForce; }
 
     public:
-        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
 
     protected:
         friend class SceneObject;

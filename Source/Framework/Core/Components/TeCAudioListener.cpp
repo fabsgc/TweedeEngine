@@ -124,9 +124,11 @@ namespace te
         _internal->SetVelocity(_velocity);
     }
 
-    void CAudioListener::ExportComponent(nlohmann::json& coJsonDocument) const
+    void CAudioListener::ExportJson(nlohmann::json& document) const
     {
-        coJsonDocument["type"] = GetComponentType();
+        Component::ExportJson(document);
+
+        document["type"] = GetComponentType();
 
         // TODO serialization
     }

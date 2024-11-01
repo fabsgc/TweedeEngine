@@ -313,6 +313,7 @@ set (TE_CORE_INC_SERIALIZATION
     "Core/Serialization/TeStreamReader.h"
     "Core/Serialization/TeBinaryWriter.h"
     "Core/Serialization/TeBinaryReader.h"
+    "Core/Serialization/TeJsonSerialization.h"
     "Core/Serialization/TeUtility.h"
 )
 set (TE_CORE_SRC_SERIALIZATION
@@ -320,7 +321,6 @@ set (TE_CORE_SRC_SERIALIZATION
     "Core/Serialization/TeStreamReader.cpp"
     "Core/Serialization/TeBinaryWriter.cpp"
     "Core/Serialization/TeBinaryReader.cpp"
-    "Core/Serialization/TeUtility.cpp"
 )
 
 set (TE_CORE_INC_COMPONENTS

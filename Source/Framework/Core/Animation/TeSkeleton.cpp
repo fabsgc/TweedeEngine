@@ -359,8 +359,15 @@ namespace te
         return newSkeleton;
     }
 
-    void Skeleton::ExportSkeleton(nlohmann::json& coJsonDocument) const
+    void Skeleton::ExportJson(nlohmann::json& document) const
     {
         // TODO Serialization
+    }
+
+    SPtr<Skeleton> Skeleton::ImportJson(nlohmann::json& document)
+    {
+        // TODO Serialization
+
+        return nullptr;
     }
 }

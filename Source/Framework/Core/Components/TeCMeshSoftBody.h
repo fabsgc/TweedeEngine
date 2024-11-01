@@ -29,6 +29,10 @@ namespace te
         /** @copydoc MeshSoftBody::GetMesh */
         const HPhysicsMesh& GetMesh() const { return _mesh; }
 
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
     protected:
         friend class SceneObject;
 

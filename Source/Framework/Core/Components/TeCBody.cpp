@@ -246,9 +246,9 @@ namespace te
         OnCollisionEnd(hit);
     }
 
-    void CBody::ExportComponent(nlohmann::json& coJsonDocument) const
+    void CBody::ExportJson(nlohmann::json& document) const
     {
-        Component::ExportComponent(coJsonDocument);
+        Component::ExportJson(document);
 
         // TODO serialization
     }

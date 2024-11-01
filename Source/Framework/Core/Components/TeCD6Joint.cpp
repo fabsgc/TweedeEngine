@@ -194,11 +194,11 @@ namespace te
             std::static_pointer_cast<D6Joint>(_internal)->SetAngularDamping(angularDamping);
     }
 
-    void CD6Joint::ExportComponent(nlohmann::json& coJsonDocument) const
+    void CD6Joint::ExportJson(nlohmann::json& document) const
     {
-        CJoint::ExportComponent(coJsonDocument);
+        CJoint::ExportJson(document);
 
-        coJsonDocument["type"] = GetComponentType();
+        document["type"] = GetComponentType();
 
         // TODO serialization
     }

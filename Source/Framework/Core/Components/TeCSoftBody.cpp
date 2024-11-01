@@ -167,4 +167,11 @@ namespace te
             output.Bodies[1] = static_object_cast<CBody>(other->GetHandle());
         }
     }
+
+    void CSoftBody::ExportJson(nlohmann::json& document) const
+    {
+        CBody::ExportJson(document);
+
+        // TODO serialization
+    }
 }

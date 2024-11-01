@@ -41,6 +41,10 @@ namespace te
         /** @copydoc EllipsoidSoftBody::GetResolution */
         UINT32 GetResolution() const { return _resolution; }
 
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
     protected:
         friend class SceneObject;
 

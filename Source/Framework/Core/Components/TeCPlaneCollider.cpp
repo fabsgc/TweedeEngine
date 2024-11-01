@@ -86,11 +86,11 @@ namespace te
         }
     }
 
-    void CPlaneCollider::ExportComponent(nlohmann::json& coJsonDocument) const
+    void CPlaneCollider::ExportJson(nlohmann::json& document) const
     {
-        CCollider::ExportComponent(coJsonDocument);
+        CCollider::ExportJson(document);
 
-        coJsonDocument["type"] = GetComponentType();
+        document["type"] = GetComponentType();
 
         // TODO serialization
     }

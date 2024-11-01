@@ -35,6 +35,10 @@ namespace te
         /** @copydoc PatchSoftBody::GetResolution */
         void GetResolution(UINT32& x, UINT32& y) const;
 
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
     protected:
         friend class SceneObject;
 

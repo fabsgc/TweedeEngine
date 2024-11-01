@@ -394,9 +394,9 @@ namespace te
         DestroyInternal();
     }
 
-    void CJoint::ExportComponent(nlohmann::json& coJsonDocument) const
+    void CJoint::ExportJson(nlohmann::json& document) const
     {
-        Component::ExportComponent(coJsonDocument);
+        Component::ExportJson(document);
 
         // TODO serialization
     }

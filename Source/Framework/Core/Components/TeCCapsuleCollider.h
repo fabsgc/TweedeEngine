@@ -36,7 +36,8 @@ namespace te
         float GetHeight() const { return _height;  }
 
     public:
-        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
 
     protected:
         friend class SceneObject;

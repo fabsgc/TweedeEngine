@@ -229,10 +229,10 @@ namespace te
         SetBody(HRigidBody());
     }
 
-    void CCollider::ExportComponent(nlohmann::json& coJsonDocument) const
+    void CCollider::ExportJson(nlohmann::json& document) const
     {
-        Component::ExportComponent(coJsonDocument);
+        Component::ExportJson(document);
 
-        coJsonDocument["type"] = GetComponentType();
+        document["type"] = GetComponentType();
     }
 }

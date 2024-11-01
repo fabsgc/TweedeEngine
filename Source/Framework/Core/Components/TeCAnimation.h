@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+
 #include "Animation/TeAnimation.h"
 #include "Scene/TeComponent.h"
 
@@ -128,7 +129,8 @@ namespace te
         SPtr<Animation> GetInternal() const { return _internal; }
 
     public:
-        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
 
     protected:
         friend class CBone;

@@ -107,11 +107,11 @@ namespace te
         return false;
     }
 
-    void CDecal::ExportComponent(nlohmann::json& coJsonDocument) const
+    void CDecal::ExportJson(nlohmann::json& document) const
     {
-        Component::ExportComponent(coJsonDocument);
+        Component::ExportJson(document);
 
-        coJsonDocument["type"] = GetComponentType();
+        document["type"] = GetComponentType();
 
         // TODO serialization
     }

@@ -4,14 +4,14 @@
 #include "Math/TeMatrix4.h"
 #include "Math/TeVector3.h"
 #include "Math/TeQuaternion.h"
-#include "ThirdParty/Json/json.h"
+#include "Serialization/TeJsonSerialization.h"
 
 namespace te
 {
     /**
      * Contains information about 3D object's position, rotation and scale, and provides methods to manipulate it.
      */
-    class TE_CORE_EXPORT Transform
+    class TE_CORE_EXPORT Transform : public serialization::JsonSerialization
     {
     public:
         Transform() = default;
@@ -156,7 +156,11 @@ namespace te
         static Transform IDENTITY;
 
     public:
-        void ExportTransform(nlohmann::json& jsonDocument) const;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
+        /** Creates a transform from a json document */
+        static Transform ImportJson(nlohmann::json& document);
 
     private:
         Vector3 _position = Vector3::ZERO;

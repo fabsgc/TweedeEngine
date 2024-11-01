@@ -175,7 +175,8 @@ namespace te
         }
 
     public:
-        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
 
     protected:
         /** Registers an Animation component that will be used for animating the renderable's mesh. */

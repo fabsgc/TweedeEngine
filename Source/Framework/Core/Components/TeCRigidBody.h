@@ -82,6 +82,10 @@ namespace te
         /** @copydoc Body::SetIsKinematic */
         virtual void SetIsKinematic(bool kinematic) override;
 
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
     protected:
         friend class SceneObject;
         friend class CCollider;

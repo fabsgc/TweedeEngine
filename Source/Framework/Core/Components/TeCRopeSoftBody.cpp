@@ -97,4 +97,11 @@ namespace te
 
         return body;
     }
+
+    void CRopeSoftBody::ExportJson(nlohmann::json& document) const
+    {
+        CBody::ExportJson(document);
+
+        // TODO serialization
+    }
 }

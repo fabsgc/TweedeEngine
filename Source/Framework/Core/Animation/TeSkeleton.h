@@ -7,10 +7,10 @@
 #include "Math/TeVector3.h"
 #include "Scene/TeTransform.h"
 #include "Serialization/TeSerializable.h"
+#include "Serialization/TeJsonSerialization.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "Animation/TeSkeletonMask.h"
 #include "Animation/TeAnimationClip.h"
-#include "ThirdParty/Json/json.h"
 
 namespace te
 {
@@ -100,7 +100,7 @@ namespace te
      * Contains information about bones required for skeletal animation. Allows caller to evaluate a set of animation
      * clips at a specific time and output the relevant skeleton pose.
      */
-    class TE_CORE_EXPORT Skeleton : public CoreObject, public Serializable
+    class TE_CORE_EXPORT Skeleton : public CoreObject, public Serializable, public serialization::JsonSerialization
     {
     public:
         virtual ~Skeleton();
@@ -169,7 +169,11 @@ namespace te
         static SPtr<Skeleton> CreateEmpty();
 
     public:
-        void ExportSkeleton(nlohmann::json& coJsonDocument) const;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
+        /** Creates a skeleton from a json document */
+        static SPtr<Skeleton> ImportJson(nlohmann::json& document);
 
     private:
         Skeleton();

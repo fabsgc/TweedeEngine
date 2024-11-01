@@ -55,11 +55,11 @@ namespace te
         CJoint::OnEnabled();
     }
 
-    void CSphericalJoint::ExportComponent(nlohmann::json& coJsonDocument) const
+    void CSphericalJoint::ExportJson(nlohmann::json& document) const
     {
-        CJoint::ExportComponent(coJsonDocument);
+        CJoint::ExportJson(document);
 
-        coJsonDocument["type"] = GetComponentType();
+        document["type"] = GetComponentType();
 
         // TODO serialization
     }

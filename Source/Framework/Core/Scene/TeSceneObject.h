@@ -8,6 +8,7 @@
 #include "Scene/TeComponent.h"
 #include "Scene/TeTransform.h"
 #include "Serialization/TeSerializable.h"
+#include "Serialization/TeJsonSerialization.h"
 #include "ThirdParty/Json/json.h"
 
 #include <any>
@@ -36,7 +37,7 @@ namespace te
      * Each scene object can have one or multiple Components attached to it, where the components inherit the scene
      * object's transform, and receive updates about transform and hierarchy changes.
      */
-    class TE_CORE_EXPORT SceneObject : public GameObject, public Serializable
+    class TE_CORE_EXPORT SceneObject : public GameObject, public Serializable, public serialization::JsonSerialization
     {
         /** Flags that signify which part of the SceneObject needs updating. */
         enum DirtyFlags
@@ -604,7 +605,11 @@ namespace te
         const Vector<HScript>& GetScripts() const { return _scripts; }
 
     public:
-         void ExportScene(nlohmann::json& soJsonDocument) const;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
+        /** Creates a scene object from a json document and all of its components */
+        HSceneObject ImportJson(HSceneObject& parent, nlohmann::json& document);
 
     private:
         /**

@@ -71,4 +71,11 @@ namespace te
 
         return body;
     }
+
+    void CMeshSoftBody::ExportJson(nlohmann::json& document) const
+    {
+        CBody::ExportJson(document);
+
+        // TODO serialization
+    }
 }

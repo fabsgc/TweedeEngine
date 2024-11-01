@@ -14,7 +14,7 @@
 #include "Math/TeRay.h"
 #include "Math/TeConvexVolume.h"
 #include "Serialization/TeSerializable.h"
-#include "ThirdParty/Json/json.h"
+#include "Serialization/TeJsonSerialization.h"
 
 namespace te
 {
@@ -41,7 +41,7 @@ namespace te
      * Camera determines how is world geometry projected onto a 2D surface. You may position and orient it in space, set
      * options like aspect ratio and field or view and it outputs view and projection matrices required for rendering.
      */
-    class TE_CORE_EXPORT Camera : public CoreObject, public SceneActor, public Serializable
+    class TE_CORE_EXPORT Camera : public CoreObject, public SceneActor, public Serializable, public serialization::JsonSerialization
     {
     public:
         virtual ~Camera();
@@ -483,7 +483,8 @@ namespace te
         void FrameSync() override;
 
     public:
-        void ExportCamera(nlohmann::json& coJsonDocument) const;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
 
     protected:
         friend class CCamera;

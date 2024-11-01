@@ -50,7 +50,7 @@ namespace te
         projectJsonDocument["resources"] = _resourceNames;
         projectJsonDocument["scene"].push_back(nlohmann::json());
 
-        _sceneObject->ExportScene(projectJsonDocument["scene"].back());
+        _sceneObject->ExportJson(projectJsonDocument["scene"].back());
 
         serializer->WriteString(projectJsonDocument.dump());
     }
@@ -74,7 +74,10 @@ namespace te
             object->_resourceNames.push_back(resource.get<String>());
         }
 
-        object->_sceneObject = SceneObject::Create(projectJsonDocument["scene"][0]["name"].get<String>());
-        object->_sceneObject->SetUUID(UUID(projectJsonDocument["scene"][0]["uuid"].get<String>()));
+        if (projectJsonDocument["scene"][0])
+        {
+            object->_sceneObject = SceneObject::Create(projectJsonDocument["scene"][0]["name"].get<String>());
+            object->_sceneObject->SetUUID(UUID(projectJsonDocument["scene"][0]["uuid"].get<String>()));
+        }
     }
 }

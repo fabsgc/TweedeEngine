@@ -99,11 +99,11 @@ namespace te
         }
     }
 
-    void CCapsuleCollider::ExportComponent(nlohmann::json& coJsonDocument) const
+    void CCapsuleCollider::ExportJson(nlohmann::json& document) const
     {
-        CCollider::ExportComponent(coJsonDocument);
+        CCollider::ExportJson(document);
 
-        coJsonDocument["type"] = GetComponentType();
+        document["type"] = GetComponentType();
 
         // TODO serialization
     }

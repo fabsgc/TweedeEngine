@@ -5,7 +5,7 @@
 #include "Scene/TeSceneActor.h"
 #include "Math/TeBounds.h"
 #include "Serialization/TeSerializable.h"
-#include "ThirdParty/Json/json.h"
+#include "Serialization/TeJsonSerialization.h"
 
 namespace te
 {
@@ -33,7 +33,7 @@ namespace te
     };
 
     /** Illuminates a portion of the scene covered by the Renderable. */
-    class TE_CORE_EXPORT Renderable : public CoreObject, public SceneActor, public Serializable
+    class TE_CORE_EXPORT Renderable : public CoreObject, public SceneActor, public Serializable, public serialization::JsonSerialization
     {
     public:
         virtual ~Renderable();
@@ -254,7 +254,11 @@ namespace te
         static SPtr<Renderable> CreateEmpty();
 
     public:
-        void ExportRenderable(nlohmann::json& coJsonDocument) const;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
+        /** Creates a renderable from a json document */
+        static SPtr<Renderable> ImportJson(nlohmann::json& document);
 
     protected:
         friend class CRenderable;

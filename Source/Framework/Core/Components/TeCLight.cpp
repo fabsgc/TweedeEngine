@@ -126,11 +126,11 @@ namespace te
         return false;
     }
 
-    void CLight::ExportComponent(nlohmann::json& coJsonDocument) const
+    void CLight::ExportJson(nlohmann::json& document) const
     {
-        Component::ExportComponent(coJsonDocument);
+        Component::ExportJson(document);
 
-        coJsonDocument["type"] = GetComponentType();
+        document["type"] = GetComponentType();
 
         // TODO serialization
     }

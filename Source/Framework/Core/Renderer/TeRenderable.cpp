@@ -563,16 +563,23 @@ namespace te
         _oldActive = _active;
     }
 
-    void Renderable::ExportRenderable(nlohmann::json& coJsonDocument) const
+    void Renderable::ExportJson(nlohmann::json& document) const
     {
-        coJsonDocument["mesh"] = _mesh ? serialization::GetResourceName(_mesh.get()) : "";
-        coJsonDocument["zPrepassMesh"] = _ZPrepassMesh ? serialization::GetResourceName(_ZPrepassMesh.get()) : "";
+        document["mesh"] = _mesh ? serialization::GetResourceName(_mesh.get()) : "";
+        document["zPrepassMesh"] = _ZPrepassMesh ? serialization::GetResourceName(_ZPrepassMesh.get()) : "";
 
         for (const auto& material : _materials)
         {
-            coJsonDocument["materials"].push_back(serialization::GetResourceName(material.get()));
+            document["materials"].push_back(serialization::GetResourceName(material.get()));
         }
 
         // TODO serialization
+    }
+
+    SPtr<Renderable> Renderable::ImportJson(nlohmann::json& document)
+    {
+        // TODO serialization
+
+        return nullptr; 
     }
 }

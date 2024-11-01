@@ -31,6 +31,10 @@ namespace te
         /** Returns the SoftBody implementation wrapped by this component. */
         Body* GetInternal() const override { return (SoftBody*)_internal.get(); }
 
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
     protected:
         friend class SceneObject;
 

@@ -60,7 +60,8 @@ namespace te
         virtual void MarkDirty() { _internal->_markCoreDirty(); }
 
     public:
-        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
 
     protected:
         mutable SPtr<Skybox> _internal;

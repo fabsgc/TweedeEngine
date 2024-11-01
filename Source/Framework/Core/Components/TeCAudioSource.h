@@ -115,7 +115,8 @@ namespace te
         bool GetActive() const { return _internal != nullptr; }
 
     public:
-        void ExportComponent(nlohmann::json& coJsonDocument) const override;
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
 
     protected:
         friend class SceneObject;

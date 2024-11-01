@@ -1352,7 +1352,7 @@ namespace te
         }
     }
 
-    void SceneObject::ExportScene(nlohmann::json& soJsonDocument) const
+    void SceneObject::ExportJson(nlohmann::json& document) const
     {
         nlohmann::json componentsJsonDocument;
         nlohmann::json scriptsJsonDocument;
@@ -1361,13 +1361,13 @@ namespace te
         for (auto& component : _components)
         {
             componentsJsonDocument.push_back({});
-            component->ExportComponent(componentsJsonDocument.back());
+            component->ExportJson(componentsJsonDocument.back());
         }
 
         for (auto& children : _children)
         {
             childrenJsonDocument.push_back({});
-            children->ExportScene(childrenJsonDocument.back());
+            children->ExportJson(childrenJsonDocument.back());
         }
 
         for (auto& script : _scripts)
@@ -1375,22 +1375,29 @@ namespace te
             scriptsJsonDocument.push_back(serialization::GetResourceName(script.GetInternalPtr().get()));
         }
 
-        soJsonDocument["name"] = GetName();
-        soJsonDocument["uuid"] = GetUUID().ToString();
+        document["name"] = GetName();
+        document["uuid"] = GetUUID().ToString();
 
-        soJsonDocument["flags"] = GetFlags();
-        soJsonDocument["mobility"] = static_cast<int>(GetMobility());
-        soJsonDocument["activeSelf"] = _activeSelf;
-        soJsonDocument["activeHierarchy"] = _activeHierarchy;
+        document["flags"] = GetFlags();
+        document["mobility"] = static_cast<int>(GetMobility());
+        document["activeSelf"] = _activeSelf;
+        document["activeHierarchy"] = _activeHierarchy;
 
-        soJsonDocument["components"] = componentsJsonDocument;
-        soJsonDocument["scripts"] = scriptsJsonDocument;
-        soJsonDocument["children"] = childrenJsonDocument;
+        document["components"] = componentsJsonDocument;
+        document["scripts"] = scriptsJsonDocument;
+        document["children"] = childrenJsonDocument;
 
-        soJsonDocument["localTransform"] = nlohmann::json();
-        soJsonDocument["worldTransform"] = nlohmann::json();
+        document["localTransform"] = nlohmann::json();
+        document["worldTransform"] = nlohmann::json();
 
-        _localTfrm.ExportTransform(soJsonDocument["localTransform"]);
-        _worldTfrm.ExportTransform(soJsonDocument["worldTransform"]);
+        _localTfrm.ExportJson(document["localTransform"]);
+        _worldTfrm.ExportJson(document["worldTransform"]);
+    }
+
+    HSceneObject SceneObject::ImportJson(HSceneObject& parent, nlohmann::json& document)
+    {
+        // TODO serialization
+
+        return HSceneObject();
     }
 }

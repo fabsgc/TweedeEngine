@@ -727,7 +727,7 @@ namespace te
         if (_renderer) _renderer->NotifyCameraUpdated(this, (UINT32)dirtyFlag);
     }
 
-    void Camera::ExportCamera(nlohmann::json& coJsonDocument) const
+    void Camera::ExportJson(nlohmann::json& document) const
     {
         // TODO serialization
     }

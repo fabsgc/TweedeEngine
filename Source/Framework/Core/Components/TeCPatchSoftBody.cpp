@@ -114,4 +114,11 @@ namespace te
 
         return body;
     }
+
+    void CPatchSoftBody::ExportJson(nlohmann::json& document) const
+    {
+        CBody::ExportJson(document);
+
+        // TODO serialization
+    }
 }

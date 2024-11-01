@@ -147,10 +147,10 @@ namespace te
         return false;
     }
 
-    void Component::ExportComponent(nlohmann::json& coJsonDocument) const
+    void Component::ExportJson(nlohmann::json& document) const
     {
-        coJsonDocument["flags"] = _flags;
-        coJsonDocument["notifyFlags"] = _notifyFlags;
+        document["flags"] = _flags;
+        document["notifyFlags"] = _notifyFlags;
 
         // TODO serialization
     }
