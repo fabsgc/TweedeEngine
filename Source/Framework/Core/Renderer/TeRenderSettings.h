@@ -447,6 +447,9 @@ namespace te
     {
         RenderSettings() = default;
 
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
         /**
          * Parameters used for customizing automatic scene exposure.
          *
@@ -575,5 +578,7 @@ namespace te
          * to avoid overdraw
          */
         bool UseZPrepass = true;
+
+
     };
 }

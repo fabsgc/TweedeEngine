@@ -142,7 +142,9 @@ namespace te
         document["priority"] = GetPriority();
         document["layers"] = GetLayers();
         document["MSAACount"] = GetMSAACount();
-        // render settings
+        document["main"] = IsMain();
+        
+        GetRenderSettings()->ExportJson(document["renderSettings"]);
 
         // TODO serialization
     }
