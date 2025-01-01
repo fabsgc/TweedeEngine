@@ -243,15 +243,6 @@ namespace te
          */
         T& operator*() const { return *Get(); }
 
-        /** Converts a handle into a weak handle. */
-        GameObjectHandle<T> GetNewHandleFromExisting() const
-        {
-            GameObjectHandle<T> handle;
-            handle.SetHandleData(this->GetInternalPtr());
-
-            return handle;
-        }
-
     protected:
         template<class _Ty1, class _Ty2>
         friend GameObjectHandle<_Ty1> static_object_cast(const GameObjectHandle<_Ty2>& other);
