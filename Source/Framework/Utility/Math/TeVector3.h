@@ -3,15 +3,16 @@
 #include <cmath>
 
 #include "Prerequisites/TePrerequisitesUtility.h"
+#include "Serialization/TeJsonSerialization.h"
 #include "Math/TeRadian.h"
 
 namespace te
 {
      /** A three dimensional vector. */
-    class TE_UTILITY_EXPORT Vector3
+    class TE_UTILITY_EXPORT Vector3 : public serialization::JsonSerialization
     {
     public:
-        float x, y, z;
+        float x = 0.0f , y = 0.0f, z = 0.0f;
 
     public:
         Vector3() = default;
@@ -406,6 +407,13 @@ namespace te
         static const Vector3 UNIT_X;
         static const Vector3 UNIT_Y;
         static const Vector3 UNIT_Z;
+
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
+        /** Creates a Vector3 from a json document */
+        static Vector3 ImportJson(nlohmann::json& document);
     };
 }
 

@@ -3,11 +3,12 @@
 #include "Prerequisites/TePrerequisitesUtility.h"
 #include "Math/TeMath.h"
 #include "Math/TeVector3.h"
+#include "Serialization/TeJsonSerialization.h"
 
 namespace te
 {
      /** Represents a quaternion used for 3D rotations. */
-    class TE_UTILITY_EXPORT Quaternion
+    class TE_UTILITY_EXPORT Quaternion : public serialization::JsonSerialization
     {
     private:
         struct EulerAngleOrderData
@@ -385,6 +386,13 @@ namespace te
         static const Quaternion IDENTITY;
 
         float x, y, z, w; // Note: Order is relevant, don't break it
+
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const override;
+
+        /** Creates a Quaternion from a json document */
+        static Quaternion ImportJson(nlohmann::json& document);
     };
 }
 

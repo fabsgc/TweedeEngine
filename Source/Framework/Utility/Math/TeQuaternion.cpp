@@ -407,4 +407,19 @@ namespace te
 
         return q;
     }
+
+    void Quaternion::ExportJson(nlohmann::json& document) const
+    {
+        document = { { "x", x }, { "y", y }, { "z", z }, { "w", w } };
+    }
+
+    Quaternion Quaternion::ImportJson(nlohmann::json& document)
+    {
+        return Quaternion(
+            document["x"].get<float>(),
+            document["y"].get<float>(),
+            document["z"].get<float>(),
+            document["w"].get<float>()
+        );
+    }
 }

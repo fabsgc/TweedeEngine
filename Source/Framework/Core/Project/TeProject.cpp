@@ -76,7 +76,7 @@ namespace te
 
         // Should I load resources here ?
 
-        if (projectJsonDocument["scene"][0])
+        if (projectJsonDocument.contains("scene") && projectJsonDocument["scene"].size() > 0)
         {
             object->_sceneObject = SceneObject::Create(projectJsonDocument["scene"][0]["name"].get<String>());
             object->_sceneObject->SetUUID(UUID(projectJsonDocument["scene"][0]["uuid"].get<String>()));

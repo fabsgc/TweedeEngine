@@ -183,33 +183,18 @@ namespace te
 
     void Transform::ExportJson(nlohmann::json& document) const
     {
-        document["position"] = { { "x", _position.x }, { "y", _position.y }, { "z", _position.z } };
-        document["rotation"] = { { "x", _rotation.x }, { "y", _rotation.y }, { "z", _rotation.z }, { "w", _rotation.w } };
-        document["scale"]    = { { "x", _scale.x }, { "y", _scale.y }, { "z", _scale.z } };
+        _position.ExportJson(document["position"]);
+        _rotation.ExportJson(document["rotation"]);
+        _scale.ExportJson(document["scale"]);
     }
 
     Transform Transform::ImportJson(nlohmann::json& document)
     {
         Transform transform;
 
-        transform.SetPosition(Vector3(
-            document["position"]["x"].get<float>(),
-            document["position"]["y"].get<float>(),
-            document["position"]["z"].get<float>()
-        ));
-
-        transform.SetRotation(Quaternion(
-            document["rotation"]["x"].get<float>(),
-            document["rotation"]["y"].get<float>(),
-            document["rotation"]["z"].get<float>(),
-            document["rotation"]["w"].get<float>()
-        ));
-
-        transform.SetScale(Vector3(
-            document["position"]["x"].get<float>(),
-            document["position"]["y"].get<float>(),
-            document["position"]["z"].get<float>()
-        ));
+        transform.SetPosition(Vector3::ImportJson(document["position"]));
+        transform.SetRotation(Quaternion::ImportJson(document["rotation"]));
+        transform.SetScale(Vector3::ImportJson(document["scale"]));
 
         return transform;
     }
