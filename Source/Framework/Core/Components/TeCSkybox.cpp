@@ -105,6 +105,9 @@ namespace te
         Component::ExportJson(document);
 
         document["type"] = GetComponentType();
+        document["texture"] = GetTexture()->GetUUID().ToString();
+        document["brightness"] = GetBrightness();
+        document["IBLIntensity"] = GetIBLIntensity();
 
         // TODO serialization
     }

@@ -127,6 +127,22 @@ namespace te
         Component::ExportJson(document);
 
         document["type"] = GetComponentType();
+        document["nearClipDistance"] = GetNearClipDistance();
+        document["farClipDistance"] = GetFarClipDistance();
+        document["aspectRatio"] = GetAspectRatio();
+        document["focalLength"] = GetFocalLength();
+        document["focalLength"] = GetFocalLength();
+        document["aperture"] = GetAperture();
+        document["shutterSpeed"] = GetShutterSpeed();
+        document["sensitivity"] = GetSensitivity();
+        document["sensitivity"] = GetSensitivity();
+        document["projectionType"] = GetProjectionType();
+        document["orthoWindowHeight"] = GetOrthoWindowHeight();
+        document["orthoWindowWidth"] = GetOrthoWindowWidth();
+        document["priority"] = GetPriority();
+        document["layers"] = GetLayers();
+        document["MSAACount"] = GetMSAACount();
+        // render settings
 
         // TODO serialization
     }
