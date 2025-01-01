@@ -1035,8 +1035,6 @@ namespace te
     HComponent SceneObject::_getComponentInternal(const HSceneObject& currentSO, std::any criteria, 
         ComponentSearchType searchType, bool searchInChildren) const
     {
-        HComponent component;
-
         for (auto& entry : currentSO->GetComponents())
         {
             if (searchType == ComponentSearchType::CoreType)
@@ -1062,11 +1060,13 @@ namespace te
             }
         }
 
-        if (component.Empty() && searchInChildren)
+        if (searchInChildren)
         {
             for (auto& childSO : currentSO->GetChildren())
             {
-                return _getComponentInternal(childSO, criteria, searchType, searchInChildren);
+                HComponent component = _getComponentInternal(childSO, criteria, searchType, searchInChildren);
+                if (!component.Empty())
+                    return component;
             }
         }
 
@@ -1151,8 +1151,6 @@ namespace te
     HSceneObject SceneObject::_getSceneObjectInternal(const HSceneObject& currentSO, std::any criteria, 
         ComponentSearchType searchType, bool searchInChildren) const
     {
-        HSceneObject sceneObject;
-
         for (auto& entry : currentSO->GetChildren())
         {
             if (searchType == ComponentSearchType::Name)
@@ -1171,11 +1169,13 @@ namespace te
             }
         }
 
-        if (sceneObject.Empty() && searchInChildren)
+        if (searchInChildren)
         {
             for (auto& childSO : currentSO->GetChildren())
             {
-                return _getSceneObjectInternal(childSO, criteria, searchType, searchInChildren);
+                HSceneObject sceneObject = _getSceneObjectInternal(childSO, criteria, searchType, searchInChildren);
+                if (!sceneObject.Empty())
+                    return sceneObject;
             }
         }
 
