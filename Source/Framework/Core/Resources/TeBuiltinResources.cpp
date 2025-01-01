@@ -37,166 +37,134 @@ namespace te
 
     HShader BuiltinResources::GetBuiltinShader(BuiltinShader type)
     {
-        HShader shader;
-
         switch(type)
         {
         case BuiltinShader::Opaque:
             if(!_shaderOpaque.IsLoaded())
                 InitShaderOpaque();
-            shader = _shaderOpaque;
-            break;
+            return _shaderOpaque;
         case BuiltinShader::Transparent:
             if(!_shaderTransparent.IsLoaded())
                 InitShaderTransparent();
-            shader = _shaderTransparent;
-            break;
+            return _shaderTransparent;
         case BuiltinShader::TransparentCullNone:
             if(!_shaderTransparentCullNone.IsLoaded())
                 InitShaderTransparent(false);
-            shader = _shaderTransparentCullNone;
-            break;
+            return _shaderTransparentCullNone;
         case BuiltinShader::ZPrepass:
             if (!_shaderZPrepass.IsLoaded())
                 InitShaderZPrepass();
-            shader = _shaderZPrepass;
-            break;
+            return _shaderZPrepass;
         case BuiltinShader::Blit:
             if(!_shaderBlit.IsLoaded())
                 InitShaderBlit();
-            shader = _shaderBlit;
-            break;
+            return _shaderBlit;
         case BuiltinShader::Skybox:
             if(!_shaderSkybox.IsLoaded())
                 InitShaderSkybox();
-            shader = _shaderSkybox;
-            break;
+            return _shaderSkybox;
         case BuiltinShader::FXAA:
             if(!_shaderFXAA.IsLoaded())
                 InitShaderFXAA();
-            shader = _shaderFXAA;
-            break;
+            return _shaderFXAA;
         case BuiltinShader::ToneMapping:
             if(!_shaderToneMapping.IsLoaded())
                 InitShaderToneMapping();
-            shader = _shaderToneMapping;
-            break;
+            return _shaderToneMapping;
         case BuiltinShader::Bloom:
             if(!_shaderBloom.IsLoaded())
                 InitShaderBloom();
-            shader = _shaderBloom;
-            break;
+            return _shaderBloom;
         case BuiltinShader::MotionBlur:
             if(!_shaderMotionBlur.IsLoaded())
                 InitShaderMotionBlur();
-            shader = _shaderMotionBlur;
-            break;
+            return _shaderMotionBlur;
         case BuiltinShader::GaussianBlur:
             if(!_shaderGaussianBlur.IsLoaded())
                 InitShaderGaussianBlur();
-            shader = _shaderGaussianBlur;
-            break;
+            return _shaderGaussianBlur;
         case BuiltinShader::Picking:
             if(!_shaderPicking.IsLoaded())
                 InitShaderPicking();
-            shader = _shaderPicking;
-            break;
+            return _shaderPicking;
         case BuiltinShader::HudPicking:
             if(!_shaderHudPicking.IsLoaded())
                 InitShaderHudPicking();
-            shader = _shaderHudPicking;
-            break;
+            return _shaderHudPicking;
         case BuiltinShader::Selection:
             if(!_shaderSelection.IsLoaded())
                 InitShaderSelection();
-            shader = _shaderSelection;
-            break;
+            return _shaderSelection;
         case BuiltinShader::BlitSelection:
             if (!_shaderBlitSelection.IsLoaded())
                 InitShaderBlitSelection();
-            shader = _shaderBlitSelection;
-            break;
+            return _shaderBlitSelection;
         case BuiltinShader::HudSelection:
             if(!_shaderHudSelection.IsLoaded())
                 InitShaderHudSelection();
-            shader = _shaderHudSelection;
-            break;
+            return _shaderHudSelection;
         case BuiltinShader::BulletDebug:
             if (!_shaderBulletDebug.IsLoaded())
                 InitShaderBulletDebug();
-            shader = _shaderBulletDebug;
-            break;
+            return _shaderBulletDebug;
         case BuiltinShader::SSAO:
             if (!_shaderSSAO.IsLoaded())
                 InitShaderSSAO();
-            shader = _shaderSSAO;
-            break;
+            return _shaderSSAO;
         case BuiltinShader::SSAOBlur:
             if (!_shaderSSAOBlur.IsLoaded())
                 InitShaderSSAOBlur();
-            shader = _shaderSSAOBlur;
-            break;
+            return _shaderSSAOBlur;
         case BuiltinShader::SSAODownSample:
             if (!_shaderSSAODownSample.IsLoaded())
                 InitShaderSSAODownSample();
-            shader = _shaderSSAODownSample;
-            break;
+            return _shaderSSAODownSample;
         case BuiltinShader::Decal:
             if (!_shaderDecal.IsLoaded())
                 InitShaderDecal();
-            shader = _shaderDecal;
-            break;
+            return _shaderDecal;
         case BuiltinShader::TextureDownsample:
             if (!_shaderTextureDownsample.IsLoaded())
                 InitShaderTextureDownsample();
-            shader = _shaderTextureDownsample;
-            break;
+            return _shaderTextureDownsample;
         case BuiltinShader::TextureCubeDownsample:
             if (!_shaderTextureCubeDownsample.IsLoaded())
                 InitShaderTextureCubeDownsample();
-            shader = _shaderTextureCubeDownsample;
-            break;
+            return _shaderTextureCubeDownsample;
         case BuiltinShader::ReflectionCubeImportanceSample:
             if (!_shaderReflectionCubeImportanceSample.IsLoaded())
                 InitShaderReflectionCubeImportanceSample();
-            shader = _shaderReflectionCubeImportanceSample;
-            break;
+            return _shaderReflectionCubeImportanceSample;
         case BuiltinShader::IrradianceComputeSH:
             if (!_shaderIrradianceComputeSH.IsLoaded())
                 InitIrradianceComputeSH();
-            shader = _shaderIrradianceComputeSH;
-            break;
+            return _shaderIrradianceComputeSH;
         case BuiltinShader::IrradianceReduceSH:
             if (!_shaderIrradianceReduceSH.IsLoaded())
                 InitIrradianceReduceSH();
-            shader = _shaderIrradianceReduceSH;
-            break;
+            return _shaderIrradianceReduceSH;
         case BuiltinShader::IrradianceProjectSH:
             if (!_shaderIrradianceProjectSH.IsLoaded())
                 InitIrradianceProjectSH();
-            shader = _shaderIrradianceProjectSH;
-            break;
+            return _shaderIrradianceProjectSH;
         case BuiltinShader::ShadowDepthNormal:
             if (!_shaderShadowDepthNormal.IsLoaded())
                 InitShaderShadowDepthNormal();
-            shader = _shaderShadowDepthNormal;
-            break;
+            return _shaderShadowDepthNormal;
         case BuiltinShader::ShadowDepthCube:
             if (!_shaderShadowDepthCube.IsLoaded())
                 InitShaderShadowDepthCube();
-            shader = _shaderShadowDepthCube;
-            break;
+            return _shaderShadowDepthCube;
         case BuiltinShader::ShadowDepthDirectional:
             if (!_shaderShadowDepthDirectional.IsLoaded())
                 InitShaderShadowDepthDirectional();
-            shader = _shaderShadowDepthDirectional;
-            break;
+            return _shaderShadowDepthDirectional;
         default:
             TE_ASSERT_ERROR(false, "Can't find \"" + ToString((UINT32)type) + "\" shader.")
             break;
         }
 
-        return shader.GetNewHandleFromExisting();
+        return HShader();
     }
 
     HMaterial BuiltinResources::GetDefaultMaterial()

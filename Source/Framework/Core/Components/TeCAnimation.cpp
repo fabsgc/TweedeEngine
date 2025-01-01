@@ -537,8 +537,8 @@ namespace te
 
         if (Component::Clone(c.GetInternalPtr(), suffix))
         {
-            _defaultClip = c->_defaultClip.GetNewHandleFromExisting();
-            _primaryPlayingClip = c->_primaryPlayingClip.GetNewHandleFromExisting();
+            _defaultClip = c->_defaultClip;
+            _primaryPlayingClip = c->_primaryPlayingClip;
             _wrapMode = c->_wrapMode;
             _speed = c->_speed;
             _enableCull = c->_enableCull;

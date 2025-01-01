@@ -132,7 +132,7 @@ namespace te
             if (iterFind == _loadedResources.end())
             {
                 LoadedResourceData& resData = _loadedResources[uuid];
-                resData.resource = handle.GetNewHandleFromExisting();
+                resData.resource = handle;
             }
         }
 
@@ -164,7 +164,7 @@ namespace te
 
         for (auto& item : _loadedResources)
         {
-            resource = item.second.resource.GetNewHandleFromExisting();
+            resource = item.second.resource;
             resources.push_back(resource);
         }
 
@@ -180,7 +180,7 @@ namespace te
         {
             if (item.second.resource->GetCoreType() == type)
             {
-                resource = item.second.resource.GetNewHandleFromExisting();
+                resource = item.second.resource;
                 resources.push_back(resource);
             }
             

@@ -44,7 +44,7 @@ namespace te
             {
                 auto it = Res.find(uuid);
                 if (it != Res.end())
-                    return it->second.GetNewHandleFromExisting();
+                    return it->second;
 
                 return HResource();
             }
@@ -84,22 +84,22 @@ namespace te
         template <class T>
         void Add(ResourceHandle<T>& handle)
         {
-            HResource resource = handle.GetNewHandleFromExisting();
-            _resources[T::GetResourceType()].Add(resource);
+            HResource r = static_resource_cast<Resource>(handle);
+            _resources[T::GetResourceType()].Add(r);
 
-            if (resource.IsLoaded())
-                _resourcesIndex.push_back(resource.GetInternalPtr().get());
+            if (handle.IsLoaded())
+                _resourcesIndex.push_back(handle.GetInternalPtr().get());
         }
 
         template <class T>
         void Remove(ResourceHandle<T>& handle)
         {
-            HResource resource = handle.GetNewHandleFromExisting();
-            _resources[T::GetResourceType()].Remove(resource);
+            HResource r = static_resource_cast<Resource>(handle);
+            _resources[T::GetResourceType()].Remove(r);
 
-            if (resource.IsLoaded())
+            if (handle.IsLoaded())
             {
-                auto it = std::find(_resourcesIndex.begin(), _resourcesIndex.end(), resource.GetInternalPtr().get());
+                auto it = std::find(_resourcesIndex.begin(), _resourcesIndex.end(), handle.GetInternalPtr().get());
                 if (it != _resourcesIndex.end())
                     _resourcesIndex.erase(it);
             }

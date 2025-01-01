@@ -80,7 +80,7 @@ namespace te
         {
             if (component == _currentCamera)
             {
-                _currentCamera = _cameraList.Options[0].Key.GetNewHandleFromExisting();
+                _currentCamera = _cameraList.Options[0].Key;
                 gEditor().SetPreviewViewportCamera(_currentCamera);
                 gEditor().NeedsRedraw();
             }

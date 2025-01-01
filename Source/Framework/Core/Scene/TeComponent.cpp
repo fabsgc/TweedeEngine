@@ -81,7 +81,7 @@ namespace te
 
     void Component::SetSceneObject(HSceneObject& sceneObject)
     {
-        _parent = sceneObject.GetNewHandleFromExisting();
+        _parent = sceneObject;
     }
 
     bool Component::TypeEquals(const Component& other)

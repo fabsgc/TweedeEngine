@@ -52,7 +52,7 @@ namespace te
         virtual void SetParentSceneObject(const HSceneObject& sceneObject) final
         { 
             if (!sceneObject.Empty())
-                _parentSO = sceneObject.GetNewHandleFromExisting();
+                _parentSO = sceneObject;
             else
                 _parentSO = HSceneObject();
         }

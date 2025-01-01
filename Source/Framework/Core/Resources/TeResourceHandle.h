@@ -127,26 +127,6 @@ namespace te
             return std::static_pointer_cast<T>(this->_handleData->data);
         }
 
-        /** Converts a handle into a weak handle. */
-        TResourceHandle<T> GetNewHandleFromExisting() const
-        {
-            TResourceHandle<T> handle;
-            handle.SetHandleData(this->GetHandleData());
-
-            return handle;
-        }
-
-        /** Create a handle from a valid resource pointer */
-        static TResourceHandle<T> GetNewHandleFromExisting(T* ptr)
-        {
-            if (ptr)
-            {
-                return TResourceHandle<T>(ptr, ptr->GetUUID());
-            }
-
-            return TResourceHandle<T>();
-        }
-
     protected:
         friend ResourceManager;
         template<class _T>

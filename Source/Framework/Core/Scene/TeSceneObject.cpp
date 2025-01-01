@@ -805,6 +805,11 @@ namespace te
         _setParent(parent, keepWorldTransform);
     }
 
+    HSceneObject SceneObject::GetParent() const 
+    { 
+        return (!_parent.Empty()) ? _parent : HSceneObject(); 
+    }
+
     HSceneObject SceneObject::GetChild(UINT32 idx) const
     {
         if (idx >= _children.size())
@@ -1038,41 +1043,34 @@ namespace te
             {
                 if (entry->GetCoreType() == std::any_cast<UINT32>(criteria))
                 {
-                    component = entry.GetNewHandleFromExisting();
-                    break;
+                    return entry;
                 }
             }
             else if (searchType == ComponentSearchType::Name)
             {
                 if (entry->GetName() == std::any_cast<String>(criteria))
                 {
-                    component = entry.GetNewHandleFromExisting();
-                    break;
+                    return entry;
                 }
             }
             else if (searchType == ComponentSearchType::UUID)
             {
                 if (entry->GetUUID() == std::any_cast<UUID>(criteria))
                 {
-                    component = entry.GetNewHandleFromExisting();
-                    break;
+                    return entry;
                 }
             }
-            else
-                break;
         }
 
         if (component.Empty() && searchInChildren)
         {
             for (auto& childSO : currentSO->GetChildren())
             {
-                component = _getComponentInternal(childSO, criteria, searchType, searchInChildren);
-                if (!component.Empty())
-                    break;
+                return _getComponentInternal(childSO, criteria, searchType, searchInChildren);
             }
         }
 
-        return component;
+        return HComponent();
     }
 
     void SceneObject::_getComponentsInternal(const HSceneObject& currentSO, std::any criteria, Vector<HComponent>& components, 
@@ -1082,13 +1080,13 @@ namespace te
         {
             if (searchType == ComponentSearchType::All)
             {
-                components.push_back(entry.GetNewHandleFromExisting());
+                components.push_back(entry);
             }
             else if (searchType == ComponentSearchType::CoreType)
             {
                 if (entry->GetCoreType() == std::any_cast<UINT32>(criteria))
                 {
-                    components.push_back(entry.GetNewHandleFromExisting());
+                    components.push_back(entry);
                     break;
                 }
             }
@@ -1096,15 +1094,15 @@ namespace te
             {
                 if (entry->GetName() == std::any_cast<String>(criteria))
                 {
-                    components.push_back(entry.GetNewHandleFromExisting());
+                    components.push_back(entry);
                 }
             }
             else if (searchType == ComponentSearchType::UUID)
             {
                 if (entry->GetUUID() == std::any_cast<UUID>(criteria))
                 {
-                    components.push_back(entry.GetNewHandleFromExisting());
-                    return;
+                    components.push_back(entry);
+                    break;
                 }
             }
         }
@@ -1161,33 +1159,27 @@ namespace te
             {
                 if (entry->GetName() == std::any_cast<String>(criteria))
                 {
-                    sceneObject = entry.GetNewHandleFromExisting();
-                    break;
+                    return entry;
                 }
             }
             else if (searchType == ComponentSearchType::UUID)
             {
                 if (entry->GetUUID() == std::any_cast<UUID>(criteria))
                 {
-                    sceneObject = entry.GetNewHandleFromExisting();
-                    break;
+                    return entry;
                 }
             }
-            else
-                break;
         }
 
         if (sceneObject.Empty() && searchInChildren)
         {
             for (auto& childSO : currentSO->GetChildren())
             {
-                sceneObject = _getSceneObjectInternal(childSO, criteria, searchType, searchInChildren);
-                if (!sceneObject.Empty())
-                    break;
+                return _getSceneObjectInternal(childSO, criteria, searchType, searchInChildren);
             }
         }
 
-        return sceneObject;
+        return HSceneObject();
     }
 
     void SceneObject::_getSceneObjectsInternal(const HSceneObject& currentSO, std::any criteria, Vector<HSceneObject>& sceneObjects, 
@@ -1197,20 +1189,20 @@ namespace te
         {
             if (searchType == ComponentSearchType::All)
             {
-                sceneObjects.push_back(entry.GetNewHandleFromExisting());
+                sceneObjects.push_back(entry);
             }
             else if (searchType == ComponentSearchType::Name)
             {
                 if (entry->GetName() == std::any_cast<String>(criteria))
                 {
-                    sceneObjects.push_back(entry.GetNewHandleFromExisting());
+                    sceneObjects.push_back(entry);
                 }
             }
             else if (searchType == ComponentSearchType::UUID)
             {
                 if (entry->GetUUID() == std::any_cast<UUID>(criteria))
                 {
-                    sceneObjects.push_back(entry.GetNewHandleFromExisting());
+                    sceneObjects.push_back(entry);
                     return;
                 }
             }
@@ -1294,7 +1286,7 @@ namespace te
                 return;
         }
 
-        _components.push_back(component.GetNewHandleFromExisting());
+        _components.push_back(component);
     }
 
     void SceneObject::AddScript(const HScript& script)
@@ -1305,7 +1297,7 @@ namespace te
                 return;
         }
 
-        _scripts.push_back(script.GetNewHandleFromExisting());
+        _scripts.push_back(script);
         CreateRunningScript(script);
     }
 

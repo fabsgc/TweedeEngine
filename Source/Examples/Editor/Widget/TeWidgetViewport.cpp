@@ -124,7 +124,7 @@ namespace te
         // If current camera has been destroyed, we fall back to the default camera
         if (_viewportCamera.IsDestroyed())
         {
-            _viewportCamera = gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting();
+            _viewportCamera = gEditor().GetPreviewViewportCamera();
             _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
         }
 
@@ -133,7 +133,7 @@ namespace te
         {
             // only one camera can write to render target at a time
             _viewportCamera->GetViewport()->SetTarget(nullptr);
-            _viewportCamera = gEditor().GetPreviewViewportCamera().GetNewHandleFromExisting();
+            _viewportCamera = gEditor().GetPreviewViewportCamera();
             _viewportCamera->GetViewport()->SetTarget(_renderData.RenderTex);
 
             // When we change camera, maybe the new one has not a correct aspect ratio

@@ -300,7 +300,7 @@ namespace te
          * Gets the parent of this object.
          * @return	Parent object, or nullptr if this SceneObject is at root level.
          */
-        HSceneObject GetParent() const { return (!_parent.Empty()) ? _parent.GetNewHandleFromExisting() : HSceneObject(); }
+        HSceneObject GetParent() const;
 
         /**
          * Gets a child of this item.
@@ -656,7 +656,7 @@ namespace te
          *
          * @param[in]	currentSO			current sceneObject of the search
          * @param[in]	type				RTTI information for the type.
-         * @param[in]	components			vector of components where we can put all found components
+         * @param[out]	components			vector of components where we can put all found components
          * @param[in]	searchType			type of search we want to do (by type, name or uuid)
          * @return		void
          */

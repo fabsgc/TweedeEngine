@@ -62,7 +62,7 @@ namespace te
 
             if (createdMaterials.find(subMesh.MaterialName) != createdMaterials.end())
             {
-                subMesh.Mat = createdMaterials[subMesh.MaterialName].GetNewHandleFromExisting();
+                subMesh.Mat = createdMaterials[subMesh.MaterialName];
 
                 subMesh.MatProperties.UseBaseColorMap = subMesh.Mat->GetTexture("BaseColorMap") != nullptr;
                 subMesh.MatProperties.UseMetallicMap = subMesh.Mat->GetTexture("MetallicMap") != nullptr;
@@ -87,9 +87,9 @@ namespace te
                 material->SetName(subMesh.MaterialName);
                 material->SetProperties(subMesh.MatProperties);
 
-                subMesh.Mat = material.GetNewHandleFromExisting();
+                subMesh.Mat = material;
                 EditorResManager::Instance().Add<Material>(material);
-                createdMaterials[subMesh.MaterialName] = material.GetNewHandleFromExisting();
+                createdMaterials[subMesh.MaterialName] = material;
 
                 if (subMesh.MatProperties.UseBaseColorMap)
                 {
