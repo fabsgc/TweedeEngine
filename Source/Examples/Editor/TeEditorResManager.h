@@ -75,6 +75,7 @@ namespace te
             if (resource.IsLoaded())
             {
                 _resources[T::GetResourceType()].Add(resource);
+                _resourcesIndex.push_back(resource.GetInternalPtr().get());
                 return static_resource_cast<T>(gResourceManager().Get(resource.GetUUID()));
             }
 
