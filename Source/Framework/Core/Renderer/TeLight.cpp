@@ -212,4 +212,22 @@ namespace te
 
         return handlerPtr;
     }
+
+    void Light::ExportJson(nlohmann::json& document) const
+    {
+        document["type"] = _type;
+        document["castShadows"] = _castShadows;
+        document["spotAngle"] = _spotAngle.ValueRadians();
+        document["shadowBias"] = _shadowBias;
+        document["intensity"] = _intensity;
+        document["castShadowType"] = _castShadowsType;
+        document["layer"] = _layer;
+
+        _color.ExportJson(document["color"]);
+    }
+
+    SPtr<Light> Light::ImportJson(nlohmann::json& document)
+    {
+        return nullptr;
+    }
 }

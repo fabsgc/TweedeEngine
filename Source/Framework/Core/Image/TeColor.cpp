@@ -260,4 +260,19 @@ namespace te
             a
         );
     }
+
+    void Color::ExportJson(nlohmann::json& document) const
+    {
+        document = { { "r", r }, { "g", g }, { "b", b }, { "a", a } };
+    }
+
+    Color Color::ImportJson(nlohmann::json& document)
+    {
+        return Color(
+            document["r"].get<float>(),
+            document["g"].get<float>(),
+            document["b"].get<float>(),
+            document["a"].get<float>()
+        );
+    }
 }

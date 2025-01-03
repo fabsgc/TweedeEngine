@@ -170,8 +170,6 @@ namespace te
         Component::ExportJson(document);
 
         document["type"] = GetComponentType();
-        document["renderable"] = nlohmann::json();
-
         _internal->ExportJson(document["renderable"]);
 
         // TODO serialization

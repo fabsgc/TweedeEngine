@@ -433,7 +433,7 @@ namespace te
         UINT32 Quality = 2;
 
         /** Intensity of the screen space reflections. Valid range is [0, 1]. Default is 1 (100%). */
-        float intensity = 1.0f;
+        float Intensity = 1.0f;
 
         /**
          * Roughness at which screen space reflections start fading out and become replaced with refl. probes. Valid range

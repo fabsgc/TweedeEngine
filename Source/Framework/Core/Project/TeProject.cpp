@@ -52,7 +52,8 @@ namespace te
 
         _sceneObject->ExportJson(projectJsonDocument["scene"].back());
 
-        serializer->WriteString(projectJsonDocument.dump());
+        String dump = projectJsonDocument.dump();
+        serializer->WriteString(dump);
     }
 
     void Project::Deserialize(StreamReader* deserializer, Project* object)

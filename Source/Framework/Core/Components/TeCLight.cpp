@@ -131,6 +131,7 @@ namespace te
         Component::ExportJson(document);
 
         document["type"] = GetComponentType();
+        _internal->ExportJson(document["light"]);
 
         // TODO serialization
     }
