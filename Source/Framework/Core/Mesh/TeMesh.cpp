@@ -488,6 +488,13 @@ namespace te
     void Mesh::Serialize(StreamWriter* serializer) const
     {
         Resource::Serialize(serializer);
+
+        nlohmann::json projectJsonDocument;
+
+        String dump = projectJsonDocument.dump();
+        serializer->WriteString(dump);
+
+        // TODO serialization
     }
 
     void Mesh::Deserialize(StreamReader* deserializer, Mesh* object)
@@ -498,6 +505,8 @@ namespace te
         }
 
         Resource::Deserialize(deserializer, object);
+
+        // TODO serialization
     }
 
     ZPrepassMesh::ZPrepassMesh()
@@ -525,5 +534,24 @@ namespace te
         mesh->SetThisPtr(mesh);
 
         return mesh;
+    }
+
+    void ZPrepassMesh::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+
+        // TODO Serialization
+    }
+
+    void ZPrepassMesh::Deserialize(StreamReader* deserializer, ZPrepassMesh* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
+
+        // TODO Serialization
     }
 }

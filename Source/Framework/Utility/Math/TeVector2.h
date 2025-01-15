@@ -351,5 +351,12 @@ namespace te
         static const Vector2 ONE;
         static const Vector2 UNIT_X;
         static const Vector2 UNIT_Y;
+
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Creates a Vector3 from a json document */
+        static Vector2 ImportJson(nlohmann::json& document);
     };
 }

@@ -415,4 +415,24 @@ namespace te
 
         return mat;
     }
+
+    void Matrix4::ExportJson(nlohmann::json& document) const
+    {
+        document = { 
+            { m[0][0], m[0][1], m[0][2], m[0][3] },
+            { m[1][0], m[1][1], m[1][2], m[1][3] },
+            { m[2][0], m[2][1], m[2][2], m[2][2] },
+            { m[3][0], m[3][1], m[3][2], m[3][3] }
+        };
+    }
+
+    Matrix4 Matrix4::ImportJson(nlohmann::json& document)
+    {
+        return Matrix4(
+            document[0][0].get<float>(), document[0][1].get<float>(), document[0][2].get<float>(), document[0][3].get<float>(),
+            document[1][0].get<float>(), document[1][1].get<float>(), document[1][2].get<float>(), document[1][3].get<float>(),
+            document[2][0].get<float>(), document[2][1].get<float>(), document[2][2].get<float>(), document[2][3].get<float>(),
+            document[3][0].get<float>(), document[3][1].get<float>(), document[3][2].get<float>(), document[3][3].get<float>()
+        );
+    }
 }

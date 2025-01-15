@@ -573,6 +573,8 @@ namespace te
             document["materials"].push_back(serialization::GetResourceName(material.get()));
         }
 
+        document["layer"] = _layer;
+
         // TODO serialization
     }
 

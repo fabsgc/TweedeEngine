@@ -10,6 +10,7 @@
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
 #include "ThirdParty/Slugify/slugify.hpp"
+#include "Serialization/TeUtility.h"
 
 namespace te
 {
@@ -571,8 +572,14 @@ namespace te
     {
         Resource::Serialize(serializer);
 
-        serializer->WriteString(_shader ? _shader->GetUUID().ToString() : UUID::EMPTY.ToString());
-        serializer->WriteString(_shader ? slugify(_shader->GetName()) : "");
+        nlohmann::json projectJsonDocument;
+
+        projectJsonDocument["shader"] = _shader ? serialization::GetResourceName(_shader.get()) : "";
+
+        String dump = projectJsonDocument.dump();
+        serializer->WriteString(dump);
+
+        // TODO Serialization
     }
 
     void Material::Deserialize(StreamReader* deserializer, Material* object)
@@ -584,14 +591,6 @@ namespace te
 
         Resource::Deserialize(deserializer, object);
 
-        String shaderIdentifier, shaderName;
-        deserializer->ReadString(shaderIdentifier);
-        deserializer->ReadString(shaderName);
-
-        const UUID shaderUUID = UUID(shaderIdentifier);
-        if (shaderUUID != UUID::EMPTY)
-        {
-            // todo load shader
-        }
+        // TODO Serialization
     }
 }

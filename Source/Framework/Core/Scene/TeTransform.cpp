@@ -190,12 +190,10 @@ namespace te
 
     Transform Transform::ImportJson(nlohmann::json& document)
     {
-        Transform transform;
-
-        transform.SetPosition(Vector3::ImportJson(document["position"]));
-        transform.SetRotation(Quaternion::ImportJson(document["rotation"]));
-        transform.SetScale(Vector3::ImportJson(document["scale"]));
-
-        return transform;
+        return {
+            Vector3::ImportJson(document["position"]),
+            Quaternion::ImportJson(document["rotation"]),
+            Vector3::ImportJson(document["scale"])
+        };
     }
 }

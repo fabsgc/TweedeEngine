@@ -497,6 +497,13 @@ namespace te
         static const Matrix4 ZERO;
         static const Matrix4 IDENTITY;
 
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Creates a Vector3 from a json document */
+        static Matrix4 ImportJson(nlohmann::json& document);
+
     private:
         float m[4][4];
     };

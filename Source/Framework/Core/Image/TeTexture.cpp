@@ -470,4 +470,23 @@ namespace te
 
         return iterFind->second;
     }
+
+    void Texture::Serialize(StreamWriter* serializer) const
+    {
+        Resource::Serialize(serializer);
+
+        // TODO Serialization
+    }
+
+    void Texture::Deserialize(StreamReader* deserializer, Texture* object)
+    {
+        if (!object)
+        {
+            object = CreateEmpty().get();
+        }
+
+        Resource::Deserialize(deserializer, object);
+
+        // TODO Serialization
+    }
 }

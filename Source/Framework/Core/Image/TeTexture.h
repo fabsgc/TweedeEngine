@@ -332,6 +332,11 @@ namespace te
         /** Returns a plain normal map texture with normal pointing up (in Y direction). */
         static SPtr<Texture> NORMAL;
 
+    public:
+        void Serialize(StreamWriter* serializer) const override;
+
+        static void Deserialize(StreamReader* deserializer, Texture* object);
+
     protected:
         friend class TextureManager;
 
@@ -364,9 +369,9 @@ namespace te
         void ClearBufferViews();
 
         /**
-         * Creates buffers used for caching of CPU texture data.
+         * Creates  buffers used for caching of CPU texture data.
          *
-         * @note	Make sure to initialize all texture properties before calling this.
+         * @note    Make sure to initialize all texture properties before calling this.
          */
         void CreateCPUBuffers();
 

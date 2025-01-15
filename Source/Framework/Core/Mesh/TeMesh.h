@@ -347,6 +347,11 @@ namespace te
         /** @copydoc Mesh::CreateEmpty */
         static SPtr<ZPrepassMesh> CreateEmpty();
 
+    public:
+        void Serialize(StreamWriter* serializer) const override;
+
+        static void Deserialize(StreamReader* deserializer, ZPrepassMesh* object);
+
     protected:
         friend class MeshManager;
 
