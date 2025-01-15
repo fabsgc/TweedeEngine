@@ -2,6 +2,7 @@
 #include "Scene/TeSceneManager.h"
 #include "Renderer/TeRenderer.h"
 #include "Renderer/TeSkybox.h"
+#include "Serialization/TeUtility.h"
 
 namespace te
 {
@@ -104,8 +105,10 @@ namespace te
     {
         Component::ExportJson(document);
 
+        // TODO move it to Skybox::Serialize
+
         document["type"] = GetComponentType();
-        document["texture"] = GetTexture()->GetUUID().ToString();
+        document["texture"] = serialization::GetResourceName(GetTexture().get());
         document["brightness"] = GetBrightness();
         document["IBLIntensity"] = GetIBLIntensity();
 
