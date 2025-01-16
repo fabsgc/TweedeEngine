@@ -499,5 +499,19 @@ namespace te
     {
         return !(*this == rhs);
     }
+
+    void AABox::ExportJson(nlohmann::json& document) const
+    {
+        _minimum.ExportJson(document["min"]);
+        _maximum.ExportJson(document["max"]);
+    }
+
+    AABox AABox::ImportJson(nlohmann::json& document)
+    {
+        return AABox(
+            Vector3::ImportJson(document["min"]),
+            Vector3::ImportJson(document["max"])
+        );
+    }
 }
 

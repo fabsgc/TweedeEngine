@@ -11,25 +11,23 @@ namespace te
     {
         SubMesh() = default;
 
-        SubMesh(UINT32 indexOffset, UINT32 indexCount, DrawOperationType drawOp, const String& materialName = "", const String& name = "")
-            : IndexOffset(indexOffset)
-            , IndexCount(indexCount)
-            , DrawOp(drawOp)
-            , MaterialName(materialName)
-            , Name(name)
-        { }
+        SubMesh(UINT32 indexOffset, UINT32 indexCount, DrawOperationType drawOp, const String& materialName = "", const String& name = "");
 
-        ~SubMesh()
-        { }
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Creates a SubMesh from a json document */
+        static SubMesh ImportJson(nlohmann::json& document);
 
         UINT32 IndexOffset = 0;
         UINT32 IndexCount = 0;
         DrawOperationType DrawOp = DOT_TRIANGLE_LIST;
 
         /** It's possible to set a material name which will be use if you want to SetMaterial() on a mesh */
-        String MaterialName = "";
+        String MaterialName = {};
+
         /** It's easier to have a name for identification in editor */
-        String Name = "";
+        String Name = {};
 
         /** During mesh import, it's possible to get information about the default material applied on this submesh */
         MaterialProperties MatProperties;
@@ -41,6 +39,6 @@ namespace te
         HMaterial Mat;
 
         /** During mesh initialization, we also want to know bounds of a single subMesh below a mesh */
-        Bounds SubMeshBounds;
+        Bounds SubMeshBounds;  
     };
 }

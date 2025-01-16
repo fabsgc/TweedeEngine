@@ -572,11 +572,12 @@ namespace te
     {
         Resource::Serialize(serializer);
 
-        nlohmann::json projectJsonDocument;
+        nlohmann::json document;
 
-        projectJsonDocument["shader"] = _shader ? serialization::GetResourceName(_shader.get()) : "";
+        document["shader"] = _shader ? serialization::GetResourceName(_shader.get()) : "";
+        _properties.ExportJson(document["properties"]);
 
-        String dump = projectJsonDocument.dump();
+        String dump = document.dump();
         serializer->WriteString(dump);
 
         // TODO Serialization
@@ -592,5 +593,158 @@ namespace te
         Resource::Deserialize(deserializer, object);
 
         // TODO Serialization
+    }
+
+    void MaterialProperties::ExportJson(nlohmann::json& document) const
+    {
+        document = {
+            { "metallic", Metallic },
+            { "roughness", Roughness },
+            { "reflectance", Reflectance },
+            { "occlusion", Occlusion },
+            { "sheenRoughness", SheenRoughness },
+            { "clearCoat", ClearCoat },
+            { "clearCoatRoughness", ClearCoatRoughness },
+            { "subsurfacePower", SubsurfacePower },
+            { "anisotropy", Anisotropy },
+            { "alphaThreshold", AlphaThreshold },
+            { "parallaxScale", ParallaxScale },
+            { "parallaxSamples", ParallaxSamples },
+            { "microThickness", MicroThickness },
+            { "thickness", Thickness },
+            { "transmission", Transmission },
+            { "atDistance", AtDistance },
+            { "refractType", RefractType },
+            { "useBaseColorMap", UseBaseColorMap },
+            { "useMetallicMap", UseMetallicMap },
+            { "useRoughnessMap", UseRoughnessMap },
+            { "useMetallicRoughnessMap", UseMetallicRoughnessMap },
+            { "useReflectanceMap", UseReflectanceMap },
+            { "useOcclusionMap", UseOcclusionMap },
+            { "useEmissiveMap", UseEmissiveMap },
+            { "useSheenColorMap", UseSheenColorMap },
+            { "useSheenRoughnessMap", UseSheenRoughnessMap },
+            { "useClearCoatMap", UseClearCoatMap },
+            { "useClearCoatRoughnessMap", UseClearCoatRoughnessMap },
+            { "useClearCoatNormalMap", UseClearCoatNormalMap },
+            { "useNormalMap", UseNormalMap },
+            { "useParallaxMap", UseParallaxMap },
+            { "useTransmissionMap", UseTransmissionMap },
+            { "useOpacityMap", UseOpacityMap },
+            { "useAnisotropyDirectionMap", UseAnisotropyDirectionMap },
+            { "doIndirectLighting", DoIndirectLighting },
+            { "doDirectLighting", DoDirectLighting },
+        };
+
+        BaseColor.ExportJson(document["baseColor"]);
+        Emissive.ExportJson(document["emissive"]);
+        SheenColor.ExportJson(document["sheenColor"]);
+        SubsurfaceColor.ExportJson(document["subsurfaceColor"]);
+        AnisotropyDirection.ExportJson(document["anisotropyDirection"]);
+        TextureRepeat.ExportJson(document["textureRepeat"]);
+        TextureOffset.ExportJson(document["textureOffset"]);
+        TransmittanceColor.ExportJson(document["transmittanceColor"]);
+        Absorption.ExportJson(document["absorption"]);
+    }
+
+    MaterialProperties MaterialProperties::ImportJson(nlohmann::json& document)
+    {
+        MaterialProperties properties;
+
+        properties.BaseColor = Color::ImportJson(document["baseColor"]);
+        properties.Metallic = document["metallic"].get<float>();
+        properties.Roughness = document["roughness"].get<float>();
+        properties.Reflectance = document["reflectance"].get<float>();
+        properties.Occlusion = document["occlusion"].get<float>();
+        properties.Emissive = Color::ImportJson(document["emissive"]);
+        properties.SheenColor = Color::ImportJson(document["sheenColor"]);
+        properties.SheenRoughness = document["sheenRoughness"].get<float>();
+        properties.ClearCoat = document["clearCoat"].get<float>();
+        properties.ClearCoatRoughness = document["clearCoatRoughness"].get<float>();
+        properties.SubsurfaceColor = Color::ImportJson(document["subsurfaceColor"]);
+        properties.SubsurfacePower = document["subsurfacePower"].get<float>();
+        properties.Anisotropy = document["anisotropy"].get<float>();
+        properties.AnisotropyDirection = Vector3::ImportJson(document["anisotropyDirection"]);
+        properties.AlphaThreshold = document["alphaThreshold"].get<float>();
+        properties.TextureRepeat = Vector2::ImportJson(document["textureRepeat"]);
+        properties.TextureOffset = Vector2::ImportJson(document["textureOffset"]);
+        properties.ParallaxScale = document["parallaxScale"].get<float>();
+        properties.ParallaxSamples = document["parallaxSamples"].get<uint32_t>();
+        properties.MicroThickness = document["microThickness"].get<float>();
+        properties.Thickness = document["thickness"].get<float>();
+        properties.Transmission = document["transmission"].get<float>();
+        properties.TransmittanceColor = Color::ImportJson(document["transmittanceColor"]);
+        properties.AtDistance = document["atDistance"].get<float>();
+        properties.Absorption = Vector3::ImportJson(document["absorption"]);
+        properties.RefractType = static_cast<RefractionType>(document[""].get<uint32_t>());
+        properties.UseBaseColorMap = document["useBaseColorMap"].get<bool>();
+        properties.UseMetallicMap = document["useMetallicMap"].get<bool>();
+        properties.UseRoughnessMap = document["useRoughnessMap"].get<bool>();
+        properties.UseMetallicRoughnessMap = document["useMetallicRoughnessMap"].get<bool>();
+        properties.UseReflectanceMap = document["useReflectanceMap"].get<bool>();
+        properties.UseOcclusionMap = document["useOcclusionMap"].get<bool>();
+        properties.UseEmissiveMap = document["useEmissiveMap"].get<bool>();
+        properties.UseSheenColorMap = document["useSheenColorMap"].get<bool>();
+        properties.UseSheenRoughnessMap = document["useSheenRoughnessMap"].get<bool>();
+        properties.UseClearCoatMap = document["useClearCoatMap"].get<bool>();
+        properties.UseClearCoatRoughnessMap = document["useClearCoatRoughnessMap"].get<bool>();
+        properties.UseClearCoatNormalMap = document["useClearCoatNormalMap"].get<bool>();
+        properties.UseNormalMap = document["useNormalMap"].get<bool>();
+        properties.UseParallaxMap = document["useParallaxMap"].get<bool>();
+        properties.UseTransmissionMap = document["useTransmissionMap"].get<bool>();
+        properties.UseOpacityMap = document["useOpacityMap"].get<bool>();
+        properties.UseAnisotropyDirectionMap = document["useAnisotropyDirectionMap"].get<bool>();
+        properties.DoIndirectLighting = document["doIndirectLighting"].get<bool>();
+        properties.DoDirectLighting = document["doDirectLighting"].get<bool>();
+
+        return properties;
+    }
+
+    void MaterialTextures::ExportJson(nlohmann::json& document) const
+    {
+        document = {
+            { "baseColorMap", BaseColorMap },
+            { "metallicMap", MetallicMap },
+            { "roughnessMap", RoughnessMap },
+            { "metallicRoughnessMap", MetallicRoughnessMap },
+            { "reflectanceMap", ReflectanceMap },
+            { "occlusionMap", OcclusionMap },
+            { "emissiveMap", EmissiveMap },
+            { "sheenColorMap", SheenColorMap },
+            { "sheenRoughnessMap", SheenRoughnessMap },
+            { "clearCoatMap", ClearCoatMap },
+            { "clearCoatRoughnessMap", ClearCoatRoughnessMap },
+            { "clearCoatNormalMap", ClearCoatNormalMap },
+            { "normalMap", NormalMap },
+            { "parallaxMap", ParallaxMap },
+            { "transmissionMap", TransmissionMap },
+            { "opacityMap", OpacityMap },
+            { "anisotropyDirectionMap", AnisotropyDirectionMap },
+        };
+    }
+
+    MaterialTextures MaterialTextures::ImportJson(nlohmann::json& document)
+    {
+        MaterialTextures textures;
+
+        textures.BaseColorMap = document["baseColorMap"].get<String>();
+        textures.MetallicMap = document["metallicMap"].get<String>();
+        textures.RoughnessMap = document["roughnessMap"].get<String>();
+        textures.MetallicRoughnessMap = document["metallicRoughnessMap"].get<String>();
+        textures.ReflectanceMap = document["reflectanceMap"].get<String>();
+        textures.OcclusionMap = document["occlusionMap"].get<String>();
+        textures.EmissiveMap = document["emissiveMap"].get<String>();
+        textures.SheenColorMap = document["sheenColorMap"].get<String>();
+        textures.SheenRoughnessMap = document["sheenRoughnessMap"].get<String>();
+        textures.ClearCoatMap = document["clearCoatMap"].get<String>();
+        textures.ClearCoatRoughnessMap = document["clearCoatRoughnessMap"].get<String>();
+        textures.ClearCoatNormalMap = document["clearCoatNormalMap"].get<String>();
+        textures.NormalMap = document["normalMap"].get<String>();
+        textures.ParallaxMap = document["parallaxMap"].get<String>();
+        textures.TransmissionMap = document["transmissionMap"].get<String>();
+        textures.OpacityMap = document["opacityMap"].get<String>();
+        textures.AnisotropyDirectionMap = document["anisotropyDirectionMap"].get<String>();
+
+        return textures;
     }
 }

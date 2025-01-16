@@ -138,6 +138,13 @@ namespace te
          */
         static const UINT32 CUBE_INDICES[36];
 
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Creates an AABox from a json document */
+        static AABox ImportJson(nlohmann::json& document);
+
     protected:
         Vector3 _minimum{ Vector3::ZERO };
         Vector3 _maximum{ Vector3::ONE };

@@ -402,6 +402,12 @@ namespace te
         {
             ComputeAbsorption();
         }
+
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Creates a MaterialProperties from a json document */
+        static MaterialProperties ImportJson(nlohmann::json& document);
     };
 
     /**
@@ -426,6 +432,12 @@ namespace te
         String TransmissionMap;
         String OpacityMap;
         String AnisotropyDirectionMap;
+
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Creates a MaterialTextures from a json document */
+        static MaterialTextures ImportJson(nlohmann::json& document);
     };
 
     /**

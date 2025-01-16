@@ -96,4 +96,18 @@ namespace te
     {
         return box.Intersects(*this);
     }
+
+    void Sphere::ExportJson(nlohmann::json& document) const
+    {
+        document["radius"] = _radius;
+        _center.ExportJson(document["center"]);
+    }
+
+    Sphere Sphere::ImportJson(nlohmann::json& document)
+    {
+        return Sphere(
+            Vector3::ImportJson(document["center"]),
+            document["radius"].get<float>()
+        );
+    }
 }

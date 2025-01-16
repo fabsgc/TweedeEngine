@@ -52,6 +52,36 @@ namespace te
         return (UINT32)_subMeshes.size();
     }
 
+    void MeshProperties::ExportJson(nlohmann::json& document) const
+    {
+        document["numVertices"] = GetNumVertices();
+        document["numIndices"] = GetNumIndices();
+        document["numSubMeshes"] = GetNumSubMeshes();
+
+        GetBounds().ExportJson(document["bounds"]);
+
+        for (const auto& subMesh : _subMeshes)
+        {
+            document["subMeshes"].push_back({});
+            subMesh.ExportJson(document["subMeshes"].back());
+        }
+    }
+
+    MeshProperties MeshProperties::ImportJson(nlohmann::json& document)
+    {
+        const uint32_t numVertices = document["numVertices"].get<uint32_t>();
+        const uint32_t numIndices = document["numIndices"].get<uint32_t>();
+        const uint32_t numSubMeshes = document["numSubMeshes"].get<uint32_t>();
+
+        Vector<SubMesh> subMeshes;
+        for (auto subMesh : document["subMeshes"])
+        {
+            subMeshes.push_back(SubMesh::ImportJson(subMesh));
+        }
+
+        return MeshProperties(numVertices, numIndices, subMeshes);
+    }
+
     Mesh::Mesh()
         : Resource(TID_Mesh)
         , _properties(0, 0, DOT_TRIANGLE_LIST)
@@ -489,9 +519,11 @@ namespace te
     {
         Resource::Serialize(serializer);
 
-        nlohmann::json projectJsonDocument;
+        nlohmann::json document;
 
-        String dump = projectJsonDocument.dump();
+        _properties.ExportJson(document["properties"]);
+
+        String dump = document.dump();
         serializer->WriteString(dump);
 
         // TODO serialization

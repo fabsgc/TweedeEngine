@@ -58,6 +58,13 @@ namespace te
          */
         std::pair<bool, float> Intersects(const Ray& ray, bool discardInside = true) const;
 
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Creates a Sphere from a json document */
+        static Sphere ImportJson(nlohmann::json& document);
+
     private:
         float _radius = 1.0f;
         Vector3 _center { Vector3::ZERO };

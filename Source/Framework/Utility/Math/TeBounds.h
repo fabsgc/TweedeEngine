@@ -54,6 +54,13 @@ namespace te
          */
         void TransformAffine(const Matrix4& matrix);
 
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Creates a Bounds from a json document */
+        static Bounds ImportJson(nlohmann::json& document);
+
     protected:
         AABox _box;
         Sphere _sphere;

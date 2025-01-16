@@ -28,12 +28,6 @@ namespace te
         TE_MODULE_STATIC_HEADER_MEMBER(ResourceManager)
 
         template <class T>
-        ResourceHandle<T> Load(UUID& uuid = UUID::EMPTY)
-        {
-            return static_resource_cast<T>(Get(uuid));
-        }
-
-        template <class T>
         ResourceHandle<T> Load(const UUID& uuid = UUID::EMPTY)
         {
             return static_resource_cast<T>(Get(uuid));

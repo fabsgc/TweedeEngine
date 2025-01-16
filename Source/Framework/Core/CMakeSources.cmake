@@ -46,6 +46,7 @@ set (TE_CORE_SRC_RENDERAPI
     "Core/RenderAPI/TeBlendState.cpp"
     "Core/RenderAPI/TeSamplerState.cpp"
     "Core/RenderAPI/TeVertexDataDesc.cpp"
+    "Core/RenderAPI/TeSubMesh.cpp"
     "Core/RenderAPI/TeTextureView.cpp"
     "Core/RenderAPI/TeRenderTexture.cpp"
     "Core/RenderAPI/TeGpuProgram.cpp"

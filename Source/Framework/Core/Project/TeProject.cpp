@@ -45,14 +45,14 @@ namespace te
     {
         Resource::Serialize(serializer);
 
-        nlohmann::json projectJsonDocument;
+        nlohmann::json document;
         
-        projectJsonDocument["resources"] = _resourceNames;
-        projectJsonDocument["scene"].push_back(nlohmann::json());
+        document["resources"] = _resourceNames;
+        document["scene"].push_back(nlohmann::json());
 
-        _sceneObject->ExportJson(projectJsonDocument["scene"].back());
+        _sceneObject->ExportJson(document["scene"].back());
 
-        String dump = projectJsonDocument.dump();
+        String dump = document.dump();
         serializer->WriteString(dump);
     }
 
@@ -68,19 +68,20 @@ namespace te
         String projectJsonString;
         deserializer->ReadString(projectJsonString);
 
-        nlohmann::json projectJsonDocument = nlohmann::json::parse(projectJsonString);
+        nlohmann::json document = nlohmann::json::parse(projectJsonString);
 
-        for (auto& resource : projectJsonDocument["resources"])
+        for (auto& resource : document["resources"])
         {
             object->_resourceNames.push_back(resource.get<String>());
         }
 
-        // Should I load resources here ?
+        // Should I load resources here ? Yes, but I can also load them directly within the deserialize methods of those that need them.
+        // I should write a API to load a resource given a path RessourceMananger::Load<T>(const Project&, const String& name)
 
-        if (projectJsonDocument.contains("scene") && projectJsonDocument["scene"].size() > 0)
+        if (document.contains("scene") && document["scene"].size() > 0)
         {
-            object->_sceneObject = SceneObject::Create(projectJsonDocument["scene"][0]["name"].get<String>());
-            object->_sceneObject->SetUUID(UUID(projectJsonDocument["scene"][0]["uuid"].get<String>()));
+            object->_sceneObject = SceneObject::Create(document["scene"][0]["name"].get<String>());
+            object->_sceneObject->SetUUID(UUID(document["scene"][0]["uuid"].get<String>()));
         }
     }
 }

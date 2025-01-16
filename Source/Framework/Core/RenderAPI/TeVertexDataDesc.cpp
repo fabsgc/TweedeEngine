@@ -54,17 +54,12 @@ namespace te
 
     UINT32 VertexDataDesc::GetMaxStreamIdx() const
     {
-        UINT32 maxStreamIdx = 0;
-        UINT32 numElems = (UINT32)_vertexElements.size();
-        for (UINT32 i = 0; i < numElems; i++)
-        {
-            for (auto& vertElem : _vertexElements)
-            {
-                maxStreamIdx = std::max((UINT32)maxStreamIdx, (UINT32)vertElem.GetStreamIdx());
-            }
-        }
+        if (_vertexElements.size() == 0)
+            return 0;
 
-        return maxStreamIdx;
+        return std::max_element(_vertexElements.cbegin(), _vertexElements.cend(), [](const VertexElement& lhs, const VertexElement& rhs) {
+            return lhs.GetSemanticIdx() < rhs.GetSemanticIdx();
+        })->GetSemanticIdx();
     }
 
     bool VertexDataDesc::HasStream(UINT32 streamIdx) const

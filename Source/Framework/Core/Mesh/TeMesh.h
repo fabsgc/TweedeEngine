@@ -97,6 +97,13 @@ namespace te
         /** Returns bounds of the geometry contained in the vertex buffers for all sub-meshes. */
         const Bounds& GetBounds() const { return _bounds; }
 
+    public:
+        /** @copydoc serialization::JsonSerialization::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Creates a Bounds from a json document */
+        static MeshProperties ImportJson(nlohmann::json& document);
+
     protected:
         friend class Mesh;
 

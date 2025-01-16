@@ -38,5 +38,19 @@ namespace te
         _box.TransformAffine(matrix);
         _sphere.Transform(matrix);
     }
+
+    void Bounds::ExportJson(nlohmann::json& document) const
+    {
+        _box.ExportJson(document["box"]);
+        _sphere.ExportJson(document["sphere"]);
+    }
+
+    Bounds Bounds::ImportJson(nlohmann::json& document)
+    {
+        return Bounds(
+            AABox::ImportJson(document["box"]),
+            Sphere::ImportJson(document["sphere"])
+        );
+    }
 }
 
