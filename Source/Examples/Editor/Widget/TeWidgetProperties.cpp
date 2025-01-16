@@ -3096,7 +3096,6 @@ namespace te
                         if (mesh.IsLoaded())
                         {
                             mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
-                            EditorResManager::Instance().Add<Mesh>(mesh);
 
                             if (_selections.ClickedComponent->GetCoreType() == TID_CRenderable)
                             {
@@ -3132,8 +3131,6 @@ namespace te
                         HPhysicsMesh physicsMesh = static_resource_cast<PhysicsMesh>(subRes.Res);
                         if (physicsMesh.IsLoaded())
                         {
-                            EditorResManager::Instance().Add<PhysicsMesh>(physicsMesh);
-
                             if (_selections.ClickedComponent->GetCoreType() == TID_CMeshCollider)
                             {
                                 SPtr<CMeshCollider> meshCollider = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
@@ -3199,7 +3196,6 @@ namespace te
                 if (texture.IsLoaded())
                 {
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
-                    EditorResManager::Instance().Add<Texture>(texture);
                     SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
 
                     skybox->SetTexture(texture.GetInternalPtr());
@@ -3237,7 +3233,6 @@ namespace te
             if (audioClip.IsLoaded())
             {
                 audioClip->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
-                EditorResManager::Instance().Add<AudioClip>(audioClip);
 
                 SPtr<CAudioSource> audioSource = std::static_pointer_cast<CAudioSource>(_selections.ClickedComponent);
                 audioSource->SetClip(audioClip);
@@ -3281,7 +3276,6 @@ namespace te
                 if (texture.IsLoaded())
                 {
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
-                    EditorResManager::Instance().Add<Texture>(texture);
 
                     if (texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
                     {

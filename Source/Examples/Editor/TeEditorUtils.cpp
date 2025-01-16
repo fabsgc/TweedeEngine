@@ -47,7 +47,6 @@ namespace te
                 if (texture.IsLoaded())
                 {
                     material->SetTexture(textureName, texture);
-                    EditorResManager::Instance().Add<Texture>(texture);
                 }
                 else
                 {
@@ -88,7 +87,6 @@ namespace te
                 material->SetProperties(subMesh.MatProperties);
 
                 subMesh.Mat = material;
-                EditorResManager::Instance().Add<Material>(material);
                 createdMaterials[subMesh.MaterialName] = material;
 
                 if (subMesh.MatProperties.UseBaseColorMap)

@@ -334,7 +334,6 @@ namespace te
                 if (texture.IsLoaded())
                 {
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
-                    EditorResManager::Instance().Add<Texture>(texture);
                 }
             }
             else if (std::find(Editor::MeshesExtensions.begin(), Editor::MeshesExtensions.end(), _fileBrowser.Data.SelectedFileExt) != Editor::MeshesExtensions.end())
@@ -370,7 +369,6 @@ namespace te
                             if (mesh.IsLoaded())
                             {
                                 mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
-                                EditorResManager::Instance().Add<Mesh>(mesh);
 
                                 if (_fileBrowser.Data.MeshParam.ImportMaterials && _fileBrowser.Data.MeshParam.ImportTextures)
                                     EditorUtils::ImportMeshMaterials(mesh, meshImportOptions->ImportSRGBTextures);
@@ -381,10 +379,6 @@ namespace te
                         else if (subRes.Name == "collision")
                         {
                             HPhysicsMesh physicsMesh = static_resource_cast<PhysicsMesh>(subRes.Res);
-                            if (physicsMesh.IsLoaded())
-                            {
-                                EditorResManager::Instance().Add<PhysicsMesh>(physicsMesh);
-                            }
                         }
                         else
                         {
@@ -402,7 +396,6 @@ namespace te
                 if (audio.IsLoaded())
                 {
                     audio->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
-                    EditorResManager::Instance().Add<AudioClip>(audio);
                 }
             }
             else
