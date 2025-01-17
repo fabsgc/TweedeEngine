@@ -13,7 +13,7 @@ namespace te
 
         SubMesh(UINT32 indexOffset, UINT32 indexCount, DrawOperationType drawOp, const String& materialName = "", const String& name = "");
 
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** Export the instance in a Json object */
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a SubMesh from a json document */

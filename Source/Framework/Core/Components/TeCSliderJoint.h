@@ -192,7 +192,7 @@ namespace te
         float GetMaxAngMotorForce() const { return _maxAngMotorForce; }
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
     protected:

@@ -49,6 +49,7 @@ namespace te
 
             FileSystem::CreateDir(resourcePath.parent_path().generic_string());
 
+            // TODO Serialization move to ResourceExporter
             BinaryWriter* resourceSerializer = te_new<BinaryWriter>(resourcePath);
             resource->SetPath(resourcePath.generic_string());
             resource->Serialize(resourceSerializer);

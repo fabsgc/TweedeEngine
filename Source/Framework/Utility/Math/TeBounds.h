@@ -55,7 +55,7 @@ namespace te
         void TransformAffine(const Matrix4& matrix);
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** Export the instance in a Json object */
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Bounds from a json document */

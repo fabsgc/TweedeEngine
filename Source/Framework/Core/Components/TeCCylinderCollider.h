@@ -30,7 +30,7 @@ namespace te
         Vector3 GetExtents() const { return _extents; }
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
     protected:

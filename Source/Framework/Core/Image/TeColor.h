@@ -206,7 +206,7 @@ namespace te
         }
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** Export the instance in a Json object */
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Vector3 from a json document */

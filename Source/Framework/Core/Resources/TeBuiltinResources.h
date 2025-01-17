@@ -190,6 +190,7 @@ namespace te
         HShader _shaderOpaque;
         HShader _shaderTransparent;
         HShader _shaderTransparentCullNone;
+
         HShader _shaderZPrepass;
         HShader _shaderBlit;
         HShader _shaderSkybox;

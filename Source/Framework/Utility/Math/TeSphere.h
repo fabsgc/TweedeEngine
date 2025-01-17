@@ -59,7 +59,7 @@ namespace te
         std::pair<bool, float> Intersects(const Ray& ray, bool discardInside = true) const;
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** Export the instance in a Json object */
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Sphere from a json document */

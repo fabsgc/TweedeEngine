@@ -84,7 +84,7 @@ namespace te
         float GetAngularDamping() const { return _angularDamping; }
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
     protected:

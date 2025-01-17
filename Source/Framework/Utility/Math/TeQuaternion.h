@@ -388,7 +388,7 @@ namespace te
         float x, y, z, w; // Note: Order is relevant, don't break it
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** Export the instance in a Json object */
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Quaternion from a json document */

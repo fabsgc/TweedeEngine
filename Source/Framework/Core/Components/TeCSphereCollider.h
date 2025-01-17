@@ -30,7 +30,7 @@ namespace te
         float GetRadius() const { return _radius; }
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
     protected:

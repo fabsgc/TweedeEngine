@@ -78,7 +78,7 @@ namespace te
         bool GetMotorVelocity() const { return _motorVelocity; }
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
     protected:

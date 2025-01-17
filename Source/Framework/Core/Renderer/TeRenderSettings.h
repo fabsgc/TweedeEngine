@@ -447,7 +447,7 @@ namespace te
     {
         RenderSettings() = default;
 
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** Export the instance in a Json object */
         void ExportJson(nlohmann::json& document) const;
 
         /**

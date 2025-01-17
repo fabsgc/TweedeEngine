@@ -139,7 +139,7 @@ namespace te
         static const UINT32 CUBE_INDICES[36];
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
+        /** Export the instance in a Json object */
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates an AABox from a json document */

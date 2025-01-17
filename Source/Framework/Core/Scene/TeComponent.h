@@ -4,7 +4,6 @@
 #include "Scene/TeGameObject.h"
 #include "Utility/TeEvent.h"
 #include "Serialization/TeSerializable.h"
-#include "Serialization/TeJsonSerialization.h"
 
 namespace te
 {
@@ -17,7 +16,7 @@ namespace te
      * OnTransformChanged/onDestroyed methods to implement the relevant component logic. Avoid putting logic in constructors
      * or destructors.
      **/
-    class TE_CORE_EXPORT Component : public GameObject, public Serializable, public serialization::JsonSerialization
+    class TE_CORE_EXPORT Component : public GameObject, public Serializable
     {
     public:
         /** Each component has a type which is used to recognize and cast components */
@@ -118,8 +117,8 @@ namespace te
         static Event<void(const HComponent&)> OnComponentDisabled;
 
     public:
-        /** @copydoc serialization::JsonSerialization::ExportJson */
-        virtual void ExportJson(nlohmann::json& document) const override;
+        /** Export the instance in a Json object */
+        virtual void ExportJson(nlohmann::json& document) const;
 
     protected:
         Component(HSceneObject parent, UINT32 type);
