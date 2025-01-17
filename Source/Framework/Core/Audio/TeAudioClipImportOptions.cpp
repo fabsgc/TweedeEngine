@@ -3,6 +3,7 @@
 namespace te
 {
     AudioClipImportOptions::AudioClipImportOptions()
+        : ImportOptions(TID_AudioClipImportOptions)
     { }
 
     SPtr<AudioClipImportOptions> AudioClipImportOptions::Create()

@@ -50,7 +50,7 @@ namespace te
         bool ShowCBoneProperties();
 
         /** @copydoc WidgetProperties::ShowSceneObjectProperties */
-        bool ShowCAudioListenerProperties();
+        bool ShowCAudioListenerProperties() const;
 
         /** @copydoc WidgetProperties::ShowSceneObjectProperties */
         bool ShowCAudioSourceProperties();

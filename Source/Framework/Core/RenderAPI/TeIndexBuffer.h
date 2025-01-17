@@ -9,8 +9,8 @@ namespace te
     /** Descriptor structure used for initialization of an IndexBuffer. */
     struct INDEX_BUFFER_DESC
     {
-        IndexType Type; /**< Index type, determines the size of a single index. */
-        UINT32 NumIndices; /**< Number of indices can buffer can hold. */
+        IndexType Type = IT_32BIT; /**< Index type, determines the size of a single index. */
+        UINT32 NumIndices = 0; /**< Number of indices can buffer can hold. */
         GpuBufferUsage Usage = GBU_STATIC; /**< Usage that tells the hardware how will be buffer be used. */
     };
 

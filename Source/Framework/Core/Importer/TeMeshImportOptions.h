@@ -2,21 +2,17 @@
 
 #include "TeCorePrerequisites.h"
 #include "Importer/TeImportOptions.h"
-#include "Serialization/TeSerializable.h"
 #include "Animation/TeAnimationClip.h"
 
 namespace te
 {
     /** Information about how to split an AnimationClip into multiple separate clips. */
-    struct TE_CORE_EXPORT AnimationSplitInfo : Serializable
+    struct TE_CORE_EXPORT AnimationSplitInfo
     {
-        AnimationSplitInfo()
-            : Serializable(TID_AnimationSplitInfo)
-        { }
+        AnimationSplitInfo() = default;
 
         AnimationSplitInfo(const String & name, UINT32 startFrame, UINT32 endFrame, bool isAdditive = false)
-            : Serializable(TID_AnimationSplitInfo)
-            , Name(name)
+            : Name(name)
             , StartFrame(startFrame)
             , EndFrame(endFrame)
             , IsAdditive(isAdditive)
@@ -29,12 +25,8 @@ namespace te
     };
 
     /** A set of animation events that will be added to an animation clip during animation import. */
-    struct TE_CORE_EXPORT ImportedAnimationEvents : Serializable
+    struct TE_CORE_EXPORT ImportedAnimationEvents
     {
-        ImportedAnimationEvents()
-            : Serializable(TID_ImportedAnimationEvents)
-        { }
-
         String Name;
         Vector<AnimationEvent> Events;
     };

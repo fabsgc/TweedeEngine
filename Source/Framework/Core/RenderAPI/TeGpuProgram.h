@@ -28,6 +28,8 @@ namespace te
          * when supported by the render backend. Call GpuProgram::CompileBytecode to generate it.
          */
         SPtr<GpuProgramBytecode> Bytecode;
+
+        GPU_PROGRAM_DESC() = default;
     };
 
     /**

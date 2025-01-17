@@ -124,7 +124,7 @@ namespace te
         SetHorzFOV(FocalLengthToFOV(focalLength));
     }
 
-    Radian Camera::FocalLengthToFOV(float focalLength)
+    Radian Camera::FocalLengthToFOV(float focalLength) const
     {
         float width = SENSOR_HEIGHT * _aspect;
         float diagonale = Math::Sqrt(Math::Pow(width, 2) + Math::Pow(SENSOR_HEIGHT, 2));
@@ -217,7 +217,7 @@ namespace te
 
         const Transform& tfrm = GetTransform();
 
-        Matrix4 worldMatrix;
+        Matrix4 worldMatrix = {};
         worldMatrix.SetTRS(tfrm.GetPosition(), tfrm.GetRotation(), Vector3::ONE);
 
         Vector<Plane> worldPlanes(frustumPlanes.size());
@@ -324,7 +324,7 @@ namespace te
     {
         Rect2I viewport = GetViewportRect();
 
-        Vector2 ndcPoint;
+        Vector2 ndcPoint = {};
         ndcPoint.x = (float)(((screenPoint.x - viewport.x) / (float)viewport.width) * 2.0f - 1.0f);
 
         static const Conventions& rapiConventions = gCaps().Convention;

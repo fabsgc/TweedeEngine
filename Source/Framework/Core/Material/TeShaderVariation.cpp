@@ -24,12 +24,7 @@ namespace te
 
     const ShaderVariation ShaderVariation::EMPTY;
 
-    ShaderVariation::ShaderVariation()
-        : Serializable(TID_ShaderVariation)
-    { }
-
     ShaderVariation::ShaderVariation(const Vector<Param>& params)
-        : Serializable(TID_ShaderVariation)
     {
         for (auto& entry : params)
             _params[entry.Name] = entry;

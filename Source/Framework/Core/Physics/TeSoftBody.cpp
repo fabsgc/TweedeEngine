@@ -8,7 +8,7 @@
 namespace te
 { 
     SoftBody::SoftBody(const HSceneObject& linkedSO, UINT32 type)
-        : Body(linkedSO, type)
+        : Body(linkedSO, TID_SoftBody)
     { }
 
     void SoftBody::SetScale(const Vector3& scale)

@@ -29,11 +29,6 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<ImportOptions> OAImporter::CreateImportOptions() const
-    {
-        return te_shared_ptr_new<AudioClipImportOptions>();
-    }
-
     SPtr<Resource> OAImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
     {
         AudioDataInfo info;

@@ -229,9 +229,9 @@ namespace te
         void InitializeGui();
         void ApplyStyleGui() const;
         void BeginGui();
-        void EndGui();
+        void EndGui() const;
         void BuildScript();
-        void SaveScript();
+        void SaveScript() const;
 
     protected:
         void LoadScene();

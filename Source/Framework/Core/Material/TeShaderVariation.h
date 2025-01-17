@@ -35,7 +35,7 @@ namespace te
      * Contains information about a single variation of a Shader. Each variation can have a separate set of
      * \#defines that control shader compilation.
      */
-    class TE_CORE_EXPORT ShaderVariation : public Serializable
+    class TE_CORE_EXPORT ShaderVariation
     {
     public:
         /** Possible types of a variation parameter. */
@@ -81,7 +81,7 @@ namespace te
             ParamType Type;
         };
 
-        ShaderVariation();
+        ShaderVariation() = default;
 
         /** Creates a new shader variation with the specified parameters. */
         ShaderVariation(const Vector<Param>& params);

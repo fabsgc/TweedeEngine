@@ -594,7 +594,7 @@ namespace te
         return hasChanged;
     }
 
-    bool WidgetProperties::ShowCAudioListenerProperties()
+    bool WidgetProperties::ShowCAudioListenerProperties() const
     {
         bool hasChanged = false;
         SPtr<CAudioListener> audioListener = std::static_pointer_cast<CAudioListener>(_selections.ClickedComponent);
@@ -2942,7 +2942,7 @@ namespace te
 
             if (ImGuiExt::RenderVector3(rotation, "##collider_option_rotation", " Rotation", 20.0f))
             {
-                Quaternion rot;
+                Quaternion rot = {};
                 rot.FromEulerAngles(Radian(Degree(rotation.x)), Radian(Degree(rotation.y)), Radian(Degree(rotation.z)));
                 collider->SetRotation(rot);
                 hasChanged = true;

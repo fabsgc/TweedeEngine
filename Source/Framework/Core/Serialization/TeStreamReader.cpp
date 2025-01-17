@@ -10,13 +10,13 @@ namespace te
 		if (size == 0)
 			ReadData(reinterpret_cast<UINT8*>(&size), sizeof(size_t));
 
-        dest = static_cast<UINT8*>(te_allocate(size));
+        dest = static_cast<UINT8*>(te_allocate(static_cast<uint32_t>(size)));
 		ReadData(dest, size);
 	}
 
 	void StreamReader::ReadString(std::string& string)
 	{
-		size_t size;
+		size_t size = 0;
 		ReadData(reinterpret_cast<UINT8*>(&size), sizeof(size_t));
 
 		string.resize(size);

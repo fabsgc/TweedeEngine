@@ -454,7 +454,7 @@ namespace te
         _viewportCameraUI->SetTarget(Vector3(0.0f, 0.0f, 0.0f));
         _viewportCameraUI->SetName("Viewport camera UI");
 
-        auto settings = _viewportCamera->GetRenderSettings();
+        auto& settings = _viewportCamera->GetRenderSettings();
         settings->MotionBlur.Enabled = false;
         settings->ScreenSpaceReflections.Enabled = false;
         _viewportCamera->SetRenderSettings(settings); // renderer is not updated otherwise
@@ -681,7 +681,7 @@ namespace te
         }
     }
 
-    void Editor::EndGui()
+    void Editor::EndGui() const
     {
         if (_editorBegun)
             ImGui::End();
@@ -695,7 +695,7 @@ namespace te
         gScriptManager().BuildAndUpdateNativeScripts(script);
     }
 
-    void Editor::SaveScript()
+    void Editor::SaveScript() const
     {
         const Script* script = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetScript();
         
@@ -810,8 +810,8 @@ namespace te
             float matrixTranslation[3];
             float matrixRotation[3];
             float matrixScale[3];
-            float worldMatrix[4][4];
-            float deltaWorldMatrix[4][4];
+            float worldMatrix[4][4] = {};
+            float deltaWorldMatrix[4][4] = {};
             float snap[3] = { 0.1f, 0.1f, 0.1f };
 
             ImGuizmo::SetDrawlist();
@@ -866,7 +866,7 @@ namespace te
 
                 case ImGuizmo::OPERATION::ROTATE:
                 {
-                    Quaternion rotation;
+                    Quaternion rotation = {};
                     ImGuizmo::DecomposeMatrixToComponents(&deltaWorldMatrix[0][0], matrixTranslation, matrixRotation, matrixScale);
 
                     Radian x(Degree((float)matrixRotation[0]));
@@ -1539,7 +1539,7 @@ namespace te
         _light->SetIntensity(60000.f);
         _light->SetCastShadows(true);
 
-        Quaternion rot;
+        Quaternion rot = {};
         rot.FromEulerAngles(Radian(Degree(-21.69f)), Radian(Degree(36.4f)), Radian(Degree(15.06f)));
         _sceneLightSO->SetRotation(rot);
         _sceneLightSO->Move(Vector3(0.0f, 4.0f, 4.0f));

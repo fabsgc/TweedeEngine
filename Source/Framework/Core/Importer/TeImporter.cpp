@@ -1,4 +1,5 @@
 #include "Importer/TeImporter.h"
+#include "Importer/TeImportOptions.h"
 #include "Resources/TeResourceManager.h"
 
 namespace te

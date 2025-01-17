@@ -452,7 +452,7 @@ namespace te
         virtual void SetHorzFOV(const Radian& fov);
 
         /** Convert focal length in mm to FOV in radian */
-        Radian FocalLengthToFOV(float focalLength);
+        Radian FocalLengthToFOV(float focalLength) const;
 
         /**	Calculate projection parameters that are used when constructing the projection matrix. */
         virtual void ComputeProjectionParameters(float& left, float& right, float& bottom, float& top) const;

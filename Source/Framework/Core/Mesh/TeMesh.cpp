@@ -74,7 +74,7 @@ namespace te
         const uint32_t numSubMeshes = document["numSubMeshes"].get<uint32_t>();
 
         Vector<SubMesh> subMeshes;
-        for (auto subMesh : document["subMeshes"])
+        for (auto& subMesh : document["subMeshes"])
         {
             subMeshes.push_back(SubMesh::ImportJson(subMesh));
         }
@@ -472,7 +472,7 @@ namespace te
 
         if (_vertexData)
         {
-            auto vertexBuffers = _vertexData->GetBuffers();
+            auto& vertexBuffers = _vertexData->GetBuffers();
 
             UINT32 streamIdx = 0;
             for (const auto& buffer : vertexBuffers)
