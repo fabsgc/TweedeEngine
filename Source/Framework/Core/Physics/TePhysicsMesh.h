@@ -47,7 +47,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, PhysicsMesh* object);
+        static void Deserialize(StreamReader* deserializer, PhysicsMesh** object);
 
     protected:
         SPtr<FPhysicsMesh> _internal;

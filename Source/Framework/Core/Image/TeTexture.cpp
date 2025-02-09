@@ -362,7 +362,7 @@ namespace te
     SPtr<Texture> Texture::CreateEmpty()
     {
         // TODO serialization
-        return {};
+        return TextureManager::Instance().CreateTexture(TEXTURE_DESC());
     }
 
     SPtr<TextureView> Texture::CreateView(const TEXTURE_VIEW_DESC& desc)
@@ -478,14 +478,15 @@ namespace te
         // TODO Serialization
     }
 
-    void Texture::Deserialize(StreamReader* deserializer, Texture* object)
+    void Texture::Deserialize(StreamReader* deserializer, Texture** object)
     {
-        if (!object)
-        {
-            object = CreateEmpty().get();
-        }
+        // object must be null here as we need some data (size, type etc.) to be able to create a texture
+        // try to create a Vector<PixelData> and call the appropriate constructor
 
-        Resource::Deserialize(deserializer, object);
+        if (!object || !(*object))
+            return;
+
+        Resource::Deserialize(deserializer, *object);
 
         // TODO Serialization
     }

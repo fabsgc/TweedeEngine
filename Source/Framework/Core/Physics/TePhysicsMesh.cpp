@@ -54,7 +54,7 @@ namespace te
     void PhysicsMesh::Initialize()
     {
         Resource::Initialize();
-        _initMeshData = nullptr;
+        // _initMeshData = nullptr; not sure for serialization purpose ?
     }
 
     void PhysicsMesh::Serialize(StreamWriter* serializer) const
@@ -62,13 +62,15 @@ namespace te
         Resource::Serialize(serializer);
     }
 
-    void PhysicsMesh::Deserialize(StreamReader* deserializer, PhysicsMesh* object)
+    void PhysicsMesh::Deserialize(StreamReader* deserializer, PhysicsMesh** object)
     {
-        if (!object)
-        {
-            object = CreateEmpty().get();
-        }
+        if (!object || !(*object))
+            return;
 
-        Resource::Deserialize(deserializer, object);
+        Resource::Deserialize(deserializer, *object);
+
+        // TODO Serialization
+
+        (*object)->Initialize();
     }
 }

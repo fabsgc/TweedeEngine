@@ -34,7 +34,7 @@ namespace te
         }
 
         template <class T>
-        ResourceHandle<T> Load(const String& filePath, const ImportOptions& options = nullptr, bool force = false)
+        ResourceHandle<T> Load(const String& filePath, const ImportOptions& options, bool force = false)
         {
             UUID uuid;
             ResourceHandle<T> resourceHandle;
@@ -60,19 +60,6 @@ namespace te
             }
 
             return static_resource_cast<T>(Get(uuid));
-        }
-
-        void RegisterEngineResource(const String& filePath, SPtr<Resource>& resource, bool force = false)
-        {
-            UUID uuid;
-            GetUUIDFromFile(filePath, uuid);
-
-            if ((uuid.Empty() || force) && resource)
-            {
-                uuid = resource->GetUUID();
-                RegisterResource(uuid, filePath);
-                _createResourceHandle(resource);
-            }
         }
 
         /**

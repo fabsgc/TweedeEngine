@@ -557,8 +557,12 @@ namespace te
 
     SPtr<Material> Material::CreateEmpty()
     {
+        UINT32 id = Material::NextMaterialId.fetch_add(1, std::memory_order_relaxed);
+        assert(id < std::numeric_limits<UINT32>::max() && "Created too many materials, reached maximum id.");
+
         SPtr<Material> newMat = te_core_ptr<Material>(new (te_allocate<Material>()) Material());
         newMat->SetThisPtr(newMat);
+        newMat->_id = id;
 
         return newMat;
     }
@@ -583,16 +587,16 @@ namespace te
         // TODO Serialization
     }
 
-    void Material::Deserialize(StreamReader* deserializer, Material* object)
+    void Material::Deserialize(StreamReader* deserializer, Material** object)
     {
-        if (!object)
-        {
-            object = CreateEmpty().get();
-        }
+        if (!object || !(*object))
+            return;
 
-        Resource::Deserialize(deserializer, object);
+        Resource::Deserialize(deserializer, *object);
 
         // TODO Serialization
+
+        (*object)->Initialize();
     }
 
     void MaterialProperties::ExportJson(nlohmann::json& document) const

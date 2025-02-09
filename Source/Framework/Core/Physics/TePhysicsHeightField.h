@@ -51,7 +51,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, PhysicsHeightField* object);
+        static void Deserialize(StreamReader* deserializer, PhysicsHeightField** object);
 
     protected:
         SPtr<FPhysicsHeightField> _internal;

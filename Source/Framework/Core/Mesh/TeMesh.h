@@ -293,7 +293,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, Mesh* object);
+        static void Deserialize(StreamReader* deserializer, Mesh** object);
 
     protected:
         friend class MeshManager;
@@ -357,7 +357,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, ZPrepassMesh* object);
+        static void Deserialize(StreamReader* deserializer, ZPrepassMesh** object);
 
     protected:
         friend class MeshManager;

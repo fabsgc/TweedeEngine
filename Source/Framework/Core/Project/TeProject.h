@@ -11,7 +11,10 @@ namespace te
     class TE_CORE_EXPORT Project : public Resource
     {
     public:
-        virtual ~Project() = default;
+        virtual ~Project()
+        {
+
+        }
 
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TypeID_Core::TID_Project; }
@@ -46,7 +49,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, Project* object);
+        static void Deserialize(StreamReader* deserializer, Project** object);
 
     private:
         Project();

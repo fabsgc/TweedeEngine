@@ -56,14 +56,12 @@ namespace te
         serializer->WriteString(dump);
     }
 
-    void Project::Deserialize(StreamReader* deserializer, Project* object)
+    void Project::Deserialize(StreamReader* deserializer, Project** object)
     {
-        if (!object)
-        {
-            object = CreateEmpty().get();
-        }
+        if (!object || !(*object))
+            return;
 
-        Resource::Deserialize(deserializer, object);
+        Resource::Deserialize(deserializer, *object);
 
         String projectJsonString;
         deserializer->ReadString(projectJsonString);
@@ -72,16 +70,15 @@ namespace te
 
         for (auto& resource : document["resources"])
         {
-            object->_resourceNames.push_back(resource.get<String>());
+            (*object)->_resourceNames.push_back(resource.get<String>());
         }
-
-        // Should I load resources here ? Yes, but I can also load them directly within the deserialize methods of those that need them.
-        // I should write a API to load a resource given a path RessourceMananger::Load<T>(const Project&, const String& name)
 
         if (document.contains("scene") && document["scene"].size() > 0)
         {
-            object->_sceneObject = SceneObject::Create(document["scene"][0]["name"].get<String>());
-            object->_sceneObject->SetUUID(UUID(document["scene"][0]["uuid"].get<String>()));
+            (*object)->_sceneObject = SceneObject::Create(document["scene"][0]["name"].get<String>());
+            (*object)->_sceneObject->SetUUID(UUID(document["scene"][0]["uuid"].get<String>()));
         }
+
+        (*object)->Initialize();
     }
 }

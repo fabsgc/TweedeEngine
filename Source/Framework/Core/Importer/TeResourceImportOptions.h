@@ -11,6 +11,8 @@ namespace te
     public:
         ResourceImportOptions() = default;
         ~ResourceImportOptions() = default;
+
+        TypeID_Core ResourceType;
     };
 }
 

@@ -928,15 +928,19 @@ namespace te
 
         DestroyRunningScene();
         DestroyScene();
+
         EditorResManager::Instance().RemoveAndClear();
         std::static_pointer_cast<WidgetShaders>(_settings.WShaders)->Initialize();
         std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->Initialize();
+        std::static_pointer_cast<WidgetScripts>(_settings.WScripts)->Initialize();
 
+        gResourceManager().Release(_project);
         LoadEngineResources();
 
         _sceneSO = SceneObject::Create("Scene");
         _settings.State = EditorState::Modified;
 
+        gResourceManager().Release(_project);
         _project = Project::Create();
         _project->SetName("Project");
 
@@ -953,23 +957,31 @@ namespace te
 
         DestroyRunningScene();
         DestroyScene();
+
         EditorResManager::Instance().RemoveAndClear();
         std::static_pointer_cast<WidgetShaders>(_settings.WShaders)->Initialize();
         std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->Initialize();
         std::static_pointer_cast<WidgetScripts>(_settings.WScripts)->Initialize();
 
-        SPtr<MultiResource> multiResourceScene = gResourceManager().LoadAll(path, ProjectImportOptions(), true);
-
-        if (multiResourceScene->Entries.size() == 0 || !multiResourceScene->Entries[0].Res.IsLoaded())
-        {
-            TE_DEBUG("Failed to load the your project at the specified path : " + path);
-            return false;
-        }
-
+        gResourceManager().Release(_project);
         LoadEngineResources();
 
-        _project = static_resource_cast<Project>(multiResourceScene->Entries[0].Res);
-        _project->SetPath(path);
+        _project = gResourceManager().Load<Project>(path, ProjectImportOptions(), true);
+
+        if (!_project.IsLoaded())
+        {
+            TE_DEBUG("Failed to load the your project at the specified path : " + path);
+
+            gResourceManager().Release(_project);
+
+            _project = Project::Create();
+            _project->SetName("Project");
+
+            _sceneSO = SceneObject::Create("Scene");
+            _settings.State = EditorState::Modified;
+
+            return false;
+        }
 
         _sceneSO = _project->GetSceneObject();
         _settings.State = EditorState::Saved;
@@ -1578,23 +1590,16 @@ namespace te
 
         // LOAD SCRIPT
         {
-            std::filesystem::path projectPath(_project->GetPath());
-            String scriptPathStr = projectPath.parent_path().generic_string();
-            scriptPathStr += std::filesystem::path::preferred_separator;
-            scriptPathStr += "FirstScript.cpp";
-
-            std::filesystem::path scriptPath(scriptPathStr);
-            scriptPathStr = scriptPath.generic_string();
+            std::filesystem::path scriptPath("Data/Scripts/FirstScript.cpp");
 
             _script = Script::Create();
             _script->SetName("First script");
-            _script->SetPath(scriptPathStr);
+            _script->SetPath(scriptPath.generic_string());
 
             EditorResManager::Instance().Add(_script);
         }
 
         EditorResManager::Instance().Add<Material>(_furnitureMaterial);
-        EditorResManager::Instance().Add<AudioClip>(_audioClip);
 #endif
     }
 

@@ -2,21 +2,10 @@
 
 #include "Project/TeProject.h"
 #include "Importer/TeProjectImportOptions.h"
+#include "Importer/TeResourceImportOptions.h"
 #include "Serialization/TeBinaryReader.h"
 #include "Serialization/TeUtility.h"
-#include "Utility/TeDataStream.h"
 #include "Resources/TeResourceManager.h"
-
-#include "Animation/TeAnimationClip.h"
-#include "Audio/TeAudioClip.h"
-#include "Image/TeTexture.h"
-#include "Material/TeMaterial.h"
-#include "Material/TeShader.h"
-#include "Mesh/TeMesh.h"
-#include "Physics/TePhysicsHeightField.h"
-#include "Physics/TePhysicsMesh.h"
-#include "Scripting/TeScript.h"
-#include "Text/TeFont.h"
 
 #include <iostream>
 #include <filesystem>
@@ -37,20 +26,9 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    template<typename T>
-    SPtr<T> DeserializeOneResource(const std::filesystem::path& resourcePath)
-    {
-        SPtr<T> resource = T::CreateEmpty();
-        BinaryReader* deserializer = te_new<BinaryReader>(resourcePath);
-
-        T::Deserialize(deserializer, resource.get());
-
-        return resource;
-    }
-
     SPtr<Resource> ProjectImporter::Import(const String& filePath, const ImportOptions& importOptions)
     {
-        SPtr<Project> project = nullptr;
+        SPtr<Project> project = Project::CreateEmpty();
         const std::filesystem::path projectPath = std::filesystem::absolute(filePath);
         const std::filesystem::path workingDirectory = projectPath.parent_path();
         const ProjectImportOptions& projectImportOptions = static_cast<const ProjectImportOptions&>(importOptions);
@@ -58,10 +36,9 @@ namespace te
         if (!std::filesystem::exists(projectPath))
             return project;
 
-        project = Project::CreatePtr();
-
+        Project* projectPtr = project.get();
         BinaryReader* deserializer = te_new<BinaryReader>(projectPath);
-        project->Deserialize(deserializer, project.get());
+        Project::Deserialize(deserializer, &projectPtr);
 
         Vector<String> resourceNames = project->GetAllResourceNames();
         project->ClearResources();
@@ -80,70 +57,24 @@ namespace te
             BinaryReader* resourceDeserializer = te_new<BinaryReader>(resourcePath);
             Resource::Deserialize(resourceDeserializer, resourceMetaData);
 
-            if (!gResourceManager().Get(resourceMetaData->GetUUID()).IsLoaded())
-            {
-                SPtr<Resource> resource = nullptr;
-
-                switch (resourceMetaData->GetCoreType())
-                {
-                case TID_AnimationClip:
-                    resource = DeserializeOneResource<AnimationClip>(resourcePath);
-                    break;
-                
-                case TID_AudioClip:
-                    resource = DeserializeOneResource<AudioClip>(resourcePath);
-                    break;
-
-                case TID_Texture:
-                    resource = DeserializeOneResource<Texture>(resourcePath);
-                    break;
-
-                case TID_Material:
-                    resource = DeserializeOneResource<Material>(resourcePath);
-                    break;
-
-                case TID_Shader:
-                    resource = DeserializeOneResource<Shader>(resourcePath);
-                    break;
-
-                case TID_Mesh:
-                    resource = DeserializeOneResource<Mesh>(resourcePath);
-                    break;
-
-                case TID_ZPrepassMesh:
-                    resource = DeserializeOneResource<ZPrepassMesh>(resourcePath);
-                    break;
-
-                case TID_PhysicsHeightField:
-                    resource = DeserializeOneResource<PhysicsHeightField>(resourcePath);
-                    break;
-
-                case TID_PhysicsMesh:
-                    resource = DeserializeOneResource<PhysicsMesh>(resourcePath);
-                    break;
-
-                case TID_Script:
-                    resource = DeserializeOneResource<Script>(resourcePath);
-                    break;
-
-                case TID_Font:
-                    resource = DeserializeOneResource<Font>(resourcePath);
-                    break;
-
-                default:
-                    TE_DEBUG("Undefined resource type");
-                    break;
-                }
-
-                if (resource)
-                {
-                    gResourceManager().RegisterEngineResource(resourcePath.generic_string(), resource);
-                    project->AddResource(resource.get());
-                }
-            }
+            ResourceImportOptions importOptions;
+            importOptions.ResourceType = static_cast<TypeID_Core>(resourceMetaData->GetCoreType());
 
             te_delete(resourceDeserializer);
+
+            HResource resource = gResourceManager().Load<Resource>(resourcePath.generic_string(), importOptions);
+            if (resource.IsLoaded())
+            {
+                project->AddResource(resource.GetInternalPtr().get());
+                TE_DEBUG("Resource imported from the specified path : " + resource->GetPath());
+            }
+            else
+            {
+                TE_DEBUG("Failed to import the resource from the specified path : " + resourcePath.generic_string());
+            }
         }
+
+        resourceMetaData->Destroy();
 
         te_delete(resourceMetaData);
         te_delete(deserializer);

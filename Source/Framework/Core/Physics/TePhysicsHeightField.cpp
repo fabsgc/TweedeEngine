@@ -63,7 +63,7 @@ namespace te
     void PhysicsHeightField::Initialize()
     {
         Resource::Initialize();
-        _initTexture = nullptr;
+        // _initTexture = nullptr; not sure for serialization purpose ?
     }
 
     void PhysicsHeightField::Serialize(StreamWriter* serializer) const
@@ -71,13 +71,15 @@ namespace te
         Resource::Serialize(serializer);
     }
 
-    void PhysicsHeightField::Deserialize(StreamReader* deserializer, PhysicsHeightField* object)
+    void PhysicsHeightField::Deserialize(StreamReader* deserializer, PhysicsHeightField** object)
     {
-        if (!object)
-        {
-            object = CreateEmpty().get();
-        }
+        if (!object || !(*object))
+            return;
 
-        Resource::Deserialize(deserializer, object);
+        Resource::Deserialize(deserializer, *object);
+
+        // TODO Serialization
+
+        (*object)->Initialize();
     }
 }

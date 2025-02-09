@@ -529,16 +529,16 @@ namespace te
         // TODO serialization
     }
 
-    void Mesh::Deserialize(StreamReader* deserializer, Mesh* object)
+    void Mesh::Deserialize(StreamReader* deserializer, Mesh** object)
     {
-        if (!object)
-        {
-            object = CreateEmpty().get();
-        }
+        if (!object || !(*object))
+            return;
 
-        Resource::Deserialize(deserializer, object);
+        Resource::Deserialize(deserializer, *object);
 
-        // TODO serialization
+        // TODO Serialization
+
+        //(*object)->Initialize();
     }
 
     ZPrepassMesh::ZPrepassMesh()
@@ -575,15 +575,15 @@ namespace te
         // TODO Serialization
     }
 
-    void ZPrepassMesh::Deserialize(StreamReader* deserializer, ZPrepassMesh* object)
+    void ZPrepassMesh::Deserialize(StreamReader* deserializer, ZPrepassMesh** object)
     {
-        if (!object)
-        {
-            object = CreateEmpty().get();
-        }
+        if (!object || !(*object))
+            return;
 
-        Resource::Deserialize(deserializer, object);
+        Resource::Deserialize(deserializer, *object);
 
         // TODO Serialization
+
+        //(*object))->Initialize();
     }
 }

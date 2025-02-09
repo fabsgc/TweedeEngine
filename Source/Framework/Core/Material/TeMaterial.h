@@ -455,7 +455,7 @@ namespace te
         /**  @copydoc Resource::GetResourceType */
         static UINT32 GetResourceType() { return TypeID_Core::TID_Material; }
 
-        /** Returns the unique shader ID. */
+        /** Returns the unique material ID. */
         UINT32 GetId() const { return _id; }
 
         /**
@@ -615,7 +615,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, Material* object);
+        static void Deserialize(StreamReader* deserializer, Material** object);
 
     protected:
         Material();

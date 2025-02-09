@@ -476,13 +476,15 @@ namespace te
         Resource::Serialize(serializer);
     }
 
-    void Shader::Deserialize(StreamReader* deserializer, Shader* object)
+    void Shader::Deserialize(StreamReader* deserializer, Shader** object)
     {
-        if (!object)
-        {
-            object = CreateEmpty().get();
-        }
+        if (!object || !(*object))
+            return;
 
-        Resource::Deserialize(deserializer, object);
+        Resource::Deserialize(deserializer, *object);
+
+        // TODO Serialization
+
+        (*object)->Initialize();
     }
 }
