@@ -65,10 +65,10 @@ namespace te
         void OnShutDown() override;
 
         /** copydoc ResourceManager::LoadAll */
-        SPtr<MultiResource> LoadAll(const String& filePath, const SPtr<const ImportOptions>& options = nullptr, bool force = false);
+        SPtr<MultiResource> LoadAll(const String& filePath, const ImportOptions& options, bool force = false);
 
         template <class T>
-        ResourceHandle<T> Load(const String& filePath, const SPtr<const ImportOptions>& options, bool force = false)
+        ResourceHandle<T> Load(const String& filePath, const ImportOptions& options, bool force = false)
         {
             HResource resource = gResourceManager().Load<T>(filePath, options, force);
 

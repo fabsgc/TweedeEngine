@@ -9,10 +9,8 @@ namespace te
     class TE_CORE_EXPORT ProjectImportOptions : public ImportOptions
     {
     public:
-        ProjectImportOptions();
-
-        /** Creates a new import options object that allows you to customize how are scenes imported. */
-        static SPtr<ProjectImportOptions> Create();
+        ProjectImportOptions() = default;
+        ~ProjectImportOptions() = default;
     };
 }
 

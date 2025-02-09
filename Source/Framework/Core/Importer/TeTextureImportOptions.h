@@ -10,7 +10,8 @@ namespace te
     class TE_CORE_EXPORT TextureImportOptions : public ImportOptions
     {
     public:
-        TextureImportOptions();
+        TextureImportOptions() = default;
+        ~TextureImportOptions() = default;
 
         /** Pixel format to import as. */
         PixelFormat Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
@@ -54,8 +55,5 @@ namespace te
         bool IsCubeMap = false;
 
         CubemapSourceType CubemapType = CubemapSourceType::Faces;
-
-        /** Creates a new import options object that allows you to customize how are textures imported. */
-        static SPtr<TextureImportOptions> Create();
     };
 }

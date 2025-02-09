@@ -32,21 +32,6 @@ namespace te
          * @param[in]	exportOptions	Options that can control how is the resource exported.
          * @return						bool (true if the export was successfull, false instead)
          */
-        virtual bool Export(void* object, const String& filePath, const SPtr<const ExportOptions> exportOptions, bool force = true) = 0;
-
-        /**
-         * Creates export options specific for this exporter. Export options are provided when calling export() in order
-         * to customize the export, and provide additional information.
-         */
-        virtual SPtr<ExportOptions> CreateExportOptions() const;
-
-        /**
-         * Gets the default export options.
-         * @return	The default export options.
-         */
-        SPtr<const ExportOptions> GetDefaultExportOptions() const;
-
-    private:
-        mutable SPtr<const ExportOptions> _defaultExportOptions;
+        virtual bool Export(void* object, const String& filePath, const ExportOptions& exportOptions, bool force = true) = 0;
     };
 }

@@ -24,17 +24,14 @@ namespace te
         bool IsExtensionSupported(const String& ext) const override;
 
         /** @copydoc BaseImporter::Import */
-        SPtr<Resource> Import(const String& filePath, const SPtr<const ImportOptions> importOptions) override;
+        SPtr<Resource> Import(const String& filePath, const ImportOptions& importOptions) override;
 
         /** @copydoc BaseImporter::ImportAll */
-        Vector<SubResourceRaw> ImportAll(const String& filePath, SPtr<const ImportOptions> importOptions) override;
-
-        /** @copydoc BaseImporter::CreateImportOptions */
-        SPtr<ImportOptions> CreateImportOptions() const override;
+        Vector<SubResourceRaw> ImportAll(const String& filePath, const ImportOptions& importOptions) override;
 
     private:
         /** Reads the object file and outputs mesh data from the read file. Sub-mesh information will be output in @p subMeshes. */
-        SPtr<RendererMeshData> ImportMeshData(const String& filePath, MeshImportOptions* importOptions, Vector<SubMesh>& subMeshes, 
+        SPtr<RendererMeshData> ImportMeshData(const String& filePath, MeshImportOptions& importOptions, Vector<SubMesh>& subMeshes, 
             Vector<AssimpAnimationClipData>& animation, SPtr<Skeleton>& skeleton);
 
         /**

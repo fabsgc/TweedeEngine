@@ -27,15 +27,13 @@ namespace te
             }
             else if (material.ShaderPath.type() == typeid(String))
             {
-                auto shaderImportOptions = ShaderImportOptions::Create();
                 HShader shader = gResourceManager().Load<Shader>(
-                    std::any_cast<String>(material.ShaderPath), shaderImportOptions);
+                    std::any_cast<String>(material.ShaderPath), ShaderImportOptions());
             }
             else
             {
-                auto shaderImportOptions = ShaderImportOptions::Create();
                 HShader shader = gResourceManager().Load<Shader>(
-                    std::any_cast<const char*>(material.ShaderPath), shaderImportOptions);
+                    std::any_cast<const char*>(material.ShaderPath), ShaderImportOptions());
             }
         }
 

@@ -36,17 +36,11 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<ImportOptions> ObjectImporter::CreateImportOptions() const
-    {
-        return te_shared_ptr_new<MeshImportOptions>();
-    }
-
-    SPtr<Resource> ObjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
+    SPtr<Resource> ObjectImporter::Import(const String& filePath, const ImportOptions& importOptions)
     {
         MESH_DESC desc;
 
-        MeshImportOptions* meshImportOptions = const_cast<MeshImportOptions*>
-            (static_cast<const MeshImportOptions*>(importOptions.get()));
+        MeshImportOptions& meshImportOptions = const_cast<MeshImportOptions&>(static_cast<const MeshImportOptions&>(importOptions));
 
         Vector<AssimpAnimationClipData> dummy;
         SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, meshImportOptions, desc.SubMeshes, dummy, desc.MeshSkeleton);
@@ -64,15 +58,14 @@ namespace te
         return nullptr;
     }
 
-    Vector<SubResourceRaw> ObjectImporter::ImportAll(const String& filePath, SPtr<const ImportOptions> importOptions)
+    Vector<SubResourceRaw> ObjectImporter::ImportAll(const String& filePath, const ImportOptions& importOptions)
     {
         MESH_DESC desc;
-        MeshImportOptions* meshImportOptions = const_cast<MeshImportOptions*>
-            (static_cast<const MeshImportOptions*>(importOptions.get()));
+        MeshImportOptions& meshImportOptions = const_cast<MeshImportOptions&>(static_cast<const MeshImportOptions&>(importOptions));
 
-        // For principal mesh import, we must disable ImportZPrepassMesh because it will not load all Vertex Layout
-        bool importZPrepassMesh = meshImportOptions->ImportZPrepassMesh;
-        meshImportOptions->ImportZPrepassMesh = false;
+        // For principal mesh import, we must disable ImportZPrepassMesh because it won't load all Vertex Layout
+        bool importZPrepassMesh = meshImportOptions.ImportZPrepassMesh;
+        meshImportOptions.ImportZPrepassMesh = false;
 
         Vector<AssimpAnimationClipData> animationClips;
         SPtr<RendererMeshData> rendererMeshData = ImportMeshData(filePath, meshImportOptions, desc.SubMeshes, animationClips, desc.MeshSkeleton);
@@ -89,12 +82,12 @@ namespace te
             {
                 output.push_back({ "primary", mesh });
 
-                if(meshImportOptions->ImportCollisionShape && !Physics::IsStarted())
+                if(meshImportOptions.ImportCollisionShape && !Physics::IsStarted())
                 {
                     TE_DEBUG("Cannot generate a collision mesh as the physics module was not started.");
                 }
 
-                if ((meshImportOptions->ImportCollisionShape && Physics::IsStarted()) || importZPrepassMesh)
+                if ((meshImportOptions.ImportCollisionShape && Physics::IsStarted()) || importZPrepassMesh)
                 {
                     MeshImportOptions simpleMeshImportOptions;
                     simpleMeshImportOptions.CpuCached = false;
@@ -109,24 +102,24 @@ namespace te
                     simpleMeshImportOptions.GenSmoothNormals = false;
                     simpleMeshImportOptions.ReduceKeyFrames = false;
                     simpleMeshImportOptions.FlipUV = false;
-                    simpleMeshImportOptions.LeftHanded = meshImportOptions->LeftHanded;
-                    simpleMeshImportOptions.FlipWinding = meshImportOptions->FlipWinding;
-                    simpleMeshImportOptions.ScaleSystemUnit = meshImportOptions->ScaleSystemUnit;
-                    simpleMeshImportOptions.ScaleFactor = meshImportOptions->ScaleFactor;
+                    simpleMeshImportOptions.LeftHanded = meshImportOptions.LeftHanded;
+                    simpleMeshImportOptions.FlipWinding = meshImportOptions.FlipWinding;
+                    simpleMeshImportOptions.ScaleSystemUnit = meshImportOptions.ScaleSystemUnit;
+                    simpleMeshImportOptions.ScaleFactor = meshImportOptions.ScaleFactor;
                     simpleMeshImportOptions.ImportMaterials = false;
                     simpleMeshImportOptions.ImportTextures = false;
                     simpleMeshImportOptions.ImportSRGBTextures = false;
                     simpleMeshImportOptions.ImportRootMotion = false;
-                    simpleMeshImportOptions.ImportCollisionShape = meshImportOptions->ImportCollisionShape;
+                    simpleMeshImportOptions.ImportCollisionShape = meshImportOptions.ImportCollisionShape;
                     simpleMeshImportOptions.ImportZPrepassMesh = importZPrepassMesh;
 
                     MESH_DESC simpleMeshDesc;
                     Vector<AssimpAnimationClipData> simpleMeshAnimationClips;
 
-                    SPtr<RendererMeshData> simpleMeshData = ImportMeshData(filePath, &simpleMeshImportOptions, simpleMeshDesc.SubMeshes, simpleMeshAnimationClips, simpleMeshDesc.MeshSkeleton);
+                    SPtr<RendererMeshData> simpleMeshData = ImportMeshData(filePath, simpleMeshImportOptions, simpleMeshDesc.SubMeshes, simpleMeshAnimationClips, simpleMeshDesc.MeshSkeleton);
                     if (simpleMeshData)
                     {
-                        if (meshImportOptions->ImportCollisionShape && Physics::IsStarted())
+                        if (meshImportOptions.ImportCollisionShape && Physics::IsStarted())
                         {
                             SPtr<PhysicsMesh> physicsMesh = PhysicsMesh::CreatePtr(simpleMeshData->GetData());
 
@@ -160,7 +153,7 @@ namespace te
                     }
                 }
 
-                Vector<ImportedAnimationEvents> events = meshImportOptions->AnimationEvents;
+                Vector<ImportedAnimationEvents> events = meshImportOptions.AnimationEvents;
                 for (auto& entry : animationClips)
                 {
                     SPtr<AnimationClip> clip = AnimationClip::CreatePtr(entry.Curves, entry.SampleRate, entry.IsAdditive, entry.RootMot);
@@ -184,7 +177,7 @@ namespace te
         return output;
     }
 
-    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, MeshImportOptions* importOptions, Vector<SubMesh>& subMeshes, 
+    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, MeshImportOptions& importOptions, Vector<SubMesh>& subMeshes, 
         Vector<AssimpAnimationClipData>& animation, SPtr<Skeleton>& skeleton)
     {
         aiScene* scene = nullptr;
@@ -206,30 +199,30 @@ namespace te
             aiProcess_RemoveRedundantMaterials |
             aiProcess_RemoveComponent;
 
-        if (importOptions->ScaleSystemUnit)
+        if (importOptions.ScaleSystemUnit)
         {
             assimpFlags |= aiProcess_GlobalScale;
-            importer.SetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, importOptions->ScaleFactor);
+            importer.SetPropertyFloat(AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, importOptions.ScaleFactor);
         }
 
-        if (importOptions->FlipUV)
+        if (importOptions.FlipUV)
             assimpFlags |= aiProcess_FlipUVs;
 
-        if (importOptions->FlipWinding)
+        if (importOptions.FlipWinding)
             assimpFlags |= aiProcess_FlipWindingOrder;
 
-        if (importOptions->LeftHanded)
+        if (importOptions.LeftHanded)
             assimpFlags |= aiProcess_MakeLeftHanded;
 
-        if (importOptions->ImportAnimations)
+        if (importOptions.ImportAnimations)
             assimpFlags |= aiProcess_LimitBoneWeights;
 
-        if (importOptions->ImportNormals)
+        if (importOptions.ImportNormals)
         {
-            if (importOptions->ForceGenNormals)
+            if (importOptions.ForceGenNormals)
                 assimpFlags |= aiProcess_ForceGenNormals;
 
-            if (importOptions->GenSmoothNormals)
+            if (importOptions.GenSmoothNormals)
                 assimpFlags |= aiProcess_GenSmoothNormals;
             else
                 assimpFlags |= aiProcess_GenNormals;
@@ -237,24 +230,24 @@ namespace te
         else
             removeComponentFlags |= aiComponent_NORMALS;
 
-        if (importOptions->ImportUVCoords)
+        if (importOptions.ImportUVCoords)
             assimpFlags |= aiProcess_GenUVCoords;
         else
             removeComponentFlags |= aiComponent_TEXCOORDS;
 
-        if (!importOptions->ImportTangents)
+        if (!importOptions.ImportTangents)
             removeComponentFlags |= aiComponent_TANGENTS_AND_BITANGENTS;
 
-        if (!importOptions->ImportAnimations)
+        if (!importOptions.ImportAnimations)
             removeComponentFlags |= aiComponent_ANIMATIONS | aiComponent_BONEWEIGHTS;
 
-        if (!importOptions->ImportMaterials)
+        if (!importOptions.ImportMaterials)
             removeComponentFlags |= aiComponent_MATERIALS;
 
-        if (!importOptions->ImportTextures)
+        if (!importOptions.ImportTextures)
             removeComponentFlags |= aiComponent_TEXTURES;
 
-        if (!importOptions->ImportVertexColors)
+        if (!importOptions.ImportVertexColors)
             removeComponentFlags |= aiComponent_COLORS;
 
         importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, removeComponentFlags);
@@ -271,19 +264,19 @@ namespace te
         }
 
         AssimpImportOptions assimpImportOptions;
-        assimpImportOptions.ImportNormals      = importOptions->ImportNormals;
-        assimpImportOptions.ImportTangents     = importOptions->ImportTangents;
-        assimpImportOptions.ImportUVCoords     = importOptions->ImportUVCoords;
-        assimpImportOptions.ImportSkin         = importOptions->ImportSkin;
-        assimpImportOptions.ImportBlendShapes  = importOptions->ImportBlendShapes;
-        assimpImportOptions.ImportAnimations   = importOptions->ImportAnimations;
-        assimpImportOptions.ImportMaterials    = importOptions->ImportMaterials;
-        assimpImportOptions.ImportTextures     = importOptions->ImportTextures;
-        assimpImportOptions.ImportColors       = importOptions->ImportVertexColors;
-        assimpImportOptions.ReduceKeyframes    = importOptions->ReduceKeyFrames;
+        assimpImportOptions.ImportNormals      = importOptions.ImportNormals;
+        assimpImportOptions.ImportTangents     = importOptions.ImportTangents;
+        assimpImportOptions.ImportUVCoords     = importOptions.ImportUVCoords;
+        assimpImportOptions.ImportSkin         = importOptions.ImportSkin;
+        assimpImportOptions.ImportBlendShapes  = importOptions.ImportBlendShapes;
+        assimpImportOptions.ImportAnimations   = importOptions.ImportAnimations;
+        assimpImportOptions.ImportMaterials    = importOptions.ImportMaterials;
+        assimpImportOptions.ImportTextures     = importOptions.ImportTextures;
+        assimpImportOptions.ImportColors       = importOptions.ImportVertexColors;
+        assimpImportOptions.ReduceKeyframes    = importOptions.ReduceKeyFrames;
         assimpImportOptions.FilePath           = filePath;
 
-        if (importOptions->ImportZPrepassMesh)
+        if (importOptions.ImportZPrepassMesh)
             assimpImportOptions.CustomVertexLayout = (UINT32)VertexLayout::Position | (UINT32)VertexLayout::BoneWeights;
 
         ParseScene(scene, assimpImportOptions, importedScene);
@@ -301,8 +294,8 @@ namespace te
         // Import animation clips
         if (!importedScene.Clips.empty())
         {
-            const Vector<AnimationSplitInfo>& splits = importOptions->AnimationSplits;
-            ConvertAnimations(importedScene.Clips, splits, skeleton, importOptions->ImportRootMotion, animation);
+            const Vector<AnimationSplitInfo>& splits = importOptions.AnimationSplits;
+            ConvertAnimations(importedScene.Clips, splits, skeleton, importOptions.ImportRootMotion, animation);
         }
 
         return rendererMeshData;

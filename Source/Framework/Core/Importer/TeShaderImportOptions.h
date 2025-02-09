@@ -9,9 +9,7 @@ namespace te
     class TE_CORE_EXPORT ShaderImportOptions : public ImportOptions
     {
     public:
-        ShaderImportOptions();
-
-        /** Creates a new import options object that allows you to customize how are textures imported. */
-        static SPtr<ShaderImportOptions> Create();
+        ShaderImportOptions() = default;
+        ~ShaderImportOptions() = default;
     };
 }

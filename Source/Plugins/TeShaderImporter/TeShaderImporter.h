@@ -174,10 +174,7 @@ namespace te
         bool IsExtensionSupported(const String& ext) const override;
 
         /** @copydoc BasicImporter::Import */
-        SPtr<Resource> Import(const String& filePath, const SPtr<const ImportOptions> importOptions) override;
-
-        /** @copydoc BasicImporter::CreateImportOptions */
-        SPtr<ImportOptions> CreateImportOptions() const override;
+        SPtr<Resource> Import(const String& filePath, const ImportOptions& importOptions) override;
 
     private:
         ParserData Parse(nlohmann::json& doc);

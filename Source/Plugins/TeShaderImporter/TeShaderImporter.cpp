@@ -33,12 +33,7 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<ImportOptions> ShaderImporter::CreateImportOptions() const
-    {
-        return te_shared_ptr_new<ShaderImportOptions>();
-    }
-
-    SPtr<Resource> ShaderImporter::Import(const String& filePath, const SPtr<const ImportOptions> importOptions)
+    SPtr<Resource> ShaderImporter::Import(const String& filePath, const ImportOptions& importOptions)
     {
         nlohmann::json jsonDocument;
         FileStream file(filePath);

@@ -11,6 +11,7 @@ namespace te
     {
     public:
         AudioClipImportOptions();
+        ~AudioClipImportOptions() = default;
 
         /** Audio format to import the audio clip as. */
         AudioFormat Format = AudioFormat::PCM;
@@ -26,8 +27,5 @@ namespace te
 
         /** Size of a single sample in bits. The clip will be converted to this bit depth on import. */
         UINT32 BitDepth = 16;
-
-        /** Creates a new import options object that allows you to customize how are audio clips imported. */
-        static SPtr<AudioClipImportOptions> Create();
     };
 }

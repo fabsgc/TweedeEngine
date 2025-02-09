@@ -16,9 +16,9 @@ namespace te
         }
     }
 
-    bool Exporter::Export(void* object, const String& inputFilePath, SPtr<const ExportOptions> exportOptions)
+    bool Exporter::Export(void* object, const String& inputFilePath, const ExportOptions& exportOptions)
     {
-        BaseExporter* importer = PrepareForExport(inputFilePath, exportOptions);
+        BaseExporter* importer = PrepareForExport(inputFilePath);
         if (!importer)
             return false;
 
@@ -70,27 +70,9 @@ namespace te
         return nullptr;
     }
 
-    BaseExporter* Exporter::PrepareForExport(const String& filePath, SPtr<const ExportOptions>& exportOptions) const
+    BaseExporter* Exporter::PrepareForExport(const String& filePath) const
     {
-        BaseExporter* exporter = GetExporterForFile(filePath);
-        if (exporter == nullptr)
-            return nullptr;
-
-        if (exportOptions == nullptr)
-        {
-            exportOptions = exporter->GetDefaultExportOptions();
-        }
-        else
-        {
-            SPtr<const ExportOptions> defaultExportOptions = exporter->GetDefaultExportOptions();
-            if (exportOptions->GetCoreType() != defaultExportOptions->GetCoreType())
-            {
-                TE_ASSERT_ERROR(false, "Provided import options is not of valid type. Expected: " + 
-                    ToString(defaultExportOptions->GetCoreType()) + ". Got: " + ToString(exportOptions->GetCoreType()));
-            }
-        }
-
-        return exporter;
+        return GetExporterForFile(filePath);
     }
 
     TE_CORE_EXPORT Exporter& gExporter()

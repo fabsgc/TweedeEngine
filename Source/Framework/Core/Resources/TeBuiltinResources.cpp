@@ -1791,8 +1791,7 @@ namespace te
 
     void BuiltinResources::InitFrameworkIcon()
     {
-        auto options = te_shared_ptr_new<TextureImportOptions>();
-        HTexture iconTex = gResourceManager().Load<Texture>(ICONS_FOLDER + String("frameworkIcon.png"), options);
+        HTexture iconTex = gResourceManager().Load<Texture>(ICONS_FOLDER + String("frameworkIcon.png"), TextureImportOptions());
 
         if (iconTex.IsLoaded())
         {

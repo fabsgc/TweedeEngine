@@ -17,14 +17,9 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<ImportOptions> ResourceImporter::CreateImportOptions() const
+    SPtr<Resource> ResourceImporter::Import(const String& filePath, const ImportOptions& importOptions)
     {
-        return te_shared_ptr_new<ResourceImportOptions>();
-    }
-
-    SPtr<Resource> ResourceImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
-    {
-        const ResourceImportOptions* resourceImportOptions = static_cast<const ResourceImportOptions*>(importOptions.get());
+        const ResourceImportOptions& resourceImportOptions = static_cast<const ResourceImportOptions&>(importOptions);
 
         return nullptr;
     }

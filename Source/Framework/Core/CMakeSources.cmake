@@ -236,7 +236,6 @@ set (TE_CORE_INC_IMPORTER
 )
 set (TE_CORE_SRC_IMPORTER
     "Core/Importer/TeImporter.cpp"
-    "Core/Importer/TeImportOptions.cpp"
     "Core/Importer/TeBaseImporter.cpp"
     "Core/Importer/TeTextureImportOptions.cpp"
     "Core/Importer/TeMeshImportOptions.cpp"
@@ -257,7 +256,6 @@ set (TE_CORE_INC_EXPORTER
 set (TE_CORE_SRC_EXPORTER
     "Core/Exporter/TeExporter.cpp"
     "Core/Exporter/TeExportOptions.cpp"
-    "Core/Exporter/TeBaseExporter.cpp"
     "Core/Exporter/TeProjectExportOptions.cpp"
     "Core/Exporter/TeResourceExportOptions.cpp"
     "Core/Exporter/TeTextureExportOptions.cpp"

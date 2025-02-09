@@ -115,29 +115,24 @@ namespace te
         return ext;
     }
 
-    SPtr<ImportOptions> FreeImgImporter::CreateImportOptions() const
-    {
-        return te_shared_ptr_new<TextureImportOptions>();
-    }
-
-    SPtr<Resource> FreeImgImporter::Import(const String& filePath, const SPtr<const ImportOptions> importOptions)
+    SPtr<Resource> FreeImgImporter::Import(const String& filePath, const ImportOptions& importOptions)
     {
         SPtr<Texture> texture = nullptr;
         Vector<SPtr<PixelData>> facesData;
         auto path = std::filesystem::absolute(filePath);
-        const TextureImportOptions* textureImportOptions = static_cast<const TextureImportOptions*>(importOptions.get());
+        const TextureImportOptions& textureImportOptions = static_cast<const TextureImportOptions&>(importOptions);
 
         SPtr<PixelData> imgData = ImportRawImage(filePath);
         if (imgData == nullptr || imgData->GetData() == nullptr)
             return nullptr;
 
         TextureType texType;
-        if (textureImportOptions->IsCubeMap)
+        if (textureImportOptions.IsCubeMap)
         {
             texType = TEX_TYPE_CUBE_MAP;
 
             std::array<SPtr<PixelData>, 6> cubemapFaces;
-            if (GenerateCubemap(imgData, textureImportOptions->CubemapType, cubemapFaces))
+            if (GenerateCubemap(imgData, textureImportOptions.CubemapType, cubemapFaces))
             {
                 facesData.insert(facesData.begin(), cubemapFaces.begin(), cubemapFaces.end());
             }
@@ -154,7 +149,7 @@ namespace te
         }
 
         int usage = TU_DEFAULT;
-        if (textureImportOptions->CpuCached)
+        if (textureImportOptions.CpuCached)
             usage |= TU_CPUCACHED;
 
         TEXTURE_DESC texDesc;
@@ -162,21 +157,21 @@ namespace te
         texDesc.Width = facesData[0]->GetWidth();
         texDesc.Height = facesData[0]->GetHeight();
         texDesc.NumMips = 0;
-        texDesc.Format = textureImportOptions->Format;
+        texDesc.Format = textureImportOptions.Format;
         texDesc.Usage = usage;
-        texDesc.HwGamma = textureImportOptions->SRGB;
+        texDesc.HwGamma = textureImportOptions.SRGB;
         texDesc.DebugName = path.filename().generic_string();
 
         MipMapGenOptions mipOptions;
-        mipOptions.IsSRGB = textureImportOptions->SRGB;
+        mipOptions.IsSRGB = textureImportOptions.SRGB;
         mipOptions.Alpha = PixelUtil::HasAlpha(facesData[0]->GetFormat()) ? AlphaMode::Transparency: AlphaMode::None;
         mipOptions.Filter = MipMapFilter::Box;
         mipOptions.Quality = CompressionQuality::Normal;
         mipOptions.RoundMode = MipMapRoundMode::RoundNone;
         mipOptions.WrapMode = MipMapWrapMode::Mirror;
-        mipOptions.IsNormalMap = textureImportOptions->IsNormalMap;
+        mipOptions.IsNormalMap = textureImportOptions.IsNormalMap;
 
-        if (textureImportOptions->GenerateMips)
+        if (textureImportOptions.GenerateMips)
         {
             if (!Bitwise::IsPow2(facesData[0]->GetWidth()) || !Bitwise::IsPow2(facesData[0]->GetHeight()))
             {
@@ -205,10 +200,10 @@ namespace te
 
             UINT32 maxPossibleMip = PixelUtil::GetMaxMipmaps(texDesc.Width, texDesc.Height, facesData[0]->GetDepth());
 
-            if (textureImportOptions->MaxMip == 0)
+            if (textureImportOptions.MaxMip == 0)
                 texDesc.NumMips = maxPossibleMip;
             else
-                texDesc.NumMips = std::min(maxPossibleMip, textureImportOptions->MaxMip);
+                texDesc.NumMips = std::min(maxPossibleMip, textureImportOptions.MaxMip);
         }
 
         //if(textureImportOptions->GenerateMipsOnGpu)

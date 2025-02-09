@@ -31,7 +31,8 @@ namespace te
     class TE_CORE_EXPORT FontImportOptions : public ImportOptions
     {
     public:
-        FontImportOptions();
+        FontImportOptions() = default;
+        ~FontImportOptions() = default;
 
         /**	Determines font sizes that are to be imported. Sizes are in points. */
         Vector<UINT32> FontSizes = { 10 };
@@ -50,8 +51,5 @@ namespace te
 
         /**	Determines whether the italic font style should be used when rendering. */
         bool Italic = false;
-
-        /** Creates a new import options object that allows you to customize how are fonts imported. */
-        static SPtr<FontImportOptions> Create();
     };
 }

@@ -133,7 +133,7 @@ namespace te
                 struct TextureElement
                 {
                     SPtr<Texture> texture;
-                    SPtr<TextureExportOptions> option;
+                    TextureExportOptions option;
                 };
 
                 gEditor().NeedsRedraw();
@@ -147,19 +147,17 @@ namespace te
                     if (texture)
                     {
                         TextureElement textureElement;
-
                         textureElement.texture = texture;
-                        textureElement.option = TextureExportOptions::Create();
 
                         if (renderType == RenderOutputType::Depth)
                         {
-                            textureElement.option->IsDepthStencilBuffer = true;
-                            textureElement.option->IsSingleChannel = true;
+                            textureElement.option.IsDepthStencilBuffer = true;
+                            textureElement.option.IsSingleChannel = true;
                         }
 
                         if (renderType == RenderOutputType::SSAO)
                         {
-                            textureElement.option->IsSingleChannel = true;
+                            textureElement.option.IsSingleChannel = true;
                         }
 
                         textures.push_back(textureElement);
@@ -174,10 +172,7 @@ namespace te
                     if (texture)
                     {
                         TextureElement textureElement;
-
                         textureElement.texture = texture;
-                        textureElement.option = TextureExportOptions::Create();
-
                         textures.push_back(textureElement);
                     }
                 }

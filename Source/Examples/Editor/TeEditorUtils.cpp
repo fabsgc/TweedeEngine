@@ -33,14 +33,14 @@ namespace te
         {
             if (*isSet)
             {
-                auto textureImportOptions = TextureImportOptions::Create();
-                textureImportOptions->CpuCached = false;
-                textureImportOptions->GenerateMips = true;
-                textureImportOptions->GenerateMipsOnGpu = true;
-                textureImportOptions->MipsPreserveCoverage = true;
-                textureImportOptions->MaxMip = 0;
-                textureImportOptions->Format = PixelUtil::BestFormatFromFile(texturePath);
-                textureImportOptions->SRGB = SRGB;
+                TextureImportOptions textureImportOptions;
+                textureImportOptions.CpuCached = false;
+                textureImportOptions.GenerateMips = true;
+                textureImportOptions.GenerateMipsOnGpu = true;
+                textureImportOptions.MipsPreserveCoverage = true;
+                textureImportOptions.MaxMip = 0;
+                textureImportOptions.Format = PixelUtil::BestFormatFromFile(texturePath);
+                textureImportOptions.SRGB = SRGB;
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);
 

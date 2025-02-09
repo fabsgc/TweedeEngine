@@ -10,7 +10,7 @@ namespace te
     class TE_CORE_EXPORT TextureExportOptions : public ExportOptions
     {
     public:
-        TextureExportOptions();
+        TextureExportOptions() = default;
 
         /** Pixel format to export as. */
         PixelFormat Format = Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
@@ -29,8 +29,5 @@ namespace te
 
         /** For some textures, only red channel is filled. To avoid them from being rendered completely red, you can set this to true */
         bool IsSingleChannel = false;
-
-        /** Creates a new import options object that allows you to customize how are textures imported. */
-        static SPtr<TextureExportOptions> Create();
     };
 }

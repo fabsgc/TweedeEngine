@@ -958,8 +958,7 @@ namespace te
         std::static_pointer_cast<WidgetMaterials>(_settings.WMaterials)->Initialize();
         std::static_pointer_cast<WidgetScripts>(_settings.WScripts)->Initialize();
 
-        SPtr<ProjectImportOptions> options = te_shared_ptr_new<ProjectImportOptions>();
-        SPtr<MultiResource> multiResourceScene = gResourceManager().LoadAll(path, options, true);
+        SPtr<MultiResource> multiResourceScene = gResourceManager().LoadAll(path, ProjectImportOptions(), true);
 
         if (multiResourceScene->Entries.size() == 0 || !multiResourceScene->Entries[0].Res.IsLoaded())
         {
@@ -998,8 +997,7 @@ namespace te
             _project->AddResource(resource);
         }
 
-        SPtr<ProjectExportOptions> options = te_shared_ptr_new<ProjectExportOptions>();
-        if (gExporter().Export(_project.GetInternalPtr().get(), _project->GetPath(), options))
+        if (gExporter().Export(_project.GetInternalPtr().get(), _project->GetPath(), ProjectExportOptions()))
         {
             TE_DEBUG("Project saved at the specified path : " + _project->GetPath());
         }
@@ -1434,29 +1432,29 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // IMPORT OPTIONS
         // ######################################################
-        auto meshImportOptions = MeshImportOptions::Create();
-        meshImportOptions->ImportCollisionShape = false;
-        meshImportOptions->ImportMaterials = true;
-        meshImportOptions->ImportTextures = false;
-        meshImportOptions->ScaleFactor = 3.5f;
-        meshImportOptions->ScaleSystemUnit = true;
-        meshImportOptions->ImportZPrepassMesh = true;
+        MeshImportOptions meshImportOptions;
+        meshImportOptions.ImportCollisionShape = false;
+        meshImportOptions.ImportMaterials = true;
+        meshImportOptions.ImportTextures = false;
+        meshImportOptions.ScaleFactor = 3.5f;
+        meshImportOptions.ScaleSystemUnit = true;
+        meshImportOptions.ImportZPrepassMesh = true;
 
-        auto textureImportOptions = TextureImportOptions::Create();
-        textureImportOptions->CpuCached = false;
-        textureImportOptions->GenerateMips = true;
-        textureImportOptions->GenerateMipsOnGpu = true;
-        textureImportOptions->MipsPreserveCoverage = true;
-        textureImportOptions->SRGB = true;
+        TextureImportOptions textureImportOptions;
+        textureImportOptions.CpuCached = false;
+        textureImportOptions.GenerateMips = true;
+        textureImportOptions.GenerateMipsOnGpu = true;
+        textureImportOptions.MipsPreserveCoverage = true;
+        textureImportOptions.SRGB = true;
 
-        auto textureCubeMapImportOptions = TextureImportOptions::Create();
-        textureCubeMapImportOptions->CpuCached = false;
-        textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureCubeMapImportOptions->IsCubeMap = true;
-        textureCubeMapImportOptions->SRGB = true;
+        TextureImportOptions textureCubeMapImportOptions;
+        textureCubeMapImportOptions.CpuCached = false;
+        textureCubeMapImportOptions.CubemapType = CubemapSourceType::Faces;
+        textureCubeMapImportOptions.IsCubeMap = true;
+        textureCubeMapImportOptions.SRGB = true;
 
-        auto clipImportOptions = AudioClipImportOptions::Create();
-        clipImportOptions->Is3D = true;
+        AudioClipImportOptions clipImportOptions;
+        clipImportOptions.Is3D = true;
         // ######################################################
 
         // LOAD MESH AND TEXTURES RESOURCES
@@ -1468,7 +1466,7 @@ namespace te
         //_monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         //_planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
 
-        textureCubeMapImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_syferfontein_1024.png");
+        textureCubeMapImportOptions.Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_syferfontein_1024.png");
         _skyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_syferfontein_1024.png", textureCubeMapImportOptions);
 
         //textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Cobble/diffuse1.jpg");

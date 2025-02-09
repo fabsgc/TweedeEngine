@@ -37,11 +37,6 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<ImportOptions> ProjectImporter::CreateImportOptions() const
-    {
-        return te_shared_ptr_new<ProjectImportOptions>();
-    }
-
     template<typename T>
     SPtr<T> DeserializeOneResource(const std::filesystem::path& resourcePath)
     {
@@ -53,12 +48,12 @@ namespace te
         return resource;
     }
 
-    SPtr<Resource> ProjectImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
+    SPtr<Resource> ProjectImporter::Import(const String& filePath, const ImportOptions& importOptions)
     {
         SPtr<Project> project = nullptr;
         const std::filesystem::path projectPath = std::filesystem::absolute(filePath);
         const std::filesystem::path workingDirectory = projectPath.parent_path();
-        const ProjectImportOptions* projectImportOptions = static_cast<const ProjectImportOptions*>(importOptions.get());
+        const ProjectImportOptions& projectImportOptions = static_cast<const ProjectImportOptions&>(importOptions);
 
         if (!std::filesystem::exists(projectPath))
             return project;

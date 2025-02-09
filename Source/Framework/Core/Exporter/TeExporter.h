@@ -20,11 +20,11 @@ namespace te
          * Exports a resource at the specified location, and returns true for success, false otherwise.
          *
          * @param[in]	inputFilePath	Pathname of the input file.
-         * @param[in]	exportOptions	(optional) Options for controlling the export. Caller must ensure export options
+         * @param[in]	exportOptions	Options for controlling the export. Caller must ensure export options
          *								actually match the type of the exporter used for the file type.
          * @return						boolean : true for success, false othewise
         */
-        bool Export(void* object, const String& inputFilePath, SPtr<const ExportOptions> exportOptions);
+        bool Export(void* object, const String& inputFilePath, const ExportOptions& exportOptions);
 
         /**
          * Checks if we can export a file with the specified extension.
@@ -52,10 +52,9 @@ namespace te
 
         /**
          * Prepares for export of a file at the specified path. Returns the type of exporter the file can be exported with,
-         * or null if the file isn't valid or is of unsupported type. Also creates the default set of export options unless
-         * already provided.
+         * or null if the file isn't valid or is of unsupported type.
          */
-        BaseExporter* PrepareForExport(const String& filePath, SPtr<const ExportOptions>& exportOptions) const;
+        BaseExporter* PrepareForExport(const String& filePath) const;
 
     private:
         Vector<BaseExporter*> _assetExporters;

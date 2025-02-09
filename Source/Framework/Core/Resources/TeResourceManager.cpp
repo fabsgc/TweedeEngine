@@ -57,7 +57,7 @@ namespace te
         resource.ClearHandleData();
     }
 
-    SPtr<MultiResource> ResourceManager::LoadAll(const String& filePath, const SPtr<const ImportOptions>& options, bool force)
+    SPtr<MultiResource> ResourceManager::LoadAll(const String& filePath, const ImportOptions& options, bool force)
     {
         UUID uuid;
         SPtr<MultiResource> resources;

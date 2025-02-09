@@ -10,8 +10,5 @@ namespace te
     {
     public:
         ProjectExportOptions();
-
-        /** Creates a new export options object that allows you to customize how are scenes exported. */
-        static SPtr<ProjectExportOptions> Create();
     };
 }

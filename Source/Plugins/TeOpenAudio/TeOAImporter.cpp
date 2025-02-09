@@ -29,7 +29,7 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<Resource> OAImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
+    SPtr<Resource> OAImporter::Import(const String& filePath, const ImportOptions& importOptions)
     {
         AudioDataInfo info;
         UINT32 bytesPerSample = 0;
@@ -80,10 +80,10 @@ namespace te
             reader->Read(sampleStream->Data(), info.NumSamples);
         }
 
-        SPtr<const AudioClipImportOptions> clipIO = std::static_pointer_cast<const AudioClipImportOptions>(importOptions);
+        const AudioClipImportOptions& clipIO = static_cast<const AudioClipImportOptions&>(importOptions);
 
         // If 3D, convert to mono
-        if (clipIO->Is3D && info.NumChannels > 1)
+        if (clipIO.Is3D && info.NumChannels > 1)
         {
             /*UINT32 numSamplesPerChannel = info.NumSamples / info.NumChannels;
 
@@ -100,21 +100,21 @@ namespace te
         }
 
         // Convert bit depth if needed
-        if (clipIO->BitDepth != info.BitDepth)
+        if (clipIO.BitDepth != info.BitDepth)
         {
-            UINT32 outBufferSize = info.NumSamples * (clipIO->BitDepth / 8);
+            UINT32 outBufferSize = info.NumSamples * (clipIO.BitDepth / 8);
             auto outStream = te_shared_ptr_new<MemoryDataStream>(outBufferSize);
 
-            AudioUtility::ConvertBitDepth(sampleStream->Data(), info.BitDepth, outStream->Data(), clipIO->BitDepth, info.NumSamples);
+            AudioUtility::ConvertBitDepth(sampleStream->Data(), info.BitDepth, outStream->Data(), clipIO.BitDepth, info.NumSamples);
 
-            info.BitDepth = clipIO->BitDepth;
+            info.BitDepth = clipIO.BitDepth;
 
             sampleStream = outStream;
             bufferSize = outBufferSize;
         }
 
         // Encode to Ogg Vorbis if needed
-        if (clipIO->Format == AudioFormat::VORBIS)
+        if (clipIO.Format == AudioFormat::VORBIS)
         {
             // Note: If the original source was in Ogg Vorbis we could just copy it here, but instead we decode to PCM and
             // then re-encode which is redundant. If later we decide to copy be aware that the engine encodes Ogg in a
@@ -124,11 +124,11 @@ namespace te
 
         AUDIO_CLIP_DESC clipDesc;
         clipDesc.BitDepth = info.BitDepth;
-        clipDesc.Format = clipIO->Format;
+        clipDesc.Format = clipIO.Format;
         clipDesc.Frequency = info.SampleRate;
         clipDesc.NumChannels = info.NumChannels;
-        clipDesc.ReadMode = clipIO->ReadMode;
-        clipDesc.Is3D = clipIO->Is3D;
+        clipDesc.ReadMode = clipIO.ReadMode;
+        clipDesc.Is3D = clipIO.Is3D;
 
         auto path = std::filesystem::absolute(filePath);
         SPtr<AudioClip> clip = AudioClip::CreatePtr(sampleStream, bufferSize, info.NumSamples, clipDesc);

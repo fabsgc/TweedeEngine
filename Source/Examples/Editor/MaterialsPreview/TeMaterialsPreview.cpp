@@ -219,7 +219,7 @@ namespace te
 
     void MaterialsPreview::InitializeRenderable()
     {
-        auto meshImportOptions = MeshImportOptions::Create();
+        MeshImportOptions meshImportOptions;
 
         _box = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/cube.obj", meshImportOptions).GetInternalPtr();
         _plane = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", meshImportOptions).GetInternalPtr();
@@ -251,12 +251,12 @@ namespace te
     {
         String path = "Data/Textures/Skybox/skybox_night_512.png";
 
-        auto textureCubeMapImportOptions = TextureImportOptions::Create();
-        textureCubeMapImportOptions->CpuCached = false;
-        textureCubeMapImportOptions->CubemapType = CubemapSourceType::Faces;
-        textureCubeMapImportOptions->IsCubeMap = true;
-        textureCubeMapImportOptions->Format = PixelUtil::BestFormatFromFile(path);
-        textureCubeMapImportOptions->SRGB = true;
+        TextureImportOptions textureCubeMapImportOptions;
+        textureCubeMapImportOptions.CpuCached = false;
+        textureCubeMapImportOptions.CubemapType = CubemapSourceType::Faces;
+        textureCubeMapImportOptions.IsCubeMap = true;
+        textureCubeMapImportOptions.Format = PixelUtil::BestFormatFromFile(path);
+        textureCubeMapImportOptions.SRGB = true;
 
         _radiance = ResourceManager::Instance().Load<Texture>(path, textureCubeMapImportOptions).GetInternalPtr();
         TE_ASSERT_ERROR(_radiance.get(), "Failed to load environment texture");

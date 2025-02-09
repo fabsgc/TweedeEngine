@@ -18,14 +18,9 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<ExportOptions> ResourceExporter::CreateExportOptions() const
+    bool ResourceExporter::Export(void* object, const String& filePath, const ExportOptions& exportOptions, bool force)
     {
-        return te_shared_ptr_new<ResourceExportOptions>();
-    }
-
-    bool ResourceExporter::Export(void* object, const String& filePath, SPtr<const ExportOptions> exportOptions, bool force)
-    {
-        const ResourceExportOptions* resourceExportOptions = static_cast<const ResourceExportOptions*>(exportOptions.get());
+        const ResourceExportOptions& resourceExportOptions = static_cast<const ResourceExportOptions&>(exportOptions);
 
         Resource* resource = static_cast<Resource*>(object);
 

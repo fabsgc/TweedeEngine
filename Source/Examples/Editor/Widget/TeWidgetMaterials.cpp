@@ -652,20 +652,20 @@ namespace te
 
         if (_fileBrowser.ShowFileDialog("Load Material Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, Editor::TexturesExtensionsStr))
         {
-            auto textureImportOptions = TextureImportOptions::Create();
-            textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
-            textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
-            textureImportOptions->GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
-            textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-            textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
-            textureImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
-            textureImportOptions->IsNormalMap = _fileBrowser.Data.TexParam.IsNormalMap;
+            TextureImportOptions textureImportOptions;
+            textureImportOptions.CpuCached = _fileBrowser.Data.TexParam.CpuCached;
+            textureImportOptions.GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
+            textureImportOptions.GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
+            textureImportOptions.MaxMip = _fileBrowser.Data.TexParam.MaxMips;
+            textureImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
+            textureImportOptions.SRGB = _fileBrowser.Data.TexParam.SRGB;
+            textureImportOptions.IsNormalMap = _fileBrowser.Data.TexParam.IsNormalMap;
 
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
             {
-                textureImportOptions->CubemapType = CubemapSourceType::Faces;
-                textureImportOptions->IsCubeMap = true;
-                textureImportOptions->IsNormalMap = false;
+                textureImportOptions.CubemapType = CubemapSourceType::Faces;
+                textureImportOptions.IsCubeMap = true;
+                textureImportOptions.IsNormalMap = false;
             }
 
             HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);

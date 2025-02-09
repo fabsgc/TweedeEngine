@@ -142,21 +142,7 @@ namespace te
         TID_FPhysicsHeightField       = 1523,
         TID_FJoint                    = 1524,
         TID_FCollider                 = 1525,
-        TID_FBody                     = 1526,
-
-        TID_ExportOptions             = 1600,
-        TID_ProjectExportOptions      = 1602, 
-        TID_ResourceExportOptions     = 1603,
-        TID_TextureExportOptions      = 1604,
-
-        TID_ImportOptions             = 1700,
-        TID_ProjectImportOptions      = 1701,
-        TID_ResourceImportOptions     = 1702,
-        TID_TextureImportOptions      = 1703,
-        TID_FontImportOptions         = 1704,
-        TID_MeshImportOptions         = 1705,
-        TID_ShaderImportOptions       = 1706,
-        TID_AudioClipImportOptions    = 1707
+        TID_FBody                     = 1526
     };
 }
 

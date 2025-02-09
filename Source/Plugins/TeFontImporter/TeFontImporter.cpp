@@ -29,14 +29,9 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<ImportOptions> FontImporter::CreateImportOptions() const
+    SPtr<Resource> FontImporter::Import(const String& filePath, const ImportOptions& importOptions)
     {
-        return te_shared_ptr_new<FontImportOptions>();
-    }
-
-    SPtr<Resource> FontImporter::Import(const String& filePath, SPtr<const ImportOptions> importOptions)
-    {
-        const FontImportOptions* fontImportOptions = static_cast<const FontImportOptions*>(importOptions.get());
+        const FontImportOptions& fontImportOptions = static_cast<const FontImportOptions&>(importOptions);
 
         FT_Library library;
 
@@ -59,12 +54,12 @@ namespace te
             TE_ASSERT_ERROR(false, "Failed to load font file: " + filePath + ". Unknown error.");
         }
 
-        Vector<CharRange> charIndexRanges = fontImportOptions->CharIndexRanges;
-        Vector<UINT32> fontSizes = fontImportOptions->FontSizes;
-        UINT32 dpi = fontImportOptions->Dpi;
+        Vector<CharRange> charIndexRanges = fontImportOptions.CharIndexRanges;
+        Vector<UINT32> fontSizes = fontImportOptions.FontSizes;
+        UINT32 dpi = fontImportOptions.Dpi;
 
         FT_Int32 loadFlags;
-        switch (fontImportOptions->RenderMode)
+        switch (fontImportOptions.RenderMode)
         {
         case FontRenderMode::Smooth:
             loadFlags = FT_LOAD_TARGET_NORMAL | FT_LOAD_NO_HINTING;

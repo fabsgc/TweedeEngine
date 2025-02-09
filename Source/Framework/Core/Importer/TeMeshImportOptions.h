@@ -35,7 +35,8 @@ namespace te
     class TE_CORE_EXPORT MeshImportOptions : public ImportOptions
     {
     public:
-        MeshImportOptions();
+        MeshImportOptions() = default;
+        ~MeshImportOptions() = default;
 
         /** Determines whether the texture data is also stored in CPU memory. */
         bool CpuCached = false;
@@ -125,8 +126,5 @@ namespace te
          * ZPrepass only draw outline of meshes on screen. Thus, we would like to have a position only vertex buffer mesh
          */
         bool ImportZPrepassMesh = false;
-
-        /** Creates a new import options object that allows you to customize how are Meshs imported. */
-        static SPtr<MeshImportOptions> Create();
     };
 }

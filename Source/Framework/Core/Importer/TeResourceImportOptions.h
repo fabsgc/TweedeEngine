@@ -9,10 +9,8 @@ namespace te
     class TE_CORE_EXPORT ResourceImportOptions : public ImportOptions
     {
     public:
-        ResourceImportOptions();
-
-        /** Creates a new import options object that allows you to customize how are scenes imported. */
-        static SPtr<ResourceImportOptions> Create();
+        ResourceImportOptions() = default;
+        ~ResourceImportOptions() = default;
     };
 }
 

@@ -27,16 +27,11 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<ExportOptions> ProjectExporter::CreateExportOptions() const
-    {
-        return te_shared_ptr_new<ProjectExportOptions>();
-    }
-
-    bool ProjectExporter::Export(void* object, const String& filePath, SPtr<const ExportOptions> exportOptions, bool force)
+    bool ProjectExporter::Export(void* object, const String& filePath, const ExportOptions& exportOptions, bool force)
     {
         const std::filesystem::path projectPath = std::filesystem::path(filePath);
         const std::filesystem::path workingDirectory = projectPath.parent_path();
-        const ProjectExportOptions* projectExportOptions = static_cast<const ProjectExportOptions*>(exportOptions.get());
+        const ProjectExportOptions& projectExportOptions = static_cast<const ProjectExportOptions&>(exportOptions);
 
         Project* project = static_cast<Project*>(object);
         BinaryWriter* serializer = te_new<BinaryWriter>(projectPath);
@@ -51,8 +46,7 @@ namespace te
         {
             const std::filesystem::path resourcePath = serialization::GetProjectResourcePath(workingDirectory, resource);
 
-            SPtr<ResourceExportOptions> options = te_shared_ptr_new<ResourceExportOptions>();
-            if (gExporter().Export(resource, resourcePath.generic_string(), options))
+            if (gExporter().Export(resource, resourcePath.generic_string(), ResourceExportOptions()))
             {
                 TE_DEBUG("Resource saved at the specified path : " + resource->GetPath());
             }

@@ -10,8 +10,5 @@ namespace te
     {
     public:
         ResourceExportOptions();
-
-        /** Creates a new export options object that allows you to customize how are scenes exported. */
-        static SPtr<ResourceExportOptions> Create();
     };
 }

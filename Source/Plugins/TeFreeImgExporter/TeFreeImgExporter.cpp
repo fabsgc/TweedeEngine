@@ -84,14 +84,9 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<ExportOptions> FreeImgExporter::CreateExportOptions() const
+    bool FreeImgExporter::Export(void* object, const String& filePath, const ExportOptions& exportOptions, bool force)
     {
-        return te_shared_ptr_new<TextureExportOptions>();
-    }
-
-    bool FreeImgExporter::Export(void* object, const String& filePath, SPtr<const ExportOptions> exportOptions, bool force)
-    {
-        const TextureExportOptions* textureExportOptions = static_cast<const TextureExportOptions*>(exportOptions.get());
+        const TextureExportOptions& textureExportOptions = static_cast<const TextureExportOptions&>(exportOptions);
 
         Texture* texture = static_cast<Texture*>(object);
         if (!texture)
@@ -134,7 +129,7 @@ namespace te
         }
     }
 
-    bool FreeImgExporter::Export(const PixelData& pixelData, UINT32 width, UINT32 height, bool isSRGB, const String& filePath, const TextureExportOptions* exportOptions, bool force)
+    bool FreeImgExporter::Export(const PixelData& pixelData, UINT32 width, UINT32 height, bool isSRGB, const String& filePath, const TextureExportOptions& exportOptions, bool force)
     {
         auto path = std::filesystem::absolute(filePath);
 
@@ -166,7 +161,7 @@ namespace te
         float minValue = std::numeric_limits<float>::max();
         float maxValue = std::numeric_limits<float>::min();
 
-        if (exportOptions->IsDepthStencilBuffer)
+        if (exportOptions.IsDepthStencilBuffer)
         {
             LoopThroughPixelData(pixelData, width, height, isSRGB, [&](const Color& color, UINT32 i, UINT32 j) {
                 minValue = std::min(minValue, color.r);
@@ -177,10 +172,10 @@ namespace te
         LoopThroughPixelData(pixelData, width, height, isSRGB, [&](const Color& color, UINT32 i, UINT32 j) {
             // TODO : Separate Depth and Stencil buffer ?
 
-            if (exportOptions->IsSingleChannel || exportOptions->IsDepthStencilBuffer)
+            if (exportOptions.IsSingleChannel || exportOptions.IsDepthStencilBuffer)
             {
                 float remappedColor = Math::Clamp01(color.r);
-                if (exportOptions->IsDepthStencilBuffer)
+                if (exportOptions.IsDepthStencilBuffer)
                 {
                     remappedColor = Math::Remap(Math::Clamp01(color.r), minValue, maxValue, 0.0f, 1.0f);
                 }

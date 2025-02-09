@@ -3065,25 +3065,25 @@ namespace te
 
         if (_fileBrowser.ShowFileDialog("Load Mesh", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, Editor::MeshesExtensionsStr))
         {
-            auto meshImportOptions = MeshImportOptions::Create();
-            meshImportOptions->ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;
-            meshImportOptions->ImportTangents = _fileBrowser.Data.MeshParam.ImportTangents;
-            meshImportOptions->ImportUVCoords = _fileBrowser.Data.MeshParam.ImportUVCoords;
-            meshImportOptions->ImportSkin = _fileBrowser.Data.MeshParam.ImportSkin;
-            meshImportOptions->ImportBlendShapes = _fileBrowser.Data.MeshParam.ImportBlendShapes;
-            meshImportOptions->ImportAnimations = _fileBrowser.Data.MeshParam.ImportAnimations;
-            meshImportOptions->ReduceKeyFrames = _fileBrowser.Data.MeshParam.ReduceKeyFrames;
-            meshImportOptions->ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
-            meshImportOptions->ImportTextures = _fileBrowser.Data.MeshParam.ImportTextures;
-            meshImportOptions->ImportSRGBTextures = _fileBrowser.Data.MeshParam.ImportSRGBTextures;
-            meshImportOptions->ImportVertexColors = _fileBrowser.Data.MeshParam.ImportVertexColors;
-            meshImportOptions->ForceGenNormals = _fileBrowser.Data.MeshParam.ForceGenNormals;
-            meshImportOptions->GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
-            meshImportOptions->ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
-            meshImportOptions->ScaleFactor = _fileBrowser.Data.MeshParam.ScaleFactor;
-            meshImportOptions->ImportCollisionShape = _fileBrowser.Data.MeshParam.ImportCollisionShape;
-            meshImportOptions->ImportZPrepassMesh = _fileBrowser.Data.MeshParam.ImportZPrepassMesh;
-            meshImportOptions->CpuCached = false;
+            MeshImportOptions meshImportOptions;
+            meshImportOptions.ImportNormals = _fileBrowser.Data.MeshParam.ImportNormals;
+            meshImportOptions.ImportTangents = _fileBrowser.Data.MeshParam.ImportTangents;
+            meshImportOptions.ImportUVCoords = _fileBrowser.Data.MeshParam.ImportUVCoords;
+            meshImportOptions.ImportSkin = _fileBrowser.Data.MeshParam.ImportSkin;
+            meshImportOptions.ImportBlendShapes = _fileBrowser.Data.MeshParam.ImportBlendShapes;
+            meshImportOptions.ImportAnimations = _fileBrowser.Data.MeshParam.ImportAnimations;
+            meshImportOptions.ReduceKeyFrames = _fileBrowser.Data.MeshParam.ReduceKeyFrames;
+            meshImportOptions.ImportMaterials = _fileBrowser.Data.MeshParam.ImportMaterials;
+            meshImportOptions.ImportTextures = _fileBrowser.Data.MeshParam.ImportTextures;
+            meshImportOptions.ImportSRGBTextures = _fileBrowser.Data.MeshParam.ImportSRGBTextures;
+            meshImportOptions.ImportVertexColors = _fileBrowser.Data.MeshParam.ImportVertexColors;
+            meshImportOptions.ForceGenNormals = _fileBrowser.Data.MeshParam.ForceGenNormals;
+            meshImportOptions.GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
+            meshImportOptions.ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
+            meshImportOptions.ScaleFactor = _fileBrowser.Data.MeshParam.ScaleFactor;
+            meshImportOptions.ImportCollisionShape = _fileBrowser.Data.MeshParam.ImportCollisionShape;
+            meshImportOptions.ImportZPrepassMesh = _fileBrowser.Data.MeshParam.ImportZPrepassMesh;
+            meshImportOptions.CpuCached = false;
 
             SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions);
             if (!resources->Empty())
@@ -3105,9 +3105,9 @@ namespace te
                                 renderable->SetMesh(mesh.GetInternalPtr());
                                 meshLoaded = true;
 
-                                if (meshImportOptions->ImportMaterials && meshImportOptions->ImportTextures)
+                                if (meshImportOptions.ImportMaterials && meshImportOptions.ImportTextures)
                                 {
-                                    EditorUtils::ImportMeshMaterials(mesh, meshImportOptions->ImportSRGBTextures);
+                                    EditorUtils::ImportMeshMaterials(mesh, meshImportOptions.ImportSRGBTextures);
 
                                     for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
                                     {
@@ -3180,17 +3180,17 @@ namespace te
         {
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_CUBE_MAP)
             {
-                auto textureSkyboxImportOptions = TextureImportOptions::Create();
-                textureSkyboxImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
-                textureSkyboxImportOptions->CubemapType = CubemapSourceType::Faces;
-                textureSkyboxImportOptions->IsCubeMap = true;
-                textureSkyboxImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
-                textureSkyboxImportOptions->GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
-                textureSkyboxImportOptions->MipsPreserveCoverage = _fileBrowser.Data.TexParam.MipsPreserveCoverage;
-                textureSkyboxImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-                textureSkyboxImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
-                textureSkyboxImportOptions->SRGB = _fileBrowser.Data.TexParam.SRGB;
-                textureSkyboxImportOptions->IsNormalMap = false;
+                TextureImportOptions textureSkyboxImportOptions;
+                textureSkyboxImportOptions.CpuCached = _fileBrowser.Data.TexParam.CpuCached;
+                textureSkyboxImportOptions.CubemapType = CubemapSourceType::Faces;
+                textureSkyboxImportOptions.IsCubeMap = true;
+                textureSkyboxImportOptions.GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
+                textureSkyboxImportOptions.GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
+                textureSkyboxImportOptions.MipsPreserveCoverage = _fileBrowser.Data.TexParam.MipsPreserveCoverage;
+                textureSkyboxImportOptions.MaxMip = _fileBrowser.Data.TexParam.MaxMips;
+                textureSkyboxImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
+                textureSkyboxImportOptions.SRGB = _fileBrowser.Data.TexParam.SRGB;
+                textureSkyboxImportOptions.IsNormalMap = false;
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
                 if (texture.IsLoaded())
@@ -3226,8 +3226,8 @@ namespace te
 
         if (_fileBrowser.ShowFileDialog("Load Audio Clip", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, Editor::SoundsExtensionsStr))
         {
-            auto audioClipImportOptions = AudioClipImportOptions::Create();
-            audioClipImportOptions->Is3D = _fileBrowser.Data.AudioParam.Is3D;
+            AudioClipImportOptions audioClipImportOptions;
+            audioClipImportOptions.Is3D = _fileBrowser.Data.AudioParam.Is3D;
 
             HAudioClip audioClip = EditorResManager::Instance().Load<AudioClip>(_fileBrowser.Data.SelectedPath, audioClipImportOptions);
             if (audioClip.IsLoaded())
@@ -3262,15 +3262,15 @@ namespace te
 
         if (_fileBrowser.ShowFileDialog("Load Height Field Texture", ImGuiFileBrowser::DialogMode::OPEN, ImVec2(900, 450), true, Editor::TexturesExtensionsStr))
         {
-            auto textureImportOptions = TextureImportOptions::Create();
+            TextureImportOptions textureImportOptions;
             if (_fileBrowser.Data.TexParam.TexType == TextureType::TEX_TYPE_2D)
             {
-                textureImportOptions->CpuCached = _fileBrowser.Data.TexParam.CpuCached;
-                textureImportOptions->GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
-                textureImportOptions->GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
-                textureImportOptions->MipsPreserveCoverage = _fileBrowser.Data.TexParam.MipsPreserveCoverage;
-                textureImportOptions->MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-                textureImportOptions->Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
+                textureImportOptions.CpuCached = _fileBrowser.Data.TexParam.CpuCached;
+                textureImportOptions.GenerateMips = _fileBrowser.Data.TexParam.GenerateMips;
+                textureImportOptions.GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
+                textureImportOptions.MipsPreserveCoverage = _fileBrowser.Data.TexParam.MipsPreserveCoverage;
+                textureImportOptions.MaxMip = _fileBrowser.Data.TexParam.MaxMips;
+                textureImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, true);
                 if (texture.IsLoaded())

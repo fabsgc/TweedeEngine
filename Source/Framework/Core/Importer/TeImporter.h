@@ -55,22 +55,22 @@ namespace te
          * ignored).
          *
          * @param[in]	inputFilePath	Pathname of the input file.
-         * @param[in]	importOptions	(optional) Options for controlling the import. Caller must ensure import options
+         * @param[in]	importOptions	Options for controlling the import. Caller must ensure import options
          *								actually match the type of the importer used for the file type.
          * @param[in]	UUID			Specific UUID to assign to the resource. If not specified a randomly generated
          *								UUID will be assigned.
          * @return						Imported resource.
         */
-        HResource Import(const String& inputFilePath, SPtr<const ImportOptions> importOptions, const UUID& UUID);
+        HResource Import(const String& inputFilePath, const ImportOptions& importOptions, const UUID& UUID);
 
         template <class T>
-        ResourceHandle<T> Import(const String& inputFilePath, SPtr<const ImportOptions> importOptions = nullptr, const UUID& uuid = UUID::EMPTY)
+        ResourceHandle<T> Import(const String& inputFilePath, const ImportOptions& importOptions = nullptr, const UUID& uuid = UUID::EMPTY)
         {
             return static_resource_cast<T>(Import(inputFilePath, importOptions, uuid));
         }
 
         /** Alternative to Import() which doesn't create a resource handle, but instead returns a raw resource pointer. */
-        SPtr<Resource> _import(const String& inputFilePath, SPtr<const ImportOptions> importOptions = nullptr);
+        SPtr<Resource> _import(const String& inputFilePath, const ImportOptions& importOptions);
 
         /**
          * Imports a resource at the specified location, and returns the loaded data. This method returns all imported
@@ -86,10 +86,10 @@ namespace te
          * @see		createImportOptions
          * @note	Thread safe.
          */
-        SPtr<MultiResource> ImportAll(const String& inputFilePath, SPtr<const ImportOptions> importOptions = nullptr);
+        SPtr<MultiResource> ImportAll(const String& inputFilePath, const ImportOptions&importOptions);
 
         /** Alternative to importAll() which doesn't create resource handles, but instead returns raw resource pointers. */
-        Vector<SubResourceRaw> _importAll(const String& inputFilePath, SPtr<const ImportOptions> importOptions = nullptr);
+        Vector<SubResourceRaw> _importAll(const String& inputFilePath, const ImportOptions& importOptions);
 
         /**
          * Checks if we can import a file with the specified extension.
@@ -120,7 +120,7 @@ namespace te
          * or null if the file isn't valid or is of unsupported type. Also creates the default set of import options unless
          * already provided.
          */
-        BaseImporter* PrepareForImport(const String& filePath, SPtr<const ImportOptions>& importOptions) const;
+        BaseImporter* PrepareForImport(const String& filePath) const;
 
     private:
         Vector<BaseImporter*> _assetImporters;

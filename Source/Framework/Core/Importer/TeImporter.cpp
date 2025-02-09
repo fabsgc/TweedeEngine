@@ -17,9 +17,9 @@ namespace te
         }
     }
 
-    SPtr<Resource> Importer::_import(const String& inputFilePath, SPtr<const ImportOptions> importOptions)
+    SPtr<Resource> Importer::_import(const String& inputFilePath, const ImportOptions& importOptions)
     {
-        BaseImporter* importer = PrepareForImport(inputFilePath, importOptions);
+        BaseImporter* importer = PrepareForImport(inputFilePath);
         if (!importer)
             return nullptr;
 
@@ -27,7 +27,7 @@ namespace te
         return output;
     }
 
-    HResource Importer::Import(const String& inputFilePath, SPtr<const ImportOptions> importOptions, const UUID& uuid)
+    HResource Importer::Import(const String& inputFilePath, const ImportOptions& importOptions, const UUID& uuid)
     {
         SPtr<Resource> importedResource = _import(inputFilePath, importOptions);
 
@@ -44,9 +44,9 @@ namespace te
         return HResource();
     }
 
-    Vector<SubResourceRaw> Importer::_importAll(const String& inputFilePath, SPtr<const ImportOptions> importOptions)
+    Vector<SubResourceRaw> Importer::_importAll(const String& inputFilePath, const ImportOptions& importOptions)
     {
-        BaseImporter* importer = PrepareForImport(inputFilePath, importOptions);
+        BaseImporter* importer = PrepareForImport(inputFilePath);
         if (!importer)
             return Vector<SubResourceRaw>();
 
@@ -54,7 +54,7 @@ namespace te
         return output;
     }
 
-    SPtr<MultiResource> Importer::ImportAll(const String& inputFilePath, SPtr<const ImportOptions> importOptions)
+    SPtr<MultiResource> Importer::ImportAll(const String& inputFilePath, const ImportOptions& importOptions)
     {
         Vector<SubResource> output;
 
@@ -122,27 +122,9 @@ namespace te
         return nullptr;
     }
 
-    BaseImporter* Importer::PrepareForImport(const String& filePath, SPtr<const ImportOptions>& importOptions) const
+    BaseImporter* Importer::PrepareForImport(const String& filePath) const
     {
-        BaseImporter* importer = GetImporterForFile(filePath);
-        if (importer == nullptr)
-            return nullptr;
-
-        if (importOptions == nullptr)
-        {
-            importOptions = importer->GetDefaultImportOptions();
-        }
-        else
-        {
-            SPtr<const ImportOptions> defaultImportOptions = importer->GetDefaultImportOptions();
-            if (importOptions->GetCoreType() != defaultImportOptions->GetCoreType())
-            {
-                TE_ASSERT_ERROR(false, "Provided import options is not of valid type. Expected: " + 
-                    ToString(defaultImportOptions->GetCoreType()) + ". Got: " + ToString(importOptions->GetCoreType()));
-            }
-        }
-
-        return importer;
+        return GetImporterForFile(filePath);
     }
 
     TE_CORE_EXPORT Importer& gImporter()
