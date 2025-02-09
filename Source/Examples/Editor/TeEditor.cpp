@@ -1005,7 +1005,7 @@ namespace te
         }
         else
         {
-            TE_DEBUG("Fail to save your project at the specified path : " + _project->GetPath());
+            TE_DEBUG("Failed to save your project at the specified path : " + _project->GetPath());
             return false;
         }
 

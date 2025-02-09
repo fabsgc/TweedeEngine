@@ -57,7 +57,7 @@ namespace te
         ext = ext.substr(1, ext.size() - 1); // Remove the .
         if (!SupportsFileType(ext))
         {
-            TE_ASSERT_ERROR(false, "There is no importer for the provided file" + inputFilePath);
+            TE_ASSERT_ERROR(false, "There is no exporter for the provided file : " + inputFilePath);
             return nullptr;
         }
 

@@ -2,6 +2,7 @@
 
 #include "ThirdParty/Slugify/slugify.hpp"
 #include "Exporter/TeProjectExportOptions.h"
+#include "Exporter/TeResourceExportOptions.h"
 #include "Serialization/TeBinaryWriter.h"
 #include "Serialization/TeUtility.h"
 #include "Project/TeProject.h"
@@ -43,18 +44,23 @@ namespace te
         project->SetPath(filePath);
         project->Serialize(serializer);
 
+        const std::filesystem::path resourcesPath = serialization::GetProjectResourcesPath(workingDirectory);
+        FileSystem::CreateDirectory(resourcesPath.parent_path().generic_string());
+
         for (auto& resource : project->GetAllResources())
         {
             const std::filesystem::path resourcePath = serialization::GetProjectResourcePath(workingDirectory, resource);
 
-            FileSystem::CreateDir(resourcePath.parent_path().generic_string());
-
-            // TODO Serialization move to ResourceExporter
-            BinaryWriter* resourceSerializer = te_new<BinaryWriter>(resourcePath);
-            resource->SetPath(resourcePath.generic_string());
-            resource->Serialize(resourceSerializer);
-
-            te_delete(resourceSerializer);
+            SPtr<ResourceExportOptions> options = te_shared_ptr_new<ResourceExportOptions>();
+            if (gExporter().Export(resource, resourcePath.generic_string(), options))
+            {
+                TE_DEBUG("Resource saved at the specified path : " + resource->GetPath());
+            }
+            else
+            {
+                TE_DEBUG("Failed to save the resource project at the specified path : " + resource->GetPath());
+                return false;
+            }
         }
 
         te_delete(serializer);

@@ -53,6 +53,9 @@ namespace te
             {
                 gEditor().GetProject()->SetPath(path);
             }
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("%s", path.c_str());
+
             ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
             ImGui::InputText("UUID", inputUUID, IM_ARRAYSIZE(inputUUID));
             ImGui::PopItemFlag();

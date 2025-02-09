@@ -1,4 +1,5 @@
 #include "TeResourceExporter.h"
+#include "Serialization/TeBinaryWriter.h"
 #include "Exporter/TeResourceExportOptions.h"
 
 namespace te
@@ -25,6 +26,14 @@ namespace te
     bool ResourceExporter::Export(void* object, const String& filePath, SPtr<const ExportOptions> exportOptions, bool force)
     {
         const ResourceExportOptions* resourceExportOptions = static_cast<const ResourceExportOptions*>(exportOptions.get());
+
+        Resource* resource = static_cast<Resource*>(object);
+
+        BinaryWriter* resourceSerializer = te_new<BinaryWriter>(filePath);
+        resource->SetPath(filePath);
+        resource->Serialize(resourceSerializer);
+
+        te_delete(resourceSerializer);
 
         return true;
     }
