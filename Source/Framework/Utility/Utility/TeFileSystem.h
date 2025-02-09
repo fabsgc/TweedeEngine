@@ -53,7 +53,7 @@ namespace te
          *
          * @param[in]	path	Path to a folder to create.
          */
-        static bool CreateDir(const String& path);
+        static bool CreateDirectory(const String& path);
 
         /**
          * Returns true if a file or a folder exists at the specified path.

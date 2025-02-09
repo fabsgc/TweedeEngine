@@ -48,7 +48,7 @@ namespace te
         return false;
     }
 
-    bool FileSystem::CreateDir(const String& path)
+    bool FileSystem::CreateDirectory(const String& path)
     {
         if(!std::filesystem::exists(path))
             return std::filesystem::create_directories(path);
