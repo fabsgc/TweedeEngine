@@ -335,7 +335,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, Texture** object);
+        static void Deserialize(StreamReader* deserializer, Texture* object);
 
     protected:
         friend class TextureManager;

@@ -36,9 +36,8 @@ namespace te
         if (!std::filesystem::exists(projectPath))
             return project;
 
-        Project* projectPtr = project.get();
         BinaryReader* deserializer = te_new<BinaryReader>(projectPath);
-        Project::Deserialize(deserializer, &projectPtr);
+        Project::Deserialize(deserializer, project.get());
 
         Vector<String> resourceNames = project->GetAllResourceNames();
         project->ClearResources();

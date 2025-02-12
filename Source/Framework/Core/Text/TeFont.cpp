@@ -56,12 +56,12 @@ namespace te
         Resource::Serialize(serializer);
     }
 
-    void Font::Deserialize(StreamReader* deserializer, Font** object)
+    void Font::Deserialize(StreamReader* deserializer, Font* object)
     {
-        if (!object || !(*object))
+        if (!object)
             return;
 
-        Resource::Deserialize(deserializer, *object);
+        Resource::Deserialize(deserializer, object);
 
         // TODO Serialization
 

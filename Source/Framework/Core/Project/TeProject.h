@@ -49,7 +49,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, Project** object);
+        static void Deserialize(StreamReader* deserializer, Project* object);
 
     private:
         Project();

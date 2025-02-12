@@ -118,7 +118,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, AudioClip** object);
+        static void Deserialize(StreamReader* deserializer, AudioClip* object);
 
     protected:
         AudioClip(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples, const AUDIO_CLIP_DESC& desc);

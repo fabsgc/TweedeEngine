@@ -62,15 +62,15 @@ namespace te
         Resource::Serialize(serializer);
     }
 
-    void PhysicsMesh::Deserialize(StreamReader* deserializer, PhysicsMesh** object)
+    void PhysicsMesh::Deserialize(StreamReader* deserializer, PhysicsMesh* object)
     {
-        if (!object || !(*object))
+        if (!object)
             return;
 
-        Resource::Deserialize(deserializer, *object);
+        Resource::Deserialize(deserializer, object);
 
         // TODO Serialization
 
-        (*object)->Initialize();
+        object->Initialize();
     }
 }

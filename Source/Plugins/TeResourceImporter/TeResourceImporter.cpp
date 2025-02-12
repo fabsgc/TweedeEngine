@@ -36,11 +36,10 @@ namespace te
     SPtr<T> DeserializeOneResource(const std::filesystem::path& resourcePath)
     {
         SPtr<T> resource = T::CreateEmpty();
-        T* resourcePtr = resource.get();
 
         BinaryReader* deserializer = te_new<BinaryReader>(resourcePath);
 
-        T::Deserialize(deserializer, &resourcePtr);
+        T::Deserialize(deserializer, resource.get());
         return resource;
     }
 

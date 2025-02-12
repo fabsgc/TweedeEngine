@@ -440,7 +440,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, Shader** object);
+        static void Deserialize(StreamReader* deserializer, Shader* object);
 
     protected:
         Shader(UINT32 id);
