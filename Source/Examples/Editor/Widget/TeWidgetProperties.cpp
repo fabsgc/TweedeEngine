@@ -86,203 +86,203 @@ namespace te
 
             switch (_selections.ClickedComponent->GetCoreType())
             {
-            case TID_CCamera:
+            case CoreType::TID_CCamera:
             {
                 if (ShowCCameraProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CRenderable:
+            case CoreType::TID_CRenderable:
             {
                 if (ShowCRenderableProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CLight:
+            case CoreType::TID_CLight:
             {
                 if (ShowCLightProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CSkybox:
+            case CoreType::TID_CSkybox:
             {
                 if (ShowCSkyboxProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CCameraFlyer:
+            case CoreType::TID_CCameraFlyer:
             {
                 if (ShowCCameraFlyerProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CCameraUI:
+            case CoreType::TID_CCameraUI:
             {
                 if (ShowCCameraUIProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CAnimation:
+            case CoreType::TID_CAnimation:
             {
                 if (ShowCAnimationProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CBone:
+            case CoreType::TID_CBone:
             {
                 if (ShowCBoneProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CAudioListener:
+            case CoreType::TID_CAudioListener:
             {
                 if (ShowCAudioListenerProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CAudioSource:
+            case CoreType::TID_CAudioSource:
             {
                 if (ShowCAudioSourceProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CRigidBody:
+            case CoreType::TID_CRigidBody:
             {
                 if (ShowCRigidBodyProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CMeshSoftBody:
+            case CoreType::TID_CMeshSoftBody:
             {
                 if (ShowCMeshSoftBodyProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CEllipsoidSoftBody:
+            case CoreType::TID_CEllipsoidSoftBody:
             {
                 if (ShowCEllipsoidSoftBodyProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CRopeSoftBody:
+            case CoreType::TID_CRopeSoftBody:
             {
                 if (ShowCRopeSoftBodyProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CPatchSoftBody:
+            case CoreType::TID_CPatchSoftBody:
             {
                 if (ShowCPatchSoftBodyProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CBoxCollider:
+            case CoreType::TID_CBoxCollider:
             {
                 if (ShowCBoxColliderProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CCapsuleCollider:
+            case CoreType::TID_CCapsuleCollider:
             {
                 if (ShowCCapsuleColliderProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CConeCollider:
+            case CoreType::TID_CConeCollider:
             {
                 if (ShowCConeColliderProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CHeightFieldCollider:
+            case CoreType::TID_CHeightFieldCollider:
             {
                 if (ShowCHeightFieldColliderProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CCylinderCollider:
+            case CoreType::TID_CCylinderCollider:
             {
                 if (ShowCCylinderColliderProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CMeshCollider:
+            case CoreType::TID_CMeshCollider:
             {
                 if (ShowCMeshColliderProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CPlaneCollider:
+            case CoreType::TID_CPlaneCollider:
             {
                 if (ShowCPlaneColliderProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CSphereCollider:
+            case CoreType::TID_CSphereCollider:
             {
                 if (ShowCSphereColliderProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CConeTwistJoint:
+            case CoreType::TID_CConeTwistJoint:
             {
                 if (ShowCConeTwistJointProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CD6Joint:
+            case CoreType::TID_CD6Joint:
             {
                 if (ShowCD6JointProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CHingeJoint:
+            case CoreType::TID_CHingeJoint:
             {
                 if (ShowCHingeJointProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CSliderJoint:
+            case CoreType::TID_CSliderJoint:
             {
                 if (ShowCSliderJointProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CSphericalJoint:
+            case CoreType::TID_CSphericalJoint:
             {
                 if (ShowCSphericalJointProperties())
                     hasChanged = true;
             }
             break;
 
-            case TID_CDecal:
+            case CoreType::TID_CDecal:
             {
                 if (ShowCDecal())
                     hasChanged = true;
@@ -2957,7 +2957,7 @@ namespace te
         bool hasChanged = false;
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
-        Vector<HComponent> bodies = gEditor().GetSceneRoot()->GetComponents((UINT32)TID_CRigidBody, true);
+        Vector<HComponent> bodies = gEditor().GetSceneRoot()->GetComponents(CoreType::TID_CRigidBody, true);
         ImGuiExt::ComboOptions<UUID> bodiesOptions;
         UUID emptyBody = UUID(50, 0, 0, 0);
 
@@ -3097,7 +3097,7 @@ namespace te
                         {
                             mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
 
-                            if (_selections.ClickedComponent->GetCoreType() == TID_CRenderable)
+                            if (_selections.ClickedComponent->GetCoreType() == CoreType::TID_CRenderable)
                             {
                                 SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
 
@@ -3131,14 +3131,14 @@ namespace te
                         HPhysicsMesh physicsMesh = static_resource_cast<PhysicsMesh>(subRes.Res);
                         if (physicsMesh.IsLoaded())
                         {
-                            if (_selections.ClickedComponent->GetCoreType() == TID_CMeshCollider)
+                            if (_selections.ClickedComponent->GetCoreType() == CoreType::TID_CMeshCollider)
                             {
                                 SPtr<CMeshCollider> meshCollider = std::static_pointer_cast<CMeshCollider>(_selections.ClickedComponent);
 
                                 meshCollider->SetMesh(physicsMesh);
                                 meshLoaded = true;
                             }
-                            else if (_selections.ClickedComponent->GetCoreType() == TID_CMeshSoftBody)
+                            else if (_selections.ClickedComponent->GetCoreType() == CoreType::TID_CMeshSoftBody)
                             {
                                 SPtr<CMeshSoftBody> softBody = std::static_pointer_cast<CMeshSoftBody>(_selections.ClickedComponent);
 

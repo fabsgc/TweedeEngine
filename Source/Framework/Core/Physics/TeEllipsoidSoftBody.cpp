@@ -6,7 +6,7 @@
 namespace te
 {
     EllipsoidSoftBody::EllipsoidSoftBody(const HSceneObject& linkedSO)
-        : SoftBody(linkedSO, TypeID_Core::TID_EllipsoidSoftBody)
+        : SoftBody(linkedSO, CoreType::TID_EllipsoidSoftBody)
     { }
 
     SPtr<EllipsoidSoftBody> EllipsoidSoftBody::Create(const HSceneObject& linkedSO)

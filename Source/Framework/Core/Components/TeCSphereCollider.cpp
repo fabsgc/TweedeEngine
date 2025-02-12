@@ -6,13 +6,13 @@
 namespace te
 {
     CSphereCollider::CSphereCollider()
-        : CCollider((UINT32)TID_CSphereCollider)
+        : CCollider(CoreType::TID_CSphereCollider)
     {
         SetName("SphereCollider");
     }
 
     CSphereCollider::CSphereCollider(const HSceneObject& parent, float radius)
-        : CCollider(parent, (UINT32)TID_CSphereCollider)
+        : CCollider(parent, CoreType::TID_CSphereCollider)
         , _radius(radius)
     {
         SetName("SphereCollider");

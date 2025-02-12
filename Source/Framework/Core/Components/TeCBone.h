@@ -15,7 +15,7 @@ namespace te
         virtual ~CBone() = default;
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CBone; }
+        static CoreType GetComponentType() { return CoreType::TID_CBone; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HComponent& c, const String& suffix = "") override;

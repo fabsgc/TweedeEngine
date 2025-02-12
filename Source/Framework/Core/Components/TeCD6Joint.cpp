@@ -5,13 +5,13 @@
 namespace te
 {
     CD6Joint::CD6Joint()
-        : CJoint((UINT32)TID_CD6Joint)
+        : CJoint(CoreType::TID_CD6Joint)
     {
         SetName("D6Joint");
     }
 
     CD6Joint::CD6Joint(const HSceneObject& parent)
-        : CJoint(parent, (UINT32)TID_CD6Joint)
+        : CJoint(parent, CoreType::TID_CD6Joint)
     {
         SetName("D6Joint");
     }

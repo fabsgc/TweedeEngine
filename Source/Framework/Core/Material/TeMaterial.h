@@ -453,7 +453,7 @@ namespace te
         void Initialize() override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_Material; }
+        static CoreType GetResourceType() { return CoreType::TID_Material; }
 
         /** Returns the unique material ID. */
         UINT32 GetId() const { return _id; }

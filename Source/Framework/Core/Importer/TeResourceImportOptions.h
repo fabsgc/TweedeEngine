@@ -12,7 +12,7 @@ namespace te
         ResourceImportOptions() = default;
         ~ResourceImportOptions() = default;
 
-        TypeID_Core ResourceType;
+        CoreType ResourceType = CoreType::TID_Unknown;
     };
 }
 

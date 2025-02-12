@@ -10,7 +10,7 @@ using namespace std::placeholders;
 
 namespace te
 {
-    CCollider::CCollider(UINT32 type)
+    CCollider::CCollider(CoreType type)
         : Component(HSceneObject(), type)
         , _internal(nullptr)
     {
@@ -18,7 +18,7 @@ namespace te
         SetNotifyFlags(TCF_Parent | TCF_Transform);
     }
 
-    CCollider::CCollider(const HSceneObject& parent, UINT32 type)
+    CCollider::CCollider(const HSceneObject& parent, CoreType type)
         : Component(parent, type)
         , _internal(nullptr)
     {

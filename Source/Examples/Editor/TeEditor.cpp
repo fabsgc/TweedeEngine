@@ -116,31 +116,31 @@ namespace te
     Event<void()> Editor::OnOpen;
     Event<void()> Editor::OnSave;
 
-    const Vector<UINT32> Editor::ComponentsWhichNeedGuizmo = {
-        TID_CRenderable,
-        TID_CRigidBody,
-        TID_CMeshSoftBody,
-        TID_CEllipsoidSoftBody,
-        TID_CRopeSoftBody,
-        TID_CPatchSoftBody,
-        TID_CLight,
-        TID_CCamera,
-        TID_CCameraFlyer,
-        TID_CAudioSource,
-        TID_CAudioListener,
-        TID_CBoxCollider,
-        TID_CCapsuleCollider,
-        TID_CConeCollider,
-        TID_CCylinderCollider,
-        TID_CHeightFieldCollider,
-        TID_CMeshCollider,
-        TID_CPlaneCollider,
-        TID_CSphereCollider,
-        TID_CConeTwistJoint,
-        TID_CD6Joint,
-        TID_CHingeJoint,
-        TID_CSliderJoint,
-        TID_CSphericalJoint
+    const Vector<CoreType> Editor::ComponentsWhichNeedGuizmo = {
+        CoreType::TID_CRenderable,
+        CoreType::TID_CRigidBody,
+        CoreType::TID_CMeshSoftBody,
+        CoreType::TID_CEllipsoidSoftBody,
+        CoreType::TID_CRopeSoftBody,
+        CoreType::TID_CPatchSoftBody,
+        CoreType::TID_CLight,
+        CoreType::TID_CCamera,
+        CoreType::TID_CCameraFlyer,
+        CoreType::TID_CAudioSource,
+        CoreType::TID_CAudioListener,
+        CoreType::TID_CBoxCollider,
+        CoreType::TID_CCapsuleCollider,
+        CoreType::TID_CConeCollider,
+        CoreType::TID_CCylinderCollider,
+        CoreType::TID_CHeightFieldCollider,
+        CoreType::TID_CMeshCollider,
+        CoreType::TID_CPlaneCollider,
+        CoreType::TID_CSphereCollider,
+        CoreType::TID_CConeTwistJoint,
+        CoreType::TID_CD6Joint,
+        CoreType::TID_CHingeJoint,
+        CoreType::TID_CSliderJoint,
+        CoreType::TID_CSphericalJoint
     };
 
     Editor::Editor()
@@ -320,28 +320,28 @@ namespace te
             else
             {
                 if (!_selections.ClickedComponent ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CRenderable ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CCamera ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CLight ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CAudioListener ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CRigidBody ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CEllipsoidSoftBody ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CMeshSoftBody ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CPatchSoftBody ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CRopeSoftBody ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CBoxCollider ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CCapsuleCollider ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CConeCollider ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CMeshCollider ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CPlaneCollider ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CSphereCollider ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CHeightFieldCollider ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CConeTwistJoint ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CD6Joint ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CHingeJoint ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CSliderJoint ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CSphericalJoint ||
-                    _selections.ClickedComponent->GetCoreType() == TID_CAudioSource)
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CRenderable ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CCamera ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CLight ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CAudioListener ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CRigidBody ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CEllipsoidSoftBody ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CMeshSoftBody ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CPatchSoftBody ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CRopeSoftBody ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CBoxCollider ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CCapsuleCollider ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CConeCollider ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CMeshCollider ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CPlaneCollider ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CSphereCollider ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CHeightFieldCollider ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CConeTwistJoint ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CD6Joint ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CHingeJoint ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CSliderJoint ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CSphericalJoint ||
+                    _selections.ClickedComponent->GetCoreType() == CoreType::TID_CAudioSource)
                 {
                     if (!ImGuizmo::IsOver())
                     {
@@ -1042,13 +1042,13 @@ namespace te
 
         if (_selections.CopiedComponent)
         {
-            UINT32 type = _selections.CopiedComponent->GetComponentType();
+            const CoreType type = _selections.CopiedComponent->GetComponentType();
             if (!clickedSceneObject->GetComponent(type).Empty())
                 return;
 
             switch (_selections.CopiedComponent->GetCoreType())
             {
-                case TID_CCamera:
+                case CoreType::TID_CCamera:
                 {
                     HCamera component = clickedSceneObject->AddComponent<CCamera>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1058,7 +1058,7 @@ namespace te
                 }
                 break;
 
-                case TID_CCameraFlyer:
+                case CoreType::TID_CCameraFlyer:
                 {
                     HCameraFlyer component = clickedSceneObject->AddComponent<CCameraFlyer>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1068,7 +1068,7 @@ namespace te
                 }
                 break;
 
-                case TID_CCameraUI:
+                case CoreType::TID_CCameraUI:
                 {
                     HCameraUI component = clickedSceneObject->AddComponent<CCameraUI>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1078,7 +1078,7 @@ namespace te
                 }
                 break;
 
-                case TID_CLight:
+                case CoreType::TID_CLight:
                 {
                     SPtr<CLight> previousLight = std::static_pointer_cast<CLight>(_selections.CopiedComponent);
                     if (previousLight)
@@ -1092,7 +1092,7 @@ namespace te
                 }
                 break;
 
-                case TID_CRenderable:
+                case CoreType::TID_CRenderable:
                 {
                     HRenderable component = clickedSceneObject->AddComponent<CRenderable>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1102,7 +1102,7 @@ namespace te
                 }
                 break;
 
-                case TID_CSkybox:
+                case CoreType::TID_CSkybox:
                 {
                     if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
                         break;
@@ -1115,7 +1115,7 @@ namespace te
                 }
                 break;
 
-                case TID_CAnimation:
+                case CoreType::TID_CAnimation:
                 {
                     HAnimation component = clickedSceneObject->AddComponent<CAnimation>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1125,7 +1125,7 @@ namespace te
                 }
                 break;
 
-                case TID_CBone:
+                case CoreType::TID_CBone:
                 {
                     HBone component = clickedSceneObject->AddComponent<CBone>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1135,7 +1135,7 @@ namespace te
                 }
                 break;
 
-                case TID_CAudioListener:
+                case CoreType::TID_CAudioListener:
                 {
                     HAudioListener component = clickedSceneObject->AddComponent<CAudioListener>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1145,7 +1145,7 @@ namespace te
                 }
                 break;
 
-                case TID_CAudioSource:
+                case CoreType::TID_CAudioSource:
                 {
                     HAudioSource component = clickedSceneObject->AddComponent<CAudioSource>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1155,7 +1155,7 @@ namespace te
                 }
                 break;
 
-                case TID_CRigidBody:
+                case CoreType::TID_CRigidBody:
                 {
                     HRigidBody component = clickedSceneObject->AddComponent<CRigidBody>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1165,7 +1165,7 @@ namespace te
                 }
                 break;
 
-                case TID_CMeshSoftBody:
+                case CoreType::TID_CMeshSoftBody:
                 {
                     HMeshSoftBody component = clickedSceneObject->AddComponent<CMeshSoftBody>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1175,7 +1175,7 @@ namespace te
                 }
                 break;
 
-                case TID_CEllipsoidSoftBody:
+                case CoreType::TID_CEllipsoidSoftBody:
                 {
                     HEllipsoidSoftBody component = clickedSceneObject->AddComponent<CEllipsoidSoftBody>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1185,7 +1185,7 @@ namespace te
                 }
                 break;
 
-                case TID_CRopeSoftBody:
+                case CoreType::TID_CRopeSoftBody:
                 {
                     HRopeSoftBody component = clickedSceneObject->AddComponent<CRopeSoftBody>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1195,7 +1195,7 @@ namespace te
                 }
                 break;
 
-                case TID_CPatchSoftBody:
+                case CoreType::TID_CPatchSoftBody:
                 {
                     HPatchSoftBody component = clickedSceneObject->AddComponent<CPatchSoftBody>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1205,7 +1205,7 @@ namespace te
                 }
                 break;
 
-                case TID_CConeTwistJoint:
+                case CoreType::TID_CConeTwistJoint:
                 {
                     HConeTwistJoint component = clickedSceneObject->AddComponent<CConeTwistJoint>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1215,7 +1215,7 @@ namespace te
                 }
                 break;
 
-                case TID_CD6Joint:
+                case CoreType::TID_CD6Joint:
                 {
                     HD6Joint component = clickedSceneObject->AddComponent<CD6Joint>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1225,7 +1225,7 @@ namespace te
                 }
                 break;
 
-                case TID_CHingeJoint:
+                case CoreType::TID_CHingeJoint:
                 {
                     HHingeJoint component = clickedSceneObject->AddComponent<CHingeJoint>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1235,7 +1235,7 @@ namespace te
                 }
                 break;
 
-                case TID_CSliderJoint:
+                case CoreType::TID_CSliderJoint:
                 {
                     HSliderJoint component = clickedSceneObject->AddComponent<CSliderJoint>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1245,7 +1245,7 @@ namespace te
                 }
                 break;
 
-                case TID_CSphericalJoint:
+                case CoreType::TID_CSphericalJoint:
                 {
                     HSphericalJoint component = clickedSceneObject->AddComponent<CSphericalJoint>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1255,7 +1255,7 @@ namespace te
                 }
                 break;
 
-                case TID_CBoxCollider:
+                case CoreType::TID_CBoxCollider:
                 {
                     HBoxCollider component = clickedSceneObject->AddComponent<CBoxCollider>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1265,7 +1265,7 @@ namespace te
                 }
                 break;
 
-                case TID_CPlaneCollider:
+                case CoreType::TID_CPlaneCollider:
                 {
                     HPlaneCollider component = clickedSceneObject->AddComponent<CPlaneCollider>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1275,7 +1275,7 @@ namespace te
                 }
                 break;
 
-                case TID_CSphereCollider:
+                case CoreType::TID_CSphereCollider:
                 {
                     HSphereCollider component = clickedSceneObject->AddComponent<CSphereCollider>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1285,7 +1285,7 @@ namespace te
                 }
                 break;
 
-                case TID_CCylinderCollider:
+                case CoreType::TID_CCylinderCollider:
                 {
                     HCylinderCollider component = clickedSceneObject->AddComponent<CCylinderCollider>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1295,7 +1295,7 @@ namespace te
                 }
                 break;
 
-                case TID_CCapsuleCollider:
+                case CoreType::TID_CCapsuleCollider:
                 {
                     HCapsuleCollider component = clickedSceneObject->AddComponent<CCapsuleCollider>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1305,7 +1305,7 @@ namespace te
                 }
                 break;
 
-                case TID_CMeshCollider:
+                case CoreType::TID_CMeshCollider:
                 {
                     HMeshCollider component = clickedSceneObject->AddComponent<CMeshCollider>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1315,7 +1315,7 @@ namespace te
                 }
                 break;
 
-                case TID_CConeCollider:
+                case CoreType::TID_CConeCollider:
                 {
                     HConeCollider component = clickedSceneObject->AddComponent<CConeCollider>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
@@ -1325,7 +1325,7 @@ namespace te
                 }
                 break;
 
-                case TID_CHeightFieldCollider:
+                case CoreType::TID_CHeightFieldCollider:
                 {
                     HHeightFieldCollider component = clickedSceneObject->AddComponent<CHeightFieldCollider>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");

@@ -408,7 +408,7 @@ namespace te
          *
          * @note	Don't call this too often as it is relatively slow.
          */
-        bool HasComponent(UINT32 type)
+        bool HasComponent(CoreType type)
         {
             for (auto& entry : _components)
             {
@@ -427,7 +427,7 @@ namespace te
          *
          * @note	Don't call this too often as it is relatively slow.
          */
-        bool HasComponent(const Vector<UINT32>& types)
+        bool HasComponent(const Vector<CoreType>& types)
         {
             for (const auto& entry : _components)
             {
@@ -472,7 +472,7 @@ namespace te
          * @param[in]	searchInChildren	if true, will also search in children SceneObject
          * @return		Component if found, nullptr otherwise.
          */
-        HComponent GetComponent(UINT32 type, bool searchInChildren = false) const;
+        HComponent GetComponent(CoreType type, bool searchInChildren = false) const;
 
         /**
          * Searches for components with the specified type accross all direct children and returns all that match.
@@ -481,7 +481,7 @@ namespace te
          * @param[in]	searchInChildren	if true, will also search in children SceneObject
          * @return		Vector of Components
          */
-        Vector<HComponent> GetComponents(UINT32 type, bool searchInChildren = false) const;
+        Vector<HComponent> GetComponents(CoreType type, bool searchInChildren = false) const;
 
         /**
          * Searches for components with the specified types accross all direct children and returns all that match.
@@ -490,7 +490,7 @@ namespace te
          * @param[in]	searchInChildren	if true, will also search in children SceneObject
          * @return		Vector of Components
          */
-        Vector<HComponent> GetComponents(Vector<UINT32> types, bool searchInChildren = false) const;
+        Vector<HComponent> GetComponents(Vector<CoreType> types, bool searchInChildren = false) const;
 
         /** @copydoc SceneObject::GetComponent */
         template<class T>
@@ -637,7 +637,7 @@ namespace te
 
         enum class ComponentSearchType
         {
-            CoreType, Name, UUID, All
+            Type, Name, UUID, All
         };
 
         /**

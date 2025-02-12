@@ -3,7 +3,7 @@
 
 namespace te
 {
-    Joint::Joint(UINT32 type)
+    Joint::Joint(CoreType type)
         : Serializable(type)
     { }
 

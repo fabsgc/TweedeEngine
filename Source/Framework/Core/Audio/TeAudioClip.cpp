@@ -6,7 +6,7 @@
 namespace te
 {
     AudioClip::AudioClip(const SPtr<DataStream>& samples, UINT32 streamSize, UINT32 numSamples, const AUDIO_CLIP_DESC& desc)
-        : Resource(TID_AudioClip)
+        : Resource(CoreType::TID_AudioClip)
         , _desc(desc)
         , _numSamples(numSamples)
         , _streamSize(streamSize)

@@ -4,7 +4,7 @@
 namespace te
 {
     BoxCollider::BoxCollider()
-        : Collider(TypeID_Core::TID_BoxCollider)
+        : Collider(CoreType::TID_BoxCollider)
     { }
 
     SPtr<BoxCollider> BoxCollider::Create(PhysicsScene& scene, const Vector3& extents,

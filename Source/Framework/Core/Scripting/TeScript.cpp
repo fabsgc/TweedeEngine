@@ -6,7 +6,7 @@
 namespace te
 {
     Script::Script()
-        : Resource(TID_Script)
+        : Resource(CoreType::TID_Script)
     { }
 
     HScript Script::Create()

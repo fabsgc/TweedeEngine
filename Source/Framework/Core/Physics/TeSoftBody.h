@@ -117,6 +117,6 @@ namespace te
          *							will be transfered to this scene object (the movement/rotation resulting from
          *							those updates).
          */
-        SoftBody(const HSceneObject& linkedSO, UINT32 type = TID_SoftBody);
+        SoftBody(const HSceneObject& linkedSO, CoreType type = CoreType::TID_SoftBody);
     };
 }

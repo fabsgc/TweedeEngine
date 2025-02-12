@@ -17,7 +17,7 @@ namespace te
         void SetPath(const String& path) override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_Script; }
+        static CoreType GetResourceType() { return CoreType::TID_Script; }
 
         /**	Creates a new script from the provided per-size font data. */
         static HScript Create();

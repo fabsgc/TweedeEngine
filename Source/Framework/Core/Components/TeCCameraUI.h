@@ -13,7 +13,7 @@ namespace te
     {
     public:
         /** Returns Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CCameraUI; }
+        static CoreType GetComponentType() { return CoreType::TID_CCameraUI; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HComponent& c, const String& suffix = "") override;

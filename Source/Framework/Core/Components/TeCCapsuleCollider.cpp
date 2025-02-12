@@ -6,13 +6,13 @@
 namespace te
 {
     CCapsuleCollider::CCapsuleCollider()
-        : CCollider((UINT32)TID_CCapsuleCollider)
+        : CCollider(CoreType::TID_CCapsuleCollider)
     {
         SetName("CapsuleCollider");
     }
 
     CCapsuleCollider::CCapsuleCollider(const HSceneObject& parent)
-        : CCollider(parent, (UINT32)TID_CCapsuleCollider)
+        : CCollider(parent, CoreType::TID_CCapsuleCollider)
     {
         SetName("CapsuleCollider");
     }

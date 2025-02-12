@@ -19,7 +19,7 @@ namespace te
         virtual ~CCollider() = 0;
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CCollider; }
+        static CoreType GetComponentType() { return CoreType::TID_CCollider; }
 
         /** @copydoc Component::Initialize */
         virtual void Initialize() override;
@@ -65,8 +65,8 @@ namespace te
         friend class CSoftBody;
         using Component::DestroyInternal;
 
-        CCollider(UINT32 type);
-        CCollider(const HSceneObject& parent, UINT32 type);
+        CCollider(CoreType type);
+        CCollider(const HSceneObject& parent, CoreType type);
 
         /** @copydoc Component::Clone */
         bool Clone(const HCollider& c, const String& suffix = "");

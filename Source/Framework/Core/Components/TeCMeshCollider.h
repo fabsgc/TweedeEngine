@@ -15,7 +15,7 @@ namespace te
     {
     public:
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CMeshCollider; }
+        static CoreType GetComponentType() { return CoreType::TID_CMeshCollider; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HComponent& c, const String& suffix = "") override;

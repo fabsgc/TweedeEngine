@@ -44,7 +44,7 @@ namespace te
     {
     public:
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CRigidBody; }
+        static CoreType GetComponentType() { return CoreType::TID_CRigidBody; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HRigidBody& c, const String& suffix = "");

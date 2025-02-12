@@ -4,7 +4,7 @@
 namespace te
 {
     D6Joint::D6Joint()
-        : Joint(TypeID_Core::TID_D6Joint)
+        : Joint(CoreType::TID_D6Joint)
         , _lowerAngLimit(0.0f)
         , _upperAngLimit(0.0f)
     { }

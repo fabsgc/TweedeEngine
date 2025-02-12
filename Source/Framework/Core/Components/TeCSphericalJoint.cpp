@@ -5,13 +5,13 @@
 namespace te
 {
     CSphericalJoint::CSphericalJoint()
-        : CJoint((UINT32)TID_CSphericalJoint)
+        : CJoint(CoreType::TID_CSphericalJoint)
     {
         SetName("SphericalJoint");
     }
 
     CSphericalJoint::CSphericalJoint(const HSceneObject& parent)
-        : CJoint(parent, (UINT32)TID_CSphericalJoint)
+        : CJoint(parent, CoreType::TID_CSphericalJoint)
     {
         SetName("SphericalJoint");
     }

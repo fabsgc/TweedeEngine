@@ -48,7 +48,7 @@ namespace te
 {
     SceneObject::SceneObject(const String& name, UINT32 flags)
         : GameObject()
-        , Serializable(TID_SceneObject)
+        , Serializable(CoreType::TID_SceneObject)
         , _flags(flags)
     {
         SetName(name);
@@ -151,7 +151,7 @@ namespace te
 
             switch (co->GetCoreType())
             {
-            case TID_CCamera:
+            case CoreType::TID_CCamera:
             {
                 HCamera component = this->AddComponent<CCamera>();
                 component->Clone(co->GetHandle());
@@ -159,7 +159,7 @@ namespace te
             }
             break;
 
-            case TID_CCameraFlyer:
+            case CoreType::TID_CCameraFlyer:
             {
                 HCameraFlyer component = this->AddComponent<CCameraFlyer>();
                 component->Clone(co->GetHandle());
@@ -167,7 +167,7 @@ namespace te
             }
             break;
 
-            case TID_CCameraUI:
+            case CoreType::TID_CCameraUI:
             {
                 HCameraUI component = this->AddComponent<CCameraUI>();
                 component->Clone(co->GetHandle());
@@ -175,7 +175,7 @@ namespace te
             }
             break;
 
-            case TID_CLight:
+            case CoreType::TID_CLight:
             {
                 HLight previousLight = static_object_cast<CLight>(co);
                 HLight component = this->AddComponent<CLight>(previousLight->GetType());
@@ -184,7 +184,7 @@ namespace te
             }
             break;
 
-            case TID_CRenderable:
+            case CoreType::TID_CRenderable:
             {
                 HRenderable component = this->AddComponent<CRenderable>();
                 component->Clone(co->GetHandle());
@@ -192,7 +192,7 @@ namespace te
             }
             break;
 
-            case TID_CSkybox:
+            case CoreType::TID_CSkybox:
             {
                 //if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
                 //    break;
@@ -203,7 +203,7 @@ namespace te
             }
             break;
 
-            case TID_CAnimation:
+            case CoreType::TID_CAnimation:
             {
                 HAnimation component = this->AddComponent<CAnimation>();
                 component->Clone(co->GetHandle());
@@ -211,7 +211,7 @@ namespace te
             }
             break;
 
-            case TID_CBone:
+            case CoreType::TID_CBone:
             {
                 HBone component = this->AddComponent<CBone>();
                 component->Clone(co->GetHandle());
@@ -219,7 +219,7 @@ namespace te
             }
             break;
 
-            case TID_CAudioListener:
+            case CoreType::TID_CAudioListener:
             {
                 HAudioListener component = this->AddComponent<CAudioListener>();
                 component->Clone(co->GetHandle());
@@ -227,7 +227,7 @@ namespace te
             }
             break;
 
-            case TID_CAudioSource:
+            case CoreType::TID_CAudioSource:
             {
                 HAudioSource component = this->AddComponent<CAudioSource>();
                 component->Clone(co->GetHandle());
@@ -235,7 +235,7 @@ namespace te
             }
             break;
 
-            case TID_CRigidBody:
+            case CoreType::TID_CRigidBody:
             {
                 HRigidBody component = this->AddComponent<CRigidBody>();
                 component->Clone(co->GetHandle());
@@ -243,7 +243,7 @@ namespace te
             }
             break;
 
-            case TID_CMeshSoftBody:
+            case CoreType::TID_CMeshSoftBody:
             {
                 HMeshSoftBody component = this->AddComponent<CMeshSoftBody>();
                 component->Clone(co->GetHandle());
@@ -251,7 +251,7 @@ namespace te
             }
             break;
 
-            case TID_CEllipsoidSoftBody:
+            case CoreType::TID_CEllipsoidSoftBody:
             {
                 HEllipsoidSoftBody component = this->AddComponent<CEllipsoidSoftBody>();
                 component->Clone(co->GetHandle());
@@ -259,7 +259,7 @@ namespace te
             }
             break;
 
-            case TID_CRopeSoftBody:
+            case CoreType::TID_CRopeSoftBody:
             {
                 HRopeSoftBody component = this->AddComponent<CRopeSoftBody>();
                 component->Clone(co->GetHandle());
@@ -267,7 +267,7 @@ namespace te
             }
             break;
 
-            case TID_CPatchSoftBody:
+            case CoreType::TID_CPatchSoftBody:
             {
                 HPatchSoftBody component = this->AddComponent<CPatchSoftBody>();
                 component->Clone(co->GetHandle());
@@ -275,7 +275,7 @@ namespace te
             }
             break;
 
-            case TID_CConeTwistJoint:
+            case CoreType::TID_CConeTwistJoint:
             {
                 HConeTwistJoint component = this->AddComponent<CConeTwistJoint>();
                 component->Clone(co->GetHandle());
@@ -283,7 +283,7 @@ namespace te
             }
             break;
 
-            case TID_CD6Joint:
+            case CoreType::TID_CD6Joint:
             {
                 HD6Joint component = this->AddComponent<CD6Joint>();
                 component->Clone(co->GetHandle());
@@ -291,7 +291,7 @@ namespace te
             }
             break;
 
-            case TID_CHingeJoint:
+            case CoreType::TID_CHingeJoint:
             {
                 HHingeJoint component = this->AddComponent<CHingeJoint>();
                 component->Clone(co->GetHandle());
@@ -299,7 +299,7 @@ namespace te
             }
             break;
 
-            case TID_CSliderJoint:
+            case CoreType::TID_CSliderJoint:
             {
                 HSliderJoint component = this->AddComponent<CSliderJoint>();
                 component->Clone(co->GetHandle());
@@ -307,7 +307,7 @@ namespace te
             }
             break;
 
-            case TID_CSphericalJoint:
+            case CoreType::TID_CSphericalJoint:
             {
                 HSphericalJoint component = this->AddComponent<CSphericalJoint>();
                 component->Clone(co->GetHandle());
@@ -315,7 +315,7 @@ namespace te
             }
             break;
 
-            case TID_CBoxCollider:
+            case CoreType::TID_CBoxCollider:
             {
                 HBoxCollider component = this->AddComponent<CBoxCollider>();
                 component->Clone(co->GetHandle());
@@ -323,7 +323,7 @@ namespace te
             }
             break;
 
-            case TID_CCapsuleCollider:
+            case CoreType::TID_CCapsuleCollider:
             {
                 HCapsuleCollider component = this->AddComponent<CCapsuleCollider>();
                 component->Clone(co->GetHandle());
@@ -331,7 +331,7 @@ namespace te
             }
             break;
 
-            case TID_CConeCollider:
+            case CoreType::TID_CConeCollider:
             {
                 HConeCollider component = this->AddComponent<CConeCollider>();
                 component->Clone(co->GetHandle());
@@ -339,7 +339,7 @@ namespace te
             }
             break;
 
-            case TID_CCylinderCollider:
+            case CoreType::TID_CCylinderCollider:
             {
                 HCylinderCollider component = this->AddComponent<CCylinderCollider>();
                 component->Clone(co->GetHandle());
@@ -347,7 +347,7 @@ namespace te
             }
             break;
 
-            case TID_CHeightFieldCollider:
+            case CoreType::TID_CHeightFieldCollider:
             {
                 HHeightFieldCollider component = this->AddComponent<CHeightFieldCollider>();
                 component->Clone(co->GetHandle());
@@ -355,7 +355,7 @@ namespace te
             }
             break;
 
-            case TID_CMeshCollider:
+            case CoreType::TID_CMeshCollider:
             {
                 HMeshCollider component = this->AddComponent<CMeshCollider>();
                 component->Clone(co->GetHandle());
@@ -363,7 +363,7 @@ namespace te
             }
             break;
 
-            case TID_CPlaneCollider:
+            case CoreType::TID_CPlaneCollider:
             {
                 HPlaneCollider component = this->AddComponent<CPlaneCollider>();
                 component->Clone(co->GetHandle());
@@ -372,7 +372,7 @@ namespace te
             }
             break;
 
-            case TID_CSphereCollider:
+            case CoreType::TID_CSphereCollider:
             {
                 HSphereCollider component = this->AddComponent<CSphereCollider>();
                 component->Clone(co->GetHandle());
@@ -380,7 +380,7 @@ namespace te
             }
             break;
 
-            case TID_CDecal:
+            case CoreType::TID_CDecal:
             {
                 HDecal component = this->AddComponent<CDecal>();
                 component->Clone(co->GetHandle());
@@ -972,35 +972,35 @@ namespace te
         }
     }
 
-    HComponent SceneObject::GetComponent(UINT32 type, bool searchInChildren) const
+    HComponent SceneObject::GetComponent(CoreType type, bool searchInChildren) const
     {
-        if (type == TID_Component)
+        if (type == CoreType::TID_Component)
             return HComponent();
 
-        return _getComponentInternal(_thisHandle, type, ComponentSearchType::CoreType, searchInChildren);
+        return _getComponentInternal(_thisHandle, type, ComponentSearchType::Type, searchInChildren);
     }
 
-    Vector<HComponent> SceneObject::GetComponents(UINT32 type, bool searchInChildren) const
+    Vector<HComponent> SceneObject::GetComponents(CoreType type, bool searchInChildren) const
     {
-        if (type == TID_Component)
+        if (type == CoreType::TID_Component)
             return Vector<HComponent>();
 
         Vector<HComponent> components;
-        _getComponentsInternal(_thisHandle, type, components, ComponentSearchType::CoreType, searchInChildren);
+        _getComponentsInternal(_thisHandle, type, components, ComponentSearchType::Type, searchInChildren);
 
         return components;
     }
 
-    Vector<HComponent> SceneObject::GetComponents(Vector<UINT32> types, bool searchInChildren) const
+    Vector<HComponent> SceneObject::GetComponents(Vector<CoreType> types, bool searchInChildren) const
     {
         Vector<HComponent> components;
 
         for (auto& type : types)
         {
-            if (type == TID_Component)
+            if (type == CoreType::TID_Component)
                 continue;
 
-            _getComponentsInternal(_thisHandle, type, components, ComponentSearchType::CoreType, searchInChildren);
+            _getComponentsInternal(_thisHandle, type, components, ComponentSearchType::Type, searchInChildren);
         }
 
         return components;
@@ -1037,9 +1037,9 @@ namespace te
     {
         for (auto& entry : currentSO->GetComponents())
         {
-            if (searchType == ComponentSearchType::CoreType)
+            if (searchType == ComponentSearchType::Type)
             {
-                if (entry->GetCoreType() == std::any_cast<UINT32>(criteria))
+                if (entry->GetCoreType() == std::any_cast<CoreType>(criteria))
                 {
                     return entry;
                 }
@@ -1082,9 +1082,9 @@ namespace te
             {
                 components.push_back(entry);
             }
-            else if (searchType == ComponentSearchType::CoreType)
+            else if (searchType == ComponentSearchType::Type)
             {
-                if (entry->GetCoreType() == std::any_cast<UINT32>(criteria))
+                if (entry->GetCoreType() == std::any_cast<CoreType>(criteria))
                 {
                     components.push_back(entry);
                     break;

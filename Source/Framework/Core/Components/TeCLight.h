@@ -16,7 +16,7 @@ namespace te
     public:
         virtual ~CLight();
 
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CLight; }
+        static CoreType GetComponentType() { return CoreType::TID_CLight; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HComponent& c, const String& suffix = "") override;

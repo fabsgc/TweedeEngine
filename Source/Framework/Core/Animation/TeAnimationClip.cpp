@@ -78,7 +78,7 @@ namespace te
     }
 
     AnimationClip::AnimationClip()
-        : Resource(TID_AnimationClip)
+        : Resource(CoreType::TID_AnimationClip)
         , _curves(te_shared_ptr_new<AnimationCurves>())
         , _rootMotion(te_shared_ptr_new<RootMotion>())
         , _isAdditive(false)
@@ -88,7 +88,7 @@ namespace te
 
     AnimationClip::AnimationClip(const SPtr<AnimationCurves>& curves, bool isAdditive, 
         float sampleRate, const SPtr<RootMotion>& rootMotion)
-        : Resource(TID_AnimationClip)
+        : Resource(CoreType::TID_AnimationClip)
         , _curves(curves)
         , _rootMotion(rootMotion)
         , _isAdditive(isAdditive)

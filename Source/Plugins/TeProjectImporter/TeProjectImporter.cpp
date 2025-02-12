@@ -42,7 +42,7 @@ namespace te
         Vector<String> resourceNames = project->GetAllResourceNames();
         project->ClearResources();
 
-        Resource* resourceMetaData = new Resource(TID_Resource);
+        Resource* resourceMetaData = new Resource(CoreType::TID_Resource);
 
         for (const auto& name : resourceNames)
         {
@@ -57,7 +57,7 @@ namespace te
             Resource::Deserialize(resourceDeserializer, resourceMetaData);
 
             ResourceImportOptions importOptions;
-            importOptions.ResourceType = static_cast<TypeID_Core>(resourceMetaData->GetCoreType());
+            importOptions.ResourceType = resourceMetaData->GetCoreType();
 
             te_delete(resourceDeserializer);
 

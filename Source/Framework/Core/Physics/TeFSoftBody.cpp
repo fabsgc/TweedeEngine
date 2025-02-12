@@ -3,6 +3,6 @@
 namespace te
 {
     FSoftBody::FSoftBody()
-        : FBody(TypeID_Core::TID_FSoftBody)
+        : FBody(CoreType::TID_FSoftBody)
     { }
 }

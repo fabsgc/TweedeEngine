@@ -16,7 +16,7 @@ namespace te
     public:
         virtual ~CAudioSource();
 
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CAudioSource; }
+        static CoreType GetComponentType() { return CoreType::TID_CAudioSource; }
 
         /** @copydoc Component::Initialize */
         void Initialize() override;

@@ -122,7 +122,7 @@ namespace te
     }
 
     Shader::Shader()
-        : Resource(TID_Shader)
+        : Resource(CoreType::TID_Shader)
         , _desc(SHADER_DESC())
         , _id(0)
     {
@@ -132,7 +132,7 @@ namespace te
     }
 
     Shader::Shader(UINT32 id)
-        : Resource(TID_Shader)
+        : Resource(CoreType::TID_Shader)
         , _desc(SHADER_DESC())
         , _id(id)
     {
@@ -140,7 +140,7 @@ namespace te
     }
 
     Shader::Shader(const SHADER_DESC& desc, const String& name, UINT32 id)
-        : Resource(TID_Shader)
+        : Resource(CoreType::TID_Shader)
         , _desc(desc)
         , _id(id)
     { 

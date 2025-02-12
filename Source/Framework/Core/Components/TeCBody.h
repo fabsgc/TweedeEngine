@@ -17,7 +17,7 @@ namespace te
         virtual ~CBody() = 0;
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CBody; }
+        static CoreType GetComponentType() { return CoreType::TID_CBody; }
 
         /** @copydoc Component::Initialize */
         virtual void Initialize() override;
@@ -126,8 +126,8 @@ namespace te
         friend class SceneObject;
         using Component::DestroyInternal;
 
-        CBody(UINT32 type);
-        CBody(const HSceneObject& parent, UINT32 type);
+        CBody(CoreType type);
+        CBody(const HSceneObject& parent, CoreType type);
 
         /** @copydoc Component::Clone */
         bool Clone(const HBody& c, const String& suffix = "");

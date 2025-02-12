@@ -17,7 +17,7 @@ namespace te
     std::atomic<UINT32> Material::NextMaterialId;
 
     Material::Material()
-        : Resource(TID_Material)
+        : Resource(CoreType::TID_Material)
         , _id(0)
     { 
         UINT32 id = Material::NextMaterialId.fetch_add(1, std::memory_order_relaxed);
@@ -27,7 +27,7 @@ namespace te
     }
 
     Material::Material(UINT32 id, const ShaderVariation& variation)
-        : Resource(TID_Material)
+        : Resource(CoreType::TID_Material)
         , _id(id)
         , _variation(variation)
     { }

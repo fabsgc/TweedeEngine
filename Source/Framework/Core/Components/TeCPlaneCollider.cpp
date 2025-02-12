@@ -6,13 +6,13 @@
 namespace te
 {
     CPlaneCollider::CPlaneCollider()
-        : CCollider((UINT32)TID_CPlaneCollider)
+        : CCollider(CoreType::TID_CPlaneCollider)
     {
         SetName("PlaneCollider");
     }
 
     CPlaneCollider::CPlaneCollider(const HSceneObject& parent)
-        : CCollider(parent, (UINT32)TID_CPlaneCollider)
+        : CCollider(parent, CoreType::TID_CPlaneCollider)
     {
         SetName("PlaneCollider");
     }

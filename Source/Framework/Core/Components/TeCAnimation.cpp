@@ -11,7 +11,7 @@ using namespace std::placeholders;
 namespace te
 {
     CAnimation::CAnimation()
-        : Component(HSceneObject(), (UINT32)TID_CAnimation)
+        : Component(HSceneObject(), CoreType::TID_CAnimation)
     {
         SetName("Animation");
         SetNotifyFlags(TCF_Transform);
@@ -19,7 +19,7 @@ namespace te
     }
 
     CAnimation::CAnimation(const HSceneObject& parent)
-        : Component(parent, (UINT32)TID_CAnimation)
+        : Component(parent, CoreType::TID_CAnimation)
     {
         SetName("Animation");
         SetNotifyFlags(TCF_Transform);

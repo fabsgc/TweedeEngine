@@ -9,7 +9,7 @@
 namespace te
 {
     Project::Project()
-        : Resource(TID_Project)
+        : Resource(CoreType::TID_Project)
     { }
 
     HProject Project::Create()

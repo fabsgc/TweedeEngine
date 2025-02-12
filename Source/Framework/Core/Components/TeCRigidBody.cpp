@@ -11,13 +11,13 @@ using namespace std::placeholders;
 namespace te
 {
     CRigidBody::CRigidBody()
-        : CBody(HSceneObject(), (UINT32)TID_CRigidBody)
+        : CBody(HSceneObject(), CoreType::TID_CRigidBody)
     {
         SetName("Rigidbody");
     }
 
     CRigidBody::CRigidBody(const HSceneObject& parent)
-        : CBody(parent, (UINT32)TID_CRigidBody)
+        : CBody(parent, CoreType::TID_CRigidBody)
     {
         SetName("Rigidbody");
     }
@@ -221,15 +221,15 @@ namespace te
 
     void CRigidBody::UpdateColliders()
     {
-        static Vector<UINT32> colliderTypes = {
-            (UINT32)TID_CCollider,
-            (UINT32)TID_CBoxCollider,
-            (UINT32)TID_CPlaneCollider,
-            (UINT32)TID_CSphereCollider,
-            (UINT32)TID_CCylinderCollider,
-            (UINT32)TID_CCapsuleCollider,
-            (UINT32)TID_CMeshCollider,
-            (UINT32)TID_CConeCollider
+        static Vector<CoreType> colliderTypes = {
+            CoreType::TID_CCollider,
+            CoreType::TID_CBoxCollider,
+            CoreType::TID_CPlaneCollider,
+            CoreType::TID_CSphereCollider,
+            CoreType::TID_CCylinderCollider,
+            CoreType::TID_CCapsuleCollider,
+            CoreType::TID_CMeshCollider,
+            CoreType::TID_CConeCollider
         };
 
         Stack<HSceneObject> soToUpdate;
@@ -256,7 +256,7 @@ namespace te
             {
                 HSceneObject child = currentSO->GetChild(i);
 
-                if (child->HasComponent(TID_CRigidBody) || child->HasComponent(TID_CSoftBody))
+                if (child->HasComponent(CoreType::TID_CRigidBody) || child->HasComponent(CoreType::TID_CSoftBody))
                     continue;
 
                 soToUpdate.push(child);
@@ -349,11 +349,11 @@ namespace te
 
         while (currentSO != nullptr)
         {
-            if (currentSO->HasComponent(TID_CRigidBody) || 
-                currentSO->HasComponent(TID_CMeshSoftBody) ||
-                currentSO->HasComponent(TID_CPatchSoftBody) ||
-                currentSO->HasComponent(TID_RopeSoftBody) ||
-                currentSO->HasComponent(TID_CEllipsoidSoftBody))
+            if (currentSO->HasComponent(CoreType::TID_CRigidBody) || 
+                currentSO->HasComponent(CoreType::TID_CMeshSoftBody) ||
+                currentSO->HasComponent(CoreType::TID_CPatchSoftBody) ||
+                currentSO->HasComponent(CoreType::TID_RopeSoftBody) ||
+                currentSO->HasComponent(CoreType::TID_CEllipsoidSoftBody))
             {
                 TE_DEBUG("Nested Rigidbodies or SoftBodies detected. This will result in inconsistent transformations. "
                     "To parent one Rigidbody to another move its colliders to the new parent, but remove the Rigidbody "

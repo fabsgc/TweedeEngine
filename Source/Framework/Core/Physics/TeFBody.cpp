@@ -2,7 +2,7 @@
 
 namespace te
 {
-    FBody::FBody(UINT32 type)
+    FBody::FBody(CoreType type)
         : Serializable(type)
     { }
 

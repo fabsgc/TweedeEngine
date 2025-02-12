@@ -6,7 +6,7 @@
 namespace te
 {
     CAudioListener::CAudioListener()
-        : Component(HSceneObject(), (UINT32)TID_CAudioListener)
+        : Component(HSceneObject(), CoreType::TID_CAudioListener)
     {
         SetName("AudioListener");
         SetNotifyFlags(TCF_Transform | TCF_Parent);
@@ -14,7 +14,7 @@ namespace te
     }
 
     CAudioListener::CAudioListener(const HSceneObject& parent)
-        : Component(parent, (UINT32)TID_CAudioListener)
+        : Component(parent, CoreType::TID_CAudioListener)
     {
         SetName("AudioListener");
         SetNotifyFlags(TCF_Transform | TCF_Parent);

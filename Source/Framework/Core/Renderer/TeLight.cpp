@@ -12,7 +12,7 @@ namespace te
     const UINT32 Light::LIGHT_CONE_NUM_SLICES = 10;
 
     Light::Light()
-        : Serializable(TID_Light)
+        : Serializable(CoreType::TID_Light)
         , _type(Light::Type::Directional)
         , _castShadows(DefaultCastShadows)
         , _color(Color::White)
@@ -24,7 +24,7 @@ namespace te
 
     Light::Light(Light::Type type, Color color, float intensity, 
         bool castShadows, Light::CastShadowsType castShadowsType, Degree spotAngle)
-        : Serializable(TID_Light)
+        : Serializable(CoreType::TID_Light)
         , _type(type)
         , _castShadows(castShadows)
         , _color(color)

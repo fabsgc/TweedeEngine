@@ -5,7 +5,7 @@
 namespace te
 {
     CLight::CLight()
-        : Component(HSceneObject(), (UINT32)TID_CLight)
+        : Component(HSceneObject(), CoreType::TID_CLight)
     {
         SetName("Light");
         SetFlag(Component::AlwaysRun, true);
@@ -13,7 +13,7 @@ namespace te
 
     CLight::CLight(const HSceneObject& parent, Light::Type type, Color color,
         float intensity, bool castShadows, Light::CastShadowsType castShadowsType, Degree spotAngle)
-        : Component(parent, (UINT32)TID_CLight)
+        : Component(parent, CoreType::TID_CLight)
         , _type(type)
         , _color(color)
         , _intensity(intensity)

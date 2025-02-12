@@ -18,7 +18,7 @@ namespace te
         virtual ~CDecal();
 
         /** @copydoc Component::GetComponentType */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CDecal; }
+        static CoreType GetComponentType() { return CoreType::TID_CDecal; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HComponent& c, const String& suffix = "") override;

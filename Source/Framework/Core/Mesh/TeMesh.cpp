@@ -1,10 +1,12 @@
 #include "Mesh/TeMesh.h"
+
 #include "TeMeshData.h"
 #include "RenderAPI/TeVertexData.h"
 #include "RenderAPI/TeIndexBuffer.h"
 #include "RenderAPI/TeVertexBuffer.h"
 #include "RenderAPI/TeVertexDataDesc.h"
 #include "Resources/TeResourceManager.h"
+#include "TeCorePrerequisites.h"
 
 namespace te
 {
@@ -83,7 +85,7 @@ namespace te
     }
 
     Mesh::Mesh()
-        : Resource(TID_Mesh)
+        : Resource(CoreType::TID_Mesh)
         , _properties(0, 0, DOT_TRIANGLE_LIST)
         , _CPUData(nullptr)
         , _vertexData(nullptr)
@@ -96,7 +98,7 @@ namespace te
     { }
 
     Mesh::Mesh(const MESH_DESC& desc, GpuDeviceFlags deviceMask)
-        : Resource(TID_Mesh)
+        : Resource(CoreType::TID_Mesh)
         , _properties(desc.NumVertices, desc.NumIndices, desc.SubMeshes)
         , _CPUData(nullptr)
         , _vertexData(nullptr)
@@ -110,7 +112,7 @@ namespace te
     { }
 
     Mesh::Mesh(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
-        : Resource(TID_Mesh)
+        : Resource(CoreType::TID_Mesh)
         , _properties(initialMeshData->GetNumVertices(), initialMeshData->GetNumIndices(), desc.SubMeshes)
         , _CPUData(initialMeshData)
         , _vertexData(nullptr)
@@ -548,7 +550,7 @@ namespace te
     ZPrepassMesh::ZPrepassMesh(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
         : Mesh(initialMeshData, desc, deviceMask)
     {
-        _coreType = TID_ZPrepassMesh;
+        _coreType = CoreType::TID_ZPrepassMesh;
     }
 
     SPtr<ZPrepassMesh> ZPrepassMesh::CreatePtr(const SPtr<MeshData>& initialMeshData, const MESH_DESC& desc, GpuDeviceFlags deviceMask)
@@ -570,9 +572,7 @@ namespace te
 
     void ZPrepassMesh::Serialize(StreamWriter* serializer) const
     {
-        Resource::Serialize(serializer);
-
-        // TODO Serialization
+        Mesh::Serialize(serializer);
     }
 
     void ZPrepassMesh::Deserialize(StreamReader* deserializer, ZPrepassMesh* object)
@@ -580,10 +580,6 @@ namespace te
         if (!object)
             return;
 
-        Resource::Deserialize(deserializer, object);
-
-        // TODO Serialization
-
-        //(*object))->Initialize();
+        Mesh::Deserialize(deserializer, object);
     }
 }

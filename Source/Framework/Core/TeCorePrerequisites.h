@@ -47,8 +47,10 @@
 
 namespace te
 {
-    enum TypeID_Core
+    enum class CoreType
     {
+        TID_Unknown                   = 1000,
+
         TID_SceneObject               = 1001,
 
         TID_Component                 = 1100,

@@ -6,13 +6,13 @@
 namespace te
 {
     CCylinderCollider::CCylinderCollider()
-        : CCollider((UINT32)TID_CCylinderCollider)
+        : CCollider(CoreType::TID_CCylinderCollider)
     {
         SetName("CylinderCollider");
     }
 
     CCylinderCollider::CCylinderCollider(const HSceneObject& parent)
-        : CCollider(parent, (UINT32)TID_CCylinderCollider)
+        : CCollider(parent, CoreType::TID_CCylinderCollider)
     {
         SetName("CylinderCollider");
     }

@@ -74,11 +74,11 @@ namespace te
 
         for (const auto& component : sceneObject->GetComponents())
         {
-            TypeID_Core type = (TypeID_Core)component->GetCoreType();
+            CoreType type = (CoreType)component->GetCoreType();
 
             switch (type)
             {
-                case TypeID_Core::TID_CCamera: 
+                case CoreType::TID_CCamera: 
                 {
                     HCamera cameraElement = static_object_cast<CCamera>(component);
                     if (cameraElement->GetActive() && gRendererUtility().DoFrustumCulling(camera, cameraElement))

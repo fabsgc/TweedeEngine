@@ -3,7 +3,7 @@
 namespace te
 {
     FPhysicsHeightField::FPhysicsHeightField(const SPtr<Texture>& texture)
-        : Serializable(TypeID_Core::TID_FPhysicsHeightField)
+        : Serializable(CoreType::TID_FPhysicsHeightField)
         , _texture(texture)
     { }
 }

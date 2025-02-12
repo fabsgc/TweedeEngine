@@ -6,7 +6,7 @@
 
 namespace te
 {
-    CJoint::CJoint(UINT32 type)
+    CJoint::CJoint(CoreType type)
         : Component(HSceneObject(), type)
         , _internal(nullptr)
     {
@@ -20,7 +20,7 @@ namespace te
         _rotations[1] = Quaternion::IDENTITY;
     }
 
-    CJoint::CJoint(const HSceneObject& parent, UINT32 type)
+    CJoint::CJoint(const HSceneObject& parent, CoreType type)
         : Component(parent, type)
         , _internal(nullptr)
     {
@@ -92,7 +92,7 @@ namespace te
 
     void CJoint::SetBody(JointBody body, const HRigidBody& value)
     {
-        if (value && value->GetComponentType() != (UINT32)TID_CRigidBody)
+        if (value && value->GetComponentType() != CoreType::TID_CRigidBody)
             return;
 
         if (_bodies[(int)body] == value)

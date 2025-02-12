@@ -6,14 +6,14 @@
 namespace te
 {
     CRenderable::CRenderable()
-        : Component(HSceneObject(), (UINT32)TID_CRenderable)
+        : Component(HSceneObject(), CoreType::TID_CRenderable)
     {
         SetName("Renderable");
         SetFlag(Component::AlwaysRun, true);
     }
 
     CRenderable::CRenderable(const HSceneObject& parent)
-        : Component(parent, (UINT32)TID_CRenderable)
+        : Component(parent, CoreType::TID_CRenderable)
     {
         SetName("Renderable");
         SetFlag(Component::AlwaysRun, true);

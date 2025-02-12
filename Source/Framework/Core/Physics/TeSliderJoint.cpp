@@ -4,7 +4,7 @@
 namespace te
 { 
     SliderJoint::SliderJoint()
-        : Joint(TypeID_Core::TID_SliderJoint)
+        : Joint(CoreType::TID_SliderJoint)
         , _lowerAngLimit(0.0f)
         , _upperAngLimit(0.0f)
     { }

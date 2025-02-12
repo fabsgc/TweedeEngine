@@ -38,11 +38,9 @@ namespace te
             if (component.IsDestroyed())
                 return;
 
-            TypeID_Core type = (TypeID_Core)component->GetCoreType();
-
-            switch (type)
+            switch (component->GetCoreType())
             {
-            case TypeID_Core::TID_CLight:
+            case CoreType::TID_CLight:
             {
                 HLight light = static_object_cast<CLight>(component);
                 if (light->GetActive() && gRendererUtility().DoFrustumCulling(camera, light))
@@ -76,7 +74,7 @@ namespace te
             }
             break;
 
-            case TypeID_Core::TID_CCamera:
+            case CoreType::TID_CCamera:
             {
                 HCamera cameraElement = static_object_cast<CCamera>(component);
                 if (cameraElement->GetActive() && gRendererUtility().DoFrustumCulling(camera, cameraElement))
@@ -96,7 +94,7 @@ namespace te
             }
             break;
 
-            case TypeID_Core::TID_CAudioListener:
+            case CoreType::TID_CAudioListener:
             {
                 HAudioListener audio = static_object_cast<CAudioListener>(component);
                 if (audio->GetActive() && gRendererUtility().DoFrustumCulling(camera, audio))
@@ -116,7 +114,7 @@ namespace te
             }
             break;
 
-            case TypeID_Core::TID_CAudioSource:
+            case CoreType::TID_CAudioSource:
             {
                 HAudioSource audio = static_object_cast<CAudioSource>(component);
                 if (audio->GetActive() && gRendererUtility().DoFrustumCulling(camera, audio))

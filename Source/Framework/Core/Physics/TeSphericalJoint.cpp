@@ -4,7 +4,7 @@
 namespace te
 { 
     SphericalJoint::SphericalJoint()
-        : Joint(TypeID_Core::TID_SphericalJoint)
+        : Joint(CoreType::TID_SphericalJoint)
     { }
 
     SPtr<SphericalJoint> SphericalJoint::Create(PhysicsScene& scene)

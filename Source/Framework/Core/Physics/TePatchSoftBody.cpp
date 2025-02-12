@@ -6,7 +6,7 @@
 namespace te
 {
     PatchSoftBody::PatchSoftBody(const HSceneObject& linkedSO)
-        : SoftBody(linkedSO, TypeID_Core::TID_PatchSoftBody)
+        : SoftBody(linkedSO, CoreType::TID_PatchSoftBody)
     { }
 
     SPtr<PatchSoftBody> PatchSoftBody::Create(const HSceneObject& linkedSO)

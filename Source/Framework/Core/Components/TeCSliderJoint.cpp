@@ -5,13 +5,13 @@
 namespace te
 {
     CSliderJoint::CSliderJoint()
-        : CJoint((UINT32)TID_CSliderJoint)
+        : CJoint(CoreType::TID_CSliderJoint)
     {
         SetName("SliderJoint");
     }
 
     CSliderJoint::CSliderJoint(const HSceneObject& parent)
-        : CJoint(parent, (UINT32)TID_CSliderJoint)
+        : CJoint(parent, CoreType::TID_CSliderJoint)
     {
         SetName("SliderJoint");
     }

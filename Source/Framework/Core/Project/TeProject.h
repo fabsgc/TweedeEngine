@@ -17,7 +17,7 @@ namespace te
         }
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_Project; }
+        static CoreType GetResourceType() { return CoreType::TID_Project; }
 
         /**	Creates a new project from the provided per-size font data. */
         static HProject Create();

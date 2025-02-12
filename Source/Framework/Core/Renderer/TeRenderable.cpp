@@ -35,7 +35,7 @@ namespace te
     }
 
     Renderable::Renderable()
-        : Serializable(TID_Renderable)
+        : Serializable(CoreType::TID_Renderable)
     { }
 
     Renderable::~Renderable()

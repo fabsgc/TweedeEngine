@@ -5,7 +5,7 @@
 namespace te
 {
     CConeTwistJoint::CConeTwistJoint()
-        : CJoint((UINT32)TID_CConeTwistJoint)
+        : CJoint(CoreType::TID_CConeTwistJoint)
         , _swingSpan1(0.0f)
         , _swingSpan2(0.0f)
         , _twistSpan(0.0f)
@@ -14,7 +14,7 @@ namespace te
     }
 
     CConeTwistJoint::CConeTwistJoint(const HSceneObject& parent)
-        : CJoint(parent, (UINT32)TID_CConeTwistJoint)
+        : CJoint(parent, CoreType::TID_CConeTwistJoint)
         , _swingSpan1(0.0f)
         , _swingSpan2(0.0f)
         , _twistSpan(0.0f)

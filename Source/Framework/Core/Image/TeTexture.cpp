@@ -59,16 +59,16 @@ namespace te
     SPtr<Texture> Texture::NORMAL;
 
     Texture::Texture()
-        : Resource(TID_Texture)
+        : Resource(CoreType::TID_Texture)
     { }
 
     Texture::Texture(const TEXTURE_DESC& desc)
-        : Resource(TID_Texture)
+        : Resource(CoreType::TID_Texture)
         , _properties(desc)
     { }
 
     Texture::Texture(const TEXTURE_DESC& desc, const SPtr<PixelData>& pixelData)
-        : Resource(TID_Texture)
+        : Resource(CoreType::TID_Texture)
         , _properties(desc)
         , _initData(pixelData)
     { }

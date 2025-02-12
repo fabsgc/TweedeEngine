@@ -20,9 +20,9 @@ namespace te
     {
     public:
         /** Each component has a type which is used to recognize and cast components */
-        static inline UINT32 GetComponentType()
+        static inline CoreType GetComponentType()
         {
-            return TypeID_Core::TID_Component;
+            return ComponentType;
         }
 
         /** Sometimes, you could have to change parent of a component */
@@ -121,7 +121,7 @@ namespace te
         virtual void ExportJson(nlohmann::json& document) const;
 
     protected:
-        Component(HSceneObject parent, UINT32 type);
+        Component(HSceneObject parent, CoreType type);
         virtual ~Component() = 0;
 
         /**
@@ -203,7 +203,7 @@ namespace te
         HSceneObject _parent;
 
     public:
-        static UINT32 ComponentType;
+        static CoreType ComponentType;
         static const UINT32 AlwaysRun;
     };
 }

@@ -32,7 +32,7 @@ namespace te
         virtual const UUID& GetUUID() const { return _UUID; }
 
         /** Allow to dynamically retrieve resource type */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_Resource; }
+        static CoreType GetResourceType() { return CoreType::TID_Resource; }
 
     public:
         /** @copydoc Serializable::Serialize */
@@ -46,7 +46,7 @@ namespace te
         friend class ResourceHandleBase;
         friend class ProjectImporter;
 
-        Resource(UINT32 type);
+        Resource(CoreType type);
 
         /** @copydoc GetUUID */
         virtual void SetUUID(const UUID& uuid) { _UUID = uuid; }

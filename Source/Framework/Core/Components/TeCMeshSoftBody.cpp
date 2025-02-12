@@ -6,13 +6,13 @@
 namespace te
 {
     CMeshSoftBody::CMeshSoftBody()
-        : CSoftBody(HSceneObject(), (UINT32)TID_CMeshSoftBody)
+        : CSoftBody(HSceneObject(), CoreType::TID_CMeshSoftBody)
     {
         SetName("MeshSoftBody");
     }
 
     CMeshSoftBody::CMeshSoftBody(const HSceneObject& parent)
-        : CSoftBody(parent, (UINT32)TID_CMeshSoftBody)
+        : CSoftBody(parent, CoreType::TID_CMeshSoftBody)
     {
         SetName("MeshSoftBody");
     }

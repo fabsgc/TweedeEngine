@@ -4,7 +4,7 @@
 
 namespace te
 { 
-    UINT32 Component::ComponentType = TID_Component;
+    CoreType Component::ComponentType = CoreType::TID_Component;
     const UINT32 Component::AlwaysRun = 1;
 
     Event<void(const HComponent&)> Component::OnComponentCreated;
@@ -13,7 +13,7 @@ namespace te
     Event<void(const HComponent&)> Component::OnComponentEnabled;
     Event<void(const HComponent&)> Component::OnComponentDisabled;
 
-    Component::Component(HSceneObject parent, UINT32 type)
+    Component::Component(HSceneObject parent, CoreType type)
         : Serializable(type)
         , _notifyFlags(TCF_Transform | TCF_Mobility | TCF_Parent)
         , _flags(0)

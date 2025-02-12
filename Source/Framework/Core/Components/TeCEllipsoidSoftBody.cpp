@@ -6,13 +6,13 @@
 namespace te
 {
     CEllipsoidSoftBody::CEllipsoidSoftBody()
-        : CSoftBody(HSceneObject(), (UINT32)TID_CEllipsoidSoftBody)
+        : CSoftBody(HSceneObject(), CoreType::TID_CEllipsoidSoftBody)
     {
         SetName("EllipsoidSoftBody");
     }
 
     CEllipsoidSoftBody::CEllipsoidSoftBody(const HSceneObject& parent)
-        : CSoftBody(parent, (UINT32)TID_CEllipsoidSoftBody)
+        : CSoftBody(parent, CoreType::TID_CEllipsoidSoftBody)
     {
         SetName("EllipsoidSoftBody");
     }

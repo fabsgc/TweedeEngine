@@ -6,13 +6,13 @@
 namespace te
 {
     CConeCollider::CConeCollider()
-        : CCollider((UINT32)TID_CConeCollider)
+        : CCollider(CoreType::TID_CConeCollider)
     {
         SetName("ConeCollider");
     }
 
     CConeCollider::CConeCollider(const HSceneObject& parent)
-        : CCollider(parent, (UINT32)TID_CConeCollider)
+        : CCollider(parent, CoreType::TID_CConeCollider)
     {
         SetName("ConeCollider");
     }

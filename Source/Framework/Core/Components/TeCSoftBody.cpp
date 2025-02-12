@@ -9,13 +9,13 @@ using namespace std::placeholders;
 
 namespace te
 {
-    CSoftBody::CSoftBody(UINT32 type)
+    CSoftBody::CSoftBody(CoreType type)
         : CBody(HSceneObject(), type)
     {
         SetName("SoftBody");
     }
 
-    CSoftBody::CSoftBody(const HSceneObject& parent, UINT32 type)
+    CSoftBody::CSoftBody(const HSceneObject& parent, CoreType type)
         : CBody(parent, type)
     {
         SetName("SoftBody");
@@ -135,11 +135,11 @@ namespace te
 
         while (currentSO != nullptr)
         {
-            if (currentSO->HasComponent(TID_CRigidBody) ||
-                currentSO->HasComponent(TID_CMeshSoftBody) ||
-                currentSO->HasComponent(TID_CPatchSoftBody) ||
-                currentSO->HasComponent(TID_RopeSoftBody) ||
-                currentSO->HasComponent(TID_CEllipsoidSoftBody))
+            if (currentSO->HasComponent(CoreType::TID_CRigidBody) ||
+                currentSO->HasComponent(CoreType::TID_CMeshSoftBody) ||
+                currentSO->HasComponent(CoreType::TID_CPatchSoftBody) ||
+                currentSO->HasComponent(CoreType::TID_RopeSoftBody) ||
+                currentSO->HasComponent(CoreType::TID_CEllipsoidSoftBody))
             {
                 TE_DEBUG("Nested Rigidbodies or SoftBodies detected. This will result in inconsistent transformations. "
                     "To parent one Rigidbody to another move its colliders to the new parent, but remove the Rigidbody "

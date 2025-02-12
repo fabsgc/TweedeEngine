@@ -6,13 +6,13 @@
 namespace te
 {
     CMeshCollider::CMeshCollider()
-        : CCollider((UINT32)TID_CMeshCollider)
+        : CCollider(CoreType::TID_CMeshCollider)
     {
         SetName("MeshCollider");
     }
 
     CMeshCollider::CMeshCollider(const HSceneObject& parent)
-        : CCollider(parent, (UINT32)TID_CMeshCollider)
+        : CCollider(parent, CoreType::TID_CMeshCollider)
     {
         SetName("MeshCollider");
     }

@@ -5,14 +5,14 @@
 namespace te
 {
     CDecal::CDecal()
-        : Component(HSceneObject(), (UINT32)TID_CDecal)
+        : Component(HSceneObject(), CoreType::TID_CDecal)
     {
         SetName("Decal");
         SetFlag(Component::AlwaysRun, true);
     }
 
     CDecal::CDecal(const HSceneObject& parent)
-        : Component(parent, TID_CDecal)
+        : Component(parent, CoreType::TID_CDecal)
     {
         SetName("Decal");
         SetFlag(Component::AlwaysRun, true);

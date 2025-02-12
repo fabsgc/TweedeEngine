@@ -5,13 +5,13 @@
 namespace te
 {
     CHingeJoint::CHingeJoint()
-        : CJoint((UINT32)TID_CHingeJoint)
+        : CJoint(CoreType::TID_CHingeJoint)
     {
         SetName("HingeJoint");
     }
 
     CHingeJoint::CHingeJoint(const HSceneObject& parent)
-        : CJoint(parent, (UINT32)TID_CHingeJoint)
+        : CJoint(parent, CoreType::TID_CHingeJoint)
     {
         SetName("HingeJoint");
     }

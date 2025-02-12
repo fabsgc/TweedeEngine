@@ -63,9 +63,9 @@ namespace te
 
         for (const auto& component : sceneObject->GetComponents())
         {
-            UINT32 type = component->GetCoreType();
-            Color color = component->GetGameObjectColor();
-            RGBA rgbaColor = color.GetAsRGBA();
+            const CoreType type = component->GetCoreType();
+            const Color color = component->GetGameObjectColor();
+            const RGBA rgbaColor = color.GetAsRGBA();
 
             if (_colorToGameObject.find(rgbaColor) == _colorToGameObject.end())
                 _colorToGameObject[rgbaColor] = GameObjectInfo(component.GetInternalPtr());
@@ -74,7 +74,7 @@ namespace te
 
             switch (type)
             {
-            case TypeID_Core::TID_CRenderable:
+            case CoreType::TID_CRenderable:
             {
                 HRenderable renderable = static_object_cast<CRenderable>(component);
                 if (renderable->GetActive() && gRendererUtility().DoFrustumCulling(camera, renderable))

@@ -622,7 +622,7 @@ namespace te
             if (hasChanged)
             {
                 // We must update gpu params on all renderables who are using this material
-                Vector<HComponent> components = gEditor().GetSceneRoot()->GetComponents(TypeID_Core::TID_CRenderable, true);
+                Vector<HComponent> components = gEditor().GetSceneRoot()->GetComponents(CoreType::TID_CRenderable, true);
                 _currentMaterial->SetProperties(properties);
 
                 for (auto& component : components)

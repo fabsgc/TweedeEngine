@@ -202,7 +202,7 @@ namespace te
         void Initialize() override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_Texture; }
+        static CoreType GetResourceType() { return CoreType::TID_Texture; }
 
         /**
          * Locks the buffer for reading or writing.

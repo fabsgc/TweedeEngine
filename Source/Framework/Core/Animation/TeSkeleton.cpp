@@ -73,11 +73,11 @@ namespace te
     }
 
     Skeleton::Skeleton()
-        : Serializable(TypeID_Core::TID_Skeleton)
+        : Serializable(CoreType::TID_Skeleton)
     { }
 
     Skeleton::Skeleton(BONE_DESC* bones, UINT32 numBones)
-        : Serializable(TypeID_Core::TID_Skeleton)
+        : Serializable(CoreType::TID_Skeleton)
         , _numBones(numBones)
         , _boneTransforms(te_newN<Transform>(numBones))
         , _invBindPoses(te_newN<Matrix4>(numBones))

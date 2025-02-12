@@ -7,7 +7,7 @@
 namespace te
 {
     CAudioSource::CAudioSource()
-        : Component(HSceneObject(), (UINT32)TID_CAudioSource)
+        : Component(HSceneObject(), CoreType::TID_CAudioSource)
     {
         SetName("AudioSource");
         SetNotifyFlags(TCF_Parent | TCF_Transform);
@@ -15,7 +15,7 @@ namespace te
     }
 
     CAudioSource::CAudioSource(const HSceneObject& parent)
-        : Component(parent, (UINT32)TID_CAudioSource)
+        : Component(parent, CoreType::TID_CAudioSource)
     {
         SetName("AudioSource");
         SetNotifyFlags(TCF_Parent | TCF_Transform);

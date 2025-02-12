@@ -242,7 +242,7 @@ namespace te
         void SetLinkedSO(const HSceneObject& SO);
 
     protected:
-        Body(const HSceneObject& linkedSO, UINT32 type);
+        Body(const HSceneObject& linkedSO, CoreType type);
 
     protected:
         HSceneObject _linkedSO;

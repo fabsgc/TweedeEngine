@@ -9,7 +9,7 @@
 namespace te
 {
     Skybox::Skybox()
-        : Serializable(TID_Skybox)
+        : Serializable(CoreType::TID_Skybox)
     {
         // This shouldn't normally happen, as filtered textures are generated when a radiance texture is assigned, but
         // we check for it anyway (something could have gone wrong).

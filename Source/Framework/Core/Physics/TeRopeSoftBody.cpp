@@ -6,7 +6,7 @@
 namespace te
 {
     RopeSoftBody::RopeSoftBody(const HSceneObject& linkedSO)
-        : SoftBody(linkedSO, TypeID_Core::TID_RopeSoftBody)
+        : SoftBody(linkedSO, CoreType::TID_RopeSoftBody)
     { }
 
     SPtr<RopeSoftBody> RopeSoftBody::Create(const HSceneObject& linkedSO)

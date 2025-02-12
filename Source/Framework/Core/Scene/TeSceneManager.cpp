@@ -277,9 +277,9 @@ namespace te
         }
     }
 
-    bool SceneManager::IsComponentOfType(const HComponent& component, UINT32 id)
+    bool SceneManager::IsComponentOfType(const HComponent& component, CoreType type)
     {
-        return component->GetCoreType() == id;
+        return component->GetCoreType() == type;
     }
 
     void SceneManager::Update()

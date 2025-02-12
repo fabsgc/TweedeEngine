@@ -37,7 +37,7 @@ namespace te
         virtual ~Pass() = default;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_Pass; }
+        static CoreType GetResourceType() { return CoreType::TID_Pass; }
 
         /**	Returns true if this pass has some element of transparency. */
         bool HasBlending() const;

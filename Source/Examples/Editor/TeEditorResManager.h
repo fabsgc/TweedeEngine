@@ -147,7 +147,7 @@ namespace te
         }
 
     protected:
-        UnorderedMap<UINT32, ResourcesContainer> _resources;
+        UnorderedMap<CoreType, ResourcesContainer> _resources;
         Vector<Resource*> _resourcesIndex;
     };
 }

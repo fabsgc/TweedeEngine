@@ -17,7 +17,7 @@ namespace te
         virtual ~CSoftBody() = 0;
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CSoftBody; }
+        static CoreType GetComponentType() { return CoreType::TID_CSoftBody; }
 
         /** @copydoc Component::Initialize */
         void Initialize() override;
@@ -38,8 +38,8 @@ namespace te
     protected:
         friend class SceneObject;
 
-        explicit CSoftBody(UINT32 type); // Serialization only
-        CSoftBody(const HSceneObject& parent, UINT32 type);
+        explicit CSoftBody(CoreType type); // Serialization only
+        CSoftBody(const HSceneObject& parent, CoreType type);
 
         /** @copydoc Component::Clone */
         bool Clone(const HSoftBody& c, const String& suffix = "");

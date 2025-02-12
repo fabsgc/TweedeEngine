@@ -4,7 +4,7 @@
 namespace te
 {
     ConeCollider::ConeCollider()
-        : Collider(TypeID_Core::TID_ConeCollider)
+        : Collider(CoreType::TID_ConeCollider)
     { }
 
     SPtr<ConeCollider> ConeCollider::Create(PhysicsScene& scene, float radius, float height,

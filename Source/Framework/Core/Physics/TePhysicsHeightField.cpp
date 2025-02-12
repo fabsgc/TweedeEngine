@@ -7,7 +7,7 @@
 namespace te
 {
     PhysicsHeightField::PhysicsHeightField(const SPtr<Texture>& texture)
-        : Resource(TID_PhysicsHeightField)
+        : Resource(CoreType::TID_PhysicsHeightField)
         , _initTexture(texture)
     {
         // Derived class is responsible for initializing _internal

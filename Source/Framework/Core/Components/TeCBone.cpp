@@ -6,7 +6,7 @@
 namespace te
 {
     CBone::CBone()
-        : Component(HSceneObject(), (UINT32)TID_CBone)
+        : Component(HSceneObject(), CoreType::TID_CBone)
     {
         SetName("Bone");
         SetNotifyFlags(TCF_Parent | TCF_Transform);
@@ -14,7 +14,7 @@ namespace te
     }
 
     CBone::CBone(const HSceneObject& parent)
-        : Component(parent, (UINT32)TID_CBone)
+        : Component(parent, CoreType::TID_CBone)
     {
         SetName("Bone");
         SetNotifyFlags(TCF_Parent | TCF_Transform);

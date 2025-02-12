@@ -6,7 +6,7 @@
 namespace te
 {
     MeshSoftBody::MeshSoftBody(const HSceneObject& linkedSO)
-        : SoftBody(linkedSO, TypeID_Core::TID_MeshSoftBody)
+        : SoftBody(linkedSO, CoreType::TID_MeshSoftBody)
     { }
 
     SPtr<MeshSoftBody> MeshSoftBody::Create(const HSceneObject& linkedSO)

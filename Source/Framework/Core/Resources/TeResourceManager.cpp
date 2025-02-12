@@ -171,7 +171,7 @@ namespace te
         return resources;
     }
 
-    Vector<HResource> ResourceManager::FindByType(UINT32 type)
+    Vector<HResource> ResourceManager::FindByType(CoreType type)
     {
         Vector<HResource> resources;
         HResource resource;

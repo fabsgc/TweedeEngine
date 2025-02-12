@@ -6,14 +6,14 @@
 namespace te
 {
     CBoxCollider::CBoxCollider()
-        : CCollider((UINT32)TID_CBoxCollider)
+        : CCollider(CoreType::TID_CBoxCollider)
     {
         SetName("BoxCollider");
         SetFlag(Component::AlwaysRun, true);
     }
 
     CBoxCollider::CBoxCollider(const HSceneObject& parent, const Vector3& extents)
-        : CCollider(parent, (UINT32)TID_CBoxCollider)
+        : CCollider(parent, CoreType::TID_CBoxCollider)
         , _extents(extents)
     {
         SetName("BoxCollider");

@@ -251,7 +251,7 @@ namespace te
         static Event<void()> OnSave;
 
     protected:
-        static const Vector<UINT32> ComponentsWhichNeedGuizmo;
+        static const Vector<CoreType> ComponentsWhichNeedGuizmo;
 
         bool _editorBegun;
         bool _firstUpdate = true;

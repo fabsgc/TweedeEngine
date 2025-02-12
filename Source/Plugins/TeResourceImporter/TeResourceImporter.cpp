@@ -49,37 +49,37 @@ namespace te
 
         switch (resourceImportOptions.ResourceType)
         {
-        case TID_AnimationClip:
+        case CoreType::TID_AnimationClip:
             return DeserializeOneResource<AnimationClip>(filePath);
 
-        case TID_AudioClip:
+        case CoreType::TID_AudioClip:
             return DeserializeOneResource<AudioClip>(filePath);
 
-        case TID_Texture:
+        case CoreType::TID_Texture:
             return DeserializeOneResource<Texture>(filePath);
 
-        case TID_Material:
+        case CoreType::TID_Material:
             return DeserializeOneResource<Material>(filePath);
 
-        case TID_Shader:
+        case CoreType::TID_Shader:
             return DeserializeOneResource<Shader>(filePath);
 
-        case TID_Mesh:
+        case CoreType::TID_Mesh:
             return DeserializeOneResource<Mesh>(filePath);
 
-        case TID_ZPrepassMesh:
+        case CoreType::TID_ZPrepassMesh:
             return DeserializeOneResource<ZPrepassMesh>(filePath);
 
-        case TID_PhysicsHeightField:
+        case CoreType::TID_PhysicsHeightField:
             return DeserializeOneResource<PhysicsHeightField>(filePath);
 
-        case TID_PhysicsMesh:
+        case CoreType::TID_PhysicsMesh:
             return DeserializeOneResource<PhysicsMesh>(filePath);
 
-        case TID_Script:
+        case CoreType::TID_Script:
             return DeserializeOneResource<Script>(filePath);
 
-        case TID_Font:
+        case CoreType::TID_Font:
             return DeserializeOneResource<Font>(filePath);
 
         default:

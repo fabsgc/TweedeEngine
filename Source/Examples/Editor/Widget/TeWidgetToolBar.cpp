@@ -164,7 +164,7 @@ namespace te
                     }
                 }
 
-                Vector<HComponent> lights = gEditor().GetSceneRoot()->GetComponents(TID_CLight, true);
+                Vector<HComponent> lights = gEditor().GetSceneRoot()->GetComponents(CoreType::TID_CLight, true);
                 for(const auto& light : lights)
                 {
                     SPtr<Texture> texture = gRenderer()->GetLastShadowMapTexture(static_object_cast<CLight>(light).GetInternalPtr()->GetInternal());

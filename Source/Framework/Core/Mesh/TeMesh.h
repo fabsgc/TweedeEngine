@@ -126,7 +126,7 @@ namespace te
         void Initialize() override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_Mesh; }
+        static CoreType GetResourceType() { return CoreType::TID_Mesh; }
 
         /** Get vertex data used for rendering. */
         SPtr<VertexData> GetVertexData() const;
@@ -342,7 +342,7 @@ namespace te
     {
     public:
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_ZPrepassMesh; }
+        static CoreType GetResourceType() { return CoreType::TID_ZPrepassMesh; }
 
         /**
          * @copydoc Mesh::Create(const SPtr<MeshData>&, const MESH_DESC&)

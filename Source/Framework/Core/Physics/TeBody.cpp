@@ -5,7 +5,7 @@
 
 namespace te
 { 
-    Body::Body(const HSceneObject& linkedSO, UINT32 type)
+    Body::Body(const HSceneObject& linkedSO, CoreType type)
         : Serializable(type)
         , _linkedSO(linkedSO)
     { 

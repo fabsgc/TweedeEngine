@@ -26,7 +26,7 @@ namespace te
         virtual ~CAnimation();
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CAnimation; }
+        static CoreType GetComponentType() { return CoreType::TID_CAnimation; }
 
         /** @copydoc Component::Initialize */
         void Initialize() override;

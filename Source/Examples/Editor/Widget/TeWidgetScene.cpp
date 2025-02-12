@@ -342,33 +342,33 @@ namespace te
         {
             switch (_selections.ClickedComponent->GetCoreType())
             {
-            case TID_CCamera:
-            case TID_CCameraUI:
-            case TID_CCameraFlyer:
-            case TID_CRenderable:
-            case TID_CLight:
-            case TID_CSkybox:
-            case TID_CAudioListener:
-            case TID_CAudioSource:
-            case TID_CRigidBody:
-            case TID_CMeshSoftBody:
-            case TID_CEllipsoidSoftBody:
-            case TID_CRopeSoftBody:
-            case TID_CPatchSoftBody:
-            case TID_CConeTwistJoint:
-            case TID_CD6Joint:
-            case TID_CHingeJoint:
-            case TID_CSliderJoint:
-            case TID_CSphericalJoint:
-            case TID_CBoxCollider:
-            case TID_CPlaneCollider:
-            case TID_CSphereCollider:
-            case TID_CCylinderCollider:
-            case TID_CCapsuleCollider:
-            case TID_CMeshCollider:
-            case TID_CConeCollider:
-            case TID_CHeightFieldCollider:
-            case TID_CDecal:
+            case CoreType::TID_CCamera:
+            case CoreType::TID_CCameraUI:
+            case CoreType::TID_CCameraFlyer:
+            case CoreType::TID_CRenderable:
+            case CoreType::TID_CLight:
+            case CoreType::TID_CSkybox:
+            case CoreType::TID_CAudioListener:
+            case CoreType::TID_CAudioSource:
+            case CoreType::TID_CRigidBody:
+            case CoreType::TID_CMeshSoftBody:
+            case CoreType::TID_CEllipsoidSoftBody:
+            case CoreType::TID_CRopeSoftBody:
+            case CoreType::TID_CPatchSoftBody:
+            case CoreType::TID_CConeTwistJoint:
+            case CoreType::TID_CD6Joint:
+            case CoreType::TID_CHingeJoint:
+            case CoreType::TID_CSliderJoint:
+            case CoreType::TID_CSphericalJoint:
+            case CoreType::TID_CBoxCollider:
+            case CoreType::TID_CPlaneCollider:
+            case CoreType::TID_CSphereCollider:
+            case CoreType::TID_CCylinderCollider:
+            case CoreType::TID_CCapsuleCollider:
+            case CoreType::TID_CMeshCollider:
+            case CoreType::TID_CConeCollider:
+            case CoreType::TID_CHeightFieldCollider:
+            case CoreType::TID_CDecal:
                 gEditor().PutFocus(Editor::WindowType::Properties);
                 gEditor().PutFocus(Editor::WindowType::Viewport);
                 break;
@@ -455,31 +455,31 @@ namespace te
                 _expandDragToSelection = true;
 
                 // if we've moved an animation call RestoreInternal()
-                if (currentCO->GetCoreType() == TID_CAnimation)
+                if (currentCO->GetCoreType() == CoreType::TID_CAnimation)
                     static_object_cast<CAnimation>(currentCO)->Initialize();
 
                 // if we've moved a renderable call RestoreInternal on both new and old sceneObject if there is an animation
-                if (currentCO->GetCoreType() == TID_CRenderable)
+                if (currentCO->GetCoreType() == CoreType::TID_CRenderable)
                 {
-                    HAnimation animOldSO = static_object_cast<CAnimation>(oldSceneObject->GetComponent(TID_CAnimation));
+                    HAnimation animOldSO = static_object_cast<CAnimation>(oldSceneObject->GetComponent(CoreType::TID_CAnimation));
                     if (!animOldSO.Empty())
                         animOldSO->Initialize();
 
-                    HAnimation animNewSO = static_object_cast<CAnimation>(sceneObject->GetComponent(TID_CAnimation));
+                    HAnimation animNewSO = static_object_cast<CAnimation>(sceneObject->GetComponent(CoreType::TID_CAnimation));
                     if (!animNewSO.Empty())
                         animNewSO->Initialize();
                 }
 
                 // if we've moved a bone, we need to trigger potential old and new animations to update their states
-                if (currentCO->GetCoreType() == TID_CBone)
+                if (currentCO->GetCoreType() == CoreType::TID_CBone)
                     currentCO->Initialize();
 
                 // if we've moved an audioListener or an audioSource, we need to trigger RestoreInternal()
-                if (currentCO->GetCoreType() == TID_CAudioListener || currentCO->GetCoreType() == TID_CAudioSource)
+                if (currentCO->GetCoreType() == CoreType::TID_CAudioListener || currentCO->GetCoreType() == CoreType::TID_CAudioSource)
                     currentCO->Initialize();
 
                 // if we've moved a rigidBody call OnEnabled()
-                if (currentCO->GetCoreType() == TID_CRigidBody)
+                if (currentCO->GetCoreType() == CoreType::TID_CRigidBody)
                 {
                     HRigidBody rigidBody = static_object_cast<CRigidBody>(currentCO);
                     rigidBody->Initialize();
@@ -487,25 +487,25 @@ namespace te
                 }
 
                 // if we've moved a softBody call OnEnabled()
-                if (currentCO->GetCoreType() == TID_CMeshSoftBody)
+                if (currentCO->GetCoreType() == CoreType::TID_CMeshSoftBody)
                 {
                     HMeshSoftBody softBody = static_object_cast<CMeshSoftBody>(currentCO);
                     softBody->Initialize();
                     softBody->SetLinkedSO(currentCO->SO());
                 }
-                if (currentCO->GetCoreType() == TID_CEllipsoidSoftBody)
+                if (currentCO->GetCoreType() == CoreType::TID_CEllipsoidSoftBody)
                 {
                     HEllipsoidSoftBody softBody = static_object_cast<CEllipsoidSoftBody>(currentCO);
                     softBody->Initialize();
                     softBody->SetLinkedSO(currentCO->SO());
                 }
-                if (currentCO->GetCoreType() == TID_CRopeSoftBody)
+                if (currentCO->GetCoreType() == CoreType::TID_CRopeSoftBody)
                 {
                     HRopeSoftBody softBody = static_object_cast<CRopeSoftBody>(currentCO);
                     softBody->Initialize();
                     softBody->SetLinkedSO(currentCO->SO());
                 }
-                if (currentCO->GetCoreType() == TID_CPatchSoftBody)
+                if (currentCO->GetCoreType() == CoreType::TID_CPatchSoftBody)
                 {
                     HPatchSoftBody softBody = static_object_cast<CPatchSoftBody>(currentCO);
                     softBody->Initialize();
@@ -513,21 +513,21 @@ namespace te
                 }
 
                 // if we've moved a collider call RestoreInternal()
-                if (currentCO->GetCoreType() == TID_CBoxCollider)
+                if (currentCO->GetCoreType() == CoreType::TID_CBoxCollider)
                     static_object_cast<CBoxCollider>(currentCO)->Initialize();
-                if (currentCO->GetCoreType() == TID_CPlaneCollider)
+                if (currentCO->GetCoreType() == CoreType::TID_CPlaneCollider)
                     static_object_cast<CPlaneCollider>(currentCO)->Initialize();
-                if (currentCO->GetCoreType() == TID_CSphereCollider)
+                if (currentCO->GetCoreType() == CoreType::TID_CSphereCollider)
                     static_object_cast<CSphereCollider>(currentCO)->Initialize();
-                if (currentCO->GetCoreType() == TID_CCylinderCollider)
+                if (currentCO->GetCoreType() == CoreType::TID_CCylinderCollider)
                     static_object_cast<CCylinderCollider>(currentCO)->Initialize();
-                if (currentCO->GetCoreType() == TID_CCapsuleCollider)
+                if (currentCO->GetCoreType() == CoreType::TID_CCapsuleCollider)
                     static_object_cast<CCapsuleCollider>(currentCO)->Initialize();
-                if (currentCO->GetCoreType() == TID_CMeshCollider)
+                if (currentCO->GetCoreType() == CoreType::TID_CMeshCollider)
                     static_object_cast<CMeshCollider>(currentCO)->Initialize();
-                if (currentCO->GetCoreType() == TID_CConeCollider)
+                if (currentCO->GetCoreType() == CoreType::TID_CConeCollider)
                     static_object_cast<CConeCollider>(currentCO)->Initialize();
-                if (currentCO->GetCoreType() == TID_CHeightFieldCollider)
+                if (currentCO->GetCoreType() == CoreType::TID_CHeightFieldCollider)
                     static_object_cast<CHeightFieldCollider>(currentCO)->Initialize();
 
                 // ugly but best way to update all children
@@ -635,11 +635,11 @@ namespace te
                     if (ImGui::BeginMenu(ICON_FA_CAMERA " Camera"))
                     {
                         if (ImGui::MenuItem(ICON_FA_CAMERA " Rendering camera"))
-                            CreateCamera(TypeID_Core::TID_CCamera);
+                            CreateCamera(CoreType::TID_CCamera);
                         if (ImGui::MenuItem(ICON_FA_CAMERA " Flying camera"))
-                            CreateCamera(TypeID_Core::TID_CCameraFlyer);
+                            CreateCamera(CoreType::TID_CCameraFlyer);
                         if (ImGui::MenuItem(ICON_FA_CAMERA" Orbital camera"))
-                            CreateCamera(TypeID_Core::TID_CCameraUI);
+                            CreateCamera(CoreType::TID_CCameraUI);
 
                         ImGui::EndMenu();
                     }
@@ -661,13 +661,13 @@ namespace te
                         if (ImGui::BeginMenu(ICON_FA_BOXES " Soft Body"))
                         {
                             if (ImGui::MenuItem(ICON_FA_BOXES " Mesh Soft Body"))
-                                CreateSoftBody(TID_CMeshSoftBody);
+                                CreateSoftBody(CoreType::TID_CMeshSoftBody);
                             if (ImGui::MenuItem(ICON_FA_BOXES " Ellipsoid Soft Body"))
-                                CreateSoftBody(TID_CEllipsoidSoftBody);
+                                CreateSoftBody(CoreType::TID_CEllipsoidSoftBody);
                             if (ImGui::MenuItem(ICON_FA_BOXES " Rope Soft Body"))
-                                CreateSoftBody(TID_CRopeSoftBody);
+                                CreateSoftBody(CoreType::TID_CRopeSoftBody);
                             if (ImGui::MenuItem(ICON_FA_BOXES " Patch Soft Body"))
-                                CreateSoftBody(TID_CPatchSoftBody);
+                                CreateSoftBody(CoreType::TID_CPatchSoftBody);
 
                             ImGui::EndMenu();
                         }
@@ -675,15 +675,15 @@ namespace te
                         if (ImGui::BeginMenu(ICON_FA_LINK " Joint"))
                         {
                             if (ImGui::MenuItem(ICON_FA_LINK " Cone Twist Joint"))
-                                CreateJoint(TID_CConeTwistJoint);
+                                CreateJoint(CoreType::TID_CConeTwistJoint);
                             if (ImGui::MenuItem(ICON_FA_LINK " D6 Joint"))
-                                CreateJoint(TID_CD6Joint);
+                                CreateJoint(CoreType::TID_CD6Joint);
                             if (ImGui::MenuItem(ICON_FA_LINK " Hinge Joint"))
-                                CreateJoint(TID_CHingeJoint);
+                                CreateJoint(CoreType::TID_CHingeJoint);
                             if (ImGui::MenuItem(ICON_FA_LINK " Slider Joint"))
-                                CreateJoint(TID_CSliderJoint);
+                                CreateJoint(CoreType::TID_CSliderJoint);
                             if (ImGui::MenuItem(ICON_FA_LINK " Spherical Joint"))
-                                CreateJoint(TID_CSphericalJoint);
+                                CreateJoint(CoreType::TID_CSphericalJoint);
 
                             ImGui::EndMenu();
                         }
@@ -691,21 +691,21 @@ namespace te
                         if (ImGui::BeginMenu(ICON_FA_CUBE " Collider"))
                         {
                             if (ImGui::MenuItem(ICON_FA_CUBE " Box Collider"))
-                                CreateCollider(TID_CBoxCollider);
+                                CreateCollider(CoreType::TID_CBoxCollider);
                             if (ImGui::MenuItem(ICON_FA_CUBE " Plane Collider"))
-                                CreateCollider(TID_CPlaneCollider);
+                                CreateCollider(CoreType::TID_CPlaneCollider);
                             if (ImGui::MenuItem(ICON_FA_CUBE " Sphere Collider"))
-                                CreateCollider(TID_CSphereCollider);
+                                CreateCollider(CoreType::TID_CSphereCollider);
                             if (ImGui::MenuItem(ICON_FA_CUBE " Cylinder Collider"))
-                                CreateCollider(TID_CCylinderCollider);
+                                CreateCollider(CoreType::TID_CCylinderCollider);
                             if (ImGui::MenuItem(ICON_FA_CUBE " Capsule Collider"))
-                                CreateCollider(TID_CCapsuleCollider);
+                                CreateCollider(CoreType::TID_CCapsuleCollider);
                             if (ImGui::MenuItem(ICON_FA_CUBE " Mesh Collider"))
-                                CreateCollider(TID_CMeshCollider);
+                                CreateCollider(CoreType::TID_CMeshCollider);
                             if (ImGui::MenuItem(ICON_FA_CUBE " Cone Collider"))
-                                CreateCollider(TID_CMeshCollider);
+                                CreateCollider(CoreType::TID_CMeshCollider);
                             if (ImGui::MenuItem(ICON_FA_CUBE " Terrain Collider"))
-                                CreateCollider(TID_CHeightFieldCollider);
+                                CreateCollider(CoreType::TID_CHeightFieldCollider);
 
                             ImGui::EndMenu();
                         }
@@ -837,14 +837,14 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
-    void WidgetScene::CreateCamera(TypeID_Core type)
+    void WidgetScene::CreateCamera(CoreType type)
     { 
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
         switch (type)
         {
-            case TID_CCamera:
+            case CoreType::TID_CCamera:
             {
                 if (!_selections.ClickedSceneObject->GetComponent<CCamera>().Empty())
                     return;
@@ -856,7 +856,7 @@ namespace te
             }
             break;
 
-            case TID_CCameraFlyer:
+            case CoreType::TID_CCameraFlyer:
             {
                 if (!_selections.ClickedSceneObject->GetComponent<CCameraFlyer>().Empty())
                     return;
@@ -868,7 +868,7 @@ namespace te
             }
             break;
 
-            case TID_CCameraUI:
+            case CoreType::TID_CCameraUI:
             {
                 if (!_selections.ClickedSceneObject->GetComponent<CCameraUI>().Empty())
                     return;
@@ -1002,7 +1002,7 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
-    void WidgetScene::CreateSoftBody(TypeID_Core type)
+    void WidgetScene::CreateSoftBody(CoreType type)
     {
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
@@ -1018,7 +1018,7 @@ namespace te
 
         switch (type)
         {
-            case TID_CMeshSoftBody:
+            case CoreType::TID_CMeshSoftBody:
             {
                 HMeshSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CMeshSoftBody>();
                 softBody.Get()->SetName("Mesh Soft Body");
@@ -1027,7 +1027,7 @@ namespace te
             }
             break;
 
-            case TID_CEllipsoidSoftBody:
+            case CoreType::TID_CEllipsoidSoftBody:
             {
                 HEllipsoidSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CEllipsoidSoftBody>();
                 softBody.Get()->SetName("Ellipsoid Soft Body");
@@ -1036,7 +1036,7 @@ namespace te
             }
             break;
 
-            case TID_CRopeSoftBody:
+            case CoreType::TID_CRopeSoftBody:
             {
                 HRopeSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CRopeSoftBody>();
                 softBody.Get()->SetName("Rope Soft Body");
@@ -1045,7 +1045,7 @@ namespace te
             }
             break;
 
-            case TID_CPatchSoftBody:
+            case CoreType::TID_CPatchSoftBody:
             {
                 HPatchSoftBody softBody = _selections.ClickedSceneObject->AddComponent<CPatchSoftBody>();
                 softBody.Get()->SetName("Patch Soft Body");
@@ -1065,14 +1065,14 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
-    void WidgetScene::CreateJoint(TypeID_Core type)
+    void WidgetScene::CreateJoint(CoreType type)
     {
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
         switch (type)
         {
-            case TID_CConeTwistJoint:
+            case CoreType::TID_CConeTwistJoint:
             {
                 HConeTwistJoint joint = _selections.ClickedSceneObject->AddComponent<CConeTwistJoint>();
                 joint.Get()->SetName("Cone Twist Joint");
@@ -1081,7 +1081,7 @@ namespace te
             }
             break;
 
-            case TID_CD6Joint:
+            case CoreType::TID_CD6Joint:
             {
                 HD6Joint joint = _selections.ClickedSceneObject->AddComponent<CD6Joint>();
                 joint.Get()->SetName("D6 Joint");
@@ -1090,7 +1090,7 @@ namespace te
             }
             break;
 
-            case TID_CHingeJoint:
+            case CoreType::TID_CHingeJoint:
             {
                 HHingeJoint joint = _selections.ClickedSceneObject->AddComponent<CHingeJoint>();
                 joint.Get()->SetName("Hinge Joint");
@@ -1099,7 +1099,7 @@ namespace te
             }
             break;
 
-            case TID_CSliderJoint:
+            case CoreType::TID_CSliderJoint:
             {
                 HSliderJoint joint = _selections.ClickedSceneObject->AddComponent<CSliderJoint>();
                 joint.Get()->SetName("Slider Joint");
@@ -1108,7 +1108,7 @@ namespace te
             }
             break;
 
-            case TID_CSphericalJoint:
+            case CoreType::TID_CSphericalJoint:
             {
                 HSphericalJoint joint = _selections.ClickedSceneObject->AddComponent<CSphericalJoint>();
                 joint.Get()->SetName("Spherical Joint");
@@ -1128,14 +1128,14 @@ namespace te
         gEditor().GetSettings().State = Editor::EditorState::Modified;
     }
 
-    void WidgetScene::CreateCollider(TypeID_Core type)
+    void WidgetScene::CreateCollider(CoreType type)
     {
         if (!_selections.ClickedSceneObject || _selections.ClickedComponent)
             return;
 
         switch (type)
         {
-            case TID_CBoxCollider:
+            case CoreType::TID_CBoxCollider:
             {
                 HBoxCollider collider = _selections.ClickedSceneObject->AddComponent<CBoxCollider>();
                 collider.Get()->SetName("Box Collider");
@@ -1144,7 +1144,7 @@ namespace te
             }
             break;
 
-            case TID_CPlaneCollider:
+            case CoreType::TID_CPlaneCollider:
             {
                 HPlaneCollider collider = _selections.ClickedSceneObject->AddComponent<CPlaneCollider>();
                 collider.Get()->SetName("Plane Collider");
@@ -1153,7 +1153,7 @@ namespace te
             }
             break;
 
-            case TID_CSphereCollider:
+            case CoreType::TID_CSphereCollider:
             {
                 HSphereCollider collider = _selections.ClickedSceneObject->AddComponent<CSphereCollider>();
                 collider.Get()->SetName("Sphere Collider");
@@ -1162,7 +1162,7 @@ namespace te
             }
             break;
 
-            case TID_CCylinderCollider:
+            case CoreType::TID_CCylinderCollider:
             {
                 HCylinderCollider collider = _selections.ClickedSceneObject->AddComponent<CCylinderCollider>();
                 collider.Get()->SetName("Cylinder Collider");
@@ -1171,7 +1171,7 @@ namespace te
             }
             break;
 
-            case TID_CCapsuleCollider:
+            case CoreType::TID_CCapsuleCollider:
             {
                 HCapsuleCollider collider = _selections.ClickedSceneObject->AddComponent<CCapsuleCollider>();
                 collider.Get()->SetName("Capsule Collider");
@@ -1180,7 +1180,7 @@ namespace te
             }
             break;
 
-            case TID_CMeshCollider:
+            case CoreType::TID_CMeshCollider:
             {
                 HMeshCollider collider = _selections.ClickedSceneObject->AddComponent<CMeshCollider>();
                 collider.Get()->SetName("Mesh Collider");
@@ -1189,7 +1189,7 @@ namespace te
             }
             break;
 
-            case TID_CConeCollider:
+            case CoreType::TID_CConeCollider:
             {
                 HConeCollider collider = _selections.ClickedSceneObject->AddComponent<CConeCollider>();
                 collider.Get()->SetName("Cone Collider");
@@ -1198,7 +1198,7 @@ namespace te
             }
             break;
 
-            case TID_CHeightFieldCollider:
+            case CoreType::TID_CHeightFieldCollider:
             {
                 HHeightFieldCollider collider = _selections.ClickedSceneObject->AddComponent<CHeightFieldCollider>();
                 collider.Get()->SetName("Terrain Collider");
@@ -1254,68 +1254,68 @@ namespace te
     String WidgetScene::GetComponentIcon(const HComponent& component)
     {
         String title = ((component->SO()->GetActive()) ? ICON_FA_EYE : ICON_FA_EYE_SLASH);
-        UINT32 type = component->GetCoreType();
+        CoreType type = component->GetCoreType();
 
         switch (type)
         {
-        case TID_Component:
+        case CoreType::TID_Component:
             title +=  String("  ") + ICON_FA_SHAPES;
             break;
-        case TID_CCamera:
+        case CoreType::TID_CCamera:
             title += String("  ") + ICON_FA_CAMERA;
             break;
-        case TID_CRenderable:
+        case CoreType::TID_CRenderable:
             title += String("  ") + ICON_FA_OBJECT_GROUP;
             break;
-        case TID_CLight:
+        case CoreType::TID_CLight:
             title += String("  ") + ICON_FA_LIGHTBULB;
             break;
-        case TID_CSkybox:
+        case CoreType::TID_CSkybox:
             title += String("  ") + ICON_FA_GLOBE ;
             break;
-        case TID_CCameraFlyer:
+        case CoreType::TID_CCameraFlyer:
             title += String("  ") + ICON_FA_CAMERA;
             break;
-        case TID_CCameraUI:
+        case CoreType::TID_CCameraUI:
             title += String("  ") + ICON_FA_CAMERA;
             break;
-        case TID_CAnimation:
+        case CoreType::TID_CAnimation:
             title += String("  ") + ICON_FA_STEP_FORWARD;
             break;
-        case TID_CBone:
+        case CoreType::TID_CBone:
             title += String("  ") + ICON_FA_BONE;
             break;
-        case TID_CAudioListener:
+        case CoreType::TID_CAudioListener:
             title += String("  ") + ICON_FA_HEADPHONES;
             break;
-        case TID_CAudioSource:
+        case CoreType::TID_CAudioSource:
             title += String("  ") + ICON_FA_MICROPHONE;
             break;
-        case TID_CRigidBody:
-        case TID_CMeshSoftBody:
-        case TID_CEllipsoidSoftBody:
-        case TID_CRopeSoftBody:
-        case TID_CPatchSoftBody:
+        case CoreType::TID_CRigidBody:
+        case CoreType::TID_CMeshSoftBody:
+        case CoreType::TID_CEllipsoidSoftBody:
+        case CoreType::TID_CRopeSoftBody:
+        case CoreType::TID_CPatchSoftBody:
             title += String("  ") + ICON_FA_BOXES;
             break;
-        case TID_CConeTwistJoint:
-        case TID_CD6Joint:
-        case TID_CHingeJoint:
-        case TID_CSliderJoint:
-        case TID_CSphericalJoint:
+        case CoreType::TID_CConeTwistJoint:
+        case CoreType::TID_CD6Joint:
+        case CoreType::TID_CHingeJoint:
+        case CoreType::TID_CSliderJoint:
+        case CoreType::TID_CSphericalJoint:
             title += String("  ") + ICON_FA_LINK;
             break;
-        case TID_CBoxCollider:
-        case TID_CPlaneCollider:
-        case TID_CSphereCollider:
-        case TID_CCylinderCollider:
-        case TID_CCapsuleCollider:
-        case TID_CMeshCollider:
-        case TID_CConeCollider:
-        case TID_CHeightFieldCollider:
+        case CoreType::TID_CBoxCollider:
+        case CoreType::TID_CPlaneCollider:
+        case CoreType::TID_CSphereCollider:
+        case CoreType::TID_CCylinderCollider:
+        case CoreType::TID_CCapsuleCollider:
+        case CoreType::TID_CMeshCollider:
+        case CoreType::TID_CConeCollider:
+        case CoreType::TID_CHeightFieldCollider:
             title += String("  ") + ICON_FA_CUBE;
             break;
-        case TID_CDecal:
+        case CoreType::TID_CDecal:
             title += String("  ") + ICON_FA_IMAGE;
             break;
         default:

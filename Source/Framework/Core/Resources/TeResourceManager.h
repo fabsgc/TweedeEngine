@@ -96,7 +96,7 @@ namespace te
         Vector<HResource> GetAll();
 
         /** Find all resources based on the _coreType (Serializable) */
-        Vector<HResource> FindByType(UINT32 type);
+        Vector<HResource> FindByType(CoreType type);
 
     public:
         Event<void(const HResource&)> OnResourceLoaded;

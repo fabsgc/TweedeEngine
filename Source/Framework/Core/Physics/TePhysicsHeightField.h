@@ -18,7 +18,7 @@ namespace te
         void Initialize() override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_PhysicsHeightField; }
+        static CoreType GetResourceType() { return CoreType::TID_PhysicsHeightField; }
 
         /** Returns the original texture used for height field generation. */
         SPtr<Texture> GetTexture() const;

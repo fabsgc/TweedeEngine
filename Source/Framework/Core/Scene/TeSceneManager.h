@@ -208,7 +208,7 @@ namespace te
         void OnMainRenderTargetResized();
 
         /** Checks does the specified component type match the provided id. */
-        static bool IsComponentOfType(const HComponent& component, UINT32 id);
+        static bool IsComponentOfType(const HComponent& component, CoreType type);
 
     protected:
         SPtr<SceneInstance> _mainScene;
@@ -226,12 +226,12 @@ namespace te
     template<class T>
     Vector<GameObjectHandle<T>> SceneManager::FindComponents()
     {
-        UINT32 typeId = T::GetComponentType();
+        CoreType type = T::GetComponentType();
 
         Vector<GameObjectHandle<T>> output;
         for (auto& entry : _components)
         {
-            if (IsComponentOfType(entry, typeId))
+            if (IsComponentOfType(entry, type))
                 output.push_back(static_object_cast<T>(entry));
         }
 

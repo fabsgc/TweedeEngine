@@ -7,7 +7,7 @@
 namespace te
 {
     CSkybox::CSkybox()
-        : Component(HSceneObject(), (UINT32)TID_CSkybox)
+        : Component(HSceneObject(), CoreType::TID_CSkybox)
     {
         SetName("Skybox");
         SetFlag(Component::AlwaysRun, true);
@@ -15,7 +15,7 @@ namespace te
     }
 
     CSkybox::CSkybox(const HSceneObject& parent)
-        : Component(parent, (UINT32)TID_CSkybox)
+        : Component(parent, CoreType::TID_CSkybox)
     {
         SetName("Skybox");
         SetFlag(Component::AlwaysRun, true);

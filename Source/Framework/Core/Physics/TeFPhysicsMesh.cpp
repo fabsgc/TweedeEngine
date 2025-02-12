@@ -3,7 +3,7 @@
 namespace te
 {
     FPhysicsMesh::FPhysicsMesh(const SPtr<MeshData>& meshData)
-        : Serializable(TID_FPhysicsMesh)
+        : Serializable(CoreType::TID_FPhysicsMesh)
         , _meshData(meshData)
     { }
 }

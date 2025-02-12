@@ -64,7 +64,7 @@ namespace te
 
     void WidgetRenderOptions::CameraCreated(const HComponent& component)
     {
-        if (component->GetCoreType() != TID_CCamera)
+        if (component->GetCoreType() != CoreType::TID_CCamera)
             return;
 
         HCamera camera = static_object_cast<CCamera>(component);
@@ -73,7 +73,7 @@ namespace te
 
     void WidgetRenderOptions::CameraDestroyed(const HComponent& component)
     {
-        if (component->GetCoreType() != TID_CCamera)
+        if (component->GetCoreType() != CoreType::TID_CCamera)
             return;
 
         for (auto it = _cameraList.Options.begin(); it != _cameraList.Options.end(); it++)

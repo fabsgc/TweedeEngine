@@ -6,7 +6,7 @@
 namespace te
 {
     ConeTwistJoint::ConeTwistJoint()
-        : Joint(TypeID_Core::TID_ConeTwistJoint)
+        : Joint(CoreType::TID_ConeTwistJoint)
         , _swingSpan1(0.0f)
         , _swingSpan2(0.0f)
         , _twistSpan(0.0f)

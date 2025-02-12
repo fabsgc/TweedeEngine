@@ -5,14 +5,14 @@
 namespace te
 {
     CCamera::CCamera()
-        : Component(HSceneObject(), (UINT32)TID_CCamera)
+        : Component(HSceneObject(), CoreType::TID_CCamera)
     {
         SetName("Camera");
         SetFlag(Component::AlwaysRun, true);
     }
 
     CCamera::CCamera(const HSceneObject& parent)
-        : Component(parent, (UINT32)TID_CCamera)
+        : Component(parent, CoreType::TID_CCamera)
     {
         SetName("Camera");
         SetFlag(Component::AlwaysRun, true);

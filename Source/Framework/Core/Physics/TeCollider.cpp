@@ -6,7 +6,7 @@
 
 namespace te
 {
-    Collider::Collider(UINT32 type)
+    Collider::Collider(CoreType type)
         : Serializable(type)
     { }
 

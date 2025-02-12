@@ -91,11 +91,11 @@ namespace te
         }
         else if(_selections.ClickedComponent) // A single Component has been selected, easier
         {
-            TypeID_Core type = (TypeID_Core)_selections.ClickedComponent->GetCoreType();
+            const CoreType type = _selections.ClickedComponent->GetCoreType();
 
             switch (type)
             {
-                case TID_CRenderable:
+                case CoreType::TID_CRenderable:
                 {
                     SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
                     if (renderable->GetActive() && gRendererUtility().DoFrustumCulling(camera, renderable))
@@ -155,11 +155,9 @@ namespace te
     {
         for (const auto& component : sceneObject->GetComponents())
         {
-            TypeID_Core type = (TypeID_Core)component->GetCoreType();
-
-            switch (type)
+            switch (component->GetCoreType())
             {
-                case TID_CRenderable:
+                case CoreType::TID_CRenderable:
                 {
                     HRenderable renderable = static_object_cast<CRenderable>(component);
                     if (renderable->GetActive() && gRendererUtility().DoFrustumCulling(camera, renderable))

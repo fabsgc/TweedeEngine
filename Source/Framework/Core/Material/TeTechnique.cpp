@@ -12,7 +12,7 @@ namespace te
     std::atomic<UINT32> Technique::NextTechniqueId;
 
     Technique::Technique()
-        : Serializable(TID_Technique)
+        : Serializable(CoreType::TID_Technique)
         , _id(0)
     { 
         UINT32 id = Technique::NextTechniqueId.fetch_add(1, std::memory_order_relaxed);
@@ -23,7 +23,7 @@ namespace te
 
     Technique::Technique(UINT32 id, const String& language, const Vector<String>& tags, 
         const ShaderVariation& variation, const Vector<SPtr<Pass>>& passes)
-        : Serializable(TID_Technique)
+        : Serializable(CoreType::TID_Technique)
         , _id(id)
         , _language(language)
         , _tags(tags)

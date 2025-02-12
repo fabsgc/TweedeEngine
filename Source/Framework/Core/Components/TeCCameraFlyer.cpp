@@ -18,14 +18,14 @@ namespace te
     const float CCameraFlyer::ROTATION_SPEED = 2.0f;
 
     CCameraFlyer::CCameraFlyer()
-        : Component(HSceneObject(), TID_CCameraFlyer)
+        : Component(HSceneObject(), CoreType::TID_CCameraFlyer)
     {
         SetName("CCameraFlyer");
         SetFlag(Component::AlwaysRun, true);
     }
 
     CCameraFlyer::CCameraFlyer(const HSceneObject& parent)
-        : Component(parent, TID_CCameraFlyer)
+        : Component(parent, CoreType::TID_CCameraFlyer)
     {
         SetName("CCameraFlyer");
         SetFlag(Component::AlwaysRun, true);

@@ -4,7 +4,7 @@
 namespace te
 {
     MeshCollider::MeshCollider()
-        : Collider(TypeID_Core::TID_MeshCollider)
+        : Collider(CoreType::TID_MeshCollider)
     { }
 
     SPtr<MeshCollider> MeshCollider::Create(PhysicsScene& scene, const Vector3& position, const Quaternion& rotation)

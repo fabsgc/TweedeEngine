@@ -3,6 +3,6 @@
 namespace te
 { 
     FJoint::FJoint()
-        : Serializable(TypeID_Core::TID_FJoint)
+        : Serializable(CoreType::TID_FJoint)
     { }
 }

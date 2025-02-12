@@ -102,7 +102,7 @@ namespace te
         void* GetOwner(PhysicsOwnerType type) const { return _owner.Type == type ? _owner.OwnerData : nullptr; }
 
     protected:
-        explicit Joint(UINT32 type);
+        explicit Joint(CoreType type);
 
     protected:
         PhysicsObjectOwner _owner;

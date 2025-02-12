@@ -19,7 +19,7 @@ namespace te
         void Initialize() override;
 
         /**  @copydoc Resource::GetResourceType */
-        static UINT32 GetResourceType() { return TypeID_Core::TID_PhysicsMesh; }
+        static CoreType GetResourceType() { return CoreType::TID_PhysicsMesh; }
 
         /** Returns the mesh's indices and vertices. */
         SPtr<MeshData> GetMeshData() const;

@@ -6,13 +6,13 @@
 namespace te
 {
     CHeightFieldCollider::CHeightFieldCollider()
-        : CCollider((UINT32)TID_CHeightFieldCollider)
+        : CCollider(CoreType::TID_CHeightFieldCollider)
     {
         SetName("HeightFieldCollider");
     }
 
     CHeightFieldCollider::CHeightFieldCollider(const HSceneObject& parent)
-        : CCollider(parent, (UINT32)TID_CHeightFieldCollider)
+        : CCollider(parent, CoreType::TID_CHeightFieldCollider)
     {
         SetName("HeightFieldCollider");
     }

@@ -17,7 +17,7 @@ namespace te
         
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CHeightFieldCollider; }
+        static CoreType GetComponentType() { return CoreType::TID_CHeightFieldCollider; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HComponent& c, const String& suffix = "") override;

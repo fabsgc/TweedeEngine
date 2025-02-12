@@ -16,7 +16,7 @@ namespace te
     public:
         virtual ~CAudioListener();
 
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CAudioListener; }
+        static CoreType GetComponentType() { return CoreType::TID_CAudioListener; }
 
         /** @copydoc Component::Initialize */
         void Initialize() override;

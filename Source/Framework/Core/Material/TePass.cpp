@@ -8,13 +8,13 @@
 namespace te
 {
     Pass::Pass()
-        : Serializable(TID_Pass)
+        : Serializable(CoreType::TID_Pass)
     {
         _data.StencilRefValue = 0;
     }
 
     Pass::Pass(const PASS_DESC& desc)
-        : Serializable(TID_Pass)
+        : Serializable(CoreType::TID_Pass)
         , _data(desc)
     { }
 

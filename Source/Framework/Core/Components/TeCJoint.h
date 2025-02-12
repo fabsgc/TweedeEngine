@@ -17,7 +17,7 @@ namespace te
         virtual ~CJoint() = 0;
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CJoint; }
+        static CoreType GetComponentType() { return CoreType::TID_CJoint; }
 
         /** @copydoc Component::Initialize */
         virtual void Initialize() override;
@@ -86,8 +86,8 @@ namespace te
         friend class CBody;
         using Component::DestroyInternal;
 
-        CJoint(UINT32 type);
-        CJoint(const HSceneObject& parent, UINT32 type);
+        CJoint(CoreType type);
+        CJoint(const HSceneObject& parent, CoreType type);
 
         /** @copydoc Component::Clone */
         bool Clone(const HJoint& c, const String& suffix = "");

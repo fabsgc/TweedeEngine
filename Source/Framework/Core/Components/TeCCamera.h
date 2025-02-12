@@ -17,7 +17,7 @@ namespace te
         virtual ~CCamera();
 
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CCamera; }
+        static CoreType GetComponentType() { return CoreType::TID_CCamera; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HComponent& c, const String& suffix = "") override;

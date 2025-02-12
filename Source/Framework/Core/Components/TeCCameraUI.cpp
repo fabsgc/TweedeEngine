@@ -33,7 +33,7 @@ namespace te
     const float CCameraUI::MAX_ROTATION = 15.0f;
 
     CCameraUI::CCameraUI()
-        : Component(HSceneObject(), TID_CCameraUI)
+        : Component(HSceneObject(), CoreType::TID_CCameraUI)
         , _cameraInitialized(false)
         , _needsRedraw(false)
         , _target(Vector3::ZERO)
@@ -48,7 +48,7 @@ namespace te
     }
 
     CCameraUI::CCameraUI(const HSceneObject& parent)
-        : Component(parent, TID_CCameraUI)
+        : Component(parent, CoreType::TID_CCameraUI)
         , _cameraInitialized(false)
         , _needsRedraw(false)
         , _target(Vector3::ZERO)
@@ -86,8 +86,8 @@ namespace te
     {
         if (!_cameraInitialized)
         {
-            if (_parent->HasComponent(TID_CCamera))
-                _camera = static_object_cast<CCamera>(_parent->GetComponent(TID_CCamera)->GetHandle());
+            if (_parent->HasComponent(CoreType::TID_CCamera))
+                _camera = static_object_cast<CCamera>(_parent->GetComponent(CoreType::TID_CCamera)->GetHandle());
 
             if (!_camera)
                 return;

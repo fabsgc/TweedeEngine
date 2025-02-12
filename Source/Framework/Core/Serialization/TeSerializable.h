@@ -7,12 +7,12 @@ namespace te
     class TE_CORE_EXPORT Serializable
     {
     public:
-        Serializable(UINT32 type) { _coreType = type; }
+        Serializable(CoreType type) { _coreType = type; }
         virtual ~Serializable() = default;
 
-        UINT32 GetCoreType() const { return _coreType; }
+        CoreType GetCoreType() const { return _coreType; }
 
     protected:
-        UINT32 _coreType;
+        CoreType _coreType;
     };
 }

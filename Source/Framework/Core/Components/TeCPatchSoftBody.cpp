@@ -6,13 +6,13 @@
 namespace te
 {
     CPatchSoftBody::CPatchSoftBody()
-        : CSoftBody(HSceneObject(), (UINT32)TID_CPatchSoftBody)
+        : CSoftBody(HSceneObject(), CoreType::TID_CPatchSoftBody)
     {
         SetName("PatchSoftBody");
     }
 
     CPatchSoftBody::CPatchSoftBody(const HSceneObject& parent)
-        : CSoftBody(parent, (UINT32)TID_CPatchSoftBody)
+        : CSoftBody(parent, CoreType::TID_CPatchSoftBody)
         , _topLeft(-0.5f, 0.0f, 0.5f)
         , _topRight(0.5f, 0.0f, 0.5f)
         , _bottomLeft(-0.5f, 0.0f, -0.5f)

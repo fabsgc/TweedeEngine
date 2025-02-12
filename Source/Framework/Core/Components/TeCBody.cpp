@@ -4,7 +4,7 @@
 
 namespace te
 {
-    CBody::CBody(UINT32 type)
+    CBody::CBody(CoreType type)
         : Component(HSceneObject(), type)
         , _internal(nullptr)
     {
@@ -13,7 +13,7 @@ namespace te
         SetFlag(Component::AlwaysRun, true);
     }
 
-    CBody::CBody(const HSceneObject& parent, UINT32 type)
+    CBody::CBody(const HSceneObject& parent, CoreType type)
         : Component(parent, type)
         , _internal(nullptr)
     {

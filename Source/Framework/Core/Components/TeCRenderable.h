@@ -18,7 +18,7 @@ namespace te
         virtual ~CRenderable();
 
         /** @copydoc Component::GetComponentType */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CRenderable; }
+        static CoreType GetComponentType() { return CoreType::TID_CRenderable; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HComponent& c, const String& suffix = "") override;

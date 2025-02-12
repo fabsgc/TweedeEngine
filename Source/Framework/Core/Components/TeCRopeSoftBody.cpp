@@ -6,13 +6,13 @@
 namespace te
 {
     CRopeSoftBody::CRopeSoftBody()
-        : CSoftBody(HSceneObject(), (UINT32)TID_CRopeSoftBody)
+        : CSoftBody(HSceneObject(), CoreType::TID_CRopeSoftBody)
     {
         SetName("RopeSoftBody");
     }
 
     CRopeSoftBody::CRopeSoftBody(const HSceneObject& parent)
-        : CSoftBody(parent, (UINT32)TID_CRopeSoftBody)
+        : CSoftBody(parent, CoreType::TID_CRopeSoftBody)
     {
         SetName("RopeSoftBody");
     }

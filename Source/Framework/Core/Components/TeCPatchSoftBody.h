@@ -15,7 +15,7 @@ namespace te
     {
     public:
         /** Return Component type */
-        static UINT32 GetComponentType() { return TypeID_Core::TID_CPatchSoftBody; }
+        static CoreType GetComponentType() { return CoreType::TID_CPatchSoftBody; }
 
         /** @copydoc Component::Clone */
         bool Clone(const HComponent & c, const String & suffix = "");

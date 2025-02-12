@@ -9,8 +9,8 @@ namespace te
     /** Descriptor structure used for initialization of a VertexBuffer. */
     struct VERTEX_BUFFER_DESC
     {
-        UINT32 VertexSize; /**< Size of a single vertex in the buffer, in bytes. */
-        UINT32 NumVerts; /**< Number of vertices the buffer can hold. */
+        UINT32 VertexSize = 0; /**< Size of a single vertex in the buffer, in bytes. */
+        UINT32 NumVerts = 0; /**< Number of vertices the buffer can hold. */
         GpuBufferUsage Usage = GBU_STATIC; /**< Usage that tells the hardware how will be buffer be used. */
         bool StreamOut = false; /**< If true the buffer will be usable for streaming out data from the GPU. */
     };

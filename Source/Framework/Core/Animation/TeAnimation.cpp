@@ -477,7 +477,7 @@ namespace te
     }
 
     Animation::Animation()
-        : Serializable(TID_Animation)
+        : Serializable(CoreType::TID_Animation)
     {
         _animId = AnimationManager::Instance().RegisterAnimation(this);
         _animProxy = te_shared_ptr_new<AnimationProxy>(_animId);
