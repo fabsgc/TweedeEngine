@@ -40,7 +40,7 @@ namespace te
         project->Serialize(serializer);
 
         const std::filesystem::path resourcesPath = serialization::GetProjectResourcesPath(workingDirectory);
-        FileSystem::CreateDirectory(resourcesPath.parent_path().generic_string());
+        FileSystem::CreateDirectory(resourcesPath.generic_string());
 
         for (auto& resource : project->GetAllResources())
         {
