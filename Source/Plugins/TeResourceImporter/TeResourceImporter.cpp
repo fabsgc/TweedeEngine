@@ -57,14 +57,12 @@ namespace te
 
         case TID_Texture:
             return DeserializeOneResource<Texture>(filePath);
-            return nullptr;
 
         case TID_Material:
             return DeserializeOneResource<Material>(filePath);
 
         case TID_Shader:
             return DeserializeOneResource<Shader>(filePath);
-            return nullptr;
 
         case TID_Mesh:
             return DeserializeOneResource<Mesh>(filePath);
