@@ -578,7 +578,7 @@ namespace te
 
         nlohmann::json document;
 
-        document["shader"] = _shader ? serialization::GetResourceName(_shader.get()) : "";
+        document["shader"] = (_shader && gBuiltinResources().IsBuiltInResource(_shader->GetUUID())) ? serialization::GetResourceName(_shader.get()) : "";
         _properties.ExportJson(document["properties"]);
 
         String dump = document.dump();

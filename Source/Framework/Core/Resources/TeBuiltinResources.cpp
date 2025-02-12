@@ -1022,6 +1022,7 @@ namespace te
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
         _shaderOpaque = InitShader(variations, shaderDesc, passDesc, "Forward Opaque");
+        _builtInResources.push_back(_shaderOpaque.GetUUID());
     }
 
     void BuiltinResources::InitShaderTransparent(bool cull)
@@ -1080,9 +1081,15 @@ namespace te
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
         if (cull)
+        {
             _shaderTransparent = InitShader(variations, shaderDesc, passDesc, "Forward Transparent");
+            _builtInResources.push_back(_shaderTransparent.GetUUID());
+        }
         else
+        {
             _shaderTransparentCullNone = InitShader(variations, shaderDesc, passDesc, "Forward Transparent No Culling");
+            _builtInResources.push_back(_shaderTransparentCullNone.GetUUID());
+        }
     }
 
     void BuiltinResources::InitShaderZPrepass()
@@ -1104,6 +1111,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderZPrepass = Shader::Create("Z Prepass", shaderDesc);
+        _builtInResources.push_back(_shaderZPrepass.GetUUID());
     }
 
     void BuiltinResources::InitShaderBlit()
@@ -1132,6 +1140,7 @@ namespace te
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
         _shaderBlit = InitShader(variations, shaderDesc, passDesc, "Blit");
+        _builtInResources.push_back(_shaderBlit.GetUUID());
     }
 
     void BuiltinResources::InitShaderSkybox()
@@ -1153,6 +1162,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderSkybox = Shader::Create("Skybox", shaderDesc);
+        _builtInResources.push_back(_shaderSkybox.GetUUID());
     }
 
     void BuiltinResources::InitShaderFXAA()
@@ -1178,6 +1188,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderFXAA = Shader::Create("FXAA", shaderDesc);
+        _builtInResources.push_back(_shaderFXAA.GetUUID());
     }
 
     void BuiltinResources::InitShaderToneMapping()
@@ -1205,7 +1216,8 @@ namespace te
         FillShaderDesc(variationParams, shaderDesc);
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
-        _shaderToneMapping = InitShader(variations, shaderDesc, passDesc, "Blit");
+        _shaderToneMapping = InitShader(variations, shaderDesc, passDesc, "Tone Mapping");
+        _builtInResources.push_back(_shaderToneMapping.GetUUID());
     }
 
     void BuiltinResources::InitShaderBloom()
@@ -1237,6 +1249,7 @@ namespace te
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
         _shaderBloom = InitShader(variations, shaderDesc, passDesc, "Bloom");
+        _builtInResources.push_back(_shaderBloom.GetUUID());
     }
 
     void BuiltinResources::InitShaderMotionBlur()
@@ -1262,6 +1275,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderMotionBlur = Shader::Create("Motion Blur", shaderDesc);
+        _builtInResources.push_back(_shaderMotionBlur.GetUUID());
     }
 
     void BuiltinResources::InitShaderGaussianBlur()
@@ -1289,6 +1303,7 @@ namespace te
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
         _shaderGaussianBlur = InitShader(variations, shaderDesc, passDesc, "Gaussian Blur");
+        _builtInResources.push_back(_shaderGaussianBlur.GetUUID());
     }
 
     void BuiltinResources::InitShaderPicking()
@@ -1311,6 +1326,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderPicking = Shader::Create("Picking", shaderDesc);
+        _builtInResources.push_back(_shaderPicking.GetUUID());
     }
 
     void BuiltinResources::InitShaderSelection()
@@ -1334,6 +1350,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderSelection = Shader::Create("Selection", shaderDesc);
+        _builtInResources.push_back(_shaderSelection.GetUUID());
     }
 
     void BuiltinResources::InitShaderBlitSelection()
@@ -1360,6 +1377,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderBlitSelection = Shader::Create("Selection", shaderDesc);
+        _builtInResources.push_back(_shaderBlitSelection.GetUUID());
     }
 
     void BuiltinResources::InitShaderHudPicking()
@@ -1387,6 +1405,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderHudPicking = Shader::Create("Hud Picking", shaderDesc);
+        _builtInResources.push_back(_shaderHudPicking.GetUUID());
     }
 
     void BuiltinResources::InitShaderHudSelection()
@@ -1411,6 +1430,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderHudSelection = Shader::Create("Hud Selection", shaderDesc);
+        _builtInResources.push_back(_shaderHudSelection.GetUUID());
     }
 
     void BuiltinResources::InitShaderBulletDebug()
@@ -1438,6 +1458,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderBulletDebug = Shader::Create("Bullet Debug", shaderDesc);
+        _builtInResources.push_back(_shaderBulletDebug.GetUUID());
     }
 
     void BuiltinResources::InitShaderSSAO()
@@ -1464,6 +1485,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderSSAO = Shader::Create("SSAO", shaderDesc);
+        _builtInResources.push_back(_shaderSSAO.GetUUID());
     }
 
     void BuiltinResources::InitShaderSSAOBlur()
@@ -1490,6 +1512,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderSSAOBlur = Shader::Create("SSAO Blur", shaderDesc);
+        _builtInResources.push_back(_shaderSSAOBlur.GetUUID());
     }
 
     void BuiltinResources::InitShaderSSAODownSample()
@@ -1516,6 +1539,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderSSAODownSample = Shader::Create("SSAO Down Sample", shaderDesc);
+        _builtInResources.push_back(_shaderSSAODownSample.GetUUID());
     }
 
     void BuiltinResources::InitShaderTextureDownsample()
@@ -1542,6 +1566,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderTextureDownsample = Shader::Create("Texture 2D Down Sample", shaderDesc);
+        _builtInResources.push_back(_shaderTextureDownsample.GetUUID());
     }
 
     void BuiltinResources::InitShaderTextureCubeDownsample()
@@ -1568,6 +1593,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderTextureCubeDownsample = Shader::Create("Texture Cube Down Sample", shaderDesc);
+        _builtInResources.push_back(_shaderTextureCubeDownsample.GetUUID());
     }
 
     void BuiltinResources::InitShaderReflectionCubeImportanceSample()
@@ -1594,6 +1620,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderReflectionCubeImportanceSample = Shader::Create("Reflection Cube Importance Sample", shaderDesc);
+        _builtInResources.push_back(_shaderReflectionCubeImportanceSample.GetUUID());
     }
 
     void BuiltinResources::InitIrradianceComputeSH()
@@ -1619,6 +1646,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderIrradianceComputeSH = Shader::Create("Irradiance Compute SH", shaderDesc);
+        _builtInResources.push_back(_shaderIrradianceComputeSH.GetUUID());
     }
 
     void BuiltinResources::InitIrradianceReduceSH()
@@ -1644,6 +1672,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderIrradianceReduceSH = Shader::Create("Irradiance Reduce SH", shaderDesc);
+        _builtInResources.push_back(_shaderIrradianceReduceSH.GetUUID());
     }
 
     void BuiltinResources::InitIrradianceProjectSH()
@@ -1670,6 +1699,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderIrradianceProjectSH = Shader::Create("Irradiance Project SH", shaderDesc);
+        _builtInResources.push_back(_shaderIrradianceProjectSH.GetUUID());
     }
 
     void BuiltinResources::InitShaderDecal()
@@ -1692,6 +1722,7 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         _shaderDecal = Shader::Create("Decal", shaderDesc);
+        _builtInResources.push_back(_shaderDecal.GetUUID());
     }
 
     void BuiltinResources::InitShaderShadowDepthNormal()
@@ -1721,6 +1752,7 @@ namespace te
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
         _shaderShadowDepthNormal = InitShader(variations, shaderDesc, passDesc, "Shadow Depth Normal");
+        _builtInResources.push_back(_shaderShadowDepthNormal.GetUUID());
     }
 
     void BuiltinResources::InitShaderShadowDepthCube()
@@ -1750,6 +1782,7 @@ namespace te
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
         _shaderShadowDepthCube = InitShader(variations, shaderDesc, passDesc, "Shadow Depth Cube");
+        _builtInResources.push_back(_shaderShadowDepthCube.GetUUID());
     }
 
     void BuiltinResources::InitShaderShadowDepthDirectional()
@@ -1779,6 +1812,7 @@ namespace te
         List<ShaderVariation> variations = FillShaderVariations(variationParams);
 
         _shaderShadowDepthDirectional = InitShader(variations, shaderDesc, passDesc, "Shadow Depth Directional");
+        _builtInResources.push_back(_shaderShadowDepthDirectional.GetUUID());
     }
 
     void BuiltinResources::InitDefaultMaterial()
@@ -1798,6 +1832,18 @@ namespace te
             _frameworkIcon = iconTex->GetProperties().AllocBuffer(0, 0);
             iconTex->ReadData(*_frameworkIcon.get());
         }
+    }
+
+    bool BuiltinResources::IsBuiltInResource(const UUID& uuid) const
+    {
+        if (std::find_if(_builtInResources.begin(), _builtInResources.end(), [&uuid](const auto& e) {
+            return uuid == e;
+        }) != _builtInResources.end())
+        {
+            return true;
+        }
+
+        return false;
     }
 
     BuiltinResources& gBuiltinResources()

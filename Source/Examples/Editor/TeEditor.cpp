@@ -1006,7 +1006,10 @@ namespace te
 
         for (auto& resource : EditorResManager::Instance().GetAllResources())
         {
-            _project->AddResource(resource);
+            if (!gBuiltinResources().IsBuiltInResource(resource->GetUUID()))
+            {
+                _project->AddResource(resource);
+            }
         }
 
         if (gExporter().Export(_project.GetInternalPtr().get(), _project->GetPath(), ProjectExportOptions()))

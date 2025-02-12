@@ -131,6 +131,9 @@ namespace te
         /** Returns default framework icon */
         const PixelData& GetFrameworkIcon();
 
+        /** Specify if it's a built-in resource (mostly use to prevent from saving built in resources when exporting a project) */
+        bool IsBuiltInResource(const UUID& uuid) const;
+
     public:
         static constexpr const char* MATERIALS_FOLDER = "Data/Materials/";
         static constexpr const char* MESHES_FOLDER = "Data/Meshes/";
@@ -323,6 +326,8 @@ namespace te
         HMaterial _defaultMaterial;
 
         SPtr<PixelData> _frameworkIcon;
+
+        Vector<UUID> _builtInResources;
     };
 
     /**	Provides easy access to BuiltinResources. */
