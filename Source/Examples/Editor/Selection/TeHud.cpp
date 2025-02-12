@@ -74,7 +74,7 @@ namespace te
 
         for (const auto& component : sceneObject->GetComponents())
         {
-            CoreType type = (CoreType)component->GetCoreType();
+            const CoreType type = component->GetCoreType();
 
             switch (type)
             {
