@@ -195,13 +195,13 @@ namespace te
         void SetAnimationDebug(bool debug) { _animationDebug = debug; }
 
         /** Create new project */
-        bool NewProject(const String& path);
+        bool NewProject(const std::filesystem::path& path);
 
         /** Open an existing project */
-        bool OpenProject(const String& path);
+        bool OpenProject(const std::filesystem::path& path);
 
         /** Save current project */
-        bool SaveProject(const String& path);
+        bool SaveProject(const std::filesystem::path& path);
 
         /** Paste current selection */
         void Paste();

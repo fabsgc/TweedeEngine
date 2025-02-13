@@ -918,7 +918,7 @@ namespace te
         _guizmoMode = mode;
     }
 
-    bool Editor::NewProject(const String& path)
+    bool Editor::NewProject(const std::filesystem::path& path)
     {
         if (IsEditorRunning())
         {
@@ -947,7 +947,7 @@ namespace te
         return true;
     }
 
-    bool Editor::OpenProject(const String& path)
+    bool Editor::OpenProject(const std::filesystem::path& path)
     {
         if (IsEditorRunning())
         {
@@ -970,7 +970,7 @@ namespace te
 
         if (!_project.IsLoaded())
         {
-            TE_DEBUG("Failed to load the your project at the specified path : " + path);
+            TE_DEBUG("Failed to load the your project at the specified path : " + path.generic_string());
 
             gResourceManager().Release(_project);
 
@@ -993,7 +993,7 @@ namespace te
         return true;
     }
 
-    bool Editor::SaveProject(const String& path)
+    bool Editor::SaveProject(const std::filesystem::path& path)
     {
         if (IsEditorRunning())
         {
