@@ -336,6 +336,7 @@ namespace te
         case FIT_DOUBLE:
         default:
             TE_DEBUG("Unknown or unsupported image format: " + filePath.generic_string());
+            return nullptr;
             break;
         case FIT_BITMAP:
             // Standard image type
