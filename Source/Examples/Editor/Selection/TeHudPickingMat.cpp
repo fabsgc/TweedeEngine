@@ -14,7 +14,7 @@ namespace te
         _perInstanceParamBuffer = _perInstanceParamDef.CreateBuffer();
 
         TextureImportOptions textureImportOptions;
-        textureImportOptions.Format = PixelUtil::BestFormatFromFile("Data/Textures/Hud/Hud.png");
+        textureImportOptions.Format = PixelUtil::BestFormatFromFile("Data/Textures/Hud/Hud.png", false);
         _hudMask = gResourceManager().Load<Texture>("Data/Textures/Hud/Hud.png", textureImportOptions);    
     }
 

@@ -2097,7 +2097,7 @@ namespace te
             ConvertToFloat<UINT16>(rgbaPtr, srcPtr, 3u, flags);
             break;
         default:
-            TE_DEBUG("UnpackColor() not implemented for format \"" + GetFormatName(format) + "\"");
+            //TE_DEBUG("UnpackColor() not implemented for format \"" + GetFormatName(format) + "\"");
             break;
         }
     }
@@ -2396,12 +2396,12 @@ namespace te
         while (width--) { dst[0] = src[0]; src += 2; dst += 1; }
     }
 
-    void PixelUtil::BulkPixelConversion(const PixelData &src, PixelData &dst)
+    bool PixelUtil::BulkPixelConversion(const PixelData &src, PixelData &dst, std::optional<CompressionOptions> compressionOptions)
     {
         if(src.GetWidth() != dst.GetWidth() || src.GetHeight() != dst.GetHeight() || src.GetDepth() != dst.GetDepth())
         {
             TE_DEBUG("Cannot convert pixels between buffers of different sizes.");
-            return;
+            return false;
         }
 
         // Is there a optimized row conversion?
@@ -2416,7 +2416,7 @@ namespace te
             if (src.IsConsecutive() && dst.IsConsecutive())
             {
                 memcpy(dst.GetData(), src.GetData(), src.GetConsecutiveSize());
-                return;
+                return true;
             }
 
             PixelFormat format = src.GetFormat();
@@ -2431,11 +2431,13 @@ namespace te
                 if(src.GetLeft() % blockDim.x != 0 || src.GetTop() % blockDim.y != 0)
                 {
                     TE_DEBUG("Source offset must be a multiple of block size for compressed formats.");
+                    return false;
                 }
 
                 if(dst.GetLeft() % blockDim.x != 0 || dst.GetTop() % blockDim.y != 0)
                 {
                     TE_DEBUG("Destination offset must be a multiple of block size for compressed formats.");
+                    return false;
                 }
             }
 
@@ -2467,7 +2469,7 @@ namespace te
                 dstPtr += dstSliceSkipBytes;
             }
 
-            return;
+            return true;
         }
         else if (GetFlags(src.GetFormat()) == GetFlags(dst.GetFormat())) // semantic match, copy as typeless
         {
@@ -2583,7 +2585,7 @@ namespace te
                 }
             }
 
-            return;
+            return true;
         }
 
         // Check for compressed formats, we don't support decompression
@@ -2592,20 +2594,32 @@ namespace te
             if (src.GetFormat() != dst.GetFormat())
             {
                 TE_DEBUG("Cannot convert from a compressed format to another format.");
-                return;
+                return false;
             }
         }
 
         // Check for compression
         if (IsCompressed(dst.GetFormat()))
         {
-            if (src.GetFormat() != dst.GetFormat())
+            if (!Bitwise::IsPow2(dst.GetWidth()) || !Bitwise::IsPow2(dst.GetHeight()))
             {
-                CompressionOptions co;
-                co.Format = dst.GetFormat();
-                Compress(src, dst, co);
+                TE_DEBUG("Texture width and height must be a power of 2.");
+                return false;
+            }
+            else
+            {
+                if (src.GetFormat() != dst.GetFormat())
+                {
+                    CompressionOptions co;
+                    co.Format = dst.GetFormat();
 
-                return;
+                    if (compressionOptions)
+                    {
+                        co = *compressionOptions;
+                    }
+
+                    return Compress(src, dst, co);
+                }
             }
         }
 
@@ -2645,6 +2659,8 @@ namespace te
             srcptr += srcSliceSkipBytes;
             dstptr += dstSliceSkipBytes;
         }
+
+        return true;
     }
 
     void PixelUtil::FlipComponentOrder(PixelData& data)
@@ -2765,31 +2781,31 @@ namespace te
         }
     }
 
-    void PixelUtil::Compress(const PixelData& src, PixelData& dst, const CompressionOptions& options)
+    bool PixelUtil::Compress(const PixelData& src, PixelData& dst, const CompressionOptions& options)
     {
         if (!IsCompressed(options.Format))
         {
             TE_DEBUG("Compression failed. Destination format is not a valid compressed format.");
-            return;
+            return false;
         }
 
         if (src.GetDepth() != 1)
         {
             TE_DEBUG("Compression failed. 3D texture compression not supported.");
-            return;
+            return false;
         }
 
         if (IsCompressed(src.GetFormat()))
         {
             TE_DEBUG("Compression failed. Source data cannot be compressed.");
-            return;
+            return false;
         }
 
         PixelFormat interimFormat = options.Format == PF_BC6H ? PF_RGBA32F : PF_BGRA8;
 
         PixelData interimData(src.GetWidth(), src.GetHeight(), 1, interimFormat);
         interimData.AllocateInternalBuffer();
-        BulkPixelConversion(src, interimData);
+        BulkPixelConversion(src, interimData, std::nullopt);
 
         nvtt::InputOptions io;
         io.setTextureLayout(nvtt::TextureType_2D, src.GetWidth(), src.GetHeight());
@@ -2824,8 +2840,10 @@ namespace te
         if (!compressor.process(io, co, oo))
         {
             TE_DEBUG("Compression failed. Internal error.");
-            return;
+            return false;
         }
+
+        return true;
     }
 
     Vector<SPtr<PixelData>> PixelUtil::GenMipmaps(const PixelData& src, const MipMapGenOptions& options, UINT32 maxMip)
@@ -2850,7 +2868,7 @@ namespace te
 
         PixelData interimData(src.GetWidth(), src.GetHeight(), 1, interimFormat);
         interimData.AllocateInternalBuffer();
-        BulkPixelConversion(src, interimData);
+        BulkPixelConversion(src, interimData, std::nullopt);
 
         if (interimFormat != PF_RGBA32F)
             FlipComponentOrder(interimData);
@@ -2975,7 +2993,7 @@ namespace te
             SPtr<PixelData> outputBuffer = te_shared_ptr_new<PixelData>(argbBuffer->GetWidth(), argbBuffer->GetHeight(), 1, src.GetFormat());
             outputBuffer->AllocateInternalBuffer();
 
-            BulkPixelConversion(*argbBuffer, *outputBuffer);
+            BulkPixelConversion(*argbBuffer, *outputBuffer, std::nullopt);
             argbBuffer->FreeInternalBuffer();
 
             outputMipBuffers.push_back(outputBuffer);
@@ -3052,7 +3070,7 @@ namespace te
                 {
                     SPtr<PixelData> dst = output->GetProperties().AllocBuffer(0, 0);
 
-                    PixelUtil::BulkPixelConversion(*srcs[i], *dst);
+                    PixelUtil::BulkPixelConversion(*srcs[i], *dst, std::nullopt);
                     output->WriteData(*dst, 0, i);
                 }
             }
@@ -3072,7 +3090,7 @@ namespace te
             {
                 SPtr<PixelData> dst = output->GetProperties().AllocBuffer(0, 0);
 
-                PixelUtil::BulkPixelConversion(*srcs[i], *dst);
+                PixelUtil::BulkPixelConversion(*srcs[i], *dst, std::nullopt);
                 output->WriteData(*dst, 0, i);
                 tmp->WriteData(*dst, 0, i);
             }
@@ -3245,7 +3263,7 @@ namespace te
             if(temp.GetData() != scaled.GetData())
             {
                 // Blit temp buffer
-                PixelUtil::BulkPixelConversion(temp, scaled);
+                PixelUtil::BulkPixelConversion(temp, scaled, std::nullopt);
 
                 temp.FreeInternalBuffer();
             }
@@ -3285,7 +3303,7 @@ namespace te
                 if(temp.GetData() != scaled.GetData())
                 {
                     // Blit temp buffer
-                    PixelUtil::BulkPixelConversion(temp, scaled);
+                    PixelUtil::BulkPixelConversion(temp, scaled, std::nullopt);
                     temp.FreeInternalBuffer();
                 }
 
@@ -3349,32 +3367,32 @@ namespace te
         }
     }
 
-    PixelFormat PixelUtil::BestFormatFromFile(const String& path)
+    PixelFormat PixelUtil::BestFormatFromFile(const std::filesystem::path& path, bool compress)
     {
         struct ExtensionToFormat
         {
             PixelFormat BigEndianFormat;
             PixelFormat LittleEndiantFormat;
+            PixelFormat Compressed;
         };
 
         static UnorderedMap<String, ExtensionToFormat> extensions =
         {
-            {".jpeg", { PixelFormat::PF_RGB8, PixelFormat::PF_BGR8 } },
-            {".jpg", { PixelFormat::PF_RGB8, PixelFormat::PF_BGR8 } },
-            {".png", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
-            {".dds", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
-            {".tiff", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
-            {".tif", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
-            {".tga", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8 } },
-            {".bmp", { PixelFormat::PF_RGB8, PixelFormat::PF_BGR8 } }
+            {".jpeg", { PixelFormat::PF_RGB8, PixelFormat::PF_BGR8, PixelFormat::PF_BC1 } },
+            {".jpg", { PixelFormat::PF_RGB8, PixelFormat::PF_BGR8, PixelFormat::PF_BC1 } },
+            {".png", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8, PixelFormat::PF_BC3 } },
+            {".dds", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8, PixelFormat::PF_BC3 } },
+            {".tiff", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8, PixelFormat::PF_BC3 } },
+            {".tif", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8, PixelFormat::PF_BC3 } },
+            {".tga", { PixelFormat::PF_RGBA8, PixelFormat::PF_BGRA8, PixelFormat::PF_BC3 } },
+            {".bmp", { PixelFormat::PF_RGB8, PixelFormat::PF_BGR8, PixelFormat::PF_BC1 } }
         };
 
-        String extension = std::filesystem::path(path).extension().generic_string();
-        auto it = extensions.find(extension);
+        auto it = extensions.find(path.extension().generic_string());
 
         if (it != extensions.end())
-            return Util::IsBigEndian() ? it->second.BigEndianFormat : it->second.LittleEndiantFormat;
+            return (compress) ? it->second.Compressed : (Util::IsBigEndian()) ? it->second.BigEndianFormat : it->second.LittleEndiantFormat;
 
-        return Util::IsBigEndian() ? PF_RGBA8 : PF_BGRA8;
+        return (compress) ? PixelFormat::PF_BC3 : (Util::IsBigEndian()) ? PF_RGBA8 : PF_BGRA8;
     }
 }

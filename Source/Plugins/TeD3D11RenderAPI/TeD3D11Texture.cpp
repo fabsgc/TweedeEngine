@@ -222,7 +222,7 @@ namespace te
         }
 
         PixelData myData = Lock(GBL_READ_ONLY, mipLevel, face, deviceIdx, queueIdx);
-        PixelUtil::BulkPixelConversion(myData, dest);
+        PixelUtil::BulkPixelConversion(myData, dest, std::nullopt);
         Unlock();
     }
 
@@ -248,7 +248,7 @@ namespace te
         if ((_properties.GetUsage() & TU_DYNAMIC) != 0)
         {
             PixelData myData = Lock(discardWholeBuffer ? GBL_WRITE_ONLY_DISCARD : GBL_WRITE_ONLY, mipLevel, face, 0, queueIdx);
-            PixelUtil::BulkPixelConversion(src, myData);
+            PixelUtil::BulkPixelConversion(src, myData, std::nullopt);
             Unlock();
         }
         else if ((_properties.GetUsage() & TU_DEPTHSTENCIL) == 0)

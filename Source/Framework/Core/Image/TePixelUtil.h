@@ -274,13 +274,13 @@ namespace te
          * Converts pixels from one format to another. Provided pixel data objects must have previously allocated buffers
          * of adequate size and their sizes must match.
          */
-        static void BulkPixelConversion(const PixelData& src, PixelData& dst);
+        static bool BulkPixelConversion(const PixelData& src, PixelData& dst, std::optional<CompressionOptions> compressionOptions);
 
         /** Flips the order of components in each individual pixel. For example RGBA -> ABGR. */
         static void FlipComponentOrder(PixelData& data);
 
         /** Compresses the provided data using the specified compression options.  */
-        static void Compress(const PixelData& src, PixelData& dst, const CompressionOptions& options);
+        static bool Compress(const PixelData& src, PixelData& dst, const CompressionOptions& options);
 
         /**
          * Generates mip-maps from the provided source data using the specified compression options. Returned list includes
@@ -321,7 +321,7 @@ namespace te
          * This method is useful to return a good format to store a texture according to the file extension
          * Supported extensions : .jpg, .jpeg, .png, .tif, .tiff, .dds, .tga, .bmp
          */
-        static PixelFormat BestFormatFromFile(const String& path);
+        static PixelFormat BestFormatFromFile(const std::filesystem::path& path, bool compress);
     
     private:
         static RecursiveMutex _recursiveMutex;

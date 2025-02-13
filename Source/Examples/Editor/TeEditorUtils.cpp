@@ -39,7 +39,7 @@ namespace te
                 textureImportOptions.GenerateMipsOnGpu = true;
                 textureImportOptions.MipsPreserveCoverage = true;
                 textureImportOptions.MaxMip = 0;
-                textureImportOptions.Format = PixelUtil::BestFormatFromFile(texturePath);
+                textureImportOptions.Format = PixelUtil::BestFormatFromFile(texturePath, true);
                 textureImportOptions.SRGB = SRGB;
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(texturePath, textureImportOptions);

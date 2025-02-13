@@ -320,7 +320,7 @@ namespace te
                 textureImportOptions.GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
                 textureImportOptions.MaxMip = _fileBrowser.Data.TexParam.MaxMips;
                 textureImportOptions.MipsPreserveCoverage = _fileBrowser.Data.TexParam.MipsPreserveCoverage;
-                textureImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
+                textureImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath, _fileBrowser.Data.TexParam.Compress);
                 textureImportOptions.SRGB = _fileBrowser.Data.TexParam.SRGB;
                 textureImportOptions.IsNormalMap = _fileBrowser.Data.TexParam.IsNormalMap;
 

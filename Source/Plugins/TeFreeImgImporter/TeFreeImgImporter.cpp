@@ -233,10 +233,26 @@ namespace te
                 {
                     SPtr<PixelData> dst = texture->GetProperties().AllocBuffer(0, mip);
 
-                    PixelUtil::BulkPixelConversion(*mipLevels[mip], *dst);
-                    texture->WriteData(*dst, mip, i); //BUG in original version
-                }
+                    std::optional<CompressionOptions> compressionOptions;
+                    if (PixelUtil::IsCompressed(dst->GetFormat()))
+                    {
+                        compressionOptions = CompressionOptions();
+                        compressionOptions->Format = dst->GetFormat();
+                        compressionOptions->Alpha = PixelUtil::HasAlpha(dst->GetFormat()) ? AlphaMode::Transparency: AlphaMode::None;
+                        compressionOptions->IsSRGB = textureImportOptions.SRGB;
+                        compressionOptions->IsNormalMap = textureImportOptions.IsNormalMap;
+                    }
 
+                    if (PixelUtil::BulkPixelConversion(*mipLevels[mip], *dst, compressionOptions))
+                    {
+                        texture->WriteData(*dst, mip, i); //BUG in original version
+                    }
+                    else
+                    {
+                        texture->Destroy();
+                        return nullptr;
+                    }
+                }
             }
         }
 

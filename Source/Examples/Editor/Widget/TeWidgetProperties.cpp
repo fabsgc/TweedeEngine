@@ -3114,11 +3114,13 @@ namespace te
                                         SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
                                         if (subMesh.Mat.IsLoaded())
                                             renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
+                                        else
+                                            renderable->SetMaterial(i, gBuiltinResources().GetDefaultMaterial());
                                     }
                                 }
                                 else if (!renderable->GetMaterial(0))
                                 {
-                                     renderable->SetMaterial(gBuiltinResources().GetDefaultMaterial(), true);
+                                    renderable->SetMaterial(gBuiltinResources().GetDefaultMaterial(), true);
                                 }
                             }
                         }
@@ -3188,7 +3190,7 @@ namespace te
                 textureSkyboxImportOptions.GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
                 textureSkyboxImportOptions.MipsPreserveCoverage = _fileBrowser.Data.TexParam.MipsPreserveCoverage;
                 textureSkyboxImportOptions.MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-                textureSkyboxImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
+                textureSkyboxImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath, _fileBrowser.Data.TexParam.Compress);
                 textureSkyboxImportOptions.SRGB = _fileBrowser.Data.TexParam.SRGB;
                 textureSkyboxImportOptions.IsNormalMap = false;
 
@@ -3270,7 +3272,7 @@ namespace te
                 textureImportOptions.GenerateMipsOnGpu = _fileBrowser.Data.TexParam.GenerateMipsOnGpu;
                 textureImportOptions.MipsPreserveCoverage = _fileBrowser.Data.TexParam.MipsPreserveCoverage;
                 textureImportOptions.MaxMip = _fileBrowser.Data.TexParam.MaxMips;
-                textureImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath);
+                textureImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath, _fileBrowser.Data.TexParam.Compress);
 
                 HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, true);
                 if (texture.IsLoaded())

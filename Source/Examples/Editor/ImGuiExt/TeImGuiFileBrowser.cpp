@@ -748,6 +748,8 @@ namespace te
 
                     ImGuiExt::RenderOptionCombo<TextureType>(&Data.TexParam.TexType, "##file_dialog_parameters_texture_type", "Texture type", textureTypeOptions, 300);
 
+                    ImGuiExt::RenderOptionBool(Data.TexParam.Compress, "##file_dialog_texture_compress", "Compress");
+
                     ImGuiExt::RenderOptionBool(Data.TexParam.SRGB, "##file_dialog_texture_srgb", "sRGB");
 
                     ImGuiExt::RenderOptionBool(Data.TexParam.IsNormalMap, "##file_dialog_texture_is_normal_map", "Is Normal Map");

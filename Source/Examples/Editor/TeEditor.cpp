@@ -1481,14 +1481,16 @@ namespace te
         //_monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
         //_planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
 
-        textureCubeMapImportOptions.Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_syferfontein_1024.png");
+        textureCubeMapImportOptions.Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_syferfontein_1024.png", true);
         _skyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_syferfontein_1024.png", textureCubeMapImportOptions);
 
-        //textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Cobble/diffuse1.jpg");
+        //textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Cobble/diffuse1.jpg", true);
         //HTexture cobbleBaseColor = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/diffuse1.jpg", textureImportOptions);
 
         //textureImportOptions->SRGB = false;
+        //textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Cobble/normal1.jpg", true);
         //HTexture cobbleNormal = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/normal1.jpg", textureImportOptions);
+        //textureImportOptions->Format = PixelUtil::BestFormatFromFile("Data/Textures/Cobble/parallax1.jpg", true);
         //HTexture cobbleParallax = EditorResManager::Instance().Load<Texture>("Data/Textures/Cobble/parallax1.jpg", textureImportOptions);
 
         _audioClip = static_resource_cast<AudioClip>(EditorResManager::Instance().LoadAll("Data/Sounds/AirHorn.ogg", clipImportOptions)->Entries[0].Res);

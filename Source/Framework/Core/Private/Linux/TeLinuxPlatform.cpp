@@ -380,7 +380,7 @@ namespace te
     void Platform::ChangeCursor(PixelData& pixelData, const Vector2I& hotSpot)
     {
         SPtr<PixelData> bgraData = PixelData::Create(pixelData.GetWidth(), pixelData.GetHeight(), 1, PF_BGRA8);
-        PixelUtil::BulkPixelConversion(pixelData, *bgraData);
+        PixelUtil::BulkPixelConversion(pixelData, *bgraData, std::nullopt);
 
         XcursorImage* image = XcursorImageCreate((int)bgraData->GetWidth(), (int)bgraData->GetHeight());
         image->xhot = (XcursorDim)hotSpot.x;

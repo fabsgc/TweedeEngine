@@ -255,7 +255,7 @@ namespace te
         textureCubeMapImportOptions.CpuCached = false;
         textureCubeMapImportOptions.CubemapType = CubemapSourceType::Faces;
         textureCubeMapImportOptions.IsCubeMap = true;
-        textureCubeMapImportOptions.Format = PixelUtil::BestFormatFromFile(path);
+        textureCubeMapImportOptions.Format = PixelUtil::BestFormatFromFile(path, true);
         textureCubeMapImportOptions.SRGB = true;
 
         _radiance = ResourceManager::Instance().Load<Texture>(path, textureCubeMapImportOptions).GetInternalPtr();

@@ -82,6 +82,7 @@ namespace te
                 UINT32 MaxMips = 0;
                 bool CpuCached = false;
                 bool SRGB = true;
+                bool Compress = true;
             };
 
             /** If we want to load a sound, here are stored the list of parameters to apply on it during loading */
