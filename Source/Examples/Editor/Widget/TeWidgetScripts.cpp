@@ -116,7 +116,7 @@ namespace te
 
             if (ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                const String& path = _currentScript->GetPath();
+                const String& path = _currentScript->GetPath().generic_string();
                 if (path.length() < 1024) strcpy(inputPath, path.c_str());
                 else strcpy(inputPath, name.substr(0, 1024).c_str());
 

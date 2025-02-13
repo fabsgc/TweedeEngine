@@ -14,7 +14,7 @@ namespace te
         virtual ~Script() = default;
 
         /** @copydoc Resource::SetPath */
-        void SetPath(const String& path) override;
+        void SetPath(const std::filesystem::path& path) override;
 
         /**  @copydoc Resource::GetResourceType */
         static CoreType GetResourceType() { return CoreType::TID_Script; }

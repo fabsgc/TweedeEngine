@@ -14,7 +14,7 @@ namespace te
     {
         serializer->WriteRaw<UINT32>(static_cast<UINT32>(_coreType));
         serializer->WriteString(_name);
-        serializer->WriteString(_path);
+        serializer->WriteString(_path.generic_string());
         serializer->WriteRaw<UINT32>(_size);
         serializer->WriteString(_UUID.ToString());
     }
@@ -25,15 +25,17 @@ namespace te
             return;
 
         String uuid;
+        String path;
         UINT32 coreType;
 
         deserializer->ReadRaw<UINT32>(coreType);
         deserializer->ReadString(object->_name);
-        deserializer->ReadString(object->_path);
+        deserializer->ReadString(path);
         deserializer->ReadRaw<UINT32>(object->_size);
         deserializer->ReadString(uuid);
 
         object->_UUID = UUID(uuid);
         object->_coreType = static_cast<CoreType>(coreType);
+        object->_path = path;
     }
 }

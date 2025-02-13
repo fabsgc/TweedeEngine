@@ -16,13 +16,13 @@ namespace te
         }
     }
 
-    bool Exporter::Export(void* object, const String& inputFilePath, const ExportOptions& exportOptions)
+    bool Exporter::Export(void* object, const std::filesystem::path& filePath, const ExportOptions& exportOptions)
     {
-        BaseExporter* importer = PrepareForExport(inputFilePath);
+        BaseExporter* importer = PrepareForExport(filePath);
         if (!importer)
             return false;
 
-        return importer->Export(object, inputFilePath, exportOptions);
+        return importer->Export(object, filePath, exportOptions);
     }
 
     bool Exporter::SupportsFileType(const String& extension) const
@@ -47,9 +47,9 @@ namespace te
         _assetExporters.push_back(exporter);
     }
 
-    BaseExporter* Exporter::GetExporterForFile(const String& inputFilePath) const
+    BaseExporter* Exporter::GetExporterForFile(const std::filesystem::path& filePath) const
     {
-        String ext = Util::GetFileExtension(inputFilePath);
+        String ext = Util::GetFileExtension(filePath.generic_string());
 
         if (ext.empty())
             return nullptr;
@@ -57,7 +57,7 @@ namespace te
         ext = ext.substr(1, ext.size() - 1); // Remove the .
         if (!SupportsFileType(ext))
         {
-            TE_ASSERT_ERROR(false, "There is no exporter for the provided file : " + inputFilePath);
+            TE_ASSERT_ERROR(false, "There is no exporter for the provided file : " + filePath.generic_string());
             return nullptr;
         }
 
@@ -70,7 +70,7 @@ namespace te
         return nullptr;
     }
 
-    BaseExporter* Exporter::PrepareForExport(const String& filePath) const
+    BaseExporter* Exporter::PrepareForExport(const std::filesystem::path& filePath) const
     {
         return GetExporterForFile(filePath);
     }

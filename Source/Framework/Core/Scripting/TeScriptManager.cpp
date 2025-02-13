@@ -38,7 +38,7 @@ namespace te
     {
         if (script.IsLoaded())
         {
-            RegisterScript(script.GetInternalPtr().get(), so);
+            RegisterScript(script.Get(), so);
         }
 
         return false;
@@ -72,7 +72,7 @@ namespace te
 
     void ScriptManager::UnregisterScript(const HScript& script, SceneObject& so)
     {
-        const Pair<const Script*, SceneObject*> identifier = std::make_pair(script.GetInternalPtr().get(), &so);
+        const Pair<const Script*, SceneObject*> identifier = std::make_pair(script.Get(), &so);
 
         const auto runningScriptIt = _runningScripts.find(identifier);
         if (runningScriptIt != _runningScripts.end())

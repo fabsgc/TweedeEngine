@@ -26,7 +26,7 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<Resource> ProjectImporter::Import(const String& filePath, const ImportOptions& importOptions)
+    SPtr<Resource> ProjectImporter::Import(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
         SPtr<Project> project = Project::CreateEmpty();
         const std::filesystem::path projectPath = std::filesystem::absolute(filePath);
@@ -64,8 +64,8 @@ namespace te
             HResource resource = gResourceManager().Load<Resource>(resourcePath.generic_string(), importOptions);
             if (resource.IsLoaded())
             {
-                project->AddResource(resource.GetInternalPtr().get());
-                TE_DEBUG("Resource imported from the specified path : " + resource->GetPath());
+                project->AddResource(resource.Get());
+                TE_DEBUG("Resource imported from the specified path : " + resource->GetPath().generic_string());
             }
             else
             {

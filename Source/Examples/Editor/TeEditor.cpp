@@ -171,7 +171,7 @@ namespace te
 
         _project = Project::Create();
         _project->SetName("Project");
-        _project->SetPath(std::filesystem::absolute("Data/Project/default.project").generic_string());
+        _project->SetPath("Data/Project/default.project");
 
         InitializeInput();
         InitializeScene();
@@ -699,7 +699,7 @@ namespace te
     {
         const Script* script = std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetScript();
         
-        FileStream file(script->GetPath(), FileStream::WRITE);
+        FileStream file(script->GetPath().generic_string(), FileStream::WRITE);
         if (!file.Fail())
         {
             file.WriteString(std::static_pointer_cast<WidgetTextEditor>(_settings.WTextEditor)->GetContent());
@@ -1012,13 +1012,13 @@ namespace te
             }
         }
 
-        if (gExporter().Export(_project.GetInternalPtr().get(), _project->GetPath(), ProjectExportOptions()))
+        if (gExporter().Export(_project.Get(), _project->GetPath(), ProjectExportOptions()))
         {
-            TE_DEBUG("Project saved at the specified path : " + _project->GetPath());
+            TE_DEBUG("Project saved at the specified path : " + _project->GetPath().generic_string());
         }
         else
         {
-            TE_DEBUG("Failed to save your project at the specified path : " + _project->GetPath());
+            TE_DEBUG("Failed to save your project at the specified path : " + _project->GetPath().generic_string());
             return false;
         }
 
@@ -1597,7 +1597,7 @@ namespace te
 
             _script = Script::Create();
             _script->SetName("First script");
-            _script->SetPath(scriptPath.generic_string());
+            _script->SetPath(scriptPath);
 
             EditorResManager::Instance().Add(_script);
         }

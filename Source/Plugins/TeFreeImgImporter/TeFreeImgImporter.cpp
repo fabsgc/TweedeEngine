@@ -84,7 +84,7 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    String FreeImgImporter::MagicNumToExtension(const String& filePath, const UINT8* magic, UINT32 maxBytes) const
+    String FreeImgImporter::MagicNumToExtension(const std::filesystem::path& filePath, const UINT8* magic, UINT32 maxBytes) const
     {
         String ext = "";
         FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
@@ -100,11 +100,11 @@ namespace te
 
         // Check the file signature and deduce its format
         if (fif == FIF_UNKNOWN)
-            fif = FreeImage_GetFileType(filePath.c_str(), 0);
+            fif = FreeImage_GetFileType(filePath.generic_string().c_str(), 0);
 
         // If still unknown, try to guess the file format from the file extension
         if (fif == FIF_UNKNOWN)
-            fif = FreeImage_GetFIFFromFilename(filePath.c_str());
+            fif = FreeImage_GetFIFFromFilename(filePath.generic_string().c_str());
 
         if (fif != FIF_UNKNOWN)
         {
@@ -115,7 +115,7 @@ namespace te
         return ext;
     }
 
-    SPtr<Resource> FreeImgImporter::Import(const String& filePath, const ImportOptions& importOptions)
+    SPtr<Resource> FreeImgImporter::Import(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
         SPtr<Texture> texture = nullptr;
         Vector<SPtr<PixelData>> facesData;
@@ -211,7 +211,7 @@ namespace te
 
         if (!texture)
         {
-            TE_DEBUG("Failed to generate mipmaps on GPU, fallback to CPU : " + filePath);
+            TE_DEBUG("Failed to generate mipmaps on GPU, fallback to CPU : " + filePath.generic_string());
 
             texture = Texture::CreatePtr(texDesc);
 
@@ -241,31 +241,31 @@ namespace te
         }
 
         texture->SetName(path.filename().generic_string());
-        texture->SetPath(path.generic_string());
+        texture->SetPath(path);
 
         return texture;
     }
 
-    SPtr<PixelData> FreeImgImporter::ImportRawImage(const String& filePath)
+    SPtr<PixelData> FreeImgImporter::ImportRawImage(const std::filesystem::path& filePath)
     {
         uint8_t* data = nullptr;
         size_t size = 0;
         FREE_IMAGE_FORMAT imageFormat;
 
         {
-            Lock lock = FileScheduler::GetLock(filePath);
-            FileStream file(filePath);
+            Lock lock = FileScheduler::GetLock(filePath.generic_string());
+            FileStream file(filePath.generic_string());
 
             if (file.Fail())
             {
-                TE_DEBUG("Cannot open file: " + filePath);
+                TE_DEBUG("Cannot open file: " + filePath.generic_string());
                 return nullptr;
             }
 
             size = file.Size();
             if (size > std::numeric_limits<UINT32>::max())
             {
-                TE_DEBUG("File size larger than supported: " + filePath);
+                TE_DEBUG("File size larger than supported: " + filePath.generic_string());
                 return nullptr;
             }
 
@@ -295,10 +295,10 @@ namespace te
         FIBITMAP* fiBitmap = FreeImage_LoadFromMemory((FREE_IMAGE_FORMAT)imageFormat, fiMem);
 
         if (!fiBitmap)
-            fiBitmap = FreeImage_Load(imageFormat, filePath.c_str());
+            fiBitmap = FreeImage_Load(imageFormat, filePath.generic_string().c_str());
         
         if (!fiBitmap)
-            TE_DEBUG("Error decoding image: " + filePath);
+            TE_DEBUG("Error decoding image: " + filePath.generic_string());
 
         UINT32 width = FreeImage_GetWidth(fiBitmap);
         UINT32 height = FreeImage_GetHeight(fiBitmap);
@@ -319,7 +319,7 @@ namespace te
         //case FIT_INT32:
         case FIT_DOUBLE:
         default:
-            TE_DEBUG("Unknown or unsupported image format: " + filePath);
+            TE_DEBUG("Unknown or unsupported image format: " + filePath.generic_string());
             break;
         case FIT_BITMAP:
             // Standard image type
@@ -359,12 +359,12 @@ namespace te
                 // cannot be 16-bit greyscale since that's FIT_UINT16
                 if (FreeImage_GetGreenMask(fiBitmap) == FI16_565_GREEN_MASK)
                 {
-                    TE_DEBUG("Format not supported by the engine: " + filePath);
+                    TE_DEBUG("Format not supported by the engine: " + filePath.generic_string());
                     return nullptr;
                 }
                 else
                 {
-                    TE_DEBUG("Format not supported by the engine: " + filePath);
+                    TE_DEBUG("Format not supported by the engine: " + filePath.generic_string());
                     return nullptr;
                     // FreeImage doesn't support 4444 format so must be 1555
                 }

@@ -18,7 +18,7 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    bool ResourceExporter::Export(void* object, const String& filePath, const ExportOptions& exportOptions, bool force)
+    bool ResourceExporter::Export(void* object, const std::filesystem::path& filePath, const ExportOptions& exportOptions, bool force)
     {
         const ResourceExportOptions& resourceExportOptions = static_cast<const ResourceExportOptions&>(exportOptions);
 

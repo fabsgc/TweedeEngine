@@ -65,17 +65,17 @@ namespace te
         void OnShutDown() override;
 
         /** copydoc ResourceManager::LoadAll */
-        SPtr<MultiResource> LoadAll(const String& filePath, const ImportOptions& options, bool force = false);
+        SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, bool force = false);
 
         template <class T>
-        ResourceHandle<T> Load(const String& filePath, const ImportOptions& options, bool force = false)
+        ResourceHandle<T> Load(const std::filesystem::path& filePath, const ImportOptions& options, bool force = false)
         {
             HResource resource = gResourceManager().Load<T>(filePath, options, force);
 
             if (resource.IsLoaded())
             {
                 _resources[T::GetResourceType()].Add(resource);
-                _resourcesIndex.push_back(resource.GetInternalPtr().get());
+                _resourcesIndex.push_back(resource.Get());
                 return static_resource_cast<T>(gResourceManager().Get(resource.GetUUID()));
             }
 
@@ -89,7 +89,7 @@ namespace te
             _resources[T::GetResourceType()].Add(r);
 
             if (handle.IsLoaded())
-                _resourcesIndex.push_back(handle.GetInternalPtr().get());
+                _resourcesIndex.push_back(handle.Get());
         }
 
         template <class T>
@@ -100,7 +100,7 @@ namespace te
 
             if (handle.IsLoaded())
             {
-                auto it = std::find(_resourcesIndex.begin(), _resourcesIndex.end(), handle.GetInternalPtr().get());
+                auto it = std::find(_resourcesIndex.begin(), _resourcesIndex.end(), handle.Get());
                 if (it != _resourcesIndex.end())
                     _resourcesIndex.erase(it);
             }

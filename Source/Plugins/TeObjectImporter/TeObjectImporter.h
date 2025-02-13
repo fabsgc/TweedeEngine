@@ -24,14 +24,14 @@ namespace te
         bool IsExtensionSupported(const String& ext) const override;
 
         /** @copydoc BaseImporter::Import */
-        SPtr<Resource> Import(const String& filePath, const ImportOptions& importOptions) override;
+        SPtr<Resource> Import(const std::filesystem::path& filePath, const ImportOptions& importOptions) override;
 
         /** @copydoc BaseImporter::ImportAll */
-        Vector<SubResourceRaw> ImportAll(const String& filePath, const ImportOptions& importOptions) override;
+        Vector<SubResourceRaw> ImportAll(const std::filesystem::path& filePath, const ImportOptions& importOptions) override;
 
     private:
         /** Reads the object file and outputs mesh data from the read file. Sub-mesh information will be output in @p subMeshes. */
-        SPtr<RendererMeshData> ImportMeshData(const String& filePath, MeshImportOptions& importOptions, Vector<SubMesh>& subMeshes, 
+        SPtr<RendererMeshData> ImportMeshData(const std::filesystem::path& filePath, MeshImportOptions& importOptions, Vector<SubMesh>& subMeshes, 
             Vector<AssimpAnimationClipData>& animation, SPtr<Skeleton>& skeleton);
 
         /**
@@ -51,7 +51,7 @@ namespace te
         void ImportSkin(AssimpImportScene& scene, aiMesh* assimpMesh, AssimpImportMesh& mesh, const AssimpImportOptions& options);
 
         /**	Imports all bone and blend shape animations from the FBX. */
-        void ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene, const String& filePath);
+        void ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene, const std::filesystem::path& filePath);
 
         /**
          * Parses the scene and outputs a skeleton for the imported meshes using the imported raw data.

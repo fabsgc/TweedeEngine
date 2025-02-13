@@ -19,12 +19,12 @@ namespace te
         /**
          * Exports a resource at the specified location, and returns true for success, false otherwise.
          *
-         * @param[in]	inputFilePath	Pathname of the input file.
+         * @param[in]	filePath    	Path to the input file.
          * @param[in]	exportOptions	Options for controlling the export. Caller must ensure export options
          *								actually match the type of the exporter used for the file type.
          * @return						boolean : true for success, false othewise
         */
-        bool Export(void* object, const String& inputFilePath, const ExportOptions& exportOptions);
+        bool Export(void* object, const std::filesystem::path& filePath, const ExportOptions& exportOptions);
 
         /**
          * Checks if we can export a file with the specified extension.
@@ -48,13 +48,13 @@ namespace te
          * Searches available exporters and attempts to find one that can export the file of the provided type. Returns null
          * if one cannot be found.
          */
-        BaseExporter* GetExporterForFile(const String& inputFilePath) const;
+        BaseExporter* GetExporterForFile(const std::filesystem::path& filePath) const;
 
         /**
          * Prepares for export of a file at the specified path. Returns the type of exporter the file can be exported with,
          * or null if the file isn't valid or is of unsupported type.
          */
-        BaseExporter* PrepareForExport(const String& filePath) const;
+        BaseExporter* PrepareForExport(const std::filesystem::path& filePath) const;
 
     private:
         Vector<BaseExporter*> _assetExporters;

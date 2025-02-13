@@ -29,7 +29,7 @@ namespace te
         char inputUUID[64];
         bool hasChanged = false;
         String name = gEditor().GetProject()->GetName();
-        String path = gEditor().GetProject()->GetPath();
+        String path = gEditor().GetProject()->GetPath().generic_string();
         String uuid = gEditor().GetProject()->GetUUID().ToString();
         const float widgetWidth = ImGui::GetWindowContentRegionWidth() - 100.0f;
 

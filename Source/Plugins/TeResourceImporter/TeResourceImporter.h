@@ -17,7 +17,7 @@ namespace te
         bool IsExtensionSupported(const String& ext) const override;
 
         /** @copydoc SpecificImporter::import */
-        SPtr<Resource> Import(const String& filePath, const ImportOptions& importOptions) override;
+        SPtr<Resource> Import(const std::filesystem::path& filePath, const ImportOptions& importOptions) override;
 
     private:
         Vector<String> _extensions;

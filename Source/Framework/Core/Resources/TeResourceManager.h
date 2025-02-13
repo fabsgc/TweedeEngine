@@ -34,7 +34,7 @@ namespace te
         }
 
         template <class T>
-        ResourceHandle<T> Load(const String& filePath, const ImportOptions& options, bool force = false)
+        ResourceHandle<T> Load(const std::filesystem::path& filePath, const ImportOptions& options, bool force = false)
         {
             UUID uuid;
             ResourceHandle<T> resourceHandle;
@@ -66,7 +66,7 @@ namespace te
          * By using this importer, because non primary resources are not linked to a file, we need to 
          * find associated subResources and return a MultiResource instance
         */
-        SPtr<MultiResource> LoadAll(const String& filePath, const ImportOptions& options, bool force = false);
+        SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, bool force = false);
 
         void Update(HResource& handle, const SPtr<Resource>& resource);
 
@@ -110,9 +110,9 @@ namespace te
     private:
         friend class ResourceHandleBase;
 
-        bool GetUUIDFromFile(const String& filePath, UUID& uuid);
+        bool GetUUIDFromFile(const std::filesystem::path& filePath, UUID& uuid);
         bool GetFileFromUUID(const UUID& uuid, String& filePath);
-        void RegisterResource(const UUID& uuid, const String& filePath);
+        void RegisterResource(const UUID& uuid, const std::filesystem::path& filePath);
         void UnregisterResource(const UUID& uuid);
 
     private:

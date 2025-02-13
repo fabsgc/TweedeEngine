@@ -49,7 +49,7 @@ namespace te
     {
         if (_script && !_script->GetPath().empty())
         {
-            FileStream file(_script->GetPath());
+            FileStream file(_script->GetPath().generic_string());
             if (!file.Fail())
             {
                 _editorContent = file.GetAsString();

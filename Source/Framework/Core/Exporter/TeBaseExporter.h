@@ -4,6 +4,8 @@
 #include "Resources/TeResource.h"
 #include "Exporter/TeExportOptions.h"
 
+#include <filesystem>
+
 namespace te
 {
     /**
@@ -32,6 +34,6 @@ namespace te
          * @param[in]	exportOptions	Options that can control how is the resource exported.
          * @return						bool (true if the export was successfull, false instead)
          */
-        virtual bool Export(void* object, const String& filePath, const ExportOptions& exportOptions, bool force = true) = 0;
+        virtual bool Export(void* object, const std::filesystem::path& filePath, const ExportOptions& exportOptions, bool force = true) = 0;
     };
 }

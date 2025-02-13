@@ -8,9 +8,6 @@
 #include "Project/TeProject.h"
 #include "Utility/TeFileSystem.h"
 
-#include <filesystem>
-#
-
 namespace te
 { 
     ProjectExporter::ProjectExporter()
@@ -27,32 +24,31 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    bool ProjectExporter::Export(void* object, const String& filePath, const ExportOptions& exportOptions, bool force)
+    bool ProjectExporter::Export(void* object, const std::filesystem::path& filePath, const ExportOptions& exportOptions, bool force)
     {
-        const std::filesystem::path projectPath = std::filesystem::path(filePath);
-        const std::filesystem::path workingDirectory = projectPath.parent_path();
+        const std::filesystem::path workingDirectory = filePath.parent_path();
         const ProjectExportOptions& projectExportOptions = static_cast<const ProjectExportOptions&>(exportOptions);
 
         Project* project = static_cast<Project*>(object);
-        BinaryWriter* serializer = te_new<BinaryWriter>(projectPath);
+        BinaryWriter* serializer = te_new<BinaryWriter>(filePath);
 
         project->SetPath(filePath);
         project->Serialize(serializer);
 
         const std::filesystem::path resourcesPath = serialization::GetProjectResourcesPath(workingDirectory);
-        FileSystem::CreateDirectory(resourcesPath.generic_string());
+        std::filesystem::create_directory(resourcesPath);
 
         for (auto& resource : project->GetAllResources())
         {
             const std::filesystem::path resourcePath = serialization::GetProjectResourcePath(workingDirectory, resource);
 
-            if (gExporter().Export(resource, resourcePath.generic_string(), ResourceExportOptions()))
+            if (gExporter().Export(resource, resourcePath, ResourceExportOptions()))
             {
-                TE_DEBUG("Resource saved at the specified path : " + resource->GetPath());
+                TE_DEBUG("Resource saved at the specified path : " + resource->GetPath().generic_string());
             }
             else
             {
-                TE_DEBUG("Failed to save the resource project at the specified path : " + resource->GetPath());
+                TE_DEBUG("Failed to save the resource project at the specified path : " + resource->GetPath().generic_string());
                 return false;
             }
         }

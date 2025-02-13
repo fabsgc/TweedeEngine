@@ -36,7 +36,7 @@ namespace te
         bool AnimResample = false;
         bool ReduceKeyframes = true;
         UINT32 CustomVertexLayout = 0;
-        String FilePath;
+        std::filesystem::path FilePath;
     };
 
     /**	Represents a single node in the assimp hierarchy. */

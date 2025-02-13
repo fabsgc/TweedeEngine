@@ -10,7 +10,7 @@ namespace te
     EditorResManager::~EditorResManager()
     { }
 
-    SPtr<MultiResource> EditorResManager::LoadAll(const String& filePath, const ImportOptions& options, bool force)
+    SPtr<MultiResource> EditorResManager::LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, bool force)
     {
         SPtr<MultiResource> resources = gResourceManager().LoadAll(filePath, options, force);
         Vector<SubResource> output;
@@ -20,7 +20,7 @@ namespace te
             if (subRes.Res.IsLoaded())
             {
                 _resources[subRes.Res->GetCoreType()].Add(subRes.Res);
-                _resourcesIndex.push_back(subRes.Res.GetInternalPtr().get());
+                _resourcesIndex.push_back(subRes.Res.Get());
                 output.push_back(subRes);                    
             }
         }

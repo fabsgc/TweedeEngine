@@ -33,14 +33,14 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<Resource> ShaderImporter::Import(const String& filePath, const ImportOptions& importOptions)
+    SPtr<Resource> ShaderImporter::Import(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
         nlohmann::json jsonDocument;
-        FileStream file(filePath);
+        FileStream file(filePath.generic_string());
 
         if (file.Fail())
         {
-            TE_ASSERT_ERROR(false, "Cannot open file: " + filePath);
+            TE_ASSERT_ERROR(false, "Cannot open file: " + filePath.generic_string());
             return nullptr;
         }
 
@@ -66,7 +66,7 @@ namespace te
         }
         catch (...)
         {
-            TE_ASSERT_ERROR(false, "Can't read shader file " + filePath);
+            TE_ASSERT_ERROR(false, "Can't read shader file " + filePath.generic_string());
         }
 #else
         jsonDocument = nlohmann::json::parse(dataStr);
@@ -76,7 +76,7 @@ namespace te
         auto path = std::filesystem::absolute(filePath);
         SPtr<Shader> shader = Shader::CreatePtr("shader", SHADER_DESC());
         shader->SetName(path.filename().generic_string());
-        shader->SetPath(path.generic_string());
+        shader->SetPath(path);
 
         te_delete(data);
 

@@ -48,7 +48,7 @@ namespace te
 
                 for (auto& resource : textureContainer.Res)
                 {
-                    inputPathStr = resource.second->GetPath();
+                    inputPathStr = resource.second->GetPath().generic_string();
                     inputNameStr = resource.second->GetName();
                     inputUUIDStr = resource.second->GetUUID().ToString();
 
@@ -60,10 +60,10 @@ namespace te
 
                         strcpy(inputUUID, inputUUIDStr.c_str());
 
-                        if(resource.second->GetName().length() < 256) strcpy(inputName, inputNameStr.c_str());
+                        if(inputNameStr.length() < 256) strcpy(inputName, inputNameStr.c_str());
                         else strcpy(inputName, inputNameStr.substr(0,255).c_str());
 
-                        if(resource.second->GetPath().length() < 256) strcpy(inputPath, inputPathStr.c_str());
+                        if(inputPathStr.length() < 256) strcpy(inputPath, inputPathStr.c_str());
                         else strcpy(inputPath, inputPathStr.substr(0,255).c_str());
 
                         ImGui::BeginChild("TexturePreview", ImVec2(96.0f, 96.0f), true, ImGuiWindowFlags_NoScrollbar);
@@ -118,7 +118,7 @@ namespace te
 
         auto ShowDefaultResourceField = [&](HResource& resource)
         {
-            String inputPathStr = resource->GetPath();
+            String inputPathStr = resource->GetPath().generic_string();
             String inputNameStr = resource->GetName();
             String inputUUIDStr = resource->GetUUID().ToString();
 

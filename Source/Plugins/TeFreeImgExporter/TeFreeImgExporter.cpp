@@ -84,7 +84,7 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    bool FreeImgExporter::Export(void* object, const String& filePath, const ExportOptions& exportOptions, bool force)
+    bool FreeImgExporter::Export(void* object, const std::filesystem::path& filePath, const ExportOptions& exportOptions, bool force)
     {
         const TextureExportOptions& textureExportOptions = static_cast<const TextureExportOptions&>(exportOptions);
 
@@ -94,13 +94,13 @@ namespace te
 
         if (PixelUtil::IsCompressed(texture->GetProperties().GetFormat()))
         {
-            TE_DEBUG("Texture is compressed and can't be exported : " + filePath);
+            TE_DEBUG("Texture is compressed and can't be exported : " + filePath.generic_string());
             return false;
         }
 
         if (texture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_3D)
         {
-            TE_DEBUG("3D Texture are not handled yet : " + filePath);
+            TE_DEBUG("3D Texture are not handled yet : " + filePath.generic_string());
             return false;
         }
 
@@ -129,7 +129,7 @@ namespace te
         }
     }
 
-    bool FreeImgExporter::Export(const PixelData& pixelData, UINT32 width, UINT32 height, bool isSRGB, const String& filePath, const TextureExportOptions& exportOptions, bool force)
+    bool FreeImgExporter::Export(const PixelData& pixelData, UINT32 width, UINT32 height, bool isSRGB, const std::filesystem::path& filePath, const TextureExportOptions& exportOptions, bool force)
     {
         auto path = std::filesystem::absolute(filePath);
 
@@ -152,7 +152,7 @@ namespace te
 
         if (!bitmap)
         {
-            TE_DEBUG("Can't create bitmap object : " + filePath);
+            TE_DEBUG("Can't create bitmap object : " + filePath.generic_string());
             return false;
         }
 
@@ -197,9 +197,9 @@ namespace te
             }
             });
 
-        if (!FreeImage_Save(FIFFormat, bitmap, filePath.c_str(), FIFFormat == FREE_IMAGE_FORMAT::FIF_JPEG ? JPEG_QUALITYSUPERB : 0))
+        if (!FreeImage_Save(FIFFormat, bitmap, filePath.generic_string().c_str(), FIFFormat == FREE_IMAGE_FORMAT::FIF_JPEG ? JPEG_QUALITYSUPERB : 0))
         {
-            TE_DEBUG("Can't save bitmap object to file : " + filePath);
+            TE_DEBUG("Can't save bitmap object to file : " + filePath.generic_string());
             FreeImage_Unload(bitmap);
             return false;
         }

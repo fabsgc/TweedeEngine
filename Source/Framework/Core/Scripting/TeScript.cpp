@@ -32,7 +32,7 @@ namespace te
         return newScript;
     }
 
-    void Script::SetPath(const String& path)
+    void Script::SetPath(const std::filesystem::path& path)
     {
         Resource::SetPath(path);
         gScriptManager().LoadScriptLibrary(this); // If we change the path of the attached script, we build the library and update all running scripts

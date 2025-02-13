@@ -17,7 +17,7 @@ namespace te
         bool IsExtensionSupported(const String& ext) const override;
 
         /** @copydoc BasicImporter::Import */
-        SPtr<Resource> Import(const String& filePath, const ImportOptions& importOptions) override;
+        SPtr<Resource> Import(const std::filesystem::path& filePath, const ImportOptions& importOptions) override;
 
     private:
         /** 
@@ -28,10 +28,10 @@ namespace te
          * @param[int]	maxBytes	Binary data size
          * @return					Extension as String in lowercase. Otherwise, empty String.
          */
-        String MagicNumToExtension(const String& filePath, const UINT8* magic, UINT32 maxBytes) const;
+        String MagicNumToExtension(const std::filesystem::path& filePath, const UINT8* magic, UINT32 maxBytes) const;
 
         /** Imports an image from the provided data stream. */
-        SPtr<PixelData> ImportRawImage(const String& filePath);
+        SPtr<PixelData> ImportRawImage(const std::filesystem::path& filePath);
 
         /**
          * Generates six cubemap faces from the provided source texture. *

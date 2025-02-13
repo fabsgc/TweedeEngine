@@ -17,7 +17,7 @@ namespace te
         bool IsExtensionSupported(const String& ext) const override;
 
         /** @copydoc SpecificExporter::import */
-        bool Export(void* object, const String& filePath, const ExportOptions& importOptions, bool force = false) override;
+        bool Export(void* object, const std::filesystem::path& filePath, const ExportOptions& importOptions, bool force = false) override;
 
     private:
         Vector<String> _extensions;

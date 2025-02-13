@@ -36,7 +36,7 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<Resource> ObjectImporter::Import(const String& filePath, const ImportOptions& importOptions)
+    SPtr<Resource> ObjectImporter::Import(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
         MESH_DESC desc;
 
@@ -50,7 +50,7 @@ namespace te
             auto path = std::filesystem::absolute(filePath);
             SPtr<Mesh> mesh = Mesh::CreatePtr(rendererMeshData->GetData(), desc);
             mesh->SetName(path.filename().generic_string());
-            mesh->SetPath(path.generic_string());
+            mesh->SetPath(path);
 
             return mesh;
         }
@@ -58,7 +58,7 @@ namespace te
         return nullptr;
     }
 
-    Vector<SubResourceRaw> ObjectImporter::ImportAll(const String& filePath, const ImportOptions& importOptions)
+    Vector<SubResourceRaw> ObjectImporter::ImportAll(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
         MESH_DESC desc;
         MeshImportOptions& meshImportOptions = const_cast<MeshImportOptions&>(static_cast<const MeshImportOptions&>(importOptions));
@@ -76,7 +76,7 @@ namespace te
             auto path = std::filesystem::absolute(filePath);
             SPtr<Mesh> mesh = Mesh::CreatePtr(rendererMeshData->GetData(), desc);
             mesh->SetName(path.filename().generic_string());
-            mesh->SetPath(path.generic_string());
+            mesh->SetPath(path);
 
             if (mesh != nullptr)
             {
@@ -126,7 +126,7 @@ namespace te
                             if (physicsMesh)
                             {
                                 physicsMesh->SetName("Collision - " + mesh->GetName());
-                                physicsMesh->SetPath(path.generic_string());
+                                physicsMesh->SetPath(path);
                                 output.push_back({ "collision", physicsMesh });
                             }
                             else
@@ -139,7 +139,7 @@ namespace te
                         {
                             SPtr<ZPrepassMesh> zPrepassMesh = ZPrepassMesh::CreatePtr(simpleMeshData->GetData(), desc);
                             zPrepassMesh->SetName(path.filename().generic_string());
-                            zPrepassMesh->SetPath(path.generic_string());
+                            zPrepassMesh->SetPath(path);
 
                             if (zPrepassMesh)
                             {
@@ -158,7 +158,7 @@ namespace te
                 {
                     SPtr<AnimationClip> clip = AnimationClip::CreatePtr(entry.Curves, entry.SampleRate, entry.IsAdditive, entry.RootMot);
                     clip->SetName(entry.Name);
-                    clip->SetPath(path.generic_string());
+                    clip->SetPath(path);
 
                     for (auto& eventsEntry : events)
                     {
@@ -177,7 +177,7 @@ namespace te
         return output;
     }
 
-    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const String& filePath, MeshImportOptions& importOptions, Vector<SubMesh>& subMeshes, 
+    SPtr<RendererMeshData> ObjectImporter::ImportMeshData(const std::filesystem::path& filePath, MeshImportOptions& importOptions, Vector<SubMesh>& subMeshes, 
         Vector<AssimpAnimationClipData>& animation, SPtr<Skeleton>& skeleton)
     {
         aiScene* scene = nullptr;
@@ -253,13 +253,13 @@ namespace te
         importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, removeComponentFlags);
 
         {
-            Lock lock = FileScheduler::GetLock(filePath);
-            scene = const_cast<aiScene*>(importer.ReadFile(filePath.c_str(), assimpFlags));
+            Lock lock = FileScheduler::GetLock(filePath.generic_string());
+            scene = const_cast<aiScene*>(importer.ReadFile(filePath.generic_string(), assimpFlags));
         }
 
         if (!scene)
         {
-            TE_DEBUG("Failed to load object '" + filePath + "' : " + importer.GetErrorString());
+            TE_DEBUG("Failed to load object '" + filePath.generic_string() + "' : " + importer.GetErrorString());
             return nullptr;
         }
 
@@ -638,14 +638,14 @@ namespace te
         if (mesh.Bones.empty())
             mesh.BoneInfluences.clear();
 
-        UINT32 numBones = (UINT32)mesh.Bones.size();
+        const UINT32 numBones = (UINT32)mesh.Bones.size();
         if (numBones > 256)
         {
             TE_DEBUG("A maximum of 256 bones per skeleton are supported. Imported skeleton has " + ToString(numBones) + " bones.");
         }
 
         // Normalize weights
-        UINT32 numInfluences = (UINT32)mesh.BoneInfluences.size();
+        const UINT32 numInfluences = (UINT32)mesh.BoneInfluences.size();
         for (UINT32 i = 0; i < numInfluences; i++)
         {
             float sum = 0.0f;
@@ -658,9 +658,9 @@ namespace te
         }
     }
 
-    void ObjectImporter::ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene, const String& filePath)
+    void ObjectImporter::ImportAnimations(aiScene* scene, AssimpImportOptions& importOptions, AssimpImportScene& importScene, const std::filesystem::path& filePath)
     {
-        String fileName = std::filesystem::path(filePath).filename().generic_string();
+        const String fileName = std::filesystem::path(filePath).filename().generic_string();
 
         for (UINT32 i = 0; i < scene->mNumAnimations; i++)
         {

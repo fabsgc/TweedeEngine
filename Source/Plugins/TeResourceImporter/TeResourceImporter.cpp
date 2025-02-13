@@ -43,7 +43,7 @@ namespace te
         return resource;
     }
 
-    SPtr<Resource> ResourceImporter::Import(const String& filePath, const ImportOptions& importOptions)
+    SPtr<Resource> ResourceImporter::Import(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
         const ResourceImportOptions& resourceImportOptions = static_cast<const ResourceImportOptions&>(importOptions);
 

@@ -8,6 +8,8 @@
 #include "Serialization/TeStreamWriter.h"
 #include "Serialization/TeStreamReader.h"
 
+#include <filesystem>
+
 namespace te
 {
     /** Base class for all resources. */
@@ -23,10 +25,10 @@ namespace te
         virtual void SetName(const String& name) { _name = name; }
 
         /** Returns the path of the resource. */
-        virtual const String& GetPath() const { return _path; };
+        virtual const std::filesystem::path& GetPath() const { return _path; };
 
         /** Sets the path of the resource. */
-        virtual void SetPath(const String& path) { _path = path; }
+        virtual void SetPath(const std::filesystem::path& path) { _path = path; }
 
         /**	Globally unique identifier of the resource that persists scene save/load. */
         virtual const UUID& GetUUID() const { return _UUID; }
@@ -52,9 +54,9 @@ namespace te
         virtual void SetUUID(const UUID& uuid) { _UUID = uuid; }
 
     protected:
-        String _name;
-        String _path;
-        UINT32 _size;
-        UUID   _UUID;
+        String                _name;
+        std::filesystem::path _path;
+        UINT32                _size;
+        UUID                  _UUID;
     };
 }

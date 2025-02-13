@@ -29,7 +29,7 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<Resource> FontImporter::Import(const String& filePath, const ImportOptions& importOptions)
+    SPtr<Resource> FontImporter::Import(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
         const FontImportOptions& fontImportOptions = static_cast<const FontImportOptions&>(importOptions);
 
@@ -41,17 +41,17 @@ namespace te
 
         FT_Face face;
         {
-            Lock lock = FileScheduler::GetLock(filePath);
-            error = FT_New_Face(library, filePath.c_str(), 0, &face);
+            Lock lock = FileScheduler::GetLock(filePath.generic_string());
+            error = FT_New_Face(library, filePath.generic_string().c_str(), 0, &face);
         }
 
         if (error == FT_Err_Unknown_File_Format)
         {
-            TE_ASSERT_ERROR(false, "Failed to load font file: " + filePath + ". Unsupported file format.");
+            TE_ASSERT_ERROR(false, "Failed to load font file: " + filePath.generic_string() + ". Unsupported file format.");
         }
         else if (error)
         {
-            TE_ASSERT_ERROR(false, "Failed to load font file: " + filePath + ". Unknown error.");
+            TE_ASSERT_ERROR(false, "Failed to load font file: " + filePath.generic_string() + ". Unknown error.");
         }
 
         Vector<CharRange> charIndexRanges = fontImportOptions.CharIndexRanges;
@@ -89,7 +89,7 @@ namespace te
         auto path = std::filesystem::absolute(filePath);
         SPtr<Font> newFont = Font::CreatePtr(dataPerSize);
         newFont->SetName(path.filename().generic_string());
-        newFont->SetPath(path.generic_string());
+        newFont->SetPath(path);
 
         return newFont;
     }

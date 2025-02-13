@@ -43,7 +43,7 @@ namespace te
          * @param[in]	importOptions	Options that can control how is the resource imported.
          * @return						null if it fails, otherwise the loaded object.
          */
-        virtual SPtr<Resource> Import(const String& filePath, const ImportOptions& importOptions) = 0;
+        virtual SPtr<Resource> Import(const std::filesystem::path& filePath, const ImportOptions& importOptions) = 0;
 
         /**
          * Imports the given file. This method returns all imported resources, which is relevant for files that can contain
@@ -54,6 +54,6 @@ namespace te
          * @return						Empty array if it fails, otherwise the loaded objects. First element is always the
          *								primary resource.
          */
-        virtual Vector<SubResourceRaw> ImportAll(const String& filePath, const ImportOptions& importOptions);
+        virtual Vector<SubResourceRaw> ImportAll(const std::filesystem::path& filePath, const ImportOptions& importOptions);
     };
 }

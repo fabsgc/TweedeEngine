@@ -1364,7 +1364,7 @@ namespace te
 
         for (auto& script : _scripts)
         {
-            scriptsJsonDocument.push_back(serialization::GetResourceName(script.GetInternalPtr().get()));
+            scriptsJsonDocument.push_back(serialization::GetResourceName(script.Get()));
         }
 
         document["name"] = GetName();

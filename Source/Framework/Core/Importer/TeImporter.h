@@ -5,6 +5,8 @@
 #include "Importer/TeBaseImporter.h"
 #include "Utility/TeModule.h"
 
+#include <filesystem>
+
 namespace te
 {
     /**
@@ -54,30 +56,30 @@ namespace te
          * resource only the primary resource is imported (for example an FBX a mesh would be imported, but animations
          * ignored).
          *
-         * @param[in]	inputFilePath	Pathname of the input file.
+         * @param[in]	filePath    	Path to the input file.
          * @param[in]	importOptions	Options for controlling the import. Caller must ensure import options
          *								actually match the type of the importer used for the file type.
          * @param[in]	UUID			Specific UUID to assign to the resource. If not specified a randomly generated
          *								UUID will be assigned.
          * @return						Imported resource.
         */
-        HResource Import(const String& inputFilePath, const ImportOptions& importOptions, const UUID& UUID);
+        HResource Import(const std::filesystem::path& filePath, const ImportOptions& importOptions, const UUID& UUID);
 
         template <class T>
-        ResourceHandle<T> Import(const String& inputFilePath, const ImportOptions& importOptions = nullptr, const UUID& uuid = UUID::EMPTY)
+        ResourceHandle<T> Import(const std::filesystem::path& filePath, const ImportOptions& importOptions = nullptr, const UUID& uuid = UUID::EMPTY)
         {
-            return static_resource_cast<T>(Import(inputFilePath, importOptions, uuid));
+            return static_resource_cast<T>(Import(filePath, importOptions, uuid));
         }
 
         /** Alternative to Import() which doesn't create a resource handle, but instead returns a raw resource pointer. */
-        SPtr<Resource> _import(const String& inputFilePath, const ImportOptions& importOptions);
+        SPtr<Resource> _import(const std::filesystem::path& filePath, const ImportOptions& importOptions);
 
         /**
          * Imports a resource at the specified location, and returns the loaded data. This method returns all imported
          * resources, which is relevant for files that can contain multiple resources (for example an FBX which may contain
          * both a mesh and animations).
          *
-         * @param[in]	inputFilePath	Pathname of the input file.
+         * @param[in]	filePath	    Path to the input file.
          * @param[in]	importOptions	(optional) Options for controlling the import. Caller must ensure import options
          *								actually match the type of the importer used for the file type.
          * @return						A list of all imported resources. The primary resource is always the first returned
@@ -86,10 +88,10 @@ namespace te
          * @see		createImportOptions
          * @note	Thread safe.
          */
-        SPtr<MultiResource> ImportAll(const String& inputFilePath, const ImportOptions&importOptions);
+        SPtr<MultiResource> ImportAll(const std::filesystem::path& filePath, const ImportOptions&importOptions);
 
         /** Alternative to importAll() which doesn't create resource handles, but instead returns raw resource pointers. */
-        Vector<SubResourceRaw> _importAll(const String& inputFilePath, const ImportOptions& importOptions);
+        Vector<SubResourceRaw> _importAll(const std::filesystem::path& filePath, const ImportOptions& importOptions);
 
         /**
          * Checks if we can import a file with the specified extension.
@@ -113,14 +115,14 @@ namespace te
          * Searches available importers and attempts to find one that can import the file of the provided type. Returns null
          * if one cannot be found.
          */
-        BaseImporter* GetImporterForFile(const String& inputFilePath) const;
+        BaseImporter* GetImporterForFile(const std::filesystem::path& filePath) const;
 
         /**
          * Prepares for import of a file at the specified path. Returns the type of importer the file can be imported with,
          * or null if the file isn't valid or is of unsupported type. Also creates the default set of import options unless
          * already provided.
          */
-        BaseImporter* PrepareForImport(const String& filePath) const;
+        BaseImporter* PrepareForImport(const std::filesystem::path& filePath) const;
 
     private:
         Vector<BaseImporter*> _assetImporters;

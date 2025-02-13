@@ -17,60 +17,60 @@ namespace te
         }
     }
 
-    SPtr<Resource> Importer::_import(const String& inputFilePath, const ImportOptions& importOptions)
+    SPtr<Resource> Importer::_import(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
-        BaseImporter* importer = PrepareForImport(inputFilePath);
+        BaseImporter* importer = PrepareForImport(filePath);
         if (!importer)
             return nullptr;
 
-        SPtr<Resource> output = importer->Import(inputFilePath, importOptions);
+        SPtr<Resource> output = importer->Import(filePath, importOptions);
         return output;
     }
 
-    HResource Importer::Import(const String& inputFilePath, const ImportOptions& importOptions, const UUID& uuid)
+    HResource Importer::Import(const std::filesystem::path& filePath, const ImportOptions& importOptions, const UUID& uuid)
     {
-        SPtr<Resource> importedResource = _import(inputFilePath, importOptions);
+        SPtr<Resource> importedResource = _import(filePath, importOptions);
 
         if (importedResource)
         {
-            TE_DEBUG("Resource from " + inputFilePath + " has been successfully loaded");
+            TE_DEBUG("Resource from " + filePath.generic_string() + " has been successfully loaded");
             return gResourceManager()._createResourceHandle(importedResource, uuid);
         }
         else
         {
-            TE_DEBUG("Resource from " + inputFilePath + " has not been loaded");
+            TE_DEBUG("Resource from " + filePath.generic_string() + " has not been loaded");
         }
         
         return HResource();
     }
 
-    Vector<SubResourceRaw> Importer::_importAll(const String& inputFilePath, const ImportOptions& importOptions)
+    Vector<SubResourceRaw> Importer::_importAll(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
-        BaseImporter* importer = PrepareForImport(inputFilePath);
+        BaseImporter* importer = PrepareForImport(filePath);
         if (!importer)
             return Vector<SubResourceRaw>();
 
-        Vector<SubResourceRaw> output = importer->ImportAll(inputFilePath, importOptions);
+        Vector<SubResourceRaw> output = importer->ImportAll(filePath, importOptions);
         return output;
     }
 
-    SPtr<MultiResource> Importer::ImportAll(const String& inputFilePath, const ImportOptions& importOptions)
+    SPtr<MultiResource> Importer::ImportAll(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
         Vector<SubResource> output;
 
-        Vector<SubResourceRaw> importedResource = _importAll(inputFilePath, importOptions);
+        Vector<SubResourceRaw> importedResource = _importAll(filePath, importOptions);
         for (auto& entry : importedResource)
         {
             if (entry.Res)
             {
-                TE_DEBUG("Resource " + inputFilePath + " has been successfully loaded");
+                TE_DEBUG("Resource " + filePath.generic_string() + " has been successfully loaded");
 
                 HResource handle = gResourceManager()._createResourceHandle(entry.Res);
                 output.push_back({ entry.Name, handle });
             }
             else
             {
-                TE_DEBUG("Resource " + inputFilePath + "::" + entry.Name + " has not been loaded");
+                TE_DEBUG("Resource " + filePath.generic_string() + "::" + entry.Name + " has not been loaded");
             }
         }
 
@@ -99,9 +99,9 @@ namespace te
         _assetImporters.push_back(importer);
     }
 
-    BaseImporter* Importer::GetImporterForFile(const String& inputFilePath) const
+    BaseImporter* Importer::GetImporterForFile(const std::filesystem::path& filePath) const
     {
-        String ext = Util::GetFileExtension(inputFilePath);
+        String ext = Util::GetFileExtension(filePath.generic_string());
 
         if (ext.empty())
             return nullptr;
@@ -109,7 +109,7 @@ namespace te
         ext = ext.substr(1, ext.size() - 1); // Remove the .
         if (!SupportsFileType(ext))
         {
-            TE_ASSERT_ERROR(false, "There is no importer for the provided file : " + inputFilePath);
+            TE_ASSERT_ERROR(false, "There is no importer for the provided file : " + filePath.generic_string());
             return nullptr;
         }
 
@@ -122,7 +122,7 @@ namespace te
         return nullptr;
     }
 
-    BaseImporter* Importer::PrepareForImport(const String& filePath) const
+    BaseImporter* Importer::PrepareForImport(const std::filesystem::path& filePath) const
     {
         return GetImporterForFile(filePath);
     }

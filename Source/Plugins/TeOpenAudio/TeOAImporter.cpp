@@ -29,7 +29,7 @@ namespace te
         return find(_extensions.begin(), _extensions.end(), lowerCaseExt) != _extensions.end();
     }
 
-    SPtr<Resource> OAImporter::Import(const String& filePath, const ImportOptions& importOptions)
+    SPtr<Resource> OAImporter::Import(const std::filesystem::path& filePath, const ImportOptions& importOptions)
     {
         AudioDataInfo info;
         UINT32 bytesPerSample = 0;
@@ -37,12 +37,12 @@ namespace te
         SPtr<MemoryDataStream> sampleStream;
         {
             size_t size = 0;
-            Lock lock = FileScheduler::GetLock(filePath);
-            SPtr<FileStream> file = te_shared_ptr_new<FileStream>(filePath);
+            Lock lock = FileScheduler::GetLock(filePath.generic_string());
+            SPtr<FileStream> file = te_shared_ptr_new<FileStream>(filePath.generic_string());
 
             if (file->Fail())
             {
-                TE_DEBUG("Cannot open file: " + filePath);
+                TE_DEBUG("Cannot open file: " + filePath.generic_string());
                 return nullptr;
             }
 
@@ -133,7 +133,7 @@ namespace te
         auto path = std::filesystem::absolute(filePath);
         SPtr<AudioClip> clip = AudioClip::CreatePtr(sampleStream, bufferSize, info.NumSamples, clipDesc);
         clip->SetName(path.filename().generic_string());
-        clip->SetPath(path.generic_string());
+        clip->SetPath(path);
 
         return clip;
     }

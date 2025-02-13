@@ -57,7 +57,7 @@ namespace te
         resource.ClearHandleData();
     }
 
-    SPtr<MultiResource> ResourceManager::LoadAll(const String& filePath, const ImportOptions& options, bool force)
+    SPtr<MultiResource> ResourceManager::LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, bool force)
     {
         UUID uuid;
         SPtr<MultiResource> resources;
@@ -189,7 +189,7 @@ namespace te
         return resources;
     }
 
-    bool ResourceManager::GetUUIDFromFile(const String& filePath, UUID& uuid)
+    bool ResourceManager::GetUUIDFromFile(const std::filesystem::path& filePath, UUID& uuid)
     {
         std::error_code e;
         auto path = std::filesystem::weakly_canonical(filePath, e);
@@ -228,7 +228,7 @@ namespace te
         }
     }
 
-    void ResourceManager::RegisterResource(const UUID& uuid, const String& filePath)
+    void ResourceManager::RegisterResource(const UUID& uuid, const std::filesystem::path& filePath)
     {
         std::error_code e;
         auto path = std::filesystem::weakly_canonical(filePath, e);
