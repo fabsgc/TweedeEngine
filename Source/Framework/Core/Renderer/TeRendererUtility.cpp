@@ -516,7 +516,7 @@ namespace te
         renderData.TargetColorDesc.Width = renderData.Width;
         renderData.TargetColorDesc.Height = renderData.Height;
         renderData.TargetColorDesc.Format = PF_RGBA16F;
-        renderData.TargetColorDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
+        renderData.TargetColorDesc.NumSamples = renderData.NumSamples;
         renderData.TargetColorDesc.Usage = TU_RENDERTARGET;
         renderData.TargetColorDesc.DebugName = "[Render Texture Color]";
         if (!debugName.empty()) renderData.TargetColorDesc.DebugName += " " + debugName;
@@ -525,7 +525,7 @@ namespace te
         renderData.TargetDepthDesc.Width = renderData.Width;
         renderData.TargetDepthDesc.Height = renderData.Height;
         renderData.TargetDepthDesc.Format = PF_RGBA8;
-        renderData.TargetDepthDesc.NumSamples = gCoreApplication().GetWindow()->GetDesc().MultisampleCount;
+        renderData.TargetDepthDesc.NumSamples = renderData.NumSamples;
         renderData.TargetDepthDesc.Usage = TU_DEPTHSTENCIL;
         renderData.TargetDepthDesc.DebugName = "[Render Texture Depth]";
         if (!debugName.empty()) renderData.TargetDepthDesc.DebugName += " " + debugName;

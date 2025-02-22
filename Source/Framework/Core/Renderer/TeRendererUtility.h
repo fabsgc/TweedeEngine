@@ -27,6 +27,7 @@ namespace te
             TextureSurface ColorTexSurface;
             UINT32 Width = 640;
             UINT32 Height = 480;
+            UINT32 NumSamples = 1;
         };
 
     public:
