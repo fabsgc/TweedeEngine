@@ -32,7 +32,17 @@ namespace te
     void BloomMat::Execute(const SPtr<Texture>& source, const SPtr<RenderTarget>& destination, const SPtr<Texture>& emissive, 
         const float& intensity)
     {
+        const bool MSAA = _variation.GetInt("MSAA_COUNT") > 1;
+        const TextureProperties& sourceProps = source->GetProperties();
+        const TextureProperties& emissiveProps = emissive->GetProperties();
+
+        const float xRatio = static_cast<float>(sourceProps.GetWidth()) / static_cast<float>(emissiveProps.GetWidth());
+        const float yRatio = static_cast<float>(sourceProps.GetHeight()) / static_cast<float>(emissiveProps.GetHeight());
+
         gBloomParamDef.gIntensity.Set(_paramBuffer, intensity, 0);
+        gBloomParamDef.gWidthRatio.Set(_paramBuffer, xRatio, 0);
+        gBloomParamDef.gHeightRatio.Set(_paramBuffer, yRatio, 0);
+
         _params->SetTexture(GPT_PIXEL_PROGRAM, "SourceMap", source);
         _params->SetTexture(GPT_PIXEL_PROGRAM, "EmissiveMap", emissive);
 
@@ -40,7 +50,16 @@ namespace te
 
         Bind();
         rapi.SetRenderTarget(destination);
-        gRendererUtility().DrawScreenQuad();
+        
+        if (MSAA)
+        {
+            gRendererUtility().DrawScreenQuad(Rect2(0.0f, 0.0f, static_cast<float>(sourceProps.GetWidth()), static_cast<float>(sourceProps.GetHeight())));
+        }
+        else
+        {
+            gRendererUtility().DrawScreenQuad();
+        }
+
         rapi.SetRenderTarget(nullptr);
     }
 

@@ -580,13 +580,14 @@ namespace te
 
     Vector<String> RCNodeForwardPass::GetDependencies(const RendererView& view)
     {
-        return { 
+        return
+        { 
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodeZPrePass::GetNodeId()
         };
     }
 
-    // ############# SKYBOX
+    // ############# SKYBOX PASS
 
     void RCNodeSkybox::Render(const RenderCompositorNodeInputs& inputs)
     {
@@ -628,7 +629,8 @@ namespace te
 
     Vector<String> RCNodeSkybox::GetDependencies(const RendererView& view)
     {
-        return { 
+        return
+        { 
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodeForwardPass::GetNodeId() 
         };
@@ -660,13 +662,14 @@ namespace te
 
     Vector<String> RCNodeForwardTransparentPass::GetDependencies(const RendererView& view)
     {
-        return { 
+        return
+        { 
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodeSkybox::GetNodeId() 
         };
     }
 
-    // ############# SCREEN SPACE
+    // ############# HALF SCENE PASS
 
     void RCNodeHalfSceneTex::Render(const RenderCompositorNodeInputs& inputs)
     {
@@ -677,15 +680,17 @@ namespace te
         inputs.CurrRenderAPI.PushMarker("[DRAW] Half Scene Tex", Color(0.74f, 0.21f, 0.32f));
 
         SPtr<Texture> input = gpuInitializationPassNode->SceneTex->Tex;
-        TextureDownsampleMat* downsampleMat = TextureDownsampleMat::Get();
         const TextureProperties& rtProps = input->GetProperties();
+        TextureDownsampleMat* downsampleMat = TextureDownsampleMat::GetVariation(rtProps.GetNumSamples());
+        TE_ASSERT_ERROR(downsampleMat != nullptr, "Failed to retrieve variation of TextureDownsampleMat material");
 
         SceneTex = gGpuResourcePool().Get(
             POOLED_RENDER_TEXTURE_DESC::Create2D(
-                rtProps.GetFormat(), 
-                rtProps.GetWidth() / 2, 
+                rtProps.GetFormat(),
+                rtProps.GetWidth() / 2,
                 rtProps.GetHeight() / 2, 
-                TU_RENDERTARGET)
+                TU_RENDERTARGET,
+                rtProps.GetNumSamples())
         );
 
         EmissiveTex = gGpuResourcePool().Get(
@@ -693,7 +698,8 @@ namespace te
                 rtProps.GetFormat(),
                 rtProps.GetWidth() / 2,
                 rtProps.GetHeight() / 2,
-                TU_RENDERTARGET)
+                TU_RENDERTARGET,
+                rtProps.GetNumSamples())
         );
 
         downsampleMat->Execute(gpuInitializationPassNode->SceneTex->Tex, 0, SceneTex->RenderTex);
@@ -711,11 +717,14 @@ namespace te
 
     Vector<String> RCNodeHalfSceneTex::GetDependencies(const RendererView& view)
     {
-        return { 
+        return 
+        { 
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId()
         };
     }
+
+    // ############# DOWN SAMPLES PASS
 
     constexpr UINT32 RCNodeSceneTexDownsamples::MAX_NUM_DOWNSAMPLES;
 
@@ -727,7 +736,7 @@ namespace te
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] Scene Tex Down Samples", Color(0.44f, 0.71f, 0.52f));
 
-        auto DownSample = [this](
+        auto DownSample = [&](
             SPtr<PooledRenderTexture> renderTex,
             SPtr<PooledRenderTexture>* output)
         {
@@ -740,17 +749,20 @@ namespace te
             AvailableDownsamples = Math::Min(MAX_NUM_DOWNSAMPLES, totalDownsampleLevels);
             output[0] = renderTex;
 
-            TextureDownsampleMat* downsampleMat = TextureDownsampleMat::Get();
             for (UINT32 i = 1; i < AvailableDownsamples; i++)
             {
                 const TextureProperties& rtProps = output[i - 1]->Tex->GetProperties();
+
+                TextureDownsampleMat* downsampleMat = TextureDownsampleMat::GetVariation(rtProps.GetNumSamples());
+                TE_ASSERT_ERROR(downsampleMat != nullptr, "Failed to retrieve variation of TextureDownsampleMat material");
 
                 output[i] = gGpuResourcePool().Get(
                     POOLED_RENDER_TEXTURE_DESC::Create2D(
                         rtProps.GetFormat(),
                         rtProps.GetWidth() / 2,
                         rtProps.GetHeight() / 2,
-                        TU_RENDERTARGET
+                        TU_RENDERTARGET,
+                        rtProps.GetNumSamples()
                     )
                 );
 
@@ -785,12 +797,16 @@ namespace te
         };
     }
 
+    // ############# DEPTH RESOLVE PASS
+
     void RCNodeResolvedSceneDepth::Render(const RenderCompositorNodeInputs& inputs)
     {
-        inputs.CurrRenderAPI.PushMarker("[DRAW] Resolve Scene Depth", Color(0.2f, 0.2f, 0.8f));
-
         const RendererViewProperties& viewProps = inputs.View.GetProperties();
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        if (gpuInitializationPassNode->DrawCallsCounter == 0)
+            return;
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Resolve Scene Depth", Color(0.2f, 0.2f, 0.8f));
 
         if (viewProps.Target.NumSamples > 1)
         {
@@ -912,25 +928,16 @@ namespace te
 
     Vector<String> RCNodeTonemapping::GetDependencies(const RendererView& view)
     {
-        Vector<String> deps = {
+        return
+        {
             RCNodeGpuInitializationPass::GetNodeId(),
             RCNodePostProcess::GetNodeId(),
-            RCNodeSSAO::GetNodeId()
+            RCNodeSSAO::GetNodeId(),
+            RCNodeMotionBlur::GetNodeId(),
+            RCNodeBloom::GetNodeId(),
+            RCNodeSSAO::GetNodeId(),
+            RCNodeGaussianDOF::GetNodeId()
         };
-
-        if(view.GetRenderSettings().MotionBlur.Enabled)
-            deps.push_back(RCNodeMotionBlur::GetNodeId());
-
-        if(view.GetRenderSettings().Bloom.Enabled)
-            deps.push_back(RCNodeBloom::GetNodeId());
-
-        if(view.GetRenderSettings().AmbientOcclusion.Enabled)
-            deps.push_back(RCNodeSSAO::GetNodeId());
-
-        if(view.GetRenderSettings().DepthOfField.Enabled)
-            deps.push_back(RCNodeGaussianDOF::GetNodeId());
-
-        return deps;
     }
 
     // ############# MOTION BLUR
@@ -1006,8 +1013,9 @@ namespace te
 
     void RCNodeFXAA::Render(const RenderCompositorNodeInputs& inputs)
     {
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
         const RenderSettings& settings = inputs.View.GetRenderSettings();
-        if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::FXAA)
+        if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::FXAA || viewProps.Target.NumSamples > 1)
             return;
 
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
@@ -1038,32 +1046,29 @@ namespace te
 
     Vector<String> RCNodeFXAA::GetDependencies(const RendererView& view)
     {
-        Vector<String> deps = {
+        return
+        {
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodePostProcess::GetNodeId(),
+            RCNodeMotionBlur::GetNodeId(),
+            RCNodeBloom::GetNodeId(),
+            RCNodeSSAO::GetNodeId(),
+            RCNodeGaussianDOF::GetNodeId(),
+            RCNodeTonemapping::GetNodeId()
         };
-
-        if(view.GetRenderSettings().MotionBlur.Enabled)
-            deps.push_back(RCNodeMotionBlur::GetNodeId());
-
-        if(view.GetRenderSettings().Bloom.Enabled)
-            deps.push_back(RCNodeBloom::GetNodeId());
-
-        if(view.GetRenderSettings().AmbientOcclusion.Enabled)
-            deps.push_back(RCNodeSSAO::GetNodeId());
-
-        if(view.GetRenderSettings().DepthOfField.Enabled)
-            deps.push_back(RCNodeGaussianDOF::GetNodeId());
-
-        return deps;
     }
 
     // ############# TAA
 
     void RCNodeTemporalAA::Render(const RenderCompositorNodeInputs& inputs)
     {
+        const RendererViewProperties& viewProps = inputs.View.GetProperties();
         const RenderSettings& settings = inputs.View.GetRenderSettings();
-        if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::TAA)
+        if (settings.AntialiasingAglorithm != AntiAliasingAlgorithm::FXAA || viewProps.Target.NumSamples > 1)
+            return;
+
+        RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
+        if (gpuInitializationPassNode->DrawCallsCounter == 0)
             return;
 
         inputs.CurrRenderAPI.PushMarker("[DRAW] TAA", Color(0.55f, 0.85f, 0.25f));
@@ -1085,30 +1090,22 @@ namespace te
 
     Vector<String> RCNodeTemporalAA::GetDependencies(const RendererView& view)
     {
-        Vector<String> deps = {
+        return
+        {
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodePostProcess::GetNodeId(),
+            RCNodeMotionBlur::GetNodeId(),
+            RCNodeBloom::GetNodeId(),
+            RCNodeSSAO::GetNodeId(),
+            RCNodeGaussianDOF::GetNodeId(),
+            RCNodeTonemapping::GetNodeId()
         };
-
-        if(view.GetRenderSettings().MotionBlur.Enabled)
-            deps.push_back(RCNodeMotionBlur::GetNodeId());
-
-        if(view.GetRenderSettings().Bloom.Enabled)
-            deps.push_back(RCNodeBloom::GetNodeId());
-
-        if(view.GetRenderSettings().AmbientOcclusion.Enabled)
-            deps.push_back(RCNodeSSAO::GetNodeId());
-
-        if(view.GetRenderSettings().DepthOfField.Enabled)
-            deps.push_back(RCNodeGaussianDOF::GetNodeId());
-
-        return deps;
     }
 
     // ############# SSAO
 
     void RCNodeSSAO::Render(const RenderCompositorNodeInputs& inputs)
-    { 
+    {
         /** Maximum valid depth range within samples in a sample set. In meters. */
         static const float DEPTH_RANGE = 1.0f;
 
@@ -1303,15 +1300,12 @@ namespace te
 
     Vector<String> RCNodeSSAO::GetDependencies(const RendererView& view)
     {
-        Vector<String> deps = {
+        return
+        {
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodePostProcess::GetNodeId(),
+            RCNodeResolvedSceneDepth::GetNodeId()
         };
-
-        if(view.GetRenderSettings().AmbientOcclusion.Enabled)
-            deps.push_back(RCNodeResolvedSceneDepth::GetNodeId());
-
-        return deps;
     }
 
     // ############# BLOOM
@@ -1355,7 +1349,7 @@ namespace te
                 inputProps.GetWidth(),
                 inputProps.GetHeight(),
                 TU_RENDERTARGET,
-                viewProps.Target.NumSamples
+                inputProps.GetNumSamples()
             )
         );
 
@@ -1365,11 +1359,14 @@ namespace te
                 inputProps.GetWidth(),
                 inputProps.GetHeight(),
                 TU_RENDERTARGET,
-                viewProps.Target.NumSamples
+                inputProps.GetNumSamples()
             )
         );
 
         GaussianBlurMat* gaussianBlur = GaussianBlurMat::GetVariation(emissiveTex->Tex->GetProperties().GetNumSamples());
+        TE_ASSERT_ERROR(gaussianBlur != nullptr, "Failed to retrieve variation of GaussianBlurMat material");
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Gaussian Blur", Color(0.65f, 0.85f, 0.45f));
 
         gaussianBlur->Execute(emissiveTex->Tex, tmpBlurOutput->RenderTex, settings.Bloom.FilterSize, settings.Bloom.MaxBlurSamples,
             settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
@@ -1377,6 +1374,8 @@ namespace te
             settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
         gaussianBlur->Execute(blurOutput->Tex, tmpBlurOutput->RenderTex, settings.Bloom.FilterSize, settings.Bloom.MaxBlurSamples,
             settings.Bloom.Tint, emissiveTex->Tex->GetProperties().GetNumSamples());
+
+        inputs.CurrRenderAPI.PopMarker();
 
         // ### Once we have our blured texture, we call our bloom material which will add this blured texture to the 
         // ### output final texture
@@ -1391,8 +1390,14 @@ namespace te
         auto& texProps = ppLastFrame->GetProperties();
 
         BloomMat* bloom = BloomMat::GetVariation(texProps.GetNumSamples());
+        TE_ASSERT_ERROR(bloom != nullptr, "Failed to retrieve variation of BloomMat material");
+
+        inputs.CurrRenderAPI.PushMarker("[DRAW] Bloom Blending", Color(0.75f, 0.65f, 0.15f));
+
         bloom->Execute(ppLastFrame, ppOutput, tmpBlurOutput->Tex,
             settings.Bloom.Intensity);
+
+        inputs.CurrRenderAPI.PopMarker();
 
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);
         inputs.CurrRenderAPI.PopMarker();
@@ -1403,15 +1408,12 @@ namespace te
 
     Vector<String> RCNodeBloom::GetDependencies(const RendererView& view)
     {
-        Vector<String> deps = {
+        return
+        {
             RCNodeGpuInitializationPass::GetNodeId(),
-            RCNodePostProcess::GetNodeId()
+            RCNodePostProcess::GetNodeId(),
+            RCNodeSceneTexDownsamples::GetNodeId()
         };
-
-        if(view.GetRenderSettings().Bloom.Enabled)
-            deps.push_back(RCNodeSceneTexDownsamples::GetNodeId());
-
-        return deps;
     }
 
     // ############# FINAL RENDER
@@ -1427,7 +1429,7 @@ namespace te
         RCNodeSSAO* SSAONode = nullptr;
 
         SPtr<Texture> input;
-        if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
+        if (viewProps.RunPostProcessing)
         {
             SSAONode = static_cast<RCNodeSSAO*>(inputs.InputNodes[7]);
 
@@ -1455,7 +1457,7 @@ namespace te
                 input = gpuInitializationPassNode->EmissiveTex->Tex;
                 break;
             case RenderOutputType::SSAO:
-                if (viewProps.RunPostProcessing)
+                if (viewProps.RunPostProcessing && inputs.View.GetSceneCamera()->GetRenderSettings()->AmbientOcclusion.Enabled)
                     input = SSAONode->Output->Tex;
                 else
                     input = gpuInitializationPassNode->SceneTex->Tex;
@@ -1475,7 +1477,7 @@ namespace te
         inputs.CurrRenderAPI.SetRenderTarget(target);
         inputs.CurrRenderAPI.SetViewport(viewProps.Target.NrmViewRect);
 
-        // If no post process is active, the only available texture is orwardPassNode->SceneTex->Tex;
+        // If no post process is active, the only available texture is gpuInitializationPassNode->SceneTex->Tex;
         if (!input)
             input = gpuInitializationPassNode->SceneTex->Tex;
 
@@ -1502,33 +1504,20 @@ namespace te
 
     Vector<String> RCNodeFinalResolve::GetDependencies(const RendererView& view)
     {
-        const RendererViewProperties& viewProps = view.GetProperties();
-
-        Vector<String> deps;
-        if (viewProps.RunPostProcessing && viewProps.Target.NumSamples == 1)
+        return
         {
-            deps.push_back(RCNodeGpuInitializationPass::GetNodeId());
-            deps.push_back(RCNodeForwardPass::GetNodeId());
-            deps.push_back(RCNodeSkybox::GetNodeId());
-            deps.push_back(RCNodeForwardTransparentPass::GetNodeId());
-            deps.push_back(RCNodePostProcess::GetNodeId());
-            deps.push_back(RCNodeFXAA::GetNodeId());
-            deps.push_back(RCNodeTemporalAA::GetNodeId());
-            deps.push_back(RCNodeSSAO::GetNodeId());
-            deps.push_back(RCNodeMotionBlur::GetNodeId());
-            deps.push_back(RCNodeBloom::GetNodeId());
-            deps.push_back(RCNodeGaussianDOF::GetNodeId());
-            deps.push_back(RCNodeTonemapping::GetNodeId());
-        }
-        else
-        {
-            deps.push_back(RCNodeGpuInitializationPass::GetNodeId());
-            deps.push_back(RCNodeForwardPass::GetNodeId());
-            deps.push_back(RCNodeSkybox::GetNodeId());
-            deps.push_back(RCNodeForwardTransparentPass::GetNodeId());
-            deps.push_back(RCNodePostProcess::GetNodeId());
-        }
-
-        return deps;
+            RCNodeGpuInitializationPass::GetNodeId(),
+            RCNodeForwardPass::GetNodeId(),
+            RCNodeSkybox::GetNodeId(),
+            RCNodeForwardTransparentPass::GetNodeId(),
+            RCNodePostProcess::GetNodeId(),
+            RCNodeFXAA::GetNodeId(),
+            RCNodeTemporalAA::GetNodeId(),
+            RCNodeSSAO::GetNodeId(),
+            RCNodeMotionBlur::GetNodeId(),
+            RCNodeBloom::GetNodeId(),
+            RCNodeGaussianDOF::GetNodeId(),
+            RCNodeTonemapping::GetNodeId()
+        };
     }
 }

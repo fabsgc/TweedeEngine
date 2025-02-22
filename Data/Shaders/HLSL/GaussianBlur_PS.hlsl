@@ -25,12 +25,13 @@ float3 SampleColor(float2 uv, uint weightIdx)
     float3 color = (float3)0;
 
 #if MSAA_COUNT > 1
+    int2 texel = trunc(uv * gSourceDimensions);
     float3 sumColor = (float3)0;
 
     [unroll]
     for(uint j = 0; j < MSAA_COUNT; j++)
     {
-        sumColor += SourceMap.Load(uv, j).rgb;
+        sumColor += SourceMap.Load(texel, j).rgb * gSampleWeights[weightIdx].rgb;
     }
 
     sumColor /= MSAA_COUNT;

@@ -1,4 +1,14 @@
-#include "Include/PostProcess.hlsli"
+struct VS_INPUT
+{
+    float3 ScreenPosition : POSITION;
+    float2 Texture : TEXCOORD0;
+};
+
+struct VS_OUTPUT
+{
+    noperspective float4 Position : SV_POSITION;
+    noperspective float2 Texture : TEXCOORD0;
+};
 
 VS_OUTPUT main( VS_INPUT IN )
 {
@@ -6,7 +16,6 @@ VS_OUTPUT main( VS_INPUT IN )
 
     OUT.Position = float4(IN.ScreenPosition, 1.0);
     OUT.Texture = IN.Texture;
-    OUT.ScreenPosition = IN.ScreenPosition.xy;
 
     return OUT;
 }

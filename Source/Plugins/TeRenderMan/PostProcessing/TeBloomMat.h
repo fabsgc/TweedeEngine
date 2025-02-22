@@ -10,6 +10,8 @@ namespace te
 {
     TE_PARAM_BLOCK_BEGIN(BloomParamDef)
         TE_PARAM_BLOCK_ENTRY(float, gIntensity)
+        TE_PARAM_BLOCK_ENTRY(float, gWidthRatio)
+        TE_PARAM_BLOCK_ENTRY(float, gHeightRatio)
     TE_PARAM_BLOCK_END
 
     extern BloomParamDef gBloomParamDef;

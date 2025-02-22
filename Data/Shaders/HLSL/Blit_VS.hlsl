@@ -6,8 +6,8 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-    float4 Position : SV_POSITION;
-    float2 Texture : TEXCOORD0;
+    noperspective float4 Position : SV_POSITION;
+    noperspective float2 Texture : TEXCOORD0;
 };
 
 VS_OUTPUT main( VS_INPUT IN )

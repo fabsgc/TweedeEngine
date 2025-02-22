@@ -1557,15 +1557,17 @@ namespace te
 
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
-        SPtr<Pass> pass = Pass::Create(passDesc);
-        SPtr<Technique> technique = Technique::Create("hlsl", { pass });
-        technique->Compile();
-
         SHADER_DESC shaderDesc;
         shaderDesc.QueueType = QueueSortType::BackToFront;
-        shaderDesc.Techniques.push_back(technique);
 
-        _shaderTextureDownsample = Shader::Create("Texture 2D Down Sample", shaderDesc);
+        Vector<ShaderVariationParam*> variationParams = {
+            te_pool_new<ShaderVariationParam>(std::forward<String>("MSAA_COUNT"), std::forward<Vector<std::any>>({ (UINT32)1, (UINT32)2, (UINT32)4, (UINT32)8 }))
+        };
+
+        FillShaderDesc(variationParams, shaderDesc);
+        List<ShaderVariation> variations = FillShaderVariations(variationParams);
+
+        _shaderTextureDownsample = InitShader(variations, shaderDesc, passDesc, "Texture 2D Down Sample");
         _builtInResources.push_back(_shaderTextureDownsample.GetUUID());
     }
 

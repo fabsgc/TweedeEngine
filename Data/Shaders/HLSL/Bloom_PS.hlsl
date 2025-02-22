@@ -3,6 +3,8 @@
 cbuffer PerFrameBuffer : register(b0)
 {
     float gIntensity;
+    float gWidthRatio;
+    float gHeightRatio;
 }
 
 // MSAA_COUNT (1, 2, 4, 8)
@@ -18,16 +20,18 @@ Texture2D EmissiveMap : register(t1);
 
 float4 main( PS_INPUT IN ) : SV_Target0
 {
-    float2 currentUV = IN.Texture;
     float4 color = (float4)0;
     float4 bloom =  (float4)0;
 
 #if MSAA_COUNT > 1
+    int2 sourceUv = trunc(IN.Texture);
+    int2 emissiveUv = trunc(float2(IN.Texture.x / gWidthRatio, IN.Texture.y / gHeightRatio));
+
     [unroll]
     for(uint i = 0; i < MSAA_COUNT; i++)
     {
-        color += SourceMap.Load(IN.Texture, i);
-        bloom += EmissiveMap.Load(IN.Texture, i);
+        color += SourceMap.Load(sourceUv, i);
+        bloom += EmissiveMap.Load(emissiveUv, i);
     }
 
     color /= MSAA_COUNT;

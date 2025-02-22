@@ -44,7 +44,17 @@ namespace te
 
         Bind();
         rapi.SetRenderTarget(destination);
-        gRendererUtility().DrawScreenQuad();
+        
+        if (_variation.GetInt("MSAA_COUNT") > 1)
+        {
+            const TextureProperties& rtProps = source->GetProperties();
+            gRendererUtility().DrawScreenQuad(Rect2(0.0f, 0.0f, static_cast<float>(rtProps.GetWidth()), static_cast<float>(rtProps.GetHeight())));
+        }
+        else
+        {
+            gRendererUtility().DrawScreenQuad();
+        }
+
         rapi.SetRenderTarget(nullptr);
     }
 
