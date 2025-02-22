@@ -965,7 +965,7 @@ namespace te
 
             if (SUCCEEDED(hr))
             {
-                outputSampleDesc->Quality = outQuality - 1;
+                outputSampleDesc->Quality = outQuality > 0 ? outQuality - 1 : 0;
                 foundValid = true;
             }
             else
