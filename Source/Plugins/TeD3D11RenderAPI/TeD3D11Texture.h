@@ -64,7 +64,7 @@ namespace te
          * Creates a staging buffer that is used as a temporary buffer for read operations on textures that do not support
          * direct reading.
          */
-        void CreateStagingBuffer();
+        bool CreateStagingBuffer();
 
         /**
          * Maps the specified texture surface for reading/writing.

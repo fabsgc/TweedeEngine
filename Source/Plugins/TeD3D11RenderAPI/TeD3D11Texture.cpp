@@ -56,11 +56,6 @@ namespace te
 
     PixelData D3D11Texture::LockImpl(GpuLockOptions options, UINT32 mipLevel, UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)
     {
-        if (_properties.GetNumSamples() > 1)
-        {
-            TE_ASSERT_ERROR(false, "Multisampled textures cannot be accessed from the CPU directly.");
-        }
-
 #if TE_PROFILING_ENABLED
         if (options == GBL_READ_ONLY || options == GBL_READ_WRITE)
         {
@@ -69,6 +64,10 @@ namespace te
 
         if (options == GBL_READ_WRITE || options == GBL_WRITE_ONLY || options == GBL_WRITE_ONLY_DISCARD || options == GBL_WRITE_ONLY_NO_OVERWRITE)
         {
+            if (_properties.GetNumSamples() > 1)
+            {
+                TE_ASSERT_ERROR(false, "Multisampled textures cannot be accessed from the CPU directly in write mode.");
+            }
             TE_INC_PROFILER_GPU(ResWrite);
         }
 #endif
@@ -215,12 +214,6 @@ namespace te
 
     void D3D11Texture::ReadDataImpl(PixelData& dest, UINT32 mipLevel, UINT32 face, UINT32 deviceIdx, UINT32 queueIdx)
     {
-        if (_properties.GetNumSamples() > 1)
-        {
-            TE_DEBUG("Multisampled textures cannot be accessed from the CPU directly.");
-            return;
-        }
-
         PixelData myData = Lock(GBL_READ_ONLY, mipLevel, face, deviceIdx, queueIdx);
         PixelUtil::BulkPixelConversion(myData, dest, std::nullopt);
         Unlock();
@@ -689,13 +682,46 @@ namespace te
         // Consider offering a flag on init that will keep this active all the time (at the cost of double memory).
         // Reading is slow operation anyway so I don't believe doing it as we are now will influence it much.
 
-        if (!_stagingBuffer)
-            CreateStagingBuffer();
-
+        if (!CreateStagingBuffer())
+        {
+            TE_DEBUG("Mapstagingbuffer failed to return a valid buffer");
+            return nullptr;
+        }
+        
         D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
         D3D11Device& device = rs->GetPrimaryDevice();
         device.LockContext();
-        device.GetImmediateContext()->CopyResource(_stagingBuffer, _tex);
+
+        const TextureProperties props = this->GetProperties();
+        if (props.GetNumSamples() > 1 && props.GetTextureType() == TextureType ::TEX_TYPE_2D)
+        {
+            D3D11_TEXTURE2D_DESC desc;
+            _2DTex->GetDesc(&desc);
+
+            desc.SampleDesc.Count = 1;
+            desc.SampleDesc.Quality = 0;
+
+            ID3D11Resource* resolvedResource = nullptr;
+
+            HRESULT hr = device.GetD3D11Device()->CreateTexture2D(&desc, nullptr, (ID3D11Texture2D**)(&resolvedResource));
+            if (FAILED(hr) || device.HasError())
+            {
+                String msg = device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, "Cannot create 2D resolved texture : " + msg);
+            }
+            else
+            {
+                device.GetImmediateContext()->ResolveSubresource(resolvedResource, 0, _tex, 0, desc.Format);
+                device.GetImmediateContext()->CopyResource(_stagingBuffer, resolvedResource);
+            }
+
+            SAFE_RELEASE(resolvedResource);
+        }
+        else
+        {
+            device.GetImmediateContext()->CopyResource(_stagingBuffer, _tex);
+        }
+
         device.UnlockContext();
 
         return Map(_stagingBuffer, flags, face, mipLevel, rowPitch, slicePitch);
@@ -731,7 +757,7 @@ namespace te
         if (device.HasError())
         {
             String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description: " + errorDescription);
+            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture: " + errorDescription);
         }
 
         if (_staticBuffer != nullptr)
@@ -747,8 +773,11 @@ namespace te
      * Creates a staging buffer that is used as a temporary buffer for read operations on textures that do not support
      * direct reading.
      */
-    void D3D11Texture::CreateStagingBuffer()
+    bool D3D11Texture::CreateStagingBuffer()
     {
+        if (_stagingBuffer)
+            return true;
+
         D3D11RenderAPI* rs = static_cast<D3D11RenderAPI*>(RenderAPI::InstancePtr());
         D3D11Device& device = rs->GetPrimaryDevice();
 
@@ -763,19 +792,31 @@ namespace te
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
             desc.Usage = D3D11_USAGE_STAGING;
 
-            device.GetD3D11Device()->CreateTexture1D(&desc, nullptr, (ID3D11Texture1D**)(&_stagingBuffer));
+            HRESULT hr = device.GetD3D11Device()->CreateTexture1D(&desc, nullptr, (ID3D11Texture1D**)(&_stagingBuffer));
+            if (FAILED(hr) || device.HasError())
+            {
+                String msg = device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, "Cannot create 1D staging texture : " + msg);
+            }
         } break;
 
         case TEX_TYPE_2D: {
             D3D11_TEXTURE2D_DESC desc;
             _2DTex->GetDesc(&desc);
 
+            desc.SampleDesc.Count = 1;
+            desc.SampleDesc.Quality = 0;
             desc.BindFlags = 0;
             desc.MiscFlags = 0;
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
             desc.Usage = D3D11_USAGE_STAGING;
 
-            device.GetD3D11Device()->CreateTexture2D(&desc, nullptr, (ID3D11Texture2D**)(&_stagingBuffer));
+            HRESULT hr = device.GetD3D11Device()->CreateTexture2D(&desc, nullptr, (ID3D11Texture2D**)(&_stagingBuffer));
+            if (FAILED(hr) || device.HasError())
+            {
+                String msg = device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, "Cannot create 2D staging texture : " + msg);
+            }
         } break;
 
         case TEX_TYPE_3D: {
@@ -787,8 +828,15 @@ namespace te
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
             desc.Usage = D3D11_USAGE_STAGING;
 
-            device.GetD3D11Device()->CreateTexture3D(&desc, nullptr, (ID3D11Texture3D**)(&_stagingBuffer));
+            HRESULT hr = device.GetD3D11Device()->CreateTexture3D(&desc, nullptr, (ID3D11Texture3D**)(&_stagingBuffer));
+            if (FAILED(hr) || device.HasError())
+            {
+                String msg = device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, "Cannot create 3D staging texture : " + msg);
+            }
         } break;
         }
+
+        return true;
     }
 }
