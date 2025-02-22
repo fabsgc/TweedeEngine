@@ -219,7 +219,7 @@ namespace te
          * Determines number of samples to use when rendering to this camera. Values larger than 1 will enable MSAA
          * rendering.
          */
-        void SetMSAACount(UINT32 count) { _MSAA = count; }
+        void SetMSAACount(UINT32 count) { _MSAA = count; _markCoreDirty(); }
 
         /** @copydoc SetMSAACount */
         UINT32 GetMSAACount() const { return _MSAA; }
