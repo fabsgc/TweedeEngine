@@ -339,23 +339,42 @@ namespace te
 
         // Antialiasing
         {
-            static ImGuiExt::ComboOptions<int> antialiasingOptions;
-            if (antialiasingOptions.Options.size() == 0)
+            static ImGuiExt::ComboOptions<int> msaaOptions;
+            if (msaaOptions.Options.size() == 0)
             {
-                antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::FXAA, "FXAA");
-                antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::TAA, "TAA");
-                antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::None, "None");
+                msaaOptions.AddOption(1, "1");
+                msaaOptions.AddOption(2, "2");
+                msaaOptions.AddOption(4, "4");
+                msaaOptions.AddOption(8, "8");
             }
 
-            if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->AntialiasingAglorithm), "##aa_option", "Antialiasing", antialiasingOptions, width))
-                hasChanged = true;
-
-            if (cameraSettings->AntialiasingAglorithm == AntiAliasingAlgorithm::TAA)
+            int msaaCount = camera->GetMSAACount();
+            if (ImGuiExt::RenderOptionCombo<int>(&msaaCount, "##msaa_option", "MSAA", msaaOptions, width))
             {
-                if (ImGuiExt::RenderOptionInt((int&)(cameraSettings->TemporalAA.JitteredPositionCount), "##taa_jittered_option", "Jittered positions", 1, 8, width))
+                camera->SetMSAACount(msaaCount);
+                hasChanged = true;
+            }
+
+            if (camera->GetMSAACount() == 1)
+            {
+                static ImGuiExt::ComboOptions<int> antialiasingOptions;
+                if (antialiasingOptions.Options.size() == 0)
+                {
+                    antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::FXAA, "FXAA");
+                    antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::TAA, "TAA");
+                    antialiasingOptions.AddOption((int)AntiAliasingAlgorithm::None, "None");
+                }
+
+                if (ImGuiExt::RenderOptionCombo<int>((int*)(&cameraSettings->AntialiasingAglorithm), "##aa_option", "Antialiasing", antialiasingOptions, width))
                     hasChanged = true;
-                if (ImGuiExt::RenderOptionFloat((cameraSettings->TemporalAA.Sharpness), "##taa_sharpness_option", "Sharpness", 0.1f, 16.0f, width))
-                    hasChanged = true;
+
+                if (cameraSettings->AntialiasingAglorithm == AntiAliasingAlgorithm::TAA)
+                {
+                    if (ImGuiExt::RenderOptionInt((int&)(cameraSettings->TemporalAA.JitteredPositionCount), "##taa_jittered_option", "Jittered positions", 1, 8, width))
+                        hasChanged = true;
+                    if (ImGuiExt::RenderOptionFloat((cameraSettings->TemporalAA.Sharpness), "##taa_sharpness_option", "Sharpness", 0.1f, 16.0f, width))
+                        hasChanged = true;
+                }
             }
         }
         ImGui::Separator();
