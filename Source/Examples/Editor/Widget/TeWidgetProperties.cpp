@@ -2512,7 +2512,7 @@ namespace te
             if (ImGuiExt::RenderOptionBool(useForLightProbes, "##renderable_properties_use_for_light_probes_option", "Use For Light Probes"))
             {
                 hasChanged = true;
-                renderable->SetReceiveShadows(useForLightProbes);
+                renderable->SetUseForLightProbes(useForLightProbes);
             }
         }
         ImGui::Separator();
