@@ -448,6 +448,7 @@ namespace te
         _viewportCamera->SetName("Viewport camera");
         _viewportCamera->SetShutterSpeed(1.0f/2000.0f);
         _viewportCamera->SetAperture(3.2f);
+        _viewportCamera->SetMSAACount(1);
 
         _viewportCameraUI = _viewportCameraSO->AddComponent<CCameraUI>();
         _viewportCameraUI->Initialize();
@@ -1595,13 +1596,13 @@ namespace te
 
         // LOAD SCRIPT
         {
-            std::filesystem::path scriptPath("Data/Scripts/FirstScript.cpp");
+            /*std::filesystem::path scriptPath("Data/Scripts/FirstScript.cpp");
 
             _script = Script::Create();
             _script->SetName("First script");
             _script->SetPath(scriptPath);
 
-            EditorResManager::Instance().Add(_script);
+            EditorResManager::Instance().Add(_script);*/
         }
 
         EditorResManager::Instance().Add<Material>(_furnitureMaterial);
