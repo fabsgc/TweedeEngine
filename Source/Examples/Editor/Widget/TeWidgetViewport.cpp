@@ -10,9 +10,6 @@
 #include "Renderer/TeRenderer.h"
 #include "Scripting/TeScriptManager.h"
 
-#include "Exporter/TeExporter.h"
-#include "Exporter/TeTextureExportOptions.h"
-
 namespace te
 {
     const float WidgetViewport::MIN_TIME_BETWEEN_UPDATE = 0.5f;
@@ -256,13 +253,6 @@ namespace te
                 ImVec2(0, 0),
                 ImVec2(1, 1)
             );
-
-            static int counter = 1;
-
-            TextureExportOptions options;
-            //gExporter().Export(texture.get(), ToString(counter) + ".jpeg", options);
-
-            counter++;
         }
     }
 

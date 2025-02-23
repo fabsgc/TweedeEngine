@@ -1427,11 +1427,13 @@ namespace te
         RCNodePostProcess* postProcessNode = static_cast<RCNodePostProcess*>(inputs.InputNodes[4]);
         RCNodeGpuInitializationPass* gpuInitializationPassNode = static_cast<RCNodeGpuInitializationPass*>(inputs.InputNodes[0]);
         RCNodeSSAO* SSAONode = nullptr;
+        RCNodeResolvedSceneDepth* resolvedDepthNode = nullptr;
 
         SPtr<Texture> input;
         if (viewProps.RunPostProcessing)
         {
             SSAONode = static_cast<RCNodeSSAO*>(inputs.InputNodes[7]);
+            resolvedDepthNode = static_cast<RCNodeResolvedSceneDepth*>(inputs.InputNodes[12]);           
 
             switch (inputs.View.GetSceneCamera()->GetRenderSettings()->OutputType)
             {
@@ -1445,7 +1447,7 @@ namespace te
                 input = gpuInitializationPassNode->NormalTex->Tex;
                 break;
             case RenderOutputType::Depth:
-                input = gpuInitializationPassNode->DepthTex->Tex;
+                input = resolvedDepthNode->Output->Tex;
                 break;
             case RenderOutputType::Velocity:
                 if(inputs.View.RequiresVelocityWrites())
@@ -1457,7 +1459,7 @@ namespace te
                 input = gpuInitializationPassNode->EmissiveTex->Tex;
                 break;
             case RenderOutputType::SSAO:
-                if (viewProps.RunPostProcessing && inputs.View.GetSceneCamera()->GetRenderSettings()->AmbientOcclusion.Enabled)
+                if (inputs.View.GetSceneCamera()->GetRenderSettings()->AmbientOcclusion.Enabled)
                     input = SSAONode->Output->Tex;
                 else
                     input = gpuInitializationPassNode->SceneTex->Tex;
@@ -1517,7 +1519,8 @@ namespace te
             RCNodeMotionBlur::GetNodeId(),
             RCNodeBloom::GetNodeId(),
             RCNodeGaussianDOF::GetNodeId(),
-            RCNodeTonemapping::GetNodeId()
+            RCNodeTonemapping::GetNodeId(),
+            RCNodeResolvedSceneDepth::GetNodeId()
         };
     }
 }

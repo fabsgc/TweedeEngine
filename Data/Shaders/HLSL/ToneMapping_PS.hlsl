@@ -35,6 +35,8 @@ float4 main( PS_INPUT IN ) : SV_Target0
         color += SourceMap.Load(uv, i);
     }
 
+    // TODO SSAO MSAA
+
     color /= MSAA_COUNT;
 #else
     color = SourceMap.Sample(Sampler, IN.Texture);
