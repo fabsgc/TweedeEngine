@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+#include "RenderAPI/TeVertexDeclaration.h"
 
 namespace te
 {
@@ -38,7 +39,7 @@ namespace te
          * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
          *						sizeof(Vector3)).
          */
-        void GetPositions(Vector3* buffer, UINT32 size);
+        bool GetPositions(Vector3* buffer, UINT32 size);
 
         /**
          * Writes the vertex positions from the provided output buffer. Data will be copied and potentially compressed to
@@ -57,7 +58,7 @@ namespace te
          * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
          *						sizeof(Vector3)).
          */
-        void GetNormals(Vector3* buffer, UINT32 size);
+        bool GetNormals(Vector3* buffer, UINT32 size);
 
         /**
          * Writes the vertex normals from the provided output buffer. Data will be copied and potentially compressed to
@@ -76,7 +77,7 @@ namespace te
          * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
          *						sizeof(Vector4)).
          */
-        void GetTangents(Vector4* buffer, UINT32 size);
+        bool GetTangents(Vector4* buffer, UINT32 size);
 
         /**
          * Writes the vertex tangents from the provided output buffer. Data will be copied and potentially compressed to
@@ -95,7 +96,7 @@ namespace te
          * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
          *						sizeof(Vector4)).
          */
-        void GetBiTangents(Vector4* buffer, UINT32 size);
+        bool GetBiTangents(Vector4* buffer, UINT32 size);
 
         /**
          * Writes the vertex bitangents from the provided output buffer. Data will be copied and potentially compressed to
@@ -114,7 +115,7 @@ namespace te
          * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
          *						sizeof(Color)).
          */
-        void GetColors(Color* buffer, UINT32 size);
+        bool GetColors(Color* buffer, UINT32 size);
 
         /**
          * Reads the vertex colors into the provided output buffer. Data will be copied and potentially uncompressed to
@@ -124,7 +125,7 @@ namespace te
          * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
          *						sizeof(Color)).
          */
-        void GetColors(Vector4* buffer, UINT32 size);
+        bool GetColors(Vector4* buffer, UINT32 size);
 
         /**
          * Writes the vertex colors from the provided output buffer. Data will be copied and potentially compressed to
@@ -152,7 +153,7 @@ namespace te
          * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
          *						sizeof(Vector2)).
          */
-        void GetUV0(Vector2* buffer, UINT32 size);
+        bool GetUV0(Vector2* buffer, UINT32 size);
 
         /**
          * Writes the first UV channel coordinates from the provided output buffer. Data will be copied and potentially
@@ -171,7 +172,7 @@ namespace te
          * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
          *						sizeof(Vector2)).
          */
-        void GetUV1(Vector2* buffer, UINT32 size);
+        bool GetUV1(Vector2* buffer, UINT32 size);
 
         /**
          * Writes the second UV channel coordinates from the provided output buffer. Data will be copied and potentially
@@ -190,7 +191,7 @@ namespace te
          * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
          *						sizeof(BoneWeight)).
          */
-        void GetBoneWeights(BoneWeight* buffer, UINT32 size);
+        bool GetBoneWeights(BoneWeight* buffer, UINT32 size);
 
         /**
          * Writes the bone weights and indices from the provided output buffer. Data will be copied and potentially
@@ -209,7 +210,7 @@ namespace te
          * @param[in]	size	Size of the pre-allocated buffer. Must be big enough to fit all contents (numVertices *
          *						sizeof(INT32)).
          */
-        void GetIndices(UINT32* buffer, UINT32 size);
+        bool GetIndices(UINT32* buffer, UINT32 size);
 
         /**
          * Writes the indices from the provided output buffer. Data will be copied and potentially compressed to fit the
@@ -222,6 +223,9 @@ namespace te
 
         /**	Returns the underlying MeshData structure. */
         SPtr<MeshData> GetData() const { return _meshData; }
+
+        /** Checks if the mesh contains data for this vertex element type */
+        bool HasElement(VertexElementSemantic vertexElement, uint32_t semanticIdx = 0);
 
         /**	Creates a new empty mesh data structure. */
         static SPtr<RendererMeshData> Create(UINT32 numVertices, UINT32 numIndices, VertexLayout layout, IndexType indexType = IT_32BIT);

@@ -1,4 +1,5 @@
 #include "Renderer/TeRendererMeshData.h"
+
 #include "RenderAPI/TeVertexDataDesc.h"
 #include "Mesh/TeMeshData.h"
 #include "Math/TeVector2.h"
@@ -22,15 +23,16 @@ namespace te
         : _meshData(meshData)
     { }
 
-    void RendererMeshData::GetPositions(Vector3* buffer, UINT32 size)
+    bool RendererMeshData::GetPositions(Vector3* buffer, UINT32 size)
     {
         if (!_meshData->GetVertexDesc()->HasElement(VES_POSITION))
-            return;
+            return false;
 
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector3) == size);
 
         _meshData->GetVertexData(VES_POSITION, buffer, size);
+        return true;
     }
 
     void RendererMeshData::SetPositions(Vector3* buffer, UINT32 size)
@@ -44,15 +46,16 @@ namespace te
         _meshData->SetVertexData(VES_POSITION, buffer, size);
     }
 
-    void RendererMeshData::GetNormals(Vector3* buffer, UINT32 size)
+    bool RendererMeshData::GetNormals(Vector3* buffer, UINT32 size)
     {
         if (!_meshData->GetVertexDesc()->HasElement(VES_NORMAL))
-            return;
+            return false;
 
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector3) == size);
 
-        _meshData->SetVertexData(VES_NORMAL, buffer, size);
+        _meshData->GetVertexData(VES_NORMAL, buffer, size);
+        return true;
     }
 
     void RendererMeshData::SetNormals(Vector3* buffer, UINT32 size)
@@ -66,15 +69,16 @@ namespace te
         _meshData->SetVertexData(VES_NORMAL, buffer, size);
     }
 
-    void RendererMeshData::GetTangents(Vector4* buffer, UINT32 size)
+    bool RendererMeshData::GetTangents(Vector4* buffer, UINT32 size)
     {
         if (!_meshData->GetVertexDesc()->HasElement(VES_TANGENT))
-            return;
+            return false;
 
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector4) == size);
 
-        _meshData->SetVertexData(VES_TANGENT, buffer, size);
+        _meshData->GetVertexData(VES_TANGENT, buffer, size);
+        return true;
     }
 
     void RendererMeshData::SetTangents(Vector4* buffer, UINT32 size)
@@ -88,15 +92,16 @@ namespace te
         _meshData->SetVertexData(VES_TANGENT, buffer, size);
     }
 
-    void RendererMeshData::GetBiTangents(Vector4* buffer, UINT32 size)
+    bool RendererMeshData::GetBiTangents(Vector4* buffer, UINT32 size)
     {
         if (!_meshData->GetVertexDesc()->HasElement(VES_BITANGENT))
-            return;
+            return false;
 
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector4) == size);
 
-        _meshData->SetVertexData(VES_BITANGENT, buffer, size);
+        _meshData->GetVertexData(VES_BITANGENT, buffer, size);
+        return true;
     }
 
     void RendererMeshData::SetBiTangents(Vector4* buffer, UINT32 size)
@@ -110,10 +115,10 @@ namespace te
         _meshData->SetVertexData(VES_BITANGENT, buffer, size);
     }
 
-    void RendererMeshData::GetColors(Color* buffer, UINT32 size)
+    bool RendererMeshData::GetColors(Color* buffer, UINT32 size)
     {
         if (!_meshData->GetVertexDesc()->HasElement(VES_COLOR, 0))
-            return;
+            return false;
 
         Vector4* colors = te_allocate<Vector4>(sizeof(Vector4) * _meshData->GetNumVertices());
         UINT32 numElements = _meshData->GetNumVertices();
@@ -130,17 +135,19 @@ namespace te
         }
 
         te_delete(colors);
+        return true;
     }
 
-    void RendererMeshData::GetColors(Vector4* buffer, UINT32 size)
+    bool RendererMeshData::GetColors(Vector4* buffer, UINT32 size)
     {
         if (!_meshData->GetVertexDesc()->HasElement(VES_COLOR))
-            return;
+            return false;
 
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector4) == size);
 
         _meshData->SetVertexData(VES_COLOR, buffer, size);
+        return true;
     }
 
     void RendererMeshData::SetColors(Color* buffer, UINT32 size)
@@ -173,15 +180,16 @@ namespace te
         _meshData->SetVertexData(VES_COLOR, buffer, size);
     }
 
-    void RendererMeshData::GetUV0(Vector2* buffer, UINT32 size)
+    bool RendererMeshData::GetUV0(Vector2* buffer, UINT32 size)
     {
         if (!_meshData->GetVertexDesc()->HasElement(VES_TEXCOORD, 0))
-            return;
+            return false;
 
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector2) == size);
 
         _meshData->GetVertexData(VES_TEXCOORD, buffer, size, 0);
+        return true;
     }
 
     void RendererMeshData::SetUV0(Vector2* buffer, UINT32 size)
@@ -195,15 +203,16 @@ namespace te
         _meshData->SetVertexData(VES_TEXCOORD, buffer, size, 0);
     }
 
-    void RendererMeshData::GetUV1(Vector2* buffer, UINT32 size)
+    bool RendererMeshData::GetUV1(Vector2* buffer, UINT32 size)
     {
         if (!_meshData->GetVertexDesc()->HasElement(VES_TEXCOORD, 1))
-            return;
+            return false;
 
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(Vector2) == size);
 
         _meshData->GetVertexData(VES_TEXCOORD, buffer, size, 1);
+        return true;
     }
 
     void RendererMeshData::SetUV1(Vector2* buffer, UINT32 size)
@@ -217,13 +226,13 @@ namespace te
         _meshData->SetVertexData(VES_TEXCOORD, buffer, size, 1);
     }
 
-    void RendererMeshData::GetBoneWeights(BoneWeight* buffer, UINT32 size)
+    bool RendererMeshData::GetBoneWeights(BoneWeight* buffer, UINT32 size)
     {
         SPtr<VertexDataDesc> vertexDesc = _meshData->GetVertexDesc();
 
         if (!vertexDesc->HasElement(VES_BLEND_WEIGHTS) ||
             !vertexDesc->HasElement(VES_BLEND_INDICES))
-            return;
+            return false;
 
         UINT32 numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(BoneWeight) == size);
@@ -253,6 +262,8 @@ namespace te
             indexPtr += stride;
             weightPtr += stride;
         }
+
+        return true;
     }
 
     void RendererMeshData::SetBoneWeights(BoneWeight* buffer, UINT32 size)
@@ -293,7 +304,7 @@ namespace te
         }
     }
 
-    void RendererMeshData::GetIndices(UINT32* buffer, UINT32 size)
+    bool RendererMeshData::GetIndices(UINT32* buffer, UINT32 size)
     {
         UINT32 indexSize = _meshData->GetIndexElementSize();
         UINT32 numIndices = _meshData->GetNumIndices();
@@ -317,6 +328,8 @@ namespace te
         {
             memcpy(buffer, _meshData->GetIndices32(), size);
         }
+
+        return true;
     }
 
     void RendererMeshData::SetIndices(UINT32* buffer, UINT32 size)
@@ -343,6 +356,11 @@ namespace te
         {
             memcpy(_meshData->GetIndices32(), buffer, size);
         }
+    }
+
+    bool RendererMeshData::HasElement(VertexElementSemantic vertexElement, uint32_t semanticIdx)
+    {
+        return _meshData->GetVertexDesc()->HasElement(vertexElement, semanticIdx);
     }
 
     SPtr<RendererMeshData> RendererMeshData::Create(UINT32 numVertices, UINT32 numIndices, VertexLayout layout, IndexType indexType)
