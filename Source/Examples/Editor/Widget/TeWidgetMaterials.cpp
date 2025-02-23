@@ -200,7 +200,7 @@ namespace te
                 // You can delete a material
                 // Be careful this feature also reset all renderables which are using this material
                 ImGui::SameLine();
-                if (ImGui::Button(ICON_FA_TIMES_CIRCLE, ImVec2(25.0f, 26.0f)))
+                if (ImGui::Button(ICON_FA_TIMES_CIRCLE, ImVec2(25.0f, 26.0f)) && materialUUID != gBuiltinResources().GetDefaultMaterial().GetUUID())
                 {
                     DeleteMaterial(_currentMaterial, materialUUID);
                 }
