@@ -224,4 +224,25 @@ namespace te
             subMesh.Mat = gBuiltinResources().GetDefaultMaterial();
         }
     }
+
+    void EditorUtils::GetComponentsFromTransform(const Transform& transform, float* matrixTranslation, float* matrixRotation, float* matrixScale)
+    {
+        Radian x, y, z;
+        transform.GetRotation().ToEulerAngles(x, y, z);
+        Vector3 position = transform.GetPosition();
+        Vector3 rotation(x.ValueDegrees(), y.ValueDegrees(), z.ValueDegrees());
+        Vector3 scale = transform.GetScale();
+
+        matrixTranslation[0] = position.x;
+        matrixTranslation[1] = position.y;
+        matrixTranslation[2] = position.z;
+
+        matrixRotation[0] = rotation.x;
+        matrixRotation[1] = rotation.y;
+        matrixRotation[2] = rotation.z;
+
+        matrixScale[0] = scale.x;
+        matrixScale[1] = scale.y;
+        matrixScale[2] = scale.z;
+    }
 }

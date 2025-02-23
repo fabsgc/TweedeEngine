@@ -17,5 +17,8 @@ namespace te
 
         /** */
         static void ApplyDefaultMaterial(HMesh& mesh);
+
+        /** */
+        static void GetComponentsFromTransform(const Transform& transform, float* matrixTranslation, float* matrixRotation, float* matrixScale);
     };
 }

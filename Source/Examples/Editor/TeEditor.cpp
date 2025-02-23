@@ -236,7 +236,7 @@ namespace te
         bool isRunning = gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game);
         if (isRunning)
         {
-            HSceneObject sphereSO = _runningSceneSO->GetSceneObject("Sphere", true);
+            HSceneObject sphereSO = _runningSceneSO->GetSceneObject("Object", true);
 
             //if(!sphereSO.Empty())
             //    sphereSO->Rotate(Vector3(0.0f, 0.5f, 0.0f), Radian(2.5f * gTime().GetFrameDelta()));
@@ -805,7 +805,9 @@ namespace te
 
         if (somethingSelected && _guizmoState == ImGuizmoState::Active && _previewViewportCamera == _viewportCamera)
         {
-            Transform transform;
+            if (!_selections.ClickedSceneObject && !_selections.ClickedComponent)
+                return;
+
             const float* proj = nullptr;
             const float* view = nullptr;
             float matrixTranslation[3];
@@ -828,12 +830,7 @@ namespace te
             projectionMatrix.GetAsFloat(proj);
 
             // Retrieves WorldMatrix
-            if (_selections.ClickedSceneObject)
-                transform = _selections.ClickedSceneObject->GetTransform();
-            else if (_selections.ClickedComponent)
-                transform = _selections.ClickedComponent->SO()->GetTransform();
-            else
-                return;
+            const Transform& transform = (_selections.ClickedSceneObject) ? _selections.ClickedSceneObject->GetTransform() : _selections.ClickedComponent->SO()->GetTransform();
 
             GetComponentsFromTransform(transform, matrixTranslation, matrixRotation, matrixScale);
             ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, &worldMatrix[0][0]);
@@ -841,6 +838,57 @@ namespace te
             // Guizmo rendering
             ImGuizmo::Manipulate(view, proj, _guizmoOperation, _guizmoMode, &worldMatrix[0][0], &deltaWorldMatrix[0][0], &snap[0]);
 
+            // Boundaries/Frustum rendering
+            if (_selections.ClickedComponent)
+            {
+                SPtr<Component> component = _selections.ClickedComponent;
+
+                switch (component->GetCoreType())
+                {
+                case CoreType::TID_CRenderable:
+                {
+                    Bounds bounds;
+                    component->CalculateBounds(bounds);
+
+                    const float* identity = nullptr;
+                    Matrix4::IDENTITY.GetAsFloat(identity);
+
+                    ImGuizmo::DrawBoundingBox(view, proj, identity, &bounds.GetBox().GetMin().x, &bounds.GetBox().GetMax().x);
+                }
+                break;
+
+                case CoreType::TID_CLight:
+                    // TODO draw bounding box
+                break;
+
+                case CoreType::TID_CCamera:
+                {
+                    HCamera camera = static_object_cast<CCamera>(component->GetHandle());
+                    const AABox bounds = camera->GetBoundingBox();
+
+                    const float near  = 1.0f;
+                    const float far   = 0.1f;
+                    const float ratio = camera->GetAspectRatio();
+                    const float width = 1.0f;
+                    const float height = width / ratio;
+                    const float fov = camera->GetHorzFOV().ValueDegrees();
+
+                    if (camera->GetProjectionType() == ProjectionType::PT_PERSPECTIVE)
+                    {
+                        //ImGuizmo::DrawPerspectiveFrustum(view, proj, &worldMatrix[0][0], near, 1.0f, width, height, fov);
+                        //ImGuizmo::DrawBoundingBox(view, proj, &worldMatrix[0][0], &bounds.GetMin().x, &bounds.GetMax().x);
+
+                        // TODO draw frustum
+                    }
+                    else
+                    {
+
+                    }
+                }
+                break;
+                }
+            }
+            
             // Transform update
             if (ImGuizmo::IsUsing())
             {
@@ -1499,8 +1547,8 @@ namespace te
         if (_furnitureMesh.IsLoaded())
             _furnitureMesh->SetName("Furniture Mesh");
         if (_zPrepassSphereMesh.IsLoaded())
-            _zPrepassSphereMesh->SetName("Sphere Mesh");
-        if (_furnitureMesh.IsLoaded())
+            _zPrepassSphereMesh->SetName("Furniture Mesh");
+        if (_skyboxTexture.IsLoaded())
             _skyboxTexture->SetName("Skybox Texture");
         if (_audioClip.IsLoaded())
             _audioClip->SetName("Audio Clip");
@@ -1565,7 +1613,7 @@ namespace te
         // ######################################################
         if (_furnitureMesh.IsLoaded() && _furnitureMaterial.IsLoaded())
         {
-            _sceneRenderableSO = SceneObject::Create("Sphere");
+            _sceneRenderableSO = SceneObject::Create("Object");
             _sceneRenderableSO->SetParent(_sceneSO);
             _renderable = _sceneRenderableSO->AddComponent<CRenderable>();
             _renderable->SetMesh(_furnitureMesh);
