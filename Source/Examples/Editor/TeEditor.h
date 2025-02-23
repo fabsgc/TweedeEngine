@@ -194,6 +194,12 @@ namespace te
         /** Enable or disable animation debug */
         void SetAnimationDebug(bool debug) { _animationDebug = debug; }
 
+        // Should we display the boundaries of the current selected object
+        bool GetDisplayBoundaries() const { return _displayBoundaries; }
+
+        // Should we display the boundaries of the current selected object
+        void SetDisplayBoundaries(bool displayBoundaries) { _displayBoundaries = displayBoundaries; }
+
         /** Create new project */
         bool NewProject(const std::filesystem::path& path);
 
@@ -303,6 +309,9 @@ namespace te
 
         // Debug animation
         bool _animationDebug;
+
+        // Display boundaries of selected objects
+        bool _displayBoundaries;
 
         // We only enable Guizmo if there is a viewport with the default camera enabled
         ImGuizmoState _guizmoState;

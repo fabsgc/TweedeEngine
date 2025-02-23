@@ -150,6 +150,7 @@ namespace te
         , _hudDirty(true)
         , _physicsDirty(true)
         , _animationDebug(true)
+        , _displayBoundaries(true)
         , _guizmoState(ImGuizmoState::Active)
         , _guizmoOperation(ImGuizmo::OPERATION::TRANSLATE)
         , _guizmoMode(ImGuizmo::MODE::WORLD)
@@ -839,7 +840,7 @@ namespace te
             ImGuizmo::Manipulate(view, proj, _guizmoOperation, _guizmoMode, &worldMatrix[0][0], &deltaWorldMatrix[0][0], &snap[0]);
 
             // Boundaries/Frustum rendering
-            if (_selections.ClickedComponent)
+            if (_selections.ClickedComponent && _displayBoundaries)
             {
                 SPtr<Component> component = _selections.ClickedComponent;
 
@@ -853,7 +854,10 @@ namespace te
                     const float* identity = nullptr;
                     Matrix4::IDENTITY.GetAsFloat(identity);
 
-                    ImGuizmo::DrawBoundingBox(view, proj, identity, &bounds.GetBox().GetMin().x, &bounds.GetBox().GetMax().x);
+                    if (!bounds.GetBox().Contains(_previewViewportCamera->GetTransform().GetPosition()))
+                    {
+                        ImGuizmo::DrawBoundingBox(view, proj, identity, &bounds.GetBox().GetMin().x, &bounds.GetBox().GetMax().x);
+                    }
                 }
                 break;
 
