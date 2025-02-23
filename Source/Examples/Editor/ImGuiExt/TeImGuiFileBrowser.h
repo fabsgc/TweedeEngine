@@ -65,6 +65,7 @@ namespace te
                 bool ImportVertexColors = true;
                 bool ForceGenNormals = false;
                 bool GenSmoothNormals = false;
+                bool ForceGenTangents = false;
                 bool ScaleSystemUnit = false;
                 float ScaleFactor = 1.0f;
                 bool ImportCollisionShape = false;

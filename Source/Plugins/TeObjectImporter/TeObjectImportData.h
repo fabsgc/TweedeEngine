@@ -32,6 +32,7 @@ namespace te
         bool ImportBlendShapes = true;
         bool ForceGenNormals = false;
         bool GenSmoothNormals = false;
+        bool ForceGenTangents = false;
         float AnimSampleRate = 1.0f / 60.0f;
         bool AnimResample = false;
         bool ReduceKeyframes = true;

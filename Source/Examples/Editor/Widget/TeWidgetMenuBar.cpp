@@ -352,6 +352,7 @@ namespace te
                 meshImportOptions.ImportVertexColors = _fileBrowser.Data.MeshParam.ImportVertexColors;
                 meshImportOptions.ForceGenNormals = _fileBrowser.Data.MeshParam.ForceGenNormals;
                 meshImportOptions.GenSmoothNormals = _fileBrowser.Data.MeshParam.GenSmoothNormals;
+                meshImportOptions.ForceGenTangents = _fileBrowser.Data.MeshParam.ForceGenTangents;
                 meshImportOptions.ScaleSystemUnit = _fileBrowser.Data.MeshParam.ScaleSystemUnit;
                 meshImportOptions.ScaleFactor = _fileBrowser.Data.MeshParam.ScaleFactor;
                 meshImportOptions.ImportCollisionShape = _fileBrowser.Data.MeshParam.ImportCollisionShape;

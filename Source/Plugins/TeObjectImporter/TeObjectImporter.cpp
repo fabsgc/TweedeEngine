@@ -100,6 +100,7 @@ namespace te
                     simpleMeshImportOptions.ImportVertexColors = false;
                     simpleMeshImportOptions.ForceGenNormals = false;
                     simpleMeshImportOptions.GenSmoothNormals = false;
+                    simpleMeshImportOptions.ForceGenTangents = false;
                     simpleMeshImportOptions.ReduceKeyFrames = false;
                     simpleMeshImportOptions.FlipUV = false;
                     simpleMeshImportOptions.LeftHanded = meshImportOptions.LeftHanded;
@@ -235,8 +236,15 @@ namespace te
         else
             removeComponentFlags |= aiComponent_TEXCOORDS;
 
-        if (!importOptions.ImportTangents)
+        if (importOptions.ImportTangents)
+        {
+            if (!importOptions.ForceGenTangents)
+                removeComponentFlags |= aiComponent_TANGENTS_AND_BITANGENTS;
+        }
+        else
+        {
             removeComponentFlags |= aiComponent_TANGENTS_AND_BITANGENTS;
+        }
 
         if (!importOptions.ImportAnimations)
             removeComponentFlags |= aiComponent_ANIMATIONS | aiComponent_BONEWEIGHTS;

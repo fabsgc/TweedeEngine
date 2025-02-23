@@ -714,6 +714,12 @@ namespace te
                         ImGui::Separator();
                     }
 
+                    if (Data.MeshParam.ImportTangents)
+                    {
+                        ImGuiExt::RenderOptionBool(Data.MeshParam.ForceGenTangents, "##file_dialog_parameters_mesh_force_gen_tangents", "Force tangents generation");
+                        ImGui::Separator();
+                    }
+
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportSkin, "##file_dialog_parameters_mesh_skin", "Import skin");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportBlendShapes, "##file_dialog_parameters_mesh_blend_shapes", "Import blend shapes");
                     ImGuiExt::RenderOptionBool(Data.MeshParam.ImportAnimations, "##file_dialog_parameters_mesh_animation", "Import animations");

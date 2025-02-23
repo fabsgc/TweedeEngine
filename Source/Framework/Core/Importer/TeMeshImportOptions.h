@@ -68,6 +68,9 @@ namespace te
         /** Determines should normals smoothed during loading */
         bool GenSmoothNormals = false;
 
+        /** Determines should be re-generated during loading */
+        bool ForceGenTangents = false;
+
         /**
          * Enables or disables keyframe reduction. Keyframe reduction will reduce the number of key-frames in an animation
          * clip by removing identical keyframes, and therefore reducing the size of the clip.
