@@ -39,8 +39,8 @@ namespace te
 
         if(FAILED(hr) || device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create rasterizer state.\nError Description: " + errorDescription);
+            String errorDescription = "Cannot create rasterizer state : " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
 #if  TE_DEBUG_MODE == TE_DEBUG_ENABLED

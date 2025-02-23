@@ -90,8 +90,8 @@ namespace te
 
         if (FAILED(hr) || d3d11rs->GetPrimaryDevice().HasError())
         {
-            String msg = d3d11rs->GetPrimaryDevice().GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create ShaderResourceView: " + msg);
+            String msg = "Cannot create ShaderResourceView: " + d3d11rs->GetPrimaryDevice().GetErrorDescription();
+            TE_ASSERT_ERROR(false, msg.c_str());
         }
 
         return srv;
@@ -144,8 +144,8 @@ namespace te
 
         if (FAILED(hr) || d3d11rs->GetPrimaryDevice().HasError())
         {
-            String msg = d3d11rs->GetPrimaryDevice().GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create UnorderedAccessView: " + msg);
+            String msg = "Cannot create UnorderedAccessView: " + d3d11rs->GetPrimaryDevice().GetErrorDescription();
+            TE_ASSERT_ERROR(false, msg.c_str());
         }
 
         return uav;

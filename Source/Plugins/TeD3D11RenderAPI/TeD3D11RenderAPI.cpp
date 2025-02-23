@@ -764,7 +764,7 @@ namespace te
 
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (_device->HasError())
-            TE_DEBUG(_device->GetErrorDescription());
+            TE_DEBUG(_device->GetErrorDescription().c_str());
 #endif
 
         TE_INC_PROFILER_GPU(NumDrawCalls);
@@ -784,8 +784,11 @@ namespace te
             _device->GetImmediateContext()->DrawIndexedInstanced(indexCount, instanceCount, startIndex, vertexOffset, 0);
 
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
-            if (_device->HasError())
-                TE_DEBUG(_device->GetErrorDescription());
+        if (_device->HasError())
+        {
+            String error = _device->GetErrorDescription();
+            TE_DEBUG(error.c_str());
+        }
 #endif
 
         TE_INC_PROFILER_GPU(NumDrawCalls);
@@ -801,7 +804,10 @@ namespace te
 
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         if (_device->HasError())
-            TE_DEBUG(_device->GetErrorDescription());
+        {
+            String error = _device->GetErrorDescription();
+            TE_DEBUG(error.c_str());
+        }
 #endif
 
         TE_INC_PROFILER_GPU(NumComputeCalls);
@@ -847,8 +853,8 @@ namespace te
         _device->GetImmediateContext()->OMSetRenderTargets(maxRenderTargets, _activeViews, depthStencilView);
         if (_device->HasError())
         {
-            String errorDescription = _device->GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Failed to setRenderTarget : " + errorDescription);
+            String errorDescription = "Failed to call SetRenderTarget : " + _device->GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
         TE_INC_PROFILER_GPU(NumRenderTargetChanges);
@@ -1036,7 +1042,8 @@ namespace te
 
         if (_device->HasError())
         {
-            TE_ASSERT_ERROR(false, "Unable to set Viewport" + _device->GetErrorDescription());
+            String error = "Unable to set Viewport" + _device->GetErrorDescription();
+            TE_ASSERT_ERROR(false, error.c_str());
         }
     }
 

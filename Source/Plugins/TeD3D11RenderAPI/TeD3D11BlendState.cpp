@@ -41,8 +41,8 @@ namespace te
 
         if(FAILED(hr) || device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create blend state. Error Description: " + errorDescription);
+            String errorDescription = "Cannot create blend state. Error Description: " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
 #if  TE_DEBUG_MODE == TE_DEBUG_ENABLED

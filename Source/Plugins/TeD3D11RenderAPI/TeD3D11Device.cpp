@@ -81,7 +81,11 @@ namespace te
                 D3D11_MESSAGE* pMessage = (D3D11_MESSAGE*)te_allocate(static_cast<UINT32>(messageLength));
                 _infoQueue->GetMessage(i, pMessage, &messageLength);
                 res = res + pMessage->pDescription + "\n";
-                res = res + ToString(pMessage->ID) + "\n";
+                res = res + "Code : + " + ToString(pMessage->ID);
+
+                if (i < numStoredMessages - 1)
+                    res = res + "\n";
+
                 te_deallocate(pMessage);
             }
         }

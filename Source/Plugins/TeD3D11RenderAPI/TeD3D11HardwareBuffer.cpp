@@ -110,8 +110,8 @@ namespace te
         HRESULT hr = device.GetD3D11Device()->CreateBuffer(&_desc, nullptr, &_D3DBuffer);
         if (FAILED(hr) || _device.HasError())
         {
-            String msg = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Cannot create D3D11 buffer: " + msg);
+            String msg = "Cannot create D3D11 buffer : " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, msg.c_str());
         }
 
 #if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
@@ -214,8 +214,8 @@ namespace te
 
             if (FAILED(hr) || _device.HasError())
             {
-                String msg = _device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Error calling Map: " + msg);
+                String msg = "Error calling Map : " + _device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, msg.c_str());
             }
 
             return static_cast<void*>(static_cast<char*>(mappedSubResource.pData) + offset);
@@ -282,8 +282,8 @@ namespace te
 
             if (_device.HasError())
             {
-                String errorDescription = _device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Cannot copy D3D11 resource\nError Description: " + errorDescription);
+                String errorDescription = "Cannot copy D3D11 resource : " + _device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, errorDescription.c_str());
             }
         }
         else
@@ -304,8 +304,8 @@ namespace te
 
             if (_device.HasError())
             {
-                String errorDescription = _device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Cannot copy D3D11 subresource region\nError Description: " + errorDescription);
+                String errorDescription = "Cannot copy D3D11 subresource region : " + _device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, errorDescription.c_str());
             }
         }
     }

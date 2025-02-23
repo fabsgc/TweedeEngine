@@ -165,7 +165,8 @@ namespace te
 
         if (FAILED(hr) || device.HasError())
         {
-            TE_ASSERT_ERROR(false, "Unable to set D3D11 vertex declaration" + device.GetErrorDescription());
+            String msg = "Unable to set D3D11 vertex declaration" + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, msg.c_str());
         }
 
 #if  TE_DEBUG_MODE == TE_DEBUG_ENABLED
@@ -188,9 +189,10 @@ namespace te
     {
         if (!_warningShown)
         {
-            TE_DEBUG("Input layout buffer is full, pruning last " + ToString(NUM_ELEMENTS_TO_PRUNE) + "elements. This is probably okay " +
+            String msg = "Input layout buffer is full, pruning last " + ToString(NUM_ELEMENTS_TO_PRUNE) + "elements. This is probably okay " +
                 "unless you are creating a massive amount of input layouts as they will get re-created every frame. "
-                "In that case you should increase the layout buffer size. This warning won't be shown again.");
+                "In that case you should increase the layout buffer size. This warning won't be shown again.";
+            TE_DEBUG(msg.c_str());
 
             _warningShown = true;
         }

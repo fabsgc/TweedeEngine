@@ -203,8 +203,8 @@ namespace te
 
                 if (device.HasError())
                 {
-                    String errorDescription = device.GetErrorDescription();
-                    TE_ASSERT_ERROR(false, "D3D11 device cannot copy subresource\nError Description: " + errorDescription);
+                    String errorDescription = "D3D11 device cannot copy subresource : " + device.GetErrorDescription();
+                    TE_ASSERT_ERROR(false, errorDescription.c_str());
                 }
             }
 
@@ -260,8 +260,8 @@ namespace te
 
                 if (device.HasError())
                 {
-                    String errorDescription = device.GetErrorDescription();
-                    TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description: " + errorDescription);
+                    String errorDescription = "D3D11 device cannot map texture : " + device.GetErrorDescription();
+                    TE_ASSERT_ERROR(false, errorDescription.c_str());
                 }
 
                 TE_INC_PROFILER_GPU(ResWrite);
@@ -347,16 +347,16 @@ namespace te
         // Check result and except if failed
         if (FAILED(hr) || device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Error creating texture\nError Description: " + errorDescription);
+            String errorDescription = "Error creating texture " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
         hr = _1DTex->QueryInterface(__uuidof(ID3D11Resource), (void**)&_tex);
 
         if (FAILED(hr) || device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description: " + errorDescription);
+            String errorDescription = "Can't get base texture " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
         _1DTex->GetDesc(&desc);
@@ -479,23 +479,24 @@ namespace te
         // Check result and except if failed
         if (FAILED(hr) || device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Error creating texture\nError Description: " + errorDescription);
+            String errorDescription = "Error creating texture " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
         hr = _2DTex->QueryInterface(__uuidof(ID3D11Resource), (void**)&_tex);
 
         if (FAILED(hr) || device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description: " + errorDescription);
+            String errorDescription = "Can't get base texture " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
         _2DTex->GetDesc(&desc);
 
         if (numMips != (desc.MipLevels - 1))
         {
-            TE_ASSERT_ERROR(false, "Driver returned different number of mip maps than requested. Requested: " + ToString(numMips) + ". Got: " + ToString(desc.MipLevels - 1) + ".");
+            String error = "Driver returned different number of mip maps than requested. Requested: " + ToString(numMips) + ". Got: " + ToString(desc.MipLevels - 1) + ".";
+            TE_ASSERT_ERROR(false, error.c_str());
         }
 
         _DXGIFormat = desc.Format;
@@ -589,16 +590,16 @@ namespace te
         // Check result and except if failed
         if (FAILED(hr) || device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Error creating texture\nError Description: " + errorDescription);
+            String errorDescription = "Error creating texture " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
         hr = _3DTex->QueryInterface(__uuidof(ID3D11Resource), (void**)&_tex);
 
         if (FAILED(hr) || device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "Can't get base texture\nError Description: " + errorDescription);
+            String errorDescription = "Can't get base texture " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
         // Create texture view
@@ -650,8 +651,8 @@ namespace te
 
         if (device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture\nError Description: " + errorDescription);
+            String errorDescription = "D3D11 device cannot map texture " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
         rowPitch = pMappedResource.RowPitch;
@@ -671,8 +672,8 @@ namespace te
 
         if (device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "D3D11 device unmap resource\nError Description: " + errorDescription);
+            String errorDescription = "D3D11 device unmap resource " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
     }
 
@@ -706,8 +707,8 @@ namespace te
             HRESULT hr = device.GetD3D11Device()->CreateTexture2D(&desc, nullptr, (ID3D11Texture2D**)(&resolvedResource));
             if (FAILED(hr) || device.HasError())
             {
-                String msg = device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Cannot create 2D resolved texture : " + msg);
+                String msg = "Cannot create 2D resolved texture : " + device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, msg);
             }
             else
             {
@@ -756,8 +757,8 @@ namespace te
 
         if (device.HasError())
         {
-            String errorDescription = device.GetErrorDescription();
-            TE_ASSERT_ERROR(false, "D3D11 device cannot map texture: " + errorDescription);
+            String errorDescription = "D3D11 device cannot map texture : " + device.GetErrorDescription();
+            TE_ASSERT_ERROR(false, errorDescription.c_str());
         }
 
         if (_staticBuffer != nullptr)
@@ -795,8 +796,8 @@ namespace te
             HRESULT hr = device.GetD3D11Device()->CreateTexture1D(&desc, nullptr, (ID3D11Texture1D**)(&_stagingBuffer));
             if (FAILED(hr) || device.HasError())
             {
-                String msg = device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Cannot create 1D staging texture : " + msg);
+                String msg = "Cannot create 1D staging texture : " + device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, msg.c_str());
             }
         } break;
 
@@ -814,8 +815,8 @@ namespace te
             HRESULT hr = device.GetD3D11Device()->CreateTexture2D(&desc, nullptr, (ID3D11Texture2D**)(&_stagingBuffer));
             if (FAILED(hr) || device.HasError())
             {
-                String msg = device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Cannot create 2D staging texture : " + msg);
+                String msg = "Cannot create 2D staging texture : " + device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, msg.c_str());
             }
         } break;
 
@@ -831,8 +832,8 @@ namespace te
             HRESULT hr = device.GetD3D11Device()->CreateTexture3D(&desc, nullptr, (ID3D11Texture3D**)(&_stagingBuffer));
             if (FAILED(hr) || device.HasError())
             {
-                String msg = device.GetErrorDescription();
-                TE_ASSERT_ERROR(false, "Cannot create 3D staging texture : " + msg);
+                String msg = "Cannot create 3D staging texture : " + device.GetErrorDescription();
+                TE_ASSERT_ERROR(false, msg.c_str());
             }
         } break;
         }
