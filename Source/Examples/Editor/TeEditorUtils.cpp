@@ -89,6 +89,8 @@ namespace te
                 subMesh.Mat = material;
                 createdMaterials[subMesh.MaterialName] = material;
 
+                EditorResManager::Instance().Add<Material>(material);
+
                 if (subMesh.MatProperties.UseBaseColorMap)
                 {
                     tasks.push_back(Task::Create(subMesh.MaterialName,
