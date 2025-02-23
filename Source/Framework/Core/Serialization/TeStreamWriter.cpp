@@ -7,7 +7,7 @@ namespace te
 
     void StreamWriter::WriteBuffer(const UINT8* buffer, size_t size)
     {
-        WriteData(reinterpret_cast<const UINT8*>(size), sizeof(size_t));
+        WriteData(reinterpret_cast<const UINT8*>(&size), sizeof(size_t));
         WriteData(reinterpret_cast<const UINT8*>(buffer), size);
     }
 
