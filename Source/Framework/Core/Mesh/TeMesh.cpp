@@ -7,6 +7,7 @@
 #include "RenderAPI/TeVertexDataDesc.h"
 #include "Resources/TeResourceManager.h"
 #include "TeCorePrerequisites.h"
+#include "Renderer/TeRendererMeshData.h"
 
 namespace te
 {
@@ -522,11 +523,86 @@ namespace te
         Resource::Serialize(serializer);
 
         nlohmann::json document;
+        SPtr<RendererMeshData> meshData = RendererMeshData::Create(_CPUData);
 
         _properties.ExportJson(document["properties"]);
+        document["usage"] = static_cast<uint32_t>(_usage);
+        document["indexType"] = static_cast<uint32_t>(_indexType);
+        document["deviceMask"] = static_cast<uint32_t>(_deviceMask);
+        document["vertexLayout"] = {
+            { "VES_POSITION", meshData->HasElement(VertexElementSemantic::VES_POSITION) },
+            { "VES_BLEND_WEIGHTS", meshData->HasElement(VertexElementSemantic::VES_BLEND_WEIGHTS) },
+            { "VES_BLEND_INDICES", meshData->HasElement(VertexElementSemantic::VES_BLEND_INDICES) },
+            { "VES_NORMAL", meshData->HasElement(VertexElementSemantic::VES_NORMAL) },
+            { "VES_COLOR", meshData->HasElement(VertexElementSemantic::VES_COLOR) },
+            { "VES_TEXCOORD0", meshData->HasElement(VertexElementSemantic::VES_TEXCOORD) },
+            { "VES_TEXCOORD1", meshData->HasElement(VertexElementSemantic::VES_TEXCOORD, 1) },
+            { "VES_BITANGENT", meshData->HasElement(VertexElementSemantic::VES_BITANGENT) },
+            { "VES_TANGENT", meshData->HasElement(VertexElementSemantic::VES_TANGENT) }
+        };
 
         String dump = document.dump();
         serializer->WriteString(dump);
+
+        const uint32_t vertexCount = _properties.GetNumVertices();
+
+        if (meshData->HasElement(VertexElementSemantic::VES_POSITION))
+        {
+            Vector3* positions = te_newN<Vector3>(vertexCount);
+            meshData->GetPositions(positions, vertexCount * sizeof(Vector3));
+            serializer->WriteBuffer((UINT8*)positions, vertexCount * sizeof(Vector3));
+        }
+
+        if (meshData->HasElement(VertexElementSemantic::VES_BLEND_WEIGHTS) && meshData->HasElement(VertexElementSemantic::VES_BLEND_INDICES))
+        {
+            BoneWeight* boneWeights = te_newN<BoneWeight>(vertexCount);
+            meshData->GetBoneWeights(boneWeights, vertexCount * sizeof(BoneWeight));
+            serializer->WriteBuffer((UINT8*)boneWeights, vertexCount * sizeof(BoneWeight));
+        }
+
+        if (meshData->HasElement(VertexElementSemantic::VES_NORMAL))
+        {
+            Vector3* normals = te_newN<Vector3>(vertexCount);
+            meshData->GetNormals(normals, vertexCount * sizeof(Vector3));
+            serializer->WriteBuffer((UINT8*)normals, vertexCount * sizeof(Vector3));
+        }
+
+        if (meshData->HasElement(VertexElementSemantic::VES_COLOR))
+        {
+            Vector4* colors = te_newN<Vector4>(vertexCount);
+            meshData->GetColors(colors, vertexCount * sizeof(Vector4));
+            serializer->WriteBuffer((UINT8*)colors, vertexCount * sizeof(Vector4));
+        }
+
+        if (meshData->HasElement(VertexElementSemantic::VES_TEXCOORD))
+        {
+            Vector2* texCoords = te_newN<Vector2>(vertexCount);
+            meshData->GetUV0(texCoords, vertexCount * sizeof(Vector2));
+            serializer->WriteBuffer((UINT8*)texCoords, vertexCount * sizeof(Vector2));
+        }
+
+        if (meshData->HasElement(VertexElementSemantic::VES_TEXCOORD, 1))
+        {
+            Vector2* texCoords = te_newN<Vector2>(vertexCount);
+            meshData->GetUV1(texCoords, vertexCount * sizeof(Vector2));
+            serializer->WriteBuffer((UINT8*)texCoords, vertexCount * sizeof(Vector2));
+        }
+
+        if (meshData->HasElement(VertexElementSemantic::VES_BITANGENT))
+        {
+            Vector4* tangents = te_newN<Vector4>(vertexCount);
+            meshData->GetBiTangents(tangents, vertexCount * sizeof(Vector4));
+            serializer->WriteBuffer((UINT8*)tangents, vertexCount * sizeof(Vector4));
+        }
+
+        if (meshData->HasElement(VertexElementSemantic::VES_TANGENT))
+        {
+            Vector4* tangents = te_newN<Vector4>(vertexCount);
+            meshData->GetTangents(tangents, vertexCount * sizeof(Vector4));
+            serializer->WriteBuffer((UINT8*)tangents, vertexCount * sizeof(Vector4));
+        }
+
+        // TODO Handle Big Endian
 
         // TODO serialization
     }
