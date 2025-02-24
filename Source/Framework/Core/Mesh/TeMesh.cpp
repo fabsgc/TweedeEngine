@@ -545,6 +545,14 @@ namespace te
         serializer->WriteString(dump);
 
         const uint32_t vertexCount = _properties.GetNumVertices();
+        const uint32_t indexCount = _properties.GetNumIndices();
+
+        {
+            uint32_t* indices = te_newN<uint32_t>(indexCount);
+            meshData->GetIndices(indices, indexCount * sizeof(uint32_t));
+            serializer->WriteBuffer((uint8_t*)indices, indexCount * sizeof(uint32_t));
+            te_deleteN<uint32_t>(indices, indexCount);
+        }
 
         if (meshData->HasElement(VertexElementSemantic::VES_POSITION))
         {
@@ -641,18 +649,22 @@ namespace te
         if (document["vertexLayout"]["VES_TANGENT"]) { layout |= static_cast<uint32_t>(VertexLayout::Tangent); }
 
         const SPtr<RendererMeshData> rendererMeshData = RendererMeshData::Create(object->_properties.GetNumVertices(), object->_properties.GetNumIndices(), static_cast<VertexLayout>(layout), object->_indexType);
-
-        object->_CPUData = rendererMeshData->GetData();
-        object->_vertexDesc = rendererMeshData->GetData()->GetVertexDesc();
-        object->_skeleton = nullptr;
-
         const uint32_t vertexCount = object->_properties.GetNumVertices();
+        const uint32_t indexCount = object->_properties.GetNumIndices();
+
+        {
+            uint32_t* indices = nullptr;
+            deserializer->ReadBuffer((uint8_t**)&indices, 0);
+            rendererMeshData->SetIndices(indices, sizeof(uint32_t) * indexCount);
+            te_deleteN<uint32_t>(indices, indexCount);
+        }
 
         if (rendererMeshData->HasElement(VertexElementSemantic::VES_POSITION))
         {
             Vector3* positions = nullptr;
             deserializer->ReadBuffer((uint8_t**)&positions, 0);
             rendererMeshData->SetPositions(positions, vertexCount * sizeof(Vector3));
+            te_deleteN<Vector3>(positions, vertexCount);
         }
 
         if (rendererMeshData->HasElement(VertexElementSemantic::VES_BLEND_WEIGHTS) && rendererMeshData->HasElement(VertexElementSemantic::VES_BLEND_INDICES))
@@ -660,6 +672,7 @@ namespace te
             BoneWeight* boneWeights = nullptr;
             deserializer->ReadBuffer((uint8_t**)&boneWeights, 0);
             rendererMeshData->SetBoneWeights(boneWeights, vertexCount * sizeof(BoneWeight));
+            te_deleteN<BoneWeight>(boneWeights, vertexCount);
         }
 
         if (rendererMeshData->HasElement(VertexElementSemantic::VES_NORMAL))
@@ -667,6 +680,7 @@ namespace te
             Vector3* normals = nullptr;
             deserializer->ReadBuffer((uint8_t**)&normals, 0);
             rendererMeshData->SetNormals(normals, vertexCount * sizeof(Vector3));
+            te_deleteN<Vector3>(normals, vertexCount);
         }
 
         if (rendererMeshData->HasElement(VertexElementSemantic::VES_COLOR))
@@ -674,6 +688,7 @@ namespace te
             Vector4* colors = nullptr;
             deserializer->ReadBuffer((uint8_t**)&colors, 0);
             rendererMeshData->SetColors(colors, vertexCount * sizeof(Vector4));
+            te_deleteN<Vector4>(colors, vertexCount);
         }
 
         if (rendererMeshData->HasElement(VertexElementSemantic::VES_TEXCOORD))
@@ -681,6 +696,7 @@ namespace te
             Vector2* texCoords = nullptr;
             deserializer->ReadBuffer((uint8_t**)&texCoords, 0);
             rendererMeshData->SetUV0(texCoords, vertexCount * sizeof(Vector2));
+            te_deleteN<Vector2>(texCoords, vertexCount);
         }
 
         if (rendererMeshData->HasElement(VertexElementSemantic::VES_TEXCOORD, 1))
@@ -688,6 +704,7 @@ namespace te
             Vector2* texCoords = nullptr;
             deserializer->ReadBuffer((uint8_t**)&texCoords, 0);
             rendererMeshData->SetUV1(texCoords, vertexCount * sizeof(Vector2));
+            te_deleteN<Vector2>(texCoords, vertexCount);
         }
 
         if (rendererMeshData->HasElement(VertexElementSemantic::VES_BITANGENT))
@@ -695,6 +712,7 @@ namespace te
             Vector4* tangents = nullptr;
             deserializer->ReadBuffer((uint8_t**)&tangents, 0);
             rendererMeshData->SetBiTangents(tangents, vertexCount * sizeof(Vector4));
+            te_deleteN<Vector4>(tangents, vertexCount);
         }
 
         if (rendererMeshData->HasElement(VertexElementSemantic::VES_TANGENT))
@@ -702,7 +720,13 @@ namespace te
             Vector4* tangents = nullptr;
             deserializer->ReadBuffer((uint8_t**)&tangents, 0);
             rendererMeshData->SetTangents(tangents, vertexCount * sizeof(Vector4));
+            te_deleteN<Vector4>(tangents, vertexCount);
         }
+
+        object->_CPUData = rendererMeshData->GetData();
+        object->_tempInitialMeshData = rendererMeshData->GetData();
+        object->_vertexDesc = rendererMeshData->GetData()->GetVertexDesc();
+        object->_skeleton = nullptr;
 
         object->Initialize();
 
