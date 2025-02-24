@@ -352,10 +352,9 @@ namespace te
     SPtr<Skeleton> Skeleton::CreateEmpty()
     {
         Skeleton* rawPtr = new (te_allocate<Skeleton>()) Skeleton();
-
         SPtr<Skeleton> newSkeleton = te_core_ptr<Skeleton>(rawPtr);
         newSkeleton->SetThisPtr(newSkeleton);
-        newSkeleton->Initialize();
+
         return newSkeleton;
     }
 
