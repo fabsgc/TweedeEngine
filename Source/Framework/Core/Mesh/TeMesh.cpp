@@ -550,61 +550,67 @@ namespace te
         {
             Vector3* positions = te_newN<Vector3>(vertexCount);
             meshData->GetPositions(positions, vertexCount * sizeof(Vector3));
-            serializer->WriteBuffer((UINT8*)positions, vertexCount * sizeof(Vector3));
+            serializer->WriteBuffer((uint8_t*)positions, vertexCount * sizeof(Vector3));
+            te_deleteN<Vector3>(positions, vertexCount);
         }
 
         if (meshData->HasElement(VertexElementSemantic::VES_BLEND_WEIGHTS) && meshData->HasElement(VertexElementSemantic::VES_BLEND_INDICES))
         {
             BoneWeight* boneWeights = te_newN<BoneWeight>(vertexCount);
             meshData->GetBoneWeights(boneWeights, vertexCount * sizeof(BoneWeight));
-            serializer->WriteBuffer((UINT8*)boneWeights, vertexCount * sizeof(BoneWeight));
+            serializer->WriteBuffer((uint8_t*)boneWeights, vertexCount * sizeof(BoneWeight));
+            te_deleteN<BoneWeight>(boneWeights, vertexCount);
         }
 
         if (meshData->HasElement(VertexElementSemantic::VES_NORMAL))
         {
             Vector3* normals = te_newN<Vector3>(vertexCount);
             meshData->GetNormals(normals, vertexCount * sizeof(Vector3));
-            serializer->WriteBuffer((UINT8*)normals, vertexCount * sizeof(Vector3));
+            serializer->WriteBuffer((uint8_t*)normals, vertexCount * sizeof(Vector3));
+            te_deleteN<Vector3>(normals, vertexCount);
         }
 
         if (meshData->HasElement(VertexElementSemantic::VES_COLOR))
         {
             Vector4* colors = te_newN<Vector4>(vertexCount);
             meshData->GetColors(colors, vertexCount * sizeof(Vector4));
-            serializer->WriteBuffer((UINT8*)colors, vertexCount * sizeof(Vector4));
+            serializer->WriteBuffer((uint8_t*)colors, vertexCount * sizeof(Vector4));
+            te_deleteN<Vector4>(colors, vertexCount);
         }
 
         if (meshData->HasElement(VertexElementSemantic::VES_TEXCOORD))
         {
             Vector2* texCoords = te_newN<Vector2>(vertexCount);
             meshData->GetUV0(texCoords, vertexCount * sizeof(Vector2));
-            serializer->WriteBuffer((UINT8*)texCoords, vertexCount * sizeof(Vector2));
+            serializer->WriteBuffer((uint8_t*)texCoords, vertexCount * sizeof(Vector2));
+            te_deleteN<Vector2>(texCoords, vertexCount);
         }
 
         if (meshData->HasElement(VertexElementSemantic::VES_TEXCOORD, 1))
         {
             Vector2* texCoords = te_newN<Vector2>(vertexCount);
             meshData->GetUV1(texCoords, vertexCount * sizeof(Vector2));
-            serializer->WriteBuffer((UINT8*)texCoords, vertexCount * sizeof(Vector2));
+            serializer->WriteBuffer((uint8_t*)texCoords, vertexCount * sizeof(Vector2));
+            te_deleteN<Vector2>(texCoords, vertexCount);
         }
 
         if (meshData->HasElement(VertexElementSemantic::VES_BITANGENT))
         {
             Vector4* tangents = te_newN<Vector4>(vertexCount);
             meshData->GetBiTangents(tangents, vertexCount * sizeof(Vector4));
-            serializer->WriteBuffer((UINT8*)tangents, vertexCount * sizeof(Vector4));
+            serializer->WriteBuffer((uint8_t*)tangents, vertexCount * sizeof(Vector4));
+            te_deleteN<Vector4>(tangents, vertexCount);
         }
 
         if (meshData->HasElement(VertexElementSemantic::VES_TANGENT))
         {
             Vector4* tangents = te_newN<Vector4>(vertexCount);
             meshData->GetTangents(tangents, vertexCount * sizeof(Vector4));
-            serializer->WriteBuffer((UINT8*)tangents, vertexCount * sizeof(Vector4));
+            serializer->WriteBuffer((uint8_t*)tangents, vertexCount * sizeof(Vector4));
+            te_deleteN<Vector4>(tangents, vertexCount);
         }
 
-        // TODO Handle Big Endian
-
-        // TODO serialization
+        // TODO Serialization (Skeleton)
     }
 
     void Mesh::Deserialize(StreamReader* deserializer, Mesh* object)
@@ -614,9 +620,93 @@ namespace te
 
         Resource::Deserialize(deserializer, object);
 
-        // TODO Serialization
+        String dump;
+        deserializer->ReadString(dump);
+        nlohmann::json document = nlohmann::json::parse(dump);
 
-        //object->Initialize();
+        object->_properties = MeshProperties::ImportJson(document["properties"]);
+        object->_usage = static_cast<uint32_t>(document["usage"]);
+        object->_indexType = static_cast<IndexType>(document["indexType"]);
+        object->_deviceMask = static_cast<GpuDeviceFlags>(document["deviceMask"]);
+
+        uint32_t layout = 0;
+
+        if (document["vertexLayout"]["VES_POSITION"]) { layout |= static_cast<uint32_t>(VertexLayout::Position); }
+        if (document["vertexLayout"]["VES_BLEND_WEIGHTS"]) { layout |= static_cast<uint32_t>(VertexLayout::BoneWeights); }
+        if (document["vertexLayout"]["VES_NORMAL"]) { layout |= static_cast<uint32_t>(VertexLayout::Normal); }
+        if (document["vertexLayout"]["VES_COLOR"]) { layout |= static_cast<uint32_t>(VertexLayout::Color); }
+        if (document["vertexLayout"]["VES_TEXCOORD0"]) { layout |= static_cast<uint32_t>(VertexLayout::UV0); }
+        if (document["vertexLayout"]["VES_TEXCOORD1"]) { layout |= static_cast<uint32_t>(VertexLayout::UV1); }
+        if (document["vertexLayout"]["VES_BITANGENT"]) { layout |= static_cast<uint32_t>(VertexLayout::BiTangent); }
+        if (document["vertexLayout"]["VES_TANGENT"]) { layout |= static_cast<uint32_t>(VertexLayout::Tangent); }
+
+        const SPtr<RendererMeshData> rendererMeshData = RendererMeshData::Create(object->_properties.GetNumVertices(), object->_properties.GetNumIndices(), static_cast<VertexLayout>(layout), object->_indexType);
+
+        object->_CPUData = rendererMeshData->GetData();
+        object->_vertexDesc = rendererMeshData->GetData()->GetVertexDesc();
+        object->_skeleton = nullptr;
+
+        const uint32_t vertexCount = object->_properties.GetNumVertices();
+
+        if (rendererMeshData->HasElement(VertexElementSemantic::VES_POSITION))
+        {
+            Vector3* positions = nullptr;
+            deserializer->ReadBuffer((uint8_t**)&positions, 0);
+            rendererMeshData->SetPositions(positions, vertexCount * sizeof(Vector3));
+        }
+
+        if (rendererMeshData->HasElement(VertexElementSemantic::VES_BLEND_WEIGHTS) && rendererMeshData->HasElement(VertexElementSemantic::VES_BLEND_INDICES))
+        {
+            BoneWeight* boneWeights = nullptr;
+            deserializer->ReadBuffer((uint8_t**)&boneWeights, 0);
+            rendererMeshData->SetBoneWeights(boneWeights, vertexCount * sizeof(BoneWeight));
+        }
+
+        if (rendererMeshData->HasElement(VertexElementSemantic::VES_NORMAL))
+        {
+            Vector3* normals = nullptr;
+            deserializer->ReadBuffer((uint8_t**)&normals, 0);
+            rendererMeshData->SetNormals(normals, vertexCount * sizeof(Vector3));
+        }
+
+        if (rendererMeshData->HasElement(VertexElementSemantic::VES_COLOR))
+        {
+            Vector4* colors = nullptr;
+            deserializer->ReadBuffer((uint8_t**)&colors, 0);
+            rendererMeshData->SetColors(colors, vertexCount * sizeof(Vector4));
+        }
+
+        if (rendererMeshData->HasElement(VertexElementSemantic::VES_TEXCOORD))
+        {
+            Vector2* texCoords = nullptr;
+            deserializer->ReadBuffer((uint8_t**)&texCoords, 0);
+            rendererMeshData->SetUV0(texCoords, vertexCount * sizeof(Vector2));
+        }
+
+        if (rendererMeshData->HasElement(VertexElementSemantic::VES_TEXCOORD, 1))
+        {
+            Vector2* texCoords = nullptr;
+            deserializer->ReadBuffer((uint8_t**)&texCoords, 0);
+            rendererMeshData->SetUV1(texCoords, vertexCount * sizeof(Vector2));
+        }
+
+        if (rendererMeshData->HasElement(VertexElementSemantic::VES_BITANGENT))
+        {
+            Vector4* tangents = nullptr;
+            deserializer->ReadBuffer((uint8_t**)&tangents, 0);
+            rendererMeshData->SetBiTangents(tangents, vertexCount * sizeof(Vector4));
+        }
+
+        if (rendererMeshData->HasElement(VertexElementSemantic::VES_TANGENT))
+        {
+            Vector4* tangents = nullptr;
+            deserializer->ReadBuffer((uint8_t**)&tangents, 0);
+            rendererMeshData->SetTangents(tangents, vertexCount * sizeof(Vector4));
+        }
+
+        object->Initialize();
+
+        // TODO Serialization (skeleton)
     }
 
     ZPrepassMesh::ZPrepassMesh()
