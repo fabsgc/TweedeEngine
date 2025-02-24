@@ -23,7 +23,7 @@ namespace te
     const String EditorUtils::COPY_BINDING = "Copy";
     const String EditorUtils::PASTE_BINDING = "Paste";
 
-    void EditorUtils::ImportMeshMaterials(HMesh& mesh, bool SRGB)
+    void EditorUtils::ImportMeshMaterials(HMesh& mesh, bool importTextures, bool SRGB)
     {
         UnorderedMap<String, HMaterial> createdMaterials;
         bool notAllLoaded = false;
@@ -91,125 +91,131 @@ namespace te
 
                 EditorResManager::Instance().Add<Material>(material);
 
-                if (subMesh.MatProperties.UseBaseColorMap)
+                if (importTextures)
                 {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseBaseColorMap, "BaseColorMap", 
-                        subMesh.MatTextures.BaseColorMap, createdMaterials[subMesh.MaterialName], SRGB, false); }));
-                }
-                if (subMesh.MatProperties.UseMetallicMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseMetallicMap, "MetallicMap", 
-                        subMesh.MatTextures.MetallicMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseRoughnessMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseRoughnessMap, "RoughnessMap", 
-                        subMesh.MatTextures.RoughnessMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseMetallicRoughnessMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseMetallicRoughnessMap, "MetallicRoughnessMap", 
-                        subMesh.MatTextures.MetallicRoughnessMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseReflectanceMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseReflectanceMap, "ReflectanceMap", 
-                        subMesh.MatTextures.ReflectanceMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseOcclusionMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseOcclusionMap, "OcclusionMap", 
-                        subMesh.MatTextures.OcclusionMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseEmissiveMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseEmissiveMap, "EmissiveMap", 
-                        subMesh.MatTextures.EmissiveMap, createdMaterials[subMesh.MaterialName], SRGB, false); }));
-                }
-                if (subMesh.MatProperties.UseSheenColorMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseSheenColorMap, "SheenColorMap", 
-                        subMesh.MatTextures.SheenColorMap, createdMaterials[subMesh.MaterialName], SRGB, false); }));
-                }
-                if (subMesh.MatProperties.UseSheenRoughnessMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseSheenRoughnessMap, "SheenRoughnessMap", 
-                        subMesh.MatTextures.SheenRoughnessMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseClearCoatMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseClearCoatMap, "ClearCoatMap", 
-                        subMesh.MatTextures.ClearCoatMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseClearCoatRoughnessMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseClearCoatRoughnessMap, "ClearCoatRoughnessMap", 
-                        subMesh.MatTextures.ClearCoatRoughnessMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseClearCoatNormalMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseClearCoatNormalMap, "ClearCoatNormalMap", 
-                        subMesh.MatTextures.ClearCoatNormalMap, createdMaterials[subMesh.MaterialName], false, true); }));
-                }
-                if (subMesh.MatProperties.UseNormalMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseNormalMap, "NormalMap", 
-                        subMesh.MatTextures.NormalMap, createdMaterials[subMesh.MaterialName], false, true); }));
-                }
-                if (subMesh.MatProperties.UseParallaxMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseParallaxMap, "ParallaxMap", 
-                        subMesh.MatTextures.ParallaxMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseTransmissionMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseTransmissionMap, "TransmissionMap", 
-                        subMesh.MatTextures.TransmissionMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseOpacityMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseOpacityMap, "OpacityMap", 
-                        subMesh.MatTextures.OpacityMap, createdMaterials[subMesh.MaterialName], false, false); }));
-                }
-                if (subMesh.MatProperties.UseAnisotropyDirectionMap)
-                {
-                    tasks.push_back(Task::Create(subMesh.MaterialName,
-                        [&]() { BindTexture(&subMesh.MatProperties.UseAnisotropyDirectionMap, "AnisotropyDirectionMap", 
-                        subMesh.MatTextures.AnisotropyDirectionMap, createdMaterials[subMesh.MaterialName], false, true); }));
+                    if (subMesh.MatProperties.UseBaseColorMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseBaseColorMap, "BaseColorMap", 
+                            subMesh.MatTextures.BaseColorMap, createdMaterials[subMesh.MaterialName], SRGB, false); }));
+                    }
+                    if (subMesh.MatProperties.UseMetallicMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseMetallicMap, "MetallicMap", 
+                            subMesh.MatTextures.MetallicMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseRoughnessMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseRoughnessMap, "RoughnessMap", 
+                            subMesh.MatTextures.RoughnessMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseMetallicRoughnessMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseMetallicRoughnessMap, "MetallicRoughnessMap", 
+                            subMesh.MatTextures.MetallicRoughnessMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseReflectanceMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseReflectanceMap, "ReflectanceMap", 
+                            subMesh.MatTextures.ReflectanceMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseOcclusionMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseOcclusionMap, "OcclusionMap", 
+                            subMesh.MatTextures.OcclusionMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseEmissiveMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseEmissiveMap, "EmissiveMap", 
+                            subMesh.MatTextures.EmissiveMap, createdMaterials[subMesh.MaterialName], SRGB, false); }));
+                    }
+                    if (subMesh.MatProperties.UseSheenColorMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseSheenColorMap, "SheenColorMap", 
+                            subMesh.MatTextures.SheenColorMap, createdMaterials[subMesh.MaterialName], SRGB, false); }));
+                    }
+                    if (subMesh.MatProperties.UseSheenRoughnessMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseSheenRoughnessMap, "SheenRoughnessMap", 
+                            subMesh.MatTextures.SheenRoughnessMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseClearCoatMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseClearCoatMap, "ClearCoatMap", 
+                            subMesh.MatTextures.ClearCoatMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseClearCoatRoughnessMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseClearCoatRoughnessMap, "ClearCoatRoughnessMap", 
+                            subMesh.MatTextures.ClearCoatRoughnessMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseClearCoatNormalMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseClearCoatNormalMap, "ClearCoatNormalMap", 
+                            subMesh.MatTextures.ClearCoatNormalMap, createdMaterials[subMesh.MaterialName], false, true); }));
+                    }
+                    if (subMesh.MatProperties.UseNormalMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseNormalMap, "NormalMap", 
+                            subMesh.MatTextures.NormalMap, createdMaterials[subMesh.MaterialName], false, true); }));
+                    }
+                    if (subMesh.MatProperties.UseParallaxMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseParallaxMap, "ParallaxMap", 
+                            subMesh.MatTextures.ParallaxMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseTransmissionMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseTransmissionMap, "TransmissionMap", 
+                            subMesh.MatTextures.TransmissionMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseOpacityMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseOpacityMap, "OpacityMap", 
+                            subMesh.MatTextures.OpacityMap, createdMaterials[subMesh.MaterialName], false, false); }));
+                    }
+                    if (subMesh.MatProperties.UseAnisotropyDirectionMap)
+                    {
+                        tasks.push_back(Task::Create(subMesh.MaterialName,
+                            [&]() { BindTexture(&subMesh.MatProperties.UseAnisotropyDirectionMap, "AnisotropyDirectionMap", 
+                            subMesh.MatTextures.AnisotropyDirectionMap, createdMaterials[subMesh.MaterialName], false, true); }));
+                    }
+
+                    for (auto& task : tasks)
+                    {
+                        gTaskScheduler().AddTask(task);
+                    }
+
+                    if (tasks.size() > 0)
+                    {
+                        do
+                        {
+                            notAllLoaded = false;
+                            for (auto& task : tasks)
+                            {
+                                if (!task->IsComplete())
+                                    notAllLoaded = true;
+                            }
+                        } while (notAllLoaded);
+                    }
                 }
             }
         }
-
-        for (auto& task : tasks)
-        {
-            gTaskScheduler().AddTask(task);
-        }
-
-        do
-        {
-            notAllLoaded = false;
-            for (auto& task : tasks)
-            {
-                if (!task->IsComplete())
-                    notAllLoaded = true;
-            }
-        } while (notAllLoaded);
 
         for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
         {

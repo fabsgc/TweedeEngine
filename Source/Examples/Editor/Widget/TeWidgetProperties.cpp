@@ -3106,9 +3106,9 @@ namespace te
                                 renderable->SetMesh(mesh.GetInternalPtr());
                                 meshLoaded = true;
 
-                                if (meshImportOptions.ImportMaterials && meshImportOptions.ImportTextures)
+                                if (meshImportOptions.ImportMaterials)
                                 {
-                                    EditorUtils::ImportMeshMaterials(mesh, meshImportOptions.ImportSRGBTextures);
+                                    EditorUtils::ImportMeshMaterials(mesh, meshImportOptions.ImportTextures, meshImportOptions.ImportSRGBTextures);
 
                                     for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
                                     {

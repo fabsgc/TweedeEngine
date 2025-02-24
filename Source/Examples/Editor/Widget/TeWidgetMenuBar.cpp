@@ -371,8 +371,8 @@ namespace te
                             {
                                 mesh->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
 
-                                if (_fileBrowser.Data.MeshParam.ImportMaterials && _fileBrowser.Data.MeshParam.ImportTextures)
-                                    EditorUtils::ImportMeshMaterials(mesh, meshImportOptions.ImportSRGBTextures);
+                                if (_fileBrowser.Data.MeshParam.ImportMaterials)
+                                    EditorUtils::ImportMeshMaterials(mesh, _fileBrowser.Data.MeshParam.ImportTextures, meshImportOptions.ImportSRGBTextures);
                                 else
                                     EditorUtils::ApplyDefaultMaterial(mesh);
                             }

@@ -355,9 +355,9 @@ namespace te
                 aiMat->Get(AI_MATKEY_NAME, matName);
 
                 material.Index = i;
-                material.Name = matName.C_Str();
+                material.Name = matName.length > 0 ? matName.C_Str() : "Default";
 
-                if (options.ImportMaterials && options.ImportTextures)
+                if (options.ImportMaterials)
                 {
                     auto BindTexture = [options](aiMaterial* aiMat, aiTextureType textureType, String& path, bool& use)
                     {
@@ -384,19 +384,22 @@ namespace te
                         }
                     };
 
-                    BindTexture(aiMat, aiTextureType_DIFFUSE, material.MatTextures.BaseColorMap, material.MatProperties.UseBaseColorMap);
-                    BindTexture(aiMat, aiTextureType_BASE_COLOR, material.MatTextures.BaseColorMap, material.MatProperties.UseBaseColorMap);
-                    BindTexture(aiMat, aiTextureType_METALNESS, material.MatTextures.MetallicMap, material.MatProperties.UseMetallicMap);
-                    BindTexture(aiMat, aiTextureType_DIFFUSE_ROUGHNESS, material.MatTextures.RoughnessMap, material.MatProperties.UseRoughnessMap);
-                    BindTexture(aiMat, aiTextureType_AMBIENT_OCCLUSION, material.MatTextures.OcclusionMap, material.MatProperties.UseOcclusionMap);
-                    BindTexture(aiMat, aiTextureType_EMISSIVE, material.MatTextures.EmissiveMap, material.MatProperties.UseEmissiveMap);
-                    BindTexture(aiMat, aiTextureType_SHEEN, material.MatTextures.SheenColorMap, material.MatProperties.UseSheenColorMap);
-                    BindTexture(aiMat, aiTextureType_CLEARCOAT, material.MatTextures.SheenColorMap, material.MatProperties.UseSheenColorMap);
-                    BindTexture(aiMat, aiTextureType_NORMALS, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
-                    BindTexture(aiMat, aiTextureType_NORMAL_CAMERA, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
-                    BindTexture(aiMat, aiTextureType_HEIGHT, material.MatTextures.ParallaxMap, material.MatProperties.UseParallaxMap);
-                    BindTexture(aiMat, aiTextureType_OPACITY, material.MatTextures.TransmissionMap, material.MatProperties.UseOpacityMap);
-                    BindTexture(aiMat, aiTextureType_TRANSMISSION, material.MatTextures.TransmissionMap, material.MatProperties.UseTransmissionMap);
+                    if (options.ImportTextures)
+                    {
+                        BindTexture(aiMat, aiTextureType_DIFFUSE, material.MatTextures.BaseColorMap, material.MatProperties.UseBaseColorMap);
+                        BindTexture(aiMat, aiTextureType_BASE_COLOR, material.MatTextures.BaseColorMap, material.MatProperties.UseBaseColorMap);
+                        BindTexture(aiMat, aiTextureType_METALNESS, material.MatTextures.MetallicMap, material.MatProperties.UseMetallicMap);
+                        BindTexture(aiMat, aiTextureType_DIFFUSE_ROUGHNESS, material.MatTextures.RoughnessMap, material.MatProperties.UseRoughnessMap);
+                        BindTexture(aiMat, aiTextureType_AMBIENT_OCCLUSION, material.MatTextures.OcclusionMap, material.MatProperties.UseOcclusionMap);
+                        BindTexture(aiMat, aiTextureType_EMISSIVE, material.MatTextures.EmissiveMap, material.MatProperties.UseEmissiveMap);
+                        BindTexture(aiMat, aiTextureType_SHEEN, material.MatTextures.SheenColorMap, material.MatProperties.UseSheenColorMap);
+                        BindTexture(aiMat, aiTextureType_CLEARCOAT, material.MatTextures.SheenColorMap, material.MatProperties.UseSheenColorMap);
+                        BindTexture(aiMat, aiTextureType_NORMALS, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
+                        BindTexture(aiMat, aiTextureType_NORMAL_CAMERA, material.MatTextures.NormalMap, material.MatProperties.UseNormalMap);
+                        BindTexture(aiMat, aiTextureType_HEIGHT, material.MatTextures.ParallaxMap, material.MatProperties.UseParallaxMap);
+                        BindTexture(aiMat, aiTextureType_OPACITY, material.MatTextures.TransmissionMap, material.MatProperties.UseOpacityMap);
+                        BindTexture(aiMat, aiTextureType_TRANSMISSION, material.MatTextures.TransmissionMap, material.MatProperties.UseTransmissionMap);
+                    }
 
                     aiColor3D baseColor;
                     if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, baseColor) == aiReturn_SUCCESS)
