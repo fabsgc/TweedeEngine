@@ -26,14 +26,14 @@ namespace te
         te_delete(_stream);
     }
 
-    bool BinaryWriter::WriteData(const UINT8* data, size_t size)
+    bool BinaryWriter::WriteData(const uint8_t* data, size_t size)
     {
-        return _stream->Write(data, static_cast<UINT32>(size));
+        return _stream->Write(data, static_cast<uint32_t>(size));
     }
 
     void BinaryWriter::WriteHeader()
     {
-        WriteRaw<UINT32>(TE_VERSION_MAJOR);
-        WriteRaw<UINT32>(TE_VERSION_MINOR);
+        WriteRaw<uint32_t>(TE_VERSION_MAJOR);
+        WriteRaw<uint32_t>(TE_VERSION_MINOR);
     }
 }

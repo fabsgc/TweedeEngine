@@ -8,6 +8,9 @@
 #include <iostream>
 #include <filesystem>
 
+// TODO Serialization : handle Endianness
+// TODO Serialization : add API to retrieve the written buffer
+
 namespace te
 {
     class TE_CORE_EXPORT BinaryWriter : public StreamWriter
@@ -21,12 +24,12 @@ namespace te
 
         bool IsStreamGood() const final { return _stream->Good(); }
         
-        UINT64 GetStreamPosition() const override final { return _stream->Tell(); }
+        uint64_t GetStreamPosition() const override final { return _stream->Tell(); }
         
-        void SetStreamPosition(UINT64 position) final { _stream->Seek(position); }
+        void SetStreamPosition(uint64_t position) final { _stream->Seek(position); }
 
     private:
-        bool WriteData(const UINT8* data, size_t size) final;
+        bool WriteData(const uint8_t* data, size_t size) final;
 
         void WriteHeader();
 

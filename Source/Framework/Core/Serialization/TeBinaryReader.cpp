@@ -3,14 +3,15 @@
 
 namespace te
 {
-    BinaryReader::BinaryReader()
+    BinaryReader::BinaryReader(void* data, size_t size)
+        : _data(data)
+        , _dataSize(size)
     {
-        _stream = te_new<MemoryDataStream>();
+        _stream = te_new<MemoryDataStream>(data, size);
     }
     
     BinaryReader::BinaryReader(const std::filesystem::path& path)
-        : StreamReader()
-        , _path(path)
+        : _path(path)
     {
         _stream = te_new<FileStream>(path.generic_string(), DataStream::AccessMode::READ);
 
@@ -26,14 +27,14 @@ namespace te
         te_delete(_stream);
     }
 
-    bool BinaryReader::ReadData(UINT8* dest, size_t size)
+    bool BinaryReader::ReadData(uint8_t* dest, size_t size)
     {
         return _stream->Read(dest, size);
     }
 
     void BinaryReader::ReadHeader()
     {
-        ReadRaw<UINT32>(_versionMajor);
-        ReadRaw<UINT32>(_versionMinor);
+        ReadRaw<uint32_t>(_versionMajor);
+        ReadRaw<uint32_t>(_versionMinor);
     }
 }

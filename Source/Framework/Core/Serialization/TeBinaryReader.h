@@ -8,12 +8,14 @@
 #include <iostream>
 #include <filesystem>
 
+// TODO Serialization : handle Endianness
+
 namespace te
 {
     class TE_CORE_EXPORT BinaryReader : public StreamReader
     {
     public:
-        BinaryReader();
+        BinaryReader(void* data, size_t size);
 
         BinaryReader(const std::filesystem::path& path);
 
@@ -21,23 +23,26 @@ namespace te
 
         bool IsStreamGood() const final { return _stream->Good(); }
 
-        UINT64 GetStreamPosition() const override final { return _stream->Tell(); }
+        uint64_t GetStreamPosition() const override final { return _stream->Tell(); }
 
-        void SetStreamPosition(UINT64 position) final { _stream->Seek(position); }
+        void SetStreamPosition(uint64_t position) final { _stream->Seek(position); }
 
-        UINT32 GetVersionMajor() const { return _versionMajor; }
+        uint32_t GetVersionMajor() const { return _versionMajor; }
 
-        UINT32 GetVersionMinor() const { return _versionMinor; }
+        uint32_t GetVersionMinor() const { return _versionMinor; }
 
     private:
-        bool ReadData(UINT8* dest, size_t size) override;
+        bool ReadData(uint8_t* dest, size_t size) override;
 
         void ReadHeader();
 
     private:
         std::filesystem::path _path;
-        DataStream* _stream;
-        UINT32 _versionMajor;
-        UINT32 _versionMinor;
+        void* _data = nullptr;
+        size_t _dataSize = 0;
+
+        DataStream* _stream = {};
+        uint32_t _versionMajor = 0;
+        uint32_t _versionMinor = 0;
     };
 }
