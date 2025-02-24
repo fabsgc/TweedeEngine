@@ -60,7 +60,7 @@ namespace te
         bool ImportAnimations = false;
 
         /** Determines should vertex colors be imported if available */
-        bool ImportVertexColors = false;
+        bool ImportVertexColors = true;
 
         /** Determines should be re-generated during loading */
         bool ForceGenNormals = false;
