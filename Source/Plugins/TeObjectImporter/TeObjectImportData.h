@@ -81,7 +81,7 @@ namespace te
     /**	Animation curves required to animate a single bone. */
     struct AssimpBoneAnimation
     {
-        AssimpImportNode* Node;
+        AssimpImportNode* Node = nullptr;
 
         TAnimationCurve<Vector3> Translation;
         TAnimationCurve<Quaternion> Rotation;
@@ -110,10 +110,10 @@ namespace te
     /** Animation clip containing a set of bone or blend shape animations. */
     struct AssimpAnimationClip
     {
-        String Name;
-        float Start;
-        float End;
-        float SampleRate;
+        String Name = {};
+        float Start = 0.0f;
+        float End = 0.0f;
+        float SampleRate = 0.0f;
 
         Vector<AssimpBoneAnimation> BoneAnimations;
     };
@@ -121,7 +121,7 @@ namespace te
     /**	Imported mesh data. */
     struct AssimpImportMesh
     {
-        aiMesh* AssimpMesh;
+        aiMesh* AssimpMesh = nullptr;
 
         Vector<UINT32> Indices;
         Vector<Vector3> Positions;
@@ -130,7 +130,7 @@ namespace te
         Vector<Vector3> Bitangents;
         Vector<Vector4> Colors;
         Vector<Vector2> Textures[OBJECT_IMPORT_MAX_UV_LAYERS];
-        UINT32 MaterialIndex;
+        UINT32 MaterialIndex = 0;
 
         Vector<AssimpBoneInfluence> BoneInfluences;
         Vector<AssimpBone> Bones;
@@ -143,7 +143,7 @@ namespace te
 
     struct AssimpImportMaterial
     {
-        UINT32 Index;
+        UINT32 Index = 0;
         String Name;
         MaterialProperties MatProperties;
         MaterialTextures   MatTextures;

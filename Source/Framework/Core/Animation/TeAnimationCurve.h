@@ -24,7 +24,7 @@ namespace te
     struct TKeyframe
     {
         T Value; /**< Value of the key. */
-        float TimeInSpline; /**< Position of the key along the animation spline. */
+        float TimeInSpline = 0.0f; /**< Position of the key along the animation spline. */
 
         bool operator== (const TKeyframe<T>& rhs) const
         {
