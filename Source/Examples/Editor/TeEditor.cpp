@@ -1039,7 +1039,13 @@ namespace te
         _sceneSO = _project->GetSceneObject();
         _settings.State = EditorState::Saved;
 
-        // TODO : add resources to EditorResManager
+        for (auto& resource : _project->GetAllResources())
+        {
+            auto res = gResourceManager().Get(resource->GetUUID());
+            EditorResManager::Instance().Add(res);
+        }
+
+        // TODO Serialization : build scene
 
         OnOpen();
 
