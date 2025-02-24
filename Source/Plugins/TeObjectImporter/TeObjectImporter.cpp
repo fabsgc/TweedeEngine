@@ -1297,7 +1297,7 @@ namespace te
                     BoneWeight* weights = (BoneWeight*)te_allocate(bufferSize * sizeof(BoneWeight));
                     for (UINT32 i = 0; i < (UINT32)numVertices; i++)
                     {
-                        int* indices[] = { &weights[i].Index0, &weights[i].Index1, &weights[i].Index2, &weights[i].Index3 };
+                        uint32_t* indices[] = { &weights[i].Index0, &weights[i].Index1, &weights[i].Index2, &weights[i].Index3 };
                         float* amounts[] = { &weights[i].Weight0, &weights[i].Weight1, &weights[i].Weight2, &weights[i].Weight3 };
 
                         for (UINT32 j = 0; j < 4; j++)
