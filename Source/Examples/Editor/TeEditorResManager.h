@@ -92,6 +92,14 @@ namespace te
                 _resourcesIndex.push_back(handle.Get());
         }
 
+        void Add(HResource& handle)
+        {
+            _resources[handle->GetCoreType()].Add(handle);
+
+            if (handle.IsLoaded())
+                _resourcesIndex.push_back(handle.Get());
+        }
+
         template <class T>
         void Remove(ResourceHandle<T>& handle)
         {
