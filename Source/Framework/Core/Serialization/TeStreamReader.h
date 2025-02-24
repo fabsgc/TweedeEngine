@@ -19,7 +19,7 @@ namespace te
 
         operator bool() const { return IsStreamGood(); }
 
-        void ReadBuffer(UINT8* buffer, size_t size);
+        void ReadBuffer(UINT8** buffer, size_t size);
 
         void ReadString(std::string& string);
 
