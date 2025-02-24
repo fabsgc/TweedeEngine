@@ -1,5 +1,8 @@
 #include "Prerequisites/TePrerequisitesUtility.h"
+
 #include "ThirdParty/Md5/md5.h"
+
+#include <bit>
 
 namespace te
 {
@@ -136,11 +139,7 @@ namespace te
 
     bool Util::IsBigEndian()
     {
-        /*const int value{ 0x01 };
-        const void* address = static_cast<const void*>(&value);
-        const unsigned char* least_significant_address = static_cast<const unsigned char*>(address);
-        return (*least_significant_address == 0x01);*/
-
-        return TE_ENDIAN == TE_ENDIAN_BIG;
+        return std::endian::native == std::endian::big;
+        //return TE_ENDIAN == TE_ENDIAN_BIG;
     }
 }
