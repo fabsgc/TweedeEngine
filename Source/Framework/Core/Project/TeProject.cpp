@@ -56,10 +56,10 @@ namespace te
         serializer->WriteString(dump);
     }
 
-    void Project::Deserialize(StreamReader* deserializer, Project* object)
+    bool Project::Deserialize(StreamReader* deserializer, Project* object)
     {
         if (!object)
-            return;
+            return false;
 
         Resource::Deserialize(deserializer, object);
 
@@ -80,5 +80,7 @@ namespace te
         }
 
         object->Initialize();
+
+        return true;
     }
 }

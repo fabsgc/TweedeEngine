@@ -613,10 +613,10 @@ namespace te
         // TODO Serialization (Skeleton)
     }
 
-    void Mesh::Deserialize(StreamReader* deserializer, Mesh* object)
+    bool Mesh::Deserialize(StreamReader* deserializer, Mesh* object)
     {
         if (!object)
-            return;
+            return false;
 
         Resource::Deserialize(deserializer, object);
 
@@ -706,6 +706,8 @@ namespace te
 
         object->Initialize();
 
+        return true;
+
         // TODO Serialization (skeleton)
     }
 
@@ -741,11 +743,11 @@ namespace te
         Mesh::Serialize(serializer);
     }
 
-    void ZPrepassMesh::Deserialize(StreamReader* deserializer, ZPrepassMesh* object)
+    bool ZPrepassMesh::Deserialize(StreamReader* deserializer, ZPrepassMesh* object)
     {
         if (!object)
-            return;
+            return false;
 
-        Mesh::Deserialize(deserializer, object);
+        return Mesh::Deserialize(deserializer, object);
     }
 }

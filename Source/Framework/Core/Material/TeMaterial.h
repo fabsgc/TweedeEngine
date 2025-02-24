@@ -615,7 +615,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, Material* object);
+        static bool Deserialize(StreamReader* deserializer, Material* object);
 
     protected:
         Material();

@@ -66,7 +66,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, Font* object);
+        static bool Deserialize(StreamReader* deserializer, Font* object);
 
     protected:
         friend class FontManager;

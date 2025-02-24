@@ -39,8 +39,16 @@ namespace te
 
         BinaryReader* deserializer = te_new<BinaryReader>(resourcePath);
 
-        T::Deserialize(deserializer, resource.get());
-        return resource;
+        if(T::Deserialize(deserializer, resource.get()))
+        {
+            resource->SetPath(resourcePath);
+            te_delete(deserializer);
+
+            return resource;
+        }
+
+        resource->Destroy();
+        return nullptr;
     }
 
     SPtr<Resource> ResourceImporter::Import(const std::filesystem::path& filePath, const ImportOptions& importOptions)

@@ -43,15 +43,14 @@ namespace te
         Resource::Serialize(serializer);
     }
 
-    void Script::Deserialize(StreamReader* deserializer, Script* object)
+    bool Script::Deserialize(StreamReader* deserializer, Script* object)
     {
         if (!object)
-            return;
+            return false;
 
         Resource::Deserialize(deserializer, object);
 
         // TODO Serialization
-
-        object->Initialize();
+        return false;
     }
 }

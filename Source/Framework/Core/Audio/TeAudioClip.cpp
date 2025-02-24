@@ -50,13 +50,14 @@ namespace te
         Resource::Serialize(serializer);
     }
 
-    void AudioClip::Deserialize(StreamReader* deserializer, AudioClip* object)
+    bool AudioClip::Deserialize(StreamReader* deserializer, AudioClip* object)
     {
         if (!object)
-            return;
+            return false;
 
         Resource::Deserialize(deserializer, object);
 
         //TODO Serialization
+        return false;
     }
 }

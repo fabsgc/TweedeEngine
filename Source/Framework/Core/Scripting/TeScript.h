@@ -31,7 +31,7 @@ namespace te
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static void Deserialize(StreamReader* deserializer, Script* object);
+        static bool Deserialize(StreamReader* deserializer, Script* object);
 
     private:
         Script();

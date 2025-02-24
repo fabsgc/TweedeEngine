@@ -41,7 +41,7 @@ namespace te
         virtual void Serialize(StreamWriter* serializer) const;
 
         /** @copydoc Serializable::Deserialize */
-        static void Deserialize(StreamReader* deserializer, Resource* object);
+        static bool Deserialize(StreamReader* deserializer, Resource* object);
 
     protected:
         friend class ResourceManager;

@@ -265,13 +265,14 @@ namespace te
         Resource::Serialize(serializer);
     }
 
-    void AnimationClip::Deserialize(StreamReader* deserializer, AnimationClip* object)
+    bool AnimationClip::Deserialize(StreamReader* deserializer, AnimationClip* object)
     {
         if (!object)
-            return;
+            return false;
 
         Resource::Deserialize(deserializer, object);
 
         // TODO Serialization
+        return false;
     }
 }

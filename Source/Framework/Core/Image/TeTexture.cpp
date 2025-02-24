@@ -478,16 +478,17 @@ namespace te
         // TODO Serialization
     }
 
-    void Texture::Deserialize(StreamReader* deserializer, Texture* object)
+    bool Texture::Deserialize(StreamReader* deserializer, Texture* object)
     {
         // object must be null here as we need some data (size, type etc.) to be able to create a texture
         // try to create a Vector<PixelData> and call the appropriate constructor
 
         if (!object)
-            return;
+            return false;
 
         Resource::Deserialize(deserializer, object);
 
         // TODO Serialization
+        return false;
     }
 }

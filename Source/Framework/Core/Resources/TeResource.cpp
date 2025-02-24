@@ -19,10 +19,10 @@ namespace te
         serializer->WriteString(_UUID.ToString());
     }
 
-    void Resource::Deserialize(StreamReader* deserializer, Resource* object)
+    bool Resource::Deserialize(StreamReader* deserializer, Resource* object)
     {
         if (!object)
-            return;
+            return false;
 
         String uuid;
         String path;
@@ -37,5 +37,7 @@ namespace te
         object->_UUID = UUID(uuid);
         object->_coreType = static_cast<CoreType>(coreType);
         object->_path = path;
+
+        return true;
     }
 }

@@ -587,16 +587,17 @@ namespace te
         // TODO Serialization
     }
 
-    void Material::Deserialize(StreamReader* deserializer, Material* object)
+    bool Material::Deserialize(StreamReader* deserializer, Material* object)
     {
         if (!object)
-            return;
+            return false;
 
         Resource::Deserialize(deserializer, object);
 
         // TODO Serialization
 
         object->Initialize();
+        return false;
     }
 
     void MaterialProperties::ExportJson(nlohmann::json& document) const

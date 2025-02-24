@@ -71,15 +71,14 @@ namespace te
         Resource::Serialize(serializer);
     }
 
-    void PhysicsHeightField::Deserialize(StreamReader* deserializer, PhysicsHeightField* object)
+    bool PhysicsHeightField::Deserialize(StreamReader* deserializer, PhysicsHeightField* object)
     {
         if (!object)
-            return;
+            return false;
 
         Resource::Deserialize(deserializer, object);
 
         // TODO Serialization
-
-        object->Initialize();
+        return false;
     }
 }
