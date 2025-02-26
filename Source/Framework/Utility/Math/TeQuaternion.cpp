@@ -416,10 +416,10 @@ namespace te
     Quaternion Quaternion::ImportJson(nlohmann::json& document)
     {
         return Quaternion(
+            document["w"].get<float>(),
             document["x"].get<float>(),
             document["y"].get<float>(),
-            document["z"].get<float>(),
-            document["w"].get<float>()
+            document["z"].get<float>()
         );
     }
 }
