@@ -1400,9 +1400,39 @@ namespace te
 
         if (document.contains("components") && document["components"].size() > 0)
         {
-            for (const auto component : document["components"].items())
+            for (const auto element : document["components"].items())
             {
-                
+                HComponent component;
+                const CoreType type = static_cast<CoreType>(element.value()["type"].get<uint32_t>());
+
+                switch (type)
+                {
+                    case CoreType::TID_CLight:
+                    {
+                        Light::Type type = static_cast<Light::Type>(element.value()["light"]["type"].get<uint32_t>());
+                        component = static_object_cast<Component>(so->AddComponent<CLight>(type));
+                    }
+                    break;
+
+                    case CoreType::TID_CRenderable:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CRenderable>());
+                    }
+                    break;
+
+                    case CoreType::TID_CSkybox:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CSkybox>());
+                    }
+                    break;
+
+                    default:
+                        TE_DEBUG("Undefined resource type");
+                        break;
+                }
+
+                if (component)
+                    component->Initialize();
             }
         }
 

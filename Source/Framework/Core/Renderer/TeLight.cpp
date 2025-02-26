@@ -215,12 +215,12 @@ namespace te
 
     void Light::ExportJson(nlohmann::json& document) const
     {
-        document["type"] = _type;
+        document["type"] = static_cast<uint32_t>(_type);
         document["castShadows"] = _castShadows;
         document["spotAngle"] = _spotAngle.ValueRadians();
         document["shadowBias"] = _shadowBias;
         document["intensity"] = _intensity;
-        document["castShadowType"] = _castShadowsType;
+        document["castShadowType"] = static_cast<uint32_t>(_castShadowsType);
         document["layer"] = _layer;
 
         _color.ExportJson(document["color"]);
