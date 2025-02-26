@@ -11,11 +11,6 @@ namespace te
     class TE_CORE_EXPORT Project : public Resource
     {
     public:
-        virtual ~Project()
-        {
-
-        }
-
         /**  @copydoc Resource::GetResourceType */
         static CoreType GetResourceType() { return CoreType::TID_Project; }
 
@@ -25,14 +20,11 @@ namespace te
         /** Creates a new project as a pointer instead of a resource handle. */
         static SPtr<Project> CreatePtr();
 
-        /** Creates a Project without initializing it. */
+        /** Creates a Project without initializing it (for serialization). */
         static SPtr<Project> CreateEmpty();
 
-        /** A project can store all resources currently used */
+        /** A project can store a set of currently used resources */
         const Vector<Resource*>& GetAllResources() const { return _resources; }
-        
-        /** @copydoc GetAllResources */
-        const Vector<String>& GetAllResourceNames() const { return _resourceNames; }
 
         /** Add a resource to the project */
         void AddResource(Resource* resource);
@@ -44,19 +36,18 @@ namespace te
         const HSceneObject& GetSceneObject() const { return _sceneObject; }
 
         /** Remove all resources from the project */
-        void ClearResources() { _resources.clear(); _resourceNames.clear(); }
+        void ClearResources() { _resources.clear(); }
 
     public:
         void Serialize(StreamWriter* serializer) const override;
 
-        static bool Deserialize(StreamReader* deserializer, Project* object);
+        static bool Deserialize(StreamReader* deserializer, Project* object, const std::filesystem::path& workingDirectory);
 
     private:
         Project();
 
     private:
         Vector<Resource*> _resources;
-        Vector<String> _resourceNames;
         HSceneObject _sceneObject;
     };
 }

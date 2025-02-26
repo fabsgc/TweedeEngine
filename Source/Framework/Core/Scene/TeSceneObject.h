@@ -142,7 +142,7 @@ namespace te
         const Transform& GetLocalTransform() const { return _localTfrm; }
 
         /** Sets the transform object representing object's position/rotation/scale relative to its parent. */
-        void SetLocalTransform(Transform& tfrm);
+        void SetLocalTransform(const Transform& tfrm);
 
         /**	Sets the local position of the object. */
         void SetPosition(const Vector3& position);
@@ -608,7 +608,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a scene object from a json document and all of its components */
-        HSceneObject ImportJson(HSceneObject& parent, nlohmann::json& document);
+        static HSceneObject ImportJson(HSceneObject& parent, nlohmann::json& document);
 
     private:
         /**

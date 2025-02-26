@@ -46,7 +46,7 @@ namespace te
     protected:
         friend class ResourceManager;
         friend class ResourceHandleBase;
-        friend class ProjectImporter;
+        friend class Project;
 
         Resource(CoreType type);
 

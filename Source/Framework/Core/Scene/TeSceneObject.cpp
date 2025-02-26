@@ -477,7 +477,7 @@ namespace te
         return _worldTfrm;
     }
 
-    void SceneObject::SetLocalTransform(Transform& tfrm)
+    void SceneObject::SetLocalTransform(const Transform& tfrm)
     { 
         if (_mobility == ObjectMobility::Movable)
         {
@@ -1371,7 +1371,7 @@ namespace te
         document["uuid"] = GetUUID().ToString();
 
         document["flags"] = GetFlags();
-        document["mobility"] = static_cast<int>(GetMobility());
+        document["mobility"] = static_cast<uint32_t>(GetMobility());
         document["activeSelf"] = _activeSelf;
         document["activeHierarchy"] = _activeHierarchy;
 
@@ -1388,8 +1388,37 @@ namespace te
 
     HSceneObject SceneObject::ImportJson(HSceneObject& parent, nlohmann::json& document)
     {
-        // TODO serialization
+        HSceneObject so;
 
-        return HSceneObject();
+        so = SceneObject::Create(document["name"].get<String>());
+        so->SetUUID(UUID(document["uuid"].get<String>()));
+        so->SetActiveHierarchy(document["activeHierarchy"].get<bool>());
+        so->SetActive(document["activeSelf"].get<bool>());
+        so->SetMobility(static_cast<ObjectMobility>(document["mobility"].get<uint32_t>()));
+        so->SetLocalTransform(Transform::ImportJson(document["localTransform"]));
+        so->SetParent(parent);
+
+        if (document.contains("components") && document["components"].size() > 0)
+        {
+            for (const auto component : document["components"].items())
+            {
+                
+            }
+        }
+
+        if (document.contains("children") && document["children"].size() > 0)
+        {
+            for (const auto child : document["children"].items())
+            {
+                SceneObject::ImportJson(so, child.value());
+            }
+        }
+
+        if (document.contains("scripts") && document["scripts"].size() > 0)
+        {
+
+        }
+
+        return so;
     }
 }
