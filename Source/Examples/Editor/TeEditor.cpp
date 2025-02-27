@@ -1164,8 +1164,11 @@ namespace te
                 case CoreType::TID_CSkybox:
                 {
                     if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
-                        break;
-
+                    {
+                        TE_DEBUG("Only one skybox component is allowed in the scene");
+                        return;
+                    }
+                    
                     HSkybox component = clickedSceneObject->AddComponent<CSkybox>();
                     component->Clone(_selections.CopiedComponent->GetHandle(), " copy");
                     component->Initialize();
