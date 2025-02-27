@@ -84,213 +84,42 @@ namespace te
             if (ShowGameObjectInformation(gameObject))
                 hasChanged = true;
 
-            switch (_selections.ClickedComponent->GetCoreType())
+            static Map<CoreType, std::function<bool()>> showProperties;
+            showProperties[CoreType::TID_CCamera] = std::bind(&WidgetProperties::ShowCCameraProperties, this);
+            showProperties[CoreType::TID_CRenderable] = std::bind(&WidgetProperties::ShowCRenderableProperties, this);
+            showProperties[CoreType::TID_CLight] = std::bind(&WidgetProperties::ShowCLightProperties, this);
+            showProperties[CoreType::TID_CSkybox] = std::bind(&WidgetProperties::ShowCSkyboxProperties, this);
+            showProperties[CoreType::TID_CCameraFlyer] = std::bind(&WidgetProperties::ShowCCameraFlyerProperties, this);
+            showProperties[CoreType::TID_CCameraUI] = std::bind(&WidgetProperties::ShowCCameraUIProperties, this);
+            showProperties[CoreType::TID_CAnimation] = std::bind(&WidgetProperties::ShowCAnimationProperties, this);
+            showProperties[CoreType::TID_CBone] = std::bind(&WidgetProperties::ShowCBoneProperties, this);
+            showProperties[CoreType::TID_CAudioListener] = std::bind(&WidgetProperties::ShowCAudioListenerProperties, this);
+            showProperties[CoreType::TID_CAudioSource] = std::bind(&WidgetProperties::ShowCAudioSourceProperties, this);
+            showProperties[CoreType::TID_CRigidBody] = std::bind(&WidgetProperties::ShowCRigidBodyProperties, this);
+            showProperties[CoreType::TID_CMeshSoftBody] = std::bind(&WidgetProperties::ShowCMeshSoftBodyProperties, this);
+            showProperties[CoreType::TID_CEllipsoidSoftBody] = std::bind(&WidgetProperties::ShowCEllipsoidSoftBodyProperties, this);
+            showProperties[CoreType::TID_CRopeSoftBody] = std::bind(&WidgetProperties::ShowCRopeSoftBodyProperties, this);
+            showProperties[CoreType::TID_CPatchSoftBody] = std::bind(&WidgetProperties::ShowCPatchSoftBodyProperties, this);
+            showProperties[CoreType::TID_CBoxCollider] = std::bind(&WidgetProperties::ShowCBoxColliderProperties, this);
+            showProperties[CoreType::TID_CCapsuleCollider] = std::bind(&WidgetProperties::ShowCCapsuleColliderProperties, this);
+            showProperties[CoreType::TID_CConeCollider] = std::bind(&WidgetProperties::ShowCConeColliderProperties, this);
+            showProperties[CoreType::TID_CHeightFieldCollider] = std::bind(&WidgetProperties::ShowCHeightFieldColliderProperties, this);
+            showProperties[CoreType::TID_CCylinderCollider] = std::bind(&WidgetProperties::ShowCCylinderColliderProperties, this);
+            showProperties[CoreType::TID_CMeshCollider] = std::bind(&WidgetProperties::ShowCMeshColliderProperties, this);
+            showProperties[CoreType::TID_CPlaneCollider] = std::bind(&WidgetProperties::ShowCPlaneColliderProperties, this);
+            showProperties[CoreType::TID_CSphereCollider] = std::bind(&WidgetProperties::ShowCSphereColliderProperties, this);
+            showProperties[CoreType::TID_CConeTwistJoint] = std::bind(&WidgetProperties::ShowCConeTwistJointProperties, this);
+            showProperties[CoreType::TID_CD6Joint] = std::bind(&WidgetProperties::ShowCD6JointProperties, this);
+            showProperties[CoreType::TID_CHingeJoint] = std::bind(&WidgetProperties::ShowCHingeJointProperties, this);
+            showProperties[CoreType::TID_CSliderJoint] = std::bind(&WidgetProperties::ShowCSliderJointProperties, this);
+            showProperties[CoreType::TID_CSphericalJoint] = std::bind(&WidgetProperties::ShowCSphericalJointProperties, this);
+            showProperties[CoreType::TID_CDecal] = std::bind(&WidgetProperties::ShowCDecal, this);
+            
+            const CoreType type = _selections.ClickedComponent->GetCoreType();
+            if (showProperties.find(type) != showProperties.end())
             {
-            case CoreType::TID_CCamera:
-            {
-                if (ShowCCameraProperties())
+                if (showProperties[type]())
                     hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CRenderable:
-            {
-                if (ShowCRenderableProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CLight:
-            {
-                if (ShowCLightProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CSkybox:
-            {
-                if (ShowCSkyboxProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CCameraFlyer:
-            {
-                if (ShowCCameraFlyerProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CCameraUI:
-            {
-                if (ShowCCameraUIProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CAnimation:
-            {
-                if (ShowCAnimationProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CBone:
-            {
-                if (ShowCBoneProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CAudioListener:
-            {
-                if (ShowCAudioListenerProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CAudioSource:
-            {
-                if (ShowCAudioSourceProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CRigidBody:
-            {
-                if (ShowCRigidBodyProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CMeshSoftBody:
-            {
-                if (ShowCMeshSoftBodyProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CEllipsoidSoftBody:
-            {
-                if (ShowCEllipsoidSoftBodyProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CRopeSoftBody:
-            {
-                if (ShowCRopeSoftBodyProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CPatchSoftBody:
-            {
-                if (ShowCPatchSoftBodyProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CBoxCollider:
-            {
-                if (ShowCBoxColliderProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CCapsuleCollider:
-            {
-                if (ShowCCapsuleColliderProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CConeCollider:
-            {
-                if (ShowCConeColliderProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CHeightFieldCollider:
-            {
-                if (ShowCHeightFieldColliderProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CCylinderCollider:
-            {
-                if (ShowCCylinderColliderProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CMeshCollider:
-            {
-                if (ShowCMeshColliderProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CPlaneCollider:
-            {
-                if (ShowCPlaneColliderProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CSphereCollider:
-            {
-                if (ShowCSphereColliderProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CConeTwistJoint:
-            {
-                if (ShowCConeTwistJointProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CD6Joint:
-            {
-                if (ShowCD6JointProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CHingeJoint:
-            {
-                if (ShowCHingeJointProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CSliderJoint:
-            {
-                if (ShowCSliderJointProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CSphericalJoint:
-            {
-                if (ShowCSphericalJointProperties())
-                    hasChanged = true;
-            }
-            break;
-
-            case CoreType::TID_CDecal:
-            {
-                if (ShowCDecal())
-                    hasChanged = true;
-            }
-            break;
-
-            default:
-            break;
             }
         }
         else if (_selections.ClickedSceneObject)
