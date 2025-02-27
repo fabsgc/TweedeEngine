@@ -222,9 +222,9 @@ namespace te
     private:
         friend class GpuResourcePool;
 
-        GpuBufferType Type;
-        GpuBufferFormat Format;
-        GpuBufferUsage Usage;
+        GpuBufferType Type = GpuBufferType::GBT_STANDARD;
+        GpuBufferFormat Format = GpuBufferFormat::BF_UNKNOWN;
+        GpuBufferUsage Usage = GpuBufferUsage::GBU_DYNAMIC;
         UINT32 NumElements = 0;
         UINT32 ElementSize = 0;
     };
