@@ -210,7 +210,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Vector3 from a json document */
-        static Color ImportJson(nlohmann::json& document);
+        static Color ImportJson(const nlohmann::json& document);
 
         /** Creates a color value from a 32-bit value that encodes a RGBA color. */
         static Color FromRGBA(RGBA val);

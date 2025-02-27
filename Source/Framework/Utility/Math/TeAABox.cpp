@@ -506,7 +506,7 @@ namespace te
         _maximum.ExportJson(document["max"]);
     }
 
-    AABox AABox::ImportJson(nlohmann::json& document)
+    AABox AABox::ImportJson(const nlohmann::json& document)
     {
         return AABox(
             Vector3::ImportJson(document["min"]),

@@ -578,7 +578,7 @@ namespace te
         // TODO serialization
     }
 
-    SPtr<Renderable> Renderable::ImportJson(nlohmann::json& document)
+    SPtr<Renderable> Renderable::ImportJson(const nlohmann::json& document)
     {
         // TODO serialization
 

@@ -59,7 +59,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Bounds from a json document */
-        static Bounds ImportJson(nlohmann::json& document);
+        static Bounds ImportJson(const nlohmann::json& document);
 
     protected:
         AABox _box;

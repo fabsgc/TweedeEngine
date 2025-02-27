@@ -172,7 +172,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a skeleton from a json document */
-        static SPtr<Skeleton> ImportJson(nlohmann::json& document);
+        static SPtr<Skeleton> ImportJson(const nlohmann::json& document);
 
     private:
         Skeleton();

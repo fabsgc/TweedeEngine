@@ -102,7 +102,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Bounds from a json document */
-        static MeshProperties ImportJson(nlohmann::json& document);
+        static MeshProperties ImportJson(const nlohmann::json& document);
 
     protected:
         friend class Mesh;

@@ -159,7 +159,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a transform from a json document */
-        static Transform ImportJson(nlohmann::json& document);
+        static Transform ImportJson(const nlohmann::json& document);
 
     private:
         Vector3 _position = Vector3::ZERO;

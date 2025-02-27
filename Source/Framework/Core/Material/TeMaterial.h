@@ -407,7 +407,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a MaterialProperties from a json document */
-        static MaterialProperties ImportJson(nlohmann::json& document);
+        static MaterialProperties ImportJson(const nlohmann::json& document);
     };
 
     /**
@@ -437,7 +437,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a MaterialTextures from a json document */
-        static MaterialTextures ImportJson(nlohmann::json& document);
+        static MaterialTextures ImportJson(const nlohmann::json& document);
     };
 
     /**

@@ -25,7 +25,7 @@ namespace te
         SubMeshBounds.ExportJson(document["subMeshBounds"]);
     }
 
-    SubMesh SubMesh::ImportJson(nlohmann::json& document)
+    SubMesh SubMesh::ImportJson(const nlohmann::json& document)
     {
         SubMesh subMesh;
 

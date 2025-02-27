@@ -413,7 +413,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Vector3 from a json document */
-        static Vector3 ImportJson(nlohmann::json& document);
+        static Vector3 ImportJson(const nlohmann::json& document);
     };
 }
 

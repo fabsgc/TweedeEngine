@@ -652,7 +652,7 @@ namespace te
         Absorption.ExportJson(document["absorption"]);
     }
 
-    MaterialProperties MaterialProperties::ImportJson(nlohmann::json& document)
+    MaterialProperties MaterialProperties::ImportJson(const nlohmann::json& document)
     {
         MaterialProperties properties;
 
@@ -728,7 +728,7 @@ namespace te
         };
     }
 
-    MaterialTextures MaterialTextures::ImportJson(nlohmann::json& document)
+    MaterialTextures MaterialTextures::ImportJson(const nlohmann::json& document)
     {
         MaterialTextures textures;
 

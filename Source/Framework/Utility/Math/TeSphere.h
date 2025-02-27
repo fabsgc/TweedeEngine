@@ -63,7 +63,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Sphere from a json document */
-        static Sphere ImportJson(nlohmann::json& document);
+        static Sphere ImportJson(const nlohmann::json& document);
 
     private:
         float _radius = 1.0f;

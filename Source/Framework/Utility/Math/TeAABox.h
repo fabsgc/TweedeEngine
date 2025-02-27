@@ -143,7 +143,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates an AABox from a json document */
-        static AABox ImportJson(nlohmann::json& document);
+        static AABox ImportJson(const nlohmann::json& document);
 
     protected:
         Vector3 _minimum{ Vector3::ZERO };

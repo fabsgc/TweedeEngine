@@ -12,7 +12,7 @@ namespace te
         document = { { "x", x }, { "y", y } };
     }
 
-    Vector2 Vector2::ImportJson(nlohmann::json& document)
+    Vector2 Vector2::ImportJson(const nlohmann::json& document)
     {
         return Vector2(
             document["x"].get<float>(),

@@ -188,7 +188,7 @@ namespace te
         _scale.ExportJson(document["scale"]);
     }
 
-    Transform Transform::ImportJson(nlohmann::json& document)
+    Transform Transform::ImportJson(const nlohmann::json& document)
     {
         return {
             Vector3::ImportJson(document["position"]),

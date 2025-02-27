@@ -426,7 +426,7 @@ namespace te
         };
     }
 
-    Matrix4 Matrix4::ImportJson(nlohmann::json& document)
+    Matrix4 Matrix4::ImportJson(const nlohmann::json& document)
     {
         return Matrix4(
             document[0][0].get<float>(), document[0][1].get<float>(), document[0][2].get<float>(), document[0][3].get<float>(),

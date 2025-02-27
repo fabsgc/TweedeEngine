@@ -392,7 +392,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Quaternion from a json document */
-        static Quaternion ImportJson(nlohmann::json& document);
+        static Quaternion ImportJson(const nlohmann::json& document);
     };
 }
 

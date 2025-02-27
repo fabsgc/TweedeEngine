@@ -63,7 +63,7 @@ namespace te
         document = { { "x", x }, { "y", y }, { "z", z } };
     }
 
-    Vector3 Vector3::ImportJson(nlohmann::json& document)
+    Vector3 Vector3::ImportJson(const nlohmann::json& document)
     {
         return Vector3(
             document["x"].get<float>(),

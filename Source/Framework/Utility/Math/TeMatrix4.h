@@ -502,7 +502,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a Vector3 from a json document */
-        static Matrix4 ImportJson(nlohmann::json& document);
+        static Matrix4 ImportJson(const nlohmann::json& document);
 
     private:
         float m[4][4];

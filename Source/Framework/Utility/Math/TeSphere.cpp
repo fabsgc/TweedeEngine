@@ -103,7 +103,7 @@ namespace te
         _center.ExportJson(document["center"]);
     }
 
-    Sphere Sphere::ImportJson(nlohmann::json& document)
+    Sphere Sphere::ImportJson(const nlohmann::json& document)
     {
         return Sphere(
             Vector3::ImportJson(document["center"]),

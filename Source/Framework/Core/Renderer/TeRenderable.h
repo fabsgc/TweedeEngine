@@ -257,7 +257,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a renderable from a json document */
-        static SPtr<Renderable> ImportJson(nlohmann::json& document);
+        static SPtr<Renderable> ImportJson(const nlohmann::json& document);
 
     protected:
         friend class CRenderable;

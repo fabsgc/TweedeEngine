@@ -45,7 +45,7 @@ namespace te
         _sphere.ExportJson(document["sphere"]);
     }
 
-    Bounds Bounds::ImportJson(nlohmann::json& document)
+    Bounds Bounds::ImportJson(const nlohmann::json& document)
     {
         return Bounds(
             AABox::ImportJson(document["box"]),

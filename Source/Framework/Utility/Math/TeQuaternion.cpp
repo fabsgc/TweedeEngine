@@ -413,7 +413,7 @@ namespace te
         document = { { "x", x }, { "y", y }, { "z", z }, { "w", w } };
     }
 
-    Quaternion Quaternion::ImportJson(nlohmann::json& document)
+    Quaternion Quaternion::ImportJson(const nlohmann::json& document)
     {
         return Quaternion(
             document["w"].get<float>(),

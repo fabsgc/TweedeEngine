@@ -17,7 +17,7 @@ namespace te
         void ExportJson(nlohmann::json& document) const;
 
         /** Creates a SubMesh from a json document */
-        static SubMesh ImportJson(nlohmann::json& document);
+        static SubMesh ImportJson(const nlohmann::json& document);
 
         UINT32 IndexOffset = 0;
         UINT32 IndexCount = 0;

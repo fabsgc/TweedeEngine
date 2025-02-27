@@ -363,7 +363,7 @@ namespace te
         // TODO Serialization
     }
 
-    SPtr<Skeleton> Skeleton::ImportJson(nlohmann::json& document)
+    SPtr<Skeleton> Skeleton::ImportJson(const nlohmann::json& document)
     {
         // TODO Serialization
 

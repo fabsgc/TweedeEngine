@@ -134,11 +134,11 @@ namespace te
         _internal->ExportJson(document["light"]);
     }
 
-    bool CLight::ImportJson(nlohmann::json& document, CLight& object)
+    bool CLight::ImportJson(const nlohmann::json& document, CLight& object)
     {
         if (document.contains("light"))
         {
-            auto& lightDoc = document["light"];
+            const auto& lightDoc = document["light"];
 
             if (lightDoc.contains("type"))
                 object.SetType(static_cast<Light::Type>(lightDoc["type"].get<uint32_t>()));

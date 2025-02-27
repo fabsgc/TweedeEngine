@@ -70,7 +70,7 @@ namespace te
         }
     }
 
-    MeshProperties MeshProperties::ImportJson(nlohmann::json& document)
+    MeshProperties MeshProperties::ImportJson(const nlohmann::json& document)
     {
         const uint32_t numVertices = document["numVertices"].get<uint32_t>();
         const uint32_t numIndices = document["numIndices"].get<uint32_t>();

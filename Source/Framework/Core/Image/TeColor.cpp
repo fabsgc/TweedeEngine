@@ -266,7 +266,7 @@ namespace te
         document = { { "r", r }, { "g", g }, { "b", b }, { "a", a } };
     }
 
-    Color Color::ImportJson(nlohmann::json& document)
+    Color Color::ImportJson(const nlohmann::json& document)
     {
         return Color(
             document["r"].get<float>(),
