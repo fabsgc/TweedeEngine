@@ -194,9 +194,6 @@ namespace te
 
             case CoreType::TID_CSkybox:
             {
-                //if (SceneManager::Instance().FindComponents<CSkybox>().size() > 0)
-                //    break;
-
                 HSkybox component = this->AddComponent<CSkybox>();
                 component->Clone(co->GetHandle());
                 component->Initialize();
@@ -1407,10 +1404,28 @@ namespace te
 
                 switch (type)
                 {
+                    case CoreType::TID_CCamera:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CCamera>());
+                    }
+                    break;
+
+                    case CoreType::TID_CCameraFlyer:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CCameraFlyer>());
+                    }
+                    break;
+
+                    case CoreType::TID_CCameraUI:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CCameraUI>());
+                    }
+                    break;
+
                     case CoreType::TID_CLight:
                     {
-                        Light::Type type = static_cast<Light::Type>(element.value()["light"]["type"].get<uint32_t>());
-                        component = static_object_cast<Component>(so->AddComponent<CLight>(type));
+                        const Light::Type lightType = static_cast<Light::Type>(element.value()["light"]["type"].get<uint32_t>());
+                        component = static_object_cast<Component>(so->AddComponent<CLight>(lightType));
                     }
                     break;
 
@@ -1423,6 +1438,144 @@ namespace te
                     case CoreType::TID_CSkybox:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CSkybox>());
+                    }
+                    break;
+
+                    case CoreType::TID_CAnimation:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CAnimation>());
+                    }
+                    break;
+
+                    case CoreType::TID_CBone:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CBone>());
+                    }
+                    break;
+
+                    case CoreType::TID_CAudioListener:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CAudioListener>());
+                    }
+                    break;
+
+                    case CoreType::TID_CAudioSource:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CAudioSource>());
+                    }
+                    break;
+
+                    case CoreType::TID_CRigidBody:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CRigidBody>());
+                    }
+                    break;
+
+                    case CoreType::TID_CMeshSoftBody:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CMeshSoftBody>());
+                    }
+                    break;
+
+                    case CoreType::TID_CEllipsoidSoftBody:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CEllipsoidSoftBody>());
+                    }
+                    break;
+
+                    case CoreType::TID_CRopeSoftBody:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CRopeSoftBody>());
+                    }
+                    break;
+
+                    case CoreType::TID_CPatchSoftBody:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CPatchSoftBody>());
+                    }
+                    break;
+
+                    case CoreType::TID_CConeTwistJoint:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CConeTwistJoint>());
+                    }
+                    break;
+
+                    case CoreType::TID_CD6Joint:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CD6Joint>());
+                    }
+                    break;
+
+                    case CoreType::TID_CHingeJoint:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CHingeJoint>());
+                    }
+                    break;
+
+                    case CoreType::TID_CSliderJoint:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CSliderJoint>());
+                    }
+                    break;
+
+                    case CoreType::TID_CSphericalJoint:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CSphericalJoint>());
+                    }
+                    break;
+
+                    case CoreType::TID_CBoxCollider:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CBoxCollider>());
+                    }
+                    break;
+
+                    case CoreType::TID_CCapsuleCollider:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CCapsuleCollider>());
+                    }
+                    break;
+
+                    case CoreType::TID_CConeCollider:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CConeCollider>());
+                    }
+                    break;
+
+                    case CoreType::TID_CCylinderCollider:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CCylinderCollider>());
+                    }
+                    break;
+
+                    case CoreType::TID_CHeightFieldCollider:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CHeightFieldCollider>());
+                    }
+                    break;
+
+                    case CoreType::TID_CMeshCollider:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CMeshCollider>());
+                    }
+                    break;
+
+                    case CoreType::TID_CPlaneCollider:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CPlaneCollider>());
+                    }
+                    break;
+
+                    case CoreType::TID_CSphereCollider:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CSphereCollider>());
+                    }
+                    break;
+
+                    case CoreType::TID_CDecal:
+                    {
+                        component = static_object_cast<Component>(so->AddComponent<CDecal>());
                     }
                     break;
 
