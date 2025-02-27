@@ -87,6 +87,7 @@ add_subdirectory (Plugins/TeProjectImporter)
 add_subdirectory (Plugins/TeProjectExporter)
 
 add_subdirectory (Examples)
+add_subdirectory (Tests)
 
 ## Install
 install (
@@ -106,5 +107,6 @@ execute_process (COMMAND ${CMAKE_COMMAND} -E make_directory "${APP_ROOT_DIR}/bin
 
 if (WIN32)
     add_custom_target(AlwaysBuild ALL DEPENDS "${APP_ROOT_DIR}/Source/CMake/ForceBuild.cpp")
+    set_property (TARGET AlwaysBuild PROPERTY FOLDER Others)
     install_pre_build_data(AlwaysBuild)
 endif()
