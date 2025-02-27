@@ -71,7 +71,8 @@ namespace te
         template<bool skinned>
         static const ShaderVariation& GetVariation()
         {
-            ShaderVariation variation = ShaderVariation(
+            static ShaderVariation variation;
+            variation = ShaderVariation(
             {
                 ShaderVariation::Param("SKINNED", skinned)
             });
@@ -120,7 +121,8 @@ namespace te
         template<bool skinned>
         static const ShaderVariation& GetVariation()
         {
-            ShaderVariation variation = ShaderVariation(
+            static ShaderVariation variation;
+            variation = ShaderVariation(
             {
                 ShaderVariation::Param("SKINNED", skinned)
             });
