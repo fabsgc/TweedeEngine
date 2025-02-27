@@ -101,6 +101,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** Fills a light component from a json document */
+        static bool ImportJson(nlohmann::json& document, CLight& light);
+
     protected:
         mutable SPtr<Light> _internal;
 

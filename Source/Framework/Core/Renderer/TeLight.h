@@ -176,9 +176,6 @@ namespace te
         /** Export the instance in a Json object */
         void ExportJson(nlohmann::json& document) const;
 
-        /** Creates a renderable from a json document */
-        static SPtr<Light> ImportJson(nlohmann::json& document);
-
     protected:
         friend class CLight;
 

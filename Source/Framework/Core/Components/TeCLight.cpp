@@ -132,7 +132,39 @@ namespace te
 
         document["type"] = GetComponentType();
         _internal->ExportJson(document["light"]);
+    }
 
-        // TODO serialization
+    bool CLight::ImportJson(nlohmann::json& document, CLight& object)
+    {
+        if (document.contains("light"))
+        {
+            auto& lightDoc = document["light"];
+
+            if (lightDoc.contains("type"))
+                object.SetType(static_cast<Light::Type>(lightDoc["type"].get<uint32_t>()));
+
+            if (lightDoc.contains("castShadows"))
+                object.SetCastShadows(lightDoc["castShadows"].get<bool>());
+
+            if (lightDoc.contains("spotAngle"))
+                object.SetSpotAngle(Degree(lightDoc["spotAngle"].get<float>()));
+
+            if (lightDoc.contains("shadowBias"))
+                object.SetShadowBias(lightDoc["shadowBias"].get<float>());
+
+            if (lightDoc.contains("intensity"))
+                object.SetIntensity(lightDoc["intensity"].get<float>());
+
+            if (lightDoc.contains("castShadowType"))
+                object.SetCastShadowsType(static_cast<Light::CastShadowsType>(lightDoc["castShadowType"].get<uint32_t>()));
+
+            if (lightDoc.contains("layer"))
+                object.SetLayer(lightDoc["layer"].get<UINT32>());
+
+            if (lightDoc.contains("color"))
+                object.SetColor(Color::ImportJson(lightDoc["color"]));
+        }
+
+        return true;
     }
 }

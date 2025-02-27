@@ -1426,6 +1426,7 @@ namespace te
                     {
                         const Light::Type lightType = static_cast<Light::Type>(element.value()["light"]["type"].get<uint32_t>());
                         component = static_object_cast<Component>(so->AddComponent<CLight>(lightType));
+                        CLight::ImportJson(element.value(), *static_cast<CLight*>(component.Get()));
                     }
                     break;
 

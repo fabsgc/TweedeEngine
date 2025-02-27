@@ -225,9 +225,4 @@ namespace te
 
         _color.ExportJson(document["color"]);
     }
-
-    SPtr<Light> Light::ImportJson(nlohmann::json& document)
-    {
-        return nullptr;
-    }
 }
