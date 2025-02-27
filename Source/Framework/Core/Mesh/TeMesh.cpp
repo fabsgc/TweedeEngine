@@ -74,7 +74,6 @@ namespace te
     {
         const uint32_t numVertices = document["numVertices"].get<uint32_t>();
         const uint32_t numIndices = document["numIndices"].get<uint32_t>();
-        const uint32_t numSubMeshes = document["numSubMeshes"].get<uint32_t>();
 
         Vector<SubMesh> subMeshes;
         for (auto& subMesh : document["subMeshes"])

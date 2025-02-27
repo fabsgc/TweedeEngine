@@ -25,11 +25,11 @@ namespace te
         /** Data container for a single virtual button. */
         struct ButtonData
         {
-            VirtualButton Button;
-            ButtonState State;
-            UINT64 Timestamp;
-            UINT64 UpdateFrameIdx;
-            bool AllowRepeat;
+            VirtualButton Button = {};
+            ButtonState State = ButtonState::Off;
+            UINT64 Timestamp = 0;
+            UINT64 UpdateFrameIdx = 0;
+            bool AllowRepeat = false;
         };
 
         /** Contains button data for a specific input device. */
@@ -41,9 +41,9 @@ namespace te
         /** Data container for a virtual button event. */
         struct VirtualButtonEvent
         {
-            VirtualButton Button;
-            ButtonState State;
-            UINT32 DeviceIdx;
+            VirtualButton Button = {};
+            ButtonState State = ButtonState::Off;
+            UINT32 DeviceIdx = 0;
         };
 
     public:

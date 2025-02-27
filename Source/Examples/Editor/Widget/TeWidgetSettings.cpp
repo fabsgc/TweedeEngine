@@ -110,7 +110,6 @@ namespace te
 
             // Animations paused
             {
-                bool animationsStarted = !gAnimationManager().IsPaused();
                 if (ImGuiExt::RenderOptionBool(animationsStarted, "##settings_animations_enable", "Enable Animations"))
                 {
                     gAnimationManager().SetPaused(!animationsStarted);

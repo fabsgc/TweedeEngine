@@ -89,11 +89,11 @@ namespace te
                 ResourceImportOptions importOptions;
                 importOptions.ResourceType = resourceMetaData->GetCoreType();
 
-                HResource resource = gResourceManager().Load<Resource>(resourcePath.generic_string(), importOptions);
-                if (resource.IsLoaded())
+                HResource res = gResourceManager().Load<Resource>(resourcePath.generic_string(), importOptions);
+                if (res.IsLoaded())
                 {
-                    object->AddResource(resource.Get());
-                    TE_DEBUG("Resource imported from the specified path : " + resource->GetPath().generic_string());
+                    object->AddResource(res.Get());
+                    TE_DEBUG("Resource imported from the specified path : " + res->GetPath().generic_string());
                 }
                 else
                 {
