@@ -416,7 +416,9 @@ namespace te
         SPtr<SceneObject> sceneObjectPtr = te_core_ptr<SceneObject>(rawPtr);
         sceneObjectPtr->SetThisPtr(sceneObjectPtr);
 
-        sceneObjectPtr->SetUUID(UUIDGenerator::GenerateRandom());
+        if (sceneObjectPtr->GetUUID().Empty())
+            sceneObjectPtr->SetUUID(UUIDGenerator::GenerateRandom());
+
         sceneObjectPtr->SetColor(Color::GenerateRandom(0.1f, 1.0f));
 
         HSceneObject sceneObject = static_object_cast<SceneObject>(
@@ -1243,8 +1245,8 @@ namespace te
     {
         component->_thisHandle = component;
 
-        if (component->_UUID.Empty())
-            component->_UUID = UUIDGenerator::GenerateRandom();
+        if (component->GetUUID().Empty())
+            component->SetUUID(UUIDGenerator::GenerateRandom());
 
         component->_gameObjectColor = Color::GenerateRandom(0.1f, 1.0f);
         component->Instantiate();
@@ -1433,6 +1435,7 @@ namespace te
                     case CoreType::TID_CRenderable:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CRenderable>());
+                        CRenderable::ImportJson(element.value(), *static_cast<CRenderable*>(component.Get()));
                     }
                     break;
 
