@@ -16,6 +16,14 @@ namespace te::serialization
         return slugify(resource->GetUUID().ToString() + "_" + resource->GetName());
     }
 
+    inline UUID GetResourceUUID(const String& resourceName)
+    {
+        size_t pos = resourceName.find_first_of('_');
+        if (pos == String::npos)
+            return UUID();
+        return UUID(resourceName.substr(0, pos));
+    }
+
     inline std::filesystem::path GetResourcepath(const std::filesystem::path& workingDirectory, const String& name)
     {
         std::filesystem::path resourcePath = workingDirectory;
