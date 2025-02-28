@@ -1,7 +1,10 @@
 #include "Components/TeCRenderable.h"
+
 #include "Scene/TeSceneManager.h"
 #include "Components/TeCAnimation.h"
 #include "Renderer/TeRenderer.h"
+#include "Serialization/TeUtility.h"
+#include "Resources/TeResourceManager.h"
 
 namespace te
 {
@@ -170,8 +173,59 @@ namespace te
         Component::ExportJson(document);
 
         document["type"] = GetComponentType();
-        _internal->ExportJson(document["renderable"]);
+        
+        if (_internal)
+        {
+            auto& renderableDoc = document["renderable"];
+            renderableDoc["mesh"] = _internal->GetMesh() ? serialization::GetResourceName(_internal->GetMesh().get()) : "";
+            renderableDoc["zPrepassMesh"] = _internal->GetZPrepassMesh() ? serialization::GetResourceName(_internal->GetMesh().get()) : "";
 
-        // TODO serialization
+            for (const auto& material : _internal->GetMaterials())
+            {
+                renderableDoc["materials"].push_back(serialization::GetResourceName(material.get()));
+            }
+
+            renderableDoc["layer"] = _internal->GetLayer();
+        }
+    }
+
+    bool CRenderable::ImportJson(const nlohmann::json& document, CRenderable& renderable)
+    {
+        Component::ImportJson(document, renderable);
+
+        if (document.contains("renderable"))
+        {
+            const auto& renderableDoc = document["renderable"];
+            if (renderableDoc.contains("mesh"))
+            {
+                HMesh mesh = static_resource_cast<Mesh>(gResourceManager().Get(serialization::GetResourceUUID(renderableDoc["mesh"].get<String>())));
+                if (mesh.IsLoaded())
+                    renderable._internal->SetMesh(mesh.GetInternalPtr());
+            }
+            if (renderableDoc.contains("zPrepassMesh"))
+            {
+                HZPrepassMesh mesh = static_resource_cast<ZPrepassMesh>(gResourceManager().Get(serialization::GetResourceUUID(renderableDoc["zPrepassMesh"].get<String>())));
+                if (mesh.IsLoaded())
+                    renderable._internal->SetZPrepassMesh(mesh.GetInternalPtr());
+            }
+            if (renderableDoc.contains("materials"))
+            {
+                uint32_t index = 0;
+                for (const auto& material : renderableDoc["materials"])
+                {
+                    HMaterial mat = static_resource_cast<Material>(gResourceManager().Get(serialization::GetResourceUUID(material.get<String>())));
+                    if (mat.IsLoaded())
+                        renderable._internal->SetMaterial(index, mat.GetInternalPtr());
+
+                    index++;
+                }
+            }
+            if (renderableDoc.contains("layer"))
+            {
+                renderable._internal->SetLayer(renderableDoc["layer"].get<UINT32>());
+            }
+        }
+
+        return true;
     }
 }

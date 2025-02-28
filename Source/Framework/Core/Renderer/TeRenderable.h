@@ -252,13 +252,6 @@ namespace te
         /**	Creates a new renderable instance without initializing it. */
         static SPtr<Renderable> CreateEmpty();
 
-    public:
-        /** Export the instance in a Json object */
-        void ExportJson(nlohmann::json& document) const;
-
-        /** Creates a renderable from a json document */
-        static SPtr<Renderable> ImportJson(const nlohmann::json& document);
-
     protected:
         friend class CRenderable;
 

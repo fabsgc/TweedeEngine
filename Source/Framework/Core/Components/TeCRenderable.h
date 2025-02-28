@@ -178,6 +178,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** Fills a renderable component from a json document */
+        static bool ImportJson(const nlohmann::json& document, CRenderable& renderable);
+
     protected:
         /** Registers an Animation component that will be used for animating the renderable's mesh. */
         void RegisterAnimation(const HAnimation& animation);

@@ -562,26 +562,4 @@ namespace te
 
         _oldActive = _active;
     }
-
-    void Renderable::ExportJson(nlohmann::json& document) const
-    {
-        document["mesh"] = _mesh ? serialization::GetResourceName(_mesh.get()) : "";
-        document["zPrepassMesh"] = _ZPrepassMesh ? serialization::GetResourceName(_ZPrepassMesh.get()) : "";
-
-        for (const auto& material : _materials)
-        {
-            document["materials"].push_back(serialization::GetResourceName(material.get()));
-        }
-
-        document["layer"] = _layer;
-
-        // TODO serialization
-    }
-
-    SPtr<Renderable> Renderable::ImportJson(const nlohmann::json& document)
-    {
-        // TODO serialization
-
-        return nullptr; 
-    }
 }
