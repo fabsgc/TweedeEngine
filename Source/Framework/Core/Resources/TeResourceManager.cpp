@@ -302,22 +302,26 @@ namespace te
 
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj, const UUID& UUID)
     {
-        if (UUID.Empty())
+        if (UUID.Empty() && obj->GetUUID().Empty())
         {
             return _createResourceHandle(obj);
         }
-
-        ResourceHandle<Resource> hr = ResourceHandle<Resource>(obj, UUID);
-
-        if (_loadedResources.find(UUID) == _loadedResources.end())
+        else if (!UUID.Empty())
         {
-            _loadingResourceMutex.lock();
-            _loadedResources[UUID] = static_resource_cast<Resource>(hr);
-            _loadingResourceMutex.unlock();
-            OnResourceLoaded(Get(UUID));
+            obj->SetUUID(UUID);
         }
 
-        return static_resource_cast<Resource>(Get(UUID));
+        ResourceHandle<Resource> hr = ResourceHandle<Resource>(obj, obj->GetUUID());
+
+        if (_loadedResources.find(obj->GetUUID()) == _loadedResources.end())
+        {
+            _loadingResourceMutex.lock();
+            _loadedResources[obj->GetUUID()] = static_resource_cast<Resource>(hr);
+            _loadingResourceMutex.unlock();
+            OnResourceLoaded(Get(obj->GetUUID()));
+        }
+
+        return static_resource_cast<Resource>(Get(obj->GetUUID()));
     }
 
     TE_CORE_EXPORT ResourceManager& gResourceManager()
