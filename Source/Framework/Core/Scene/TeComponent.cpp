@@ -149,9 +149,19 @@ namespace te
 
     void Component::ExportJson(nlohmann::json& document) const
     {
+        document["name"] = GetName();
+        document["uuid"] = GetUUID().ToString();
         document["flags"] = _flags;
         document["notifyFlags"] = _notifyFlags;
+    }
 
-        // TODO serialization
+    bool Component::ImportJson(const nlohmann::json& document, Component& component)
+    {
+        component.SetName(document["name"].get<String>());
+        component.SetUUID(UUID(document["uuid"].get<String>()));
+        component._flags = document["flags"];
+        component._notifyFlags = document["notifyFlags"];        
+
+        return true;
     }
 }

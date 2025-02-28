@@ -120,6 +120,9 @@ namespace te
         /** Export the instance in a Json object */
         virtual void ExportJson(nlohmann::json& document) const;
 
+        /** Fills a component from a json document */
+        static bool ImportJson(const nlohmann::json& document, Component& renderable);
+
     protected:
         Component(HSceneObject parent, CoreType type);
         virtual ~Component() = 0;
@@ -198,7 +201,7 @@ namespace te
         HComponent _thisHandle;
         UINT32 _notifyFlags;
         ComponentFlags _flags;
-        UINT32 _sceneManagerId;
+        UINT32 _sceneManagerId; // not used ?
 
         HSceneObject _parent;
 
