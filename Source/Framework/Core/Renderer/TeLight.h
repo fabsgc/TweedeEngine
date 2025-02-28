@@ -172,10 +172,6 @@ namespace te
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
 
-    public:
-        /** Export the instance in a Json object */
-        void ExportJson(nlohmann::json& document) const;
-
     protected:
         friend class CLight;
 

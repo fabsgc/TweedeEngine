@@ -131,11 +131,26 @@ namespace te
         Component::ExportJson(document);
 
         document["type"] = GetComponentType();
-        _internal->ExportJson(document["light"]);
+
+        if (_internal)
+        {
+            auto& lightDoc = document["light"];
+            lightDoc["type"] = static_cast<uint32_t>(_internal->GetType());
+            lightDoc["castShadows"] = _internal->GetCastShadows();
+            lightDoc["castShadowsType"] = static_cast<uint32_t>(_internal->GetCastShadowsType());
+            lightDoc["spotAngle"] = _internal->GetSpotAngle().ValueRadians();
+            lightDoc["shadowBias"] = _internal->GetShadowBias();
+            lightDoc["intensity"] = _internal->GetIntensity();
+            lightDoc["layer"] = _internal->GetLayer();
+            
+            _internal->GetColor().ExportJson(lightDoc["color"]);
+        }
     }
 
     bool CLight::ImportJson(const nlohmann::json& document, CLight& object)
     {
+        Component::ImportJson(document, object);
+
         if (document.contains("light"))
         {
             const auto& lightDoc = document["light"];
