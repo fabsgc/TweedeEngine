@@ -32,11 +32,12 @@ namespace te
         Project* project = static_cast<Project*>(object);
         BinaryWriter* serializer = te_new<BinaryWriter>(filePath);
 
+        const std::filesystem::path resourcesPath = serialization::GetProjectResourcesPath(workingDirectory);
+        std::filesystem::remove_all(resourcesPath);
+        std::filesystem::create_directory(resourcesPath);
+        
         project->SetPath(filePath);
         project->Serialize(serializer);
-
-        const std::filesystem::path resourcesPath = serialization::GetProjectResourcesPath(workingDirectory);
-        std::filesystem::create_directory(resourcesPath);
 
         for (auto& resource : project->GetAllResources())
         {
