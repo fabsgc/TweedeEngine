@@ -137,6 +137,7 @@ namespace te
     HResource ResourceManager::Get(const UUID& uuid)
     {
         HResource resource;
+        RecursiveLock lock(_loadingResourceMutex);
 
         auto iterFind = _loadedResources.find(uuid);
         if (iterFind != _loadedResources.end())
@@ -187,8 +188,8 @@ namespace te
     bool ResourceManager::GetUUIDFromFile(const std::filesystem::path& filePath, UUID& uuid)
     {
         std::error_code e;
-        auto path = std::filesystem::weakly_canonical(filePath, e);
-        String absolutePath = path.generic_string();
+        const auto absolutePath = std::filesystem::weakly_canonical(filePath, e).generic_string();
+
         RecursiveLock lock(_loadingUuidMutex);
 
         auto iterFind = _fileToUUID.find(absolutePath);
@@ -228,7 +229,7 @@ namespace te
         std::error_code e;
         const auto absolutePath = std::filesystem::weakly_canonical(filePath, e).generic_string();
 
-        _loadingResourceMutex.lock();
+        RecursiveLock lock(_loadingResourceMutex);
 
         const auto iterFind = _UUIDToFile.find(uuid);
         if (iterFind != _UUIDToFile.end())
@@ -252,13 +253,11 @@ namespace te
             _UUIDToFile[uuid] = absolutePath;
             _fileToUUID[absolutePath] = uuid;
         }
-
-        _loadingResourceMutex.unlock();
     }
 
     void ResourceManager::UnregisterResource(const UUID& uuid)
     {
-        _loadingResourceMutex.lock();
+        RecursiveLock lock(_loadingResourceMutex);
 
         auto iterChunkUUID = _resourcesChunks.find(uuid);
         if (iterChunkUUID != _resourcesChunks.end())
@@ -280,8 +279,6 @@ namespace te
                 break;
             }
         }
-
-        _loadingResourceMutex.unlock();
     }
 
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj)
@@ -305,9 +302,11 @@ namespace te
 
         if (_loadedResources.find(obj->GetUUID()) == _loadedResources.end())
         {
-            _loadingResourceMutex.lock();
-            _loadedResources[obj->GetUUID()] = static_resource_cast<Resource>(hr);
-            _loadingResourceMutex.unlock();
+            {
+                RecursiveLock lock(_loadingResourceMutex);
+                _loadedResources[obj->GetUUID()] = static_resource_cast<Resource>(hr);
+            }
+
             OnResourceLoaded(Get(obj->GetUUID()));
         }
 
