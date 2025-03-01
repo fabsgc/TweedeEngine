@@ -41,6 +41,9 @@ namespace te
         /** @copydoc Renderable::GetMesh */
         SPtr<Mesh> GetMesh() const { return _internal->GetMesh(); }
 
+        /** @copydoc Renderable::GetZPrepassMesh */
+        SPtr<Mesh> GetZPrepassMesh() const { return _internal->GetZPrepassMesh(); }
+
         /** @copydoc Renderable::SetMaterial */
         void SetMaterial(UINT32 idx, HMaterial material) { _internal->SetMaterial(idx, material.GetInternalPtr()); }
 
@@ -123,7 +126,7 @@ namespace te
         void SetUseForZPrepass(bool use) { _internal->SetUseForZPrepass(use); }
 
         /** @copydoc Renderable::GetUseForZPrepass */
-        float GetUseForZPrepass() const { return _internal->GetUseForZPrepass(); }
+        bool GetUseForZPrepass() const { return _internal->GetUseForZPrepass(); }
 
         /** @copydoc Renderable::SetLayer */
         void SetLayer(UINT32 layer) { _internal->SetLayer(layer); }
@@ -180,6 +183,13 @@ namespace te
 
         /** Fills a renderable component from a json document */
         static bool ImportJson(const nlohmann::json& document, CRenderable& renderable);
+
+    public:
+        /** @copydoc Component::OnResourceModifier */
+        void OnResourceModified(const HResource& resource) override;
+
+        /** @copydoc Component::OnResourceDestroyed */
+        void OnResourceDestroyed(const UUID& uuid) override;
 
     protected:
         /** Registers an Animation component that will be used for animating the renderable's mesh. */

@@ -191,6 +191,16 @@ namespace te
         void DestroyInternal(GameObjectHandleBase & handle, bool immediate) override;
 
     private:
+        /** Called as soon as a resource is modified inside the ResourceManager -> usefull to update resources used by the component */
+        virtual void OnResourceModified(const HResource& resource) {}
+
+        /** Called as soon as a resource is deleted inside the ResourceManager -> usefull to unbind resources used by the component */
+        virtual void OnResourceDestroyed(const UUID& uuid) {}
+
+        HEvent _onResourceModified;
+        HEvent _onResourceDestroyed;
+
+    private:
         /** We can't allow user to create a copy of a component without using engine API */
         Component(const Component& other) = delete;
 

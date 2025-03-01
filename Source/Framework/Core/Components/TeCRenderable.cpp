@@ -228,4 +228,54 @@ namespace te
 
         return true;
     }
+
+    void CRenderable::OnResourceModified(const HResource& resource)
+    {
+        if (_internal)
+            return;
+
+        if (GetMesh() && GetMesh()->GetUUID() == resource->GetUUID())
+        {
+            SetMesh(static_resource_cast<Mesh>(resource));
+        }
+        else if (GetZPrepassMesh()->GetUUID() == resource->GetUUID())
+        {
+            SetZPrepassMesh(static_resource_cast<ZPrepassMesh>(resource));
+        }
+        else
+        {
+            for (UINT32 i = 0; i < _internal->GetNumMaterials(); i++)
+            {
+                if (GetMaterial(i)->GetUUID() == resource->GetUUID())
+                {
+                    SetMaterial(i, static_resource_cast<Material>(resource));
+                }
+            }
+        }
+    }
+
+    void CRenderable::OnResourceDestroyed(const UUID& uuid)
+    {
+        if (_internal)
+            return;
+
+        if (GetMesh() && GetMesh()->GetUUID() == uuid)
+        {
+            SetMesh(nullptr);
+        }
+        else if (GetZPrepassMesh()->GetUUID() == uuid)
+        {
+            SetZPrepassMesh(nullptr);
+        }
+        else
+        {
+            for (UINT32 i = 0; i < _internal->GetNumMaterials(); i++)
+            {
+                if (GetMaterial(i)->GetUUID() == uuid)
+                {
+                    SetMaterial(i, nullptr);
+                }
+            }
+        }
+    }
 }

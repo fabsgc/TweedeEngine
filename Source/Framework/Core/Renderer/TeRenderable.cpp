@@ -85,6 +85,11 @@ namespace te
             _materials.resize(numSubMeshes);
             _subMeshesBounds.resize(numSubMeshes);
         }
+        else
+        {
+            _materials.clear();
+            _subMeshesBounds.clear();
+        }
 
         _boundsDirty = true;
         _subMeshesBoundsDirty = true;
