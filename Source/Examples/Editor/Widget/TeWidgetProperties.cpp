@@ -3104,7 +3104,7 @@ namespace te
                 textureImportOptions.MaxMip = _fileBrowser.Data.TexParam.MaxMips;
                 textureImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath, _fileBrowser.Data.TexParam.Compress);
 
-                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, true);
+                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, ResourceManager::LoadingMode::Force);
                 if (texture.IsLoaded())
                 {
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));

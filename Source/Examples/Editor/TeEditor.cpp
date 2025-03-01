@@ -1019,7 +1019,7 @@ namespace te
         gResourceManager().Release(_project);
         LoadEngineResources();
 
-        _project = gResourceManager().Load<Project>(path, ProjectImportOptions(), true);
+        _project = gResourceManager().Load<Project>(path, ProjectImportOptions(), ResourceManager::LoadingMode::Force);
 
         if (!_project.IsLoaded())
         {

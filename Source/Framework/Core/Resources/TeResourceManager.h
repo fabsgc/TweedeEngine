@@ -22,6 +22,14 @@ namespace te
         };
 
     public:
+        enum class LoadingMode : uint32_t
+        {
+            Force = 0x1, /** Force to load the resource even if it is already loaded, create a new resource */
+            Replace = 0x2, /** Force to load the resource even if it is already loaded, replace the existing resource */
+            KeepExisting = 0x3 /** Keep the existing resource if it is already loaded, return a handle to the already existing one */
+        };
+
+    public:
         ResourceManager() = default;
 
         virtual ~ResourceManager();
@@ -43,13 +51,13 @@ namespace te
 
     public:
         template <class T>
-        ResourceHandle<T> Load(const std::filesystem::path& filePath, const ImportOptions& options, bool force = false)
+        ResourceHandle<T> Load(const std::filesystem::path& filePath, const ImportOptions& options, LoadingMode mode = LoadingMode::KeepExisting)
         {
             UUID uuid;
             ResourceHandle<T> resourceHandle;
             GetUUIDFromFile(filePath, uuid);
 
-            if (uuid.Empty() || force)
+            if (uuid.Empty() || mode == LoadingMode::Force)
             {
                 resourceHandle = gImporter().Import<T>(filePath, options);
 
@@ -75,7 +83,7 @@ namespace te
          * By using this importer, because non primary resources are not linked to a file, we need to 
          * find associated subResources and return a MultiResource instance
         */
-        SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, bool force = false);
+        SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, LoadingMode mode = LoadingMode::KeepExisting);
 
         /** Updates the internal resource the handle is pointing to. */
         void Update(HResource& handle, const SPtr<Resource>& resource);

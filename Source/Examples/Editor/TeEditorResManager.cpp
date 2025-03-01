@@ -4,15 +4,9 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(EditorResManager)
 
-    EditorResManager::EditorResManager()
-    { }
-
-    EditorResManager::~EditorResManager()
-    { }
-
-    SPtr<MultiResource> EditorResManager::LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, bool force)
+    SPtr<MultiResource> EditorResManager::LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, ResourceManager::LoadingMode mode)
     {
-        SPtr<MultiResource> resources = gResourceManager().LoadAll(filePath, options, force);
+        SPtr<MultiResource> resources = gResourceManager().LoadAll(filePath, options, mode);
         Vector<SubResource> output;
 
         for(auto& subRes : resources->Entries)
@@ -27,9 +21,6 @@ namespace te
 
         return te_shared_ptr_new<MultiResource>(output);
     }
-
-    void EditorResManager::OnStartUp()
-    { }
 
     void EditorResManager::OnShutDown()
     { 

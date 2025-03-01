@@ -55,22 +55,23 @@ namespace te
     public:
         TE_MODULE_STATIC_HEADER_MEMBER(EditorResManager)
 
-        EditorResManager();
-        virtual ~EditorResManager();
+        EditorResManager() = default;
+
+        virtual ~EditorResManager() = default;
 
         /** @copydoc Module::OnStartUp */
-        void OnStartUp() override;
+        void OnStartUp() override {}
 
         /** @copydoc Module::OnShutDown */
         void OnShutDown() override;
 
         /** copydoc ResourceManager::LoadAll */
-        SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, bool force = false);
+        SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, ResourceManager::LoadingMode mode = ResourceManager::LoadingMode::KeepExisting);
 
         template <class T>
-        ResourceHandle<T> Load(const std::filesystem::path& filePath, const ImportOptions& options, bool force = false)
+        ResourceHandle<T> Load(const std::filesystem::path& filePath, const ImportOptions& options, ResourceManager::LoadingMode mode = ResourceManager::LoadingMode::KeepExisting)
         {
-            HResource resource = gResourceManager().Load<T>(filePath, options, force);
+            HResource resource = gResourceManager().Load<T>(filePath, options, mode);
 
             if (resource.IsLoaded())
             {

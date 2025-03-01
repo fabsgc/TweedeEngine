@@ -52,13 +52,13 @@ namespace te
         resource.ClearHandleData();
     }
 
-    SPtr<MultiResource> ResourceManager::LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, bool force)
+    SPtr<MultiResource> ResourceManager::LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, LoadingMode mode)
     {
         UUID uuid;
         SPtr<MultiResource> resources;
         GetUUIDFromFile(filePath, uuid);
 
-        if (uuid.Empty() || force)
+        if (uuid.Empty() || mode == LoadingMode::Force)
         {
             Vector<SubResourceUUID> subResourcesUUID;
             resources = gImporter().ImportAll(filePath, options);
