@@ -63,7 +63,7 @@ namespace te
             {
                 if (!_currentScript)
                 {
-                    _currentScript = gResourceManager().Load<Script>(resource.second->GetUUID()).GetInternalPtr();
+                    _currentScript = gResourceManager().Get<Script>(resource.second->GetUUID()).GetInternalPtr();
                     scriptUUID = _currentScript->GetUUID();
                 }
 
@@ -76,7 +76,7 @@ namespace te
                     scriptsOptions, ImGui::GetWindowContentRegionWidth() - 35.0f - offsetListScripts))
                 {
                     if (scriptUUID != _currentScript->GetUUID())
-                        _currentScript = gResourceManager().Load<Script>(scriptUUID).GetInternalPtr();
+                        _currentScript = gResourceManager().Get<Script>(scriptUUID).GetInternalPtr();
                 }
 
                 // You can delete a script

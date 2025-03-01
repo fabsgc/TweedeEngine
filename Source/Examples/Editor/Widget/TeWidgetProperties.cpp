@@ -516,7 +516,7 @@ namespace te
                     }
                     else if (audioClipUUID != ((clip.IsLoaded()) ? clip->GetUUID() : emptyAudioClip))
                     {
-                        audioSource->SetClip(gResourceManager().Load<AudioClip>(audioClipUUID));
+                        audioSource->SetClip(gResourceManager().Get<AudioClip>(audioClipUUID));
                         hasChanged = true;
                     }
                 }
@@ -702,7 +702,7 @@ namespace te
                     }
                     else if (meshUUID != ((mesh.IsLoaded()) ? mesh->GetUUID() : emptyMesh))
                     {
-                        softBody->SetMesh(gResourceManager().Load<PhysicsMesh>(meshUUID));
+                        softBody->SetMesh(gResourceManager().Get<PhysicsMesh>(meshUUID));
                         hasChanged = true;
                     }
                 }
@@ -1038,7 +1038,7 @@ namespace te
                     }
                     else if (meshUUID != ((mesh.IsLoaded()) ? mesh->GetUUID() : emptyMesh))
                     {
-                        collider->SetMesh(gResourceManager().Load<PhysicsMesh>(meshUUID));
+                        collider->SetMesh(gResourceManager().Get<PhysicsMesh>(meshUUID));
                         hasChanged = true;
                     }
                 }
@@ -1216,7 +1216,7 @@ namespace te
                     else if (textureUUID != ((heightField.IsLoaded()) ? texture->GetUUID() : emptyTexture))
                     {
                         // Find or create PhysicsHeightField associated to this texture
-                        collider->SetHeightField(GetOrCreatePhysicsHightFieldFromTex(gResourceManager().Load<Texture>(textureUUID).GetInternalPtr()));
+                        collider->SetHeightField(GetOrCreatePhysicsHightFieldFromTex(gResourceManager().Get<Texture>(textureUUID).GetInternalPtr()));
                         hasChanged = true;
                     }
                 }
@@ -2228,7 +2228,7 @@ namespace te
                 }
                 else if (meshUUID != ((mesh) ? mesh->GetUUID() : emptyMesh))
                 {
-                    renderable->SetMesh(gResourceManager().Load<Mesh>(meshUUID).GetInternalPtr());
+                    renderable->SetMesh(gResourceManager().Get<Mesh>(meshUUID).GetInternalPtr());
                     renderable->ClearAllMaterials();
                     hasChanged = true;
 
@@ -2272,7 +2272,7 @@ namespace te
                     }
                     else
                     {
-                        renderable->SetZPrepassMesh(gResourceManager().Load<ZPrepassMesh>(ZPrepassMeshUUID).GetInternalPtr());
+                        renderable->SetZPrepassMesh(gResourceManager().Get<ZPrepassMesh>(ZPrepassMeshUUID).GetInternalPtr());
                         hasChanged = true;
                     }
                 }
@@ -2404,7 +2404,7 @@ namespace te
                     }
                     else
                     {
-                        renderable->SetMaterial(i, gResourceManager().Load<Material>(materialUUID).GetInternalPtr());
+                        renderable->SetMaterial(i, gResourceManager().Get<Material>(materialUUID).GetInternalPtr());
                         hasChanged = true;
                     }
                 }
@@ -2561,7 +2561,7 @@ namespace te
                 }
                 else
                 {
-                    skybox->SetTexture(gResourceManager().Load<Texture>(textureUUID).GetInternalPtr());
+                    skybox->SetTexture(gResourceManager().Get<Texture>(textureUUID).GetInternalPtr());
                     hasChanged = true;
                 }
             }

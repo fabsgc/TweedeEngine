@@ -115,7 +115,7 @@ namespace te
                 }
                 else
                 {
-                    HTexture loadedTexture = gResourceManager().Load<Texture>(uuid);
+                    HTexture loadedTexture = gResourceManager().Get<Texture>(uuid);
                     if (loadedTexture.IsLoaded() && loadedTexture->GetProperties().GetTextureType() == texType)
                     {
                         _currentMaterial->SetTexture(textureName, loadedTexture.GetInternalPtr());
@@ -164,7 +164,7 @@ namespace te
             {
                 if (!_currentMaterial)
                 {
-                    _currentMaterial = gResourceManager().Load<Material>(resource.second->GetUUID()).GetInternalPtr();
+                    _currentMaterial = gResourceManager().Get<Material>(resource.second->GetUUID()).GetInternalPtr();
                     materialUUID = _currentMaterial->GetUUID();
                 }
 
@@ -194,7 +194,7 @@ namespace te
                     materialsOptions, ImGui::GetWindowContentRegionWidth() - 32.0f - offsetListMaterials, flags))
                 {
                     if (materialUUID != _currentMaterial->GetUUID())
-                        _currentMaterial = gResourceManager().Load<Material>(materialUUID).GetInternalPtr();
+                        _currentMaterial = gResourceManager().Get<Material>(materialUUID).GetInternalPtr();
                 }
 
                 // You can delete a material

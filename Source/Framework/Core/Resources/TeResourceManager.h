@@ -13,26 +13,35 @@ namespace te
     {
         struct LoadedResourceData
         {
-            ResourceHandle<Resource> resource;
+            HResource resource;
 
             LoadedResourceData() = default;
-            LoadedResourceData(ResourceHandle<Resource> resource)
+            LoadedResourceData(const HResource& resource)
                 : resource(resource)
             {}
         };
 
     public:
-        ResourceManager();
+        ResourceManager() = default;
+
         virtual ~ResourceManager();
 
         TE_MODULE_STATIC_HEADER_MEMBER(ResourceManager)
 
-        template <class T>
-        ResourceHandle<T> Load(const UUID& uuid = UUID::EMPTY)
+    public:
+        /** Forces to unload all resources, whether they are being used or not. */
+        void UnloadAll();
+
+        /** Releases a resource, by unregistering it from the manager and freeing its memory. */
+        void Release(const HResource& resource)
         {
-            return static_resource_cast<T>(Get(uuid));
+            Release((ResourceHandleBase&)resource);
         }
 
+        /** @copydoc ResourceManager::Release */
+        void Release(ResourceHandleBase& resource);
+
+    public:
         template <class T>
         ResourceHandle<T> Load(const std::filesystem::path& filePath, const ImportOptions& options, bool force = false)
         {
@@ -68,37 +77,34 @@ namespace te
         */
         SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, bool force = false);
 
+        /** Updates the internal resource the handle is pointing to. */
         void Update(HResource& handle, const SPtr<Resource>& resource);
 
-        void Release(const HResource& resource) 
-        {
-            Release((ResourceHandleBase&)resource); 
-        }
-
-        void Release(ResourceHandleBase& resource);
-
-        /** Forces unload of all resources, whether they are being used or not. */
-        void UnloadAll();
-
-        /**	Destroys a resource, freeing its memory. */
-        void Destroy(ResourceHandleBase& resource);
-
+    public:
         /** Creates a new resource handle from a resource pointer. */
         HResource _createResourceHandle(const SPtr<Resource>& obj);
 
         /** Creates a new resource handle from a resource pointer, with a user defined UUID. */
         HResource _createResourceHandle(const SPtr<Resource>& obj, const UUID& UUID);
 
-        /** Allow to retrieve a resource using its uuid */
+    public:
+        template <class T>
+        ResourceHandle<T> Get(const UUID& uuid = UUID::EMPTY)
+        {
+            return static_resource_cast<T>(Get(uuid));
+        }
+
+        /** Allows to retrieve a resource using its uuid */
         HResource Get(const UUID& uuid);
 
-        /** Return an unordered map containing all resources loaded at call time */
+        /** Returns an unordered map containing all resources loaded at call time */
         Vector<HResource> GetAll();
 
         /** Find all resources based on the _coreType (Serializable) */
         Vector<HResource> FindByType(CoreType type);
 
     public:
+        /** Called when a resource has been loaded. Provides a handle to the loaded resource. */
         Event<void(const HResource&)> OnResourceLoaded;
 
         /** Called when the resource has been destroyed. Provides UUID of the destroyed resource.*/
@@ -109,6 +115,9 @@ namespace te
 
     private:
         friend class ResourceHandleBase;
+
+        /**	Destroys a resource, freeing its memory. */
+        void Destroy(ResourceHandleBase& resource);
 
         bool GetUUIDFromFile(const std::filesystem::path& filePath, UUID& uuid);
         bool GetFileFromUUID(const UUID& uuid, String& filePath);

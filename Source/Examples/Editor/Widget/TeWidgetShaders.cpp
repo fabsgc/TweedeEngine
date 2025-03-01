@@ -45,7 +45,7 @@ namespace te
             {
                 if (!_currentShader)
                 {
-                    _currentShader = gResourceManager().Load<Shader>(resource.second->GetUUID()).GetInternalPtr();
+                    _currentShader = gResourceManager().Get<Shader>(resource.second->GetUUID()).GetInternalPtr();
                     shaderUUID = _currentShader->GetUUID();
                 }
 
@@ -58,7 +58,7 @@ namespace te
                     shadersOptions, ImGui::GetWindowContentRegionWidth()))
                 {
                     if (shaderUUID != _currentShader->GetUUID())
-                        _currentShader = gResourceManager().Load<Shader>(shaderUUID).GetInternalPtr();
+                        _currentShader = gResourceManager().Get<Shader>(shaderUUID).GetInternalPtr();
                 }
 
                 // Built Shader

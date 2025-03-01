@@ -7,10 +7,6 @@ namespace te
 {
     TE_MODULE_STATIC_MEMBER(ResourceManager)
 
-    ResourceManager::ResourceManager()
-    {
-    }
-
     ResourceManager::~ResourceManager()
     {
         UnloadAll();
@@ -27,8 +23,7 @@ namespace te
         UnorderedMap<UUID, LoadedResourceData> loadedResourcesCopy = _loadedResources;
         for (auto& loadedResourcePair : loadedResourcesCopy)
         {
-            UnregisterResource(loadedResourcePair.second.resource.GetUUID());
-            Destroy(loadedResourcePair.second.resource);
+            Release(loadedResourcePair.second.resource);
         }
     }
 
@@ -231,12 +226,11 @@ namespace te
     void ResourceManager::RegisterResource(const UUID& uuid, const std::filesystem::path& filePath)
     {
         std::error_code e;
-        auto path = std::filesystem::weakly_canonical(filePath, e);
-        String absolutePath = path.generic_string();
+        const auto absolutePath = std::filesystem::weakly_canonical(filePath, e).generic_string();
+
         _loadingResourceMutex.lock();
 
-        auto iterFind = _UUIDToFile.find(uuid);
-
+        const auto iterFind = _UUIDToFile.find(uuid);
         if (iterFind != _UUIDToFile.end())
         {
             if (iterFind->second != absolutePath)
@@ -249,7 +243,7 @@ namespace te
         }
         else
         {
-            auto iterFind2 = _fileToUUID.find(absolutePath);
+            const auto iterFind2 = _fileToUUID.find(absolutePath);
             if (iterFind2 != _fileToUUID.end())
             {
                 _UUIDToFile.erase(iterFind2->second);
@@ -269,9 +263,6 @@ namespace te
         auto iterChunkUUID = _resourcesChunks.find(uuid);
         if (iterChunkUUID != _resourcesChunks.end())
         {
-            //for (auto& subResource : _resourcesChunks[uuid])
-                //Release(subResource.Uuid);
-
             _resourcesChunks.erase(iterChunkUUID);
         }
 
@@ -295,9 +286,8 @@ namespace te
 
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj)
     {
-        UUID uuid = UUIDGenerator::GenerateRandom();
-        obj->SetUUID(uuid);
-        return _createResourceHandle(obj, uuid);
+        obj->SetUUID(UUIDGenerator::GenerateRandom());
+        return _createResourceHandle(obj, obj->GetUUID());
     }
 
     HResource ResourceManager::_createResourceHandle(const SPtr<Resource>& obj, const UUID& UUID)
