@@ -14,8 +14,14 @@ namespace te
     {
         _inputConfiguration = CreateConfiguration();
 
-        Input::Instance().OnButtonDown.Connect(std::bind(&VirtualInput::ButtonDown, this, _1));
-        Input::Instance().OnButtonUp.Connect(std::bind(&VirtualInput::ButtonUp, this, _1));
+        _onButtonDown = Input::Instance().OnButtonDown.Connect(std::bind(&VirtualInput::ButtonDown, this, _1));
+        _onButtonUp = Input::Instance().OnButtonUp.Connect(std::bind(&VirtualInput::ButtonUp, this, _1));
+    }
+
+    VirtualInput::~VirtualInput()
+    { 
+        _onButtonDown.Disconnect();
+        _onButtonUp.Disconnect();  
     }
 
     SPtr<InputConfiguration> VirtualInput::CreateConfiguration()

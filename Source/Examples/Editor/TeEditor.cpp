@@ -194,6 +194,9 @@ namespace te
     void Editor::OnShutDown()
     { 
         EditorResManager::ShutDown();
+
+        _buildScript.Disconnect();
+        _saveScript.Disconnect();
     }
 
     void Editor::Update()

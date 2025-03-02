@@ -79,6 +79,10 @@ namespace te
         CheckForNestedBody();
 #endif
 
+        _collisionBegin.Disconnect();
+        _collisionStay.Disconnect();
+        _collisionEnd.Disconnect();
+
         _internal->OnCollisionBegin.Connect(std::bind(&CSoftBody::TriggerOnCollisionBegin, this, _1));
         _internal->OnCollisionStay.Connect(std::bind(&CSoftBody::TriggerOnCollisionStay, this, _1));
         _internal->OnCollisionEnd.Connect(std::bind(&CSoftBody::TriggerOnCollisionEnd, this, _1));
@@ -127,6 +131,10 @@ namespace te
             _internal->SetOwner(PhysicsOwnerType::None, nullptr);
             _internal = nullptr;
         }
+
+        _collisionBegin.Disconnect();
+        _collisionStay.Disconnect();
+        _collisionEnd.Disconnect();
     }
 
     void CSoftBody::CheckForNestedBody()

@@ -140,5 +140,7 @@ namespace te
         bool _enableCollision = false;
         Vector3 _offsetPivots[2] = { Vector3::ZERO, Vector3::ZERO };
         bool _isBroken = false;
+
+        HEvent _eventTriggered;
     };
 }

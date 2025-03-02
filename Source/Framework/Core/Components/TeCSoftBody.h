@@ -67,5 +67,9 @@ namespace te
 
     protected:
         Vector3 _scale = Vector3::ONE;
+
+        HEvent _collisionBegin;
+        HEvent _collisionStay;
+        HEvent _collisionEnd;
     };
 }

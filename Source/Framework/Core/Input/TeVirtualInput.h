@@ -49,6 +49,8 @@ namespace te
     public:
         VirtualInput();
 
+        ~VirtualInput();
+
         TE_MODULE_STATIC_HEADER_MEMBER(VirtualInput)
 
         /**	Creates a new empty input configuration. */
@@ -120,6 +122,9 @@ namespace te
         // Transient
         Vector<VirtualButton> _tempButtons;
         Vector<VIRTUAL_BUTTON_DESC> _tempBtnDescs;
+
+        HEvent _onButtonDown;
+        HEvent _onButtonUp;
     };
 
     /** Provides easier access to VirtualInput. */

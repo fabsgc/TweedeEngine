@@ -204,7 +204,8 @@ namespace te
 
         if (!previewMode)
         {
-            _internal->OnEventTriggered.Connect(std::bind(&CAnimation::EventTriggered, this, _1, _2));
+            _eventTriggered.Disconnect();
+            _eventTriggered = _internal->OnEventTriggered.Connect(std::bind(&CAnimation::EventTriggered, this, _1, _2));
 
             _internal->SetWrapMode(_wrapMode);
             _internal->SetSpeed(_speed);
@@ -241,6 +242,8 @@ namespace te
 
         // This should release the last reference and destroy the internal listener
         _internal = nullptr;
+
+        _eventTriggered.Disconnect();
     }
 
     void CAnimation::Update()

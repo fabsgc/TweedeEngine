@@ -237,5 +237,7 @@ namespace te
         bool _previewMode = false; // TODO in my impl, this will always be false
 
         Vector<SceneObjectMappingInfo> _mappingInfos;
+
+        HEvent _eventTriggered;
     };
 }

@@ -40,8 +40,8 @@ namespace te
         auto focusGainListener = std::bind(&Input::InputWindowChanged, this, _1);
         auto focusLostListener = std::bind(&Input::InputFocusLost, this);
 
-        gCoreApplication().GetWindow()->OnFocusGained.Connect(std::move(focusGainListener));
-        gCoreApplication().GetWindow()->OnFocusLost.Connect(std::move(focusLostListener));
+        _onFocusGained = gCoreApplication().GetWindow()->OnFocusGained.Connect(std::move(focusGainListener));
+        _onFocusLost = gCoreApplication().GetWindow()->OnFocusLost.Connect(std::move(focusLostListener));
 
         for (int i = 0; i < 3; i++)
             _pointerButtonStates[i] = ButtonState::Off;
@@ -71,6 +71,8 @@ namespace te
         _cursorReleasedConn.Disconnect();
         _cursorDoubleClickConn.Disconnect();
         _mouseWheelScrolledConn.Disconnect();
+        _onFocusGained.Disconnect();
+        _onFocusLost.Disconnect();
     }
 
     void Input::Update()

@@ -311,7 +311,9 @@ namespace te
             DestroyInternal();
 
         _internal = CreateInternal();
-        _internal->OnJointBreak.Connect(std::bind(&CJoint::TriggerOnJointBroken, this));
+
+        _eventTriggered.Disconnect();
+        _eventTriggered = _internal->OnJointBreak.Connect(std::bind(&CJoint::TriggerOnJointBroken, this));
     }
 
     void CJoint::DestroyInternal()
@@ -328,6 +330,8 @@ namespace te
             _internal->SetOwner(PhysicsOwnerType::None, nullptr);
             _internal = nullptr;
         }
+
+        _eventTriggered.Disconnect();
     }
 
     void CJoint::GetLocalTransform(JointBody body, Vector3& position, Quaternion& rotation)

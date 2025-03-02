@@ -194,5 +194,9 @@ namespace te
 
         Vector3 _angularFactor = Vector3::ONE;
         Vector3 _centerOfMass = Vector3::ZERO;
+
+        HEvent _collisionBegin;
+        HEvent _collisionStay;
+        HEvent _collisionEnd;
     };
 }

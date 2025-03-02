@@ -239,8 +239,8 @@ namespace te
         HEvent _cursorDoubleClickConn;
         HEvent _inputCommandConn;
         HEvent _mouseWheelScrolledConn;
-        HEvent _keyUp;
-        HEvent _keyDown;
+        HEvent _onFocusGained;
+        HEvent _onFocusLost;
 
         Vector<DeviceData> _devices;
         Vector2I _pointerPosition;

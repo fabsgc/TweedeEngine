@@ -136,6 +136,9 @@ namespace te
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
         CheckForNestedBody();
 #endif
+        _collisionBegin.Disconnect();
+        _collisionStay.Disconnect();
+        _collisionEnd.Disconnect();        
 
         _internalRigidBody->OnCollisionBegin.Connect(std::bind(&CRigidBody::TriggerOnCollisionBegin, this, _1));
         _internalRigidBody->OnCollisionStay.Connect(std::bind(&CRigidBody::TriggerOnCollisionStay, this, _1));
@@ -206,6 +209,10 @@ namespace te
             _internalRigidBody->SetOwner(PhysicsOwnerType::None, nullptr);
             _internal = nullptr;
         }
+
+        _collisionBegin.Disconnect();
+        _collisionStay.Disconnect();
+        _collisionEnd.Disconnect();
     }
 
     void CRigidBody::ClearColliders()
