@@ -2,13 +2,14 @@
 
 #include "TeCorePrerequisites.h"
 #include "TeWidget.h"
+#include "Resources/TeResourceListener.h"
 
 namespace te
 {
     class ImGuiFileBrowser;
     class MaterialsPreview;
 
-    class WidgetMaterials : public Widget
+    class WidgetMaterials : public Widget, public ResourceListener
     {
     public:
         WidgetMaterials();
@@ -20,7 +21,12 @@ namespace te
 
     protected:
         bool ShowLoadedTexture();
-        void DeleteMaterial(HMaterial material, const UUID& uuid);
+
+        /** @copydoc ResourceListener::OnResourceModified */
+        void OnResourceModified(const HResource& resource) override;
+
+        /** @copydoc ResourceListener::OnResourceDestroyed */
+        void OnResourceDestroyed(const UUID& uuid, CoreType type) override;
 
     protected:
         HMaterial _currentMaterial;

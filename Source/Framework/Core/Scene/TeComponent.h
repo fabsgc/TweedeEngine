@@ -125,7 +125,7 @@ namespace te
 
     protected:
         Component(HSceneObject parent, CoreType type);
-        virtual ~Component() = 0;
+        virtual ~Component() {};
 
         /**
          * If you want to create a copy of a component, first use SceneObject::AddComponent() then, use this method to
@@ -189,16 +189,6 @@ namespace te
          * @note	Unlike destroy(), does not remove the component from its parent.
          */
         void DestroyInternal(GameObjectHandleBase & handle, bool immediate) override;
-
-    private:
-        /** Called as soon as a resource is modified inside the ResourceManager -> usefull to update resources used by the component */
-        virtual void OnResourceModified(const HResource& resource) {}
-
-        /** Called as soon as a resource is deleted inside the ResourceManager -> usefull to unbind resources used by the component */
-        virtual void OnResourceDestroyed(const UUID& uuid) {}
-
-        HEvent _onResourceModified;
-        HEvent _onResourceDestroyed;
 
     private:
         /** We can't allow user to create a copy of a component without using engine API */

@@ -1,13 +1,15 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+
 #include "Utility/TeModule.h"
 #include "Resources/TeResourceManager.h"
+#include "Resources/TeResourceListener.h"
 #include "Resources/TeResource.h"
 
 namespace te
 {
-    class EditorResManager : public Module<EditorResManager>
+    class EditorResManager : public Module<EditorResManager>, public ResourceListener
     {
     public:
         TE_MODULE_STATIC_HEADER_MEMBER(EditorResManager)
@@ -33,7 +35,7 @@ namespace te
                 Res[resource.GetUUID()] = resource;
             }
 
-            void Remove(HResource& resource)
+            void Remove(const HResource& resource)
             {
                 auto it = Res.find(resource.GetUUID());
                 if (it != Res.end())
@@ -102,17 +104,17 @@ namespace te
         }
 
         template <class T>
-        void Remove(ResourceHandle<T>& handle)
+        void Remove(const ResourceHandle<T>& handle)
         {
-            HResource r = static_resource_cast<Resource>(handle);
-            _resources[T::GetResourceType()].Remove(r);
+            if (!handle.IsLoaded())
+                return;
 
-            if (handle.IsLoaded())
-            {
-                auto it = std::find(_resourcesIndex.begin(), _resourcesIndex.end(), handle.Get());
-                if (it != _resourcesIndex.end())
-                    _resourcesIndex.erase(it);
-            }
+            HResource r = static_resource_cast<Resource>(handle);
+            _resources[handle->GetCoreType()].Remove(r);
+
+            auto it = std::find(_resourcesIndex.begin(), _resourcesIndex.end(), handle.Get());
+            if (it != _resourcesIndex.end())
+                _resourcesIndex.erase(it);
         }
 
         template <class T>
@@ -154,6 +156,13 @@ namespace te
 
             Clear();
         }
+
+    protected:
+        /** @copydoc ResourceListener::OnResourceModified */
+        void OnResourceModified(const HResource& resource) override {}
+
+        /** @copydoc ResourceListener::OnResourceDestroyed */
+        void OnResourceDestroyed(const UUID& uuid, CoreType type) override;
 
     protected:
         UnorderedMap<CoreType, ResourcesContainer> _resources;

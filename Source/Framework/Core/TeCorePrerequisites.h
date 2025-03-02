@@ -291,6 +291,7 @@ namespace te
 
     class Resource;
     class ResourceManager;
+    class ResourceListener;
     class GpuResourceData;
 
     class Texture;

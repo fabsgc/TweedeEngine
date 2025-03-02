@@ -563,4 +563,50 @@ namespace te
 
         _oldActive = _active;
     }
+
+    void Renderable::OnResourceModified(const HResource& resource)
+    {
+        if (_mesh.IsLoaded() && _mesh->GetUUID() == resource->GetUUID())
+        {
+            SetMesh(static_resource_cast<Mesh>(resource));
+        }
+        else if (_ZPrepassMesh.IsLoaded() && _ZPrepassMesh->GetUUID() == resource->GetUUID())
+        {
+            SetZPrepassMesh(static_resource_cast<ZPrepassMesh>(resource));
+        }
+        else if (resource->GetCoreType() == CoreType::TID_Material)
+        {
+            for (const auto& material : _materials)
+            {
+                if (material.IsLoaded() && material->GetUUID() == resource->GetUUID())
+                {
+                    UpdateMaterials();
+                    break;
+                }
+            }
+        }
+    }
+
+    void Renderable::OnResourceDestroyed(const UUID& uuid, CoreType type)
+    {
+
+        if (GetMesh().IsLoaded() && GetMesh()->GetUUID() == uuid ||
+            GetZPrepassMesh().IsLoaded() && GetZPrepassMesh()->GetUUID() == uuid)
+        {
+            OnMeshChanged();
+            _markCoreDirty(ActorDirtyFlag::GpuParams);
+        }
+        else if (type == CoreType::TID_Material)
+        {
+            for (UINT32 i = 0; i < _materials.size(); i++)
+            {
+                if (_materials[i].IsLoaded() && _materials[i]->GetUUID() == uuid)
+                {
+                    _materials[i] = nullptr;
+                    UpdateMaterials();
+                    break;
+                }
+            }
+        }
+    }
 }

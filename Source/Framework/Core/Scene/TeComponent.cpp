@@ -25,22 +25,9 @@ namespace te
         SetName("Component");
     }
 
-    Component::~Component()
-    { 
-        _onResourceModified.Disconnect();
-        _onResourceDestroyed.Disconnect();
-    }
-
     void Component::Initialize()
     {
         CoreObject::Initialize();
-
-        _onResourceModified.Disconnect();
-        _onResourceDestroyed.Disconnect();
-
-        _onResourceModified = gResourceManager().OnResourceModified.Connect(std::bind(&Component::OnResourceModified, this, std::placeholders::_1));
-        _onResourceDestroyed  = gResourceManager().OnResourceDestroyed.Connect(std::bind(&Component::OnResourceDestroyed, this, std::placeholders::_1));
-
         OnInitialized();
     }
 

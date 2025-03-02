@@ -399,6 +399,7 @@ set (TE_CORE_INC_RESOURCE
     "Core/Resources/TeResourceHandle.h"
     "Core/Resources/TeGpuResourceData.h"
     "Core/Resources/TeBuiltinResources.h"
+    "Core/Resources/TeResourceListener.h"
 )
 set (TE_CORE_SRC_RESOURCE
     "Core/Resources/TeResource.cpp"
@@ -406,6 +407,7 @@ set (TE_CORE_SRC_RESOURCE
     "Core/Resources/TeResourceHandle.cpp"
     "Core/Resources/TeGpuResourceData.cpp"
     "Core/Resources/TeBuiltinResources.cpp"
+    "Core/Resources/TeResourceListener.cpp"
 )
 
 set (TE_CORE_INC_AUDIO

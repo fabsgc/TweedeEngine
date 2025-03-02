@@ -5,6 +5,7 @@
 #include "Scene/TeSceneActor.h"
 #include "Math/TeBounds.h"
 #include "Serialization/TeSerializable.h"
+#include "Resources/TeResourceListener.h"
 
 namespace te
 {
@@ -32,7 +33,7 @@ namespace te
     };
 
     /** Illuminates a portion of the scene covered by the Renderable. */
-    class TE_CORE_EXPORT Renderable : public CoreObject, public SceneActor, public Serializable
+    class TE_CORE_EXPORT Renderable : public CoreObject, public SceneActor, public Serializable, public ResourceListener
     {
     public:
         virtual ~Renderable();
@@ -272,6 +273,13 @@ namespace te
 
         /** @copydoc CoreObject::FrameSync */
         void FrameSync() override;
+
+    protected:
+        /** @copydoc ResourceListener::OnResourceModified */
+        void OnResourceModified(const HResource& resource) override;
+
+        /** @copydoc ResourceListener::OnResourceDestroyed */
+        void OnResourceDestroyed(const UUID& uuid, CoreType type) override;
 
     protected:
         RenderableProperties _properties;

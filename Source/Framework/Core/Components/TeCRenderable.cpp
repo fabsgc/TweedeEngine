@@ -174,7 +174,7 @@ namespace te
 
             for (const auto& material : _internal->GetMaterials())
             {
-                renderableDoc["materials"].push_back(serialization::GetResourceName(material.Get()));
+                renderableDoc["materials"].push_back(material.IsLoaded() ? serialization::GetResourceName(material.Get()) : "");
             }
 
             renderableDoc["layer"] = _internal->GetLayer();
@@ -219,55 +219,5 @@ namespace te
         }
 
         return true;
-    }
-
-    void CRenderable::OnResourceModified(const HResource& resource)
-    {
-        if (_internal)
-            return;
-
-        if (GetMesh().IsLoaded() && GetMesh()->GetUUID() == resource->GetUUID())
-        {
-            SetMesh(static_resource_cast<Mesh>(resource));
-        }
-        else if (GetZPrepassMesh().IsLoaded() && GetZPrepassMesh()->GetUUID() == resource->GetUUID())
-        {
-            SetZPrepassMesh(static_resource_cast<ZPrepassMesh>(resource));
-        }
-        else
-        {
-            for (UINT32 i = 0; i < _internal->GetNumMaterials(); i++)
-            {
-                if (GetMaterial(i)->GetUUID() == resource->GetUUID())
-                {
-                    SetMaterial(i, static_resource_cast<Material>(resource));
-                }
-            }
-        }
-    }
-
-    void CRenderable::OnResourceDestroyed(const UUID& uuid)
-    {
-        if (_internal)
-            return;
-
-        if (GetMesh().IsLoaded() && GetMesh()->GetUUID() == uuid)
-        {
-            SetMesh(HMesh());
-        }
-        else if (GetZPrepassMesh().IsLoaded() && GetZPrepassMesh()->GetUUID() == uuid)
-        {
-            SetZPrepassMesh(HZPrepassMesh());
-        }
-        else
-        {
-            for (UINT32 i = 0; i < _internal->GetNumMaterials(); i++)
-            {
-                if (GetMaterial(i)->GetUUID() == uuid)
-                {
-                    SetMaterial(i, HMaterial());
-                }
-            }
-        }
     }
 }

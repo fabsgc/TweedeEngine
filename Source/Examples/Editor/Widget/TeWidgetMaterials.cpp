@@ -198,7 +198,7 @@ namespace te
                 ImGui::SameLine();
                 if (ImGui::Button(ICON_FA_TIMES_CIRCLE, ImVec2(25.0f, 26.0f)) && materialUUID != gBuiltinResources().GetDefaultMaterial().GetUUID())
                 {
-                    DeleteMaterial(_currentMaterial, materialUUID);
+                    gResourceManager().Release(_currentMaterial);
                 }
             }
         }
@@ -689,21 +689,27 @@ namespace te
         return textureLoaded;
     }
 
-    void WidgetMaterials::DeleteMaterial(HMaterial material, const UUID& uuid)
+    void WidgetMaterials::OnResourceModified(const HResource& resource)
     {
-        Vector<HComponent> renderables = gSceneManager().GetRootNode()->GetComponents<CRenderable>(true);
+        if (resource->GetCoreType() != CoreType::TID_Material)
+            return;
 
-        for (auto& component : renderables)
-        {
-            HRenderable renderable = static_object_cast<CRenderable>(component);
-            renderable->RemoveMaterial(material);
-        }
+        HMaterial material = static_resource_cast<Material>(resource);
+        _materialsPreview.MarkDirty(material);
+    }
 
-        _currentMaterial = HMaterial();
+    void WidgetMaterials::OnResourceDestroyed(const UUID& uuid, CoreType type)
+    {
+        if (type != CoreType::TID_Material)
+            return;
+
+        HMaterial material = gResourceManager().Get<Material>(uuid);
+
+        if (_currentMaterial == material)
+            _currentMaterial = nullptr;
+
         _materialsPreview.DeletePreview(material);
 
-        EditorResManager::Instance().Remove<Material>(material);
-        
         gEditor().NeedsRedraw();
     }
 }

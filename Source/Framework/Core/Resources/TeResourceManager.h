@@ -116,7 +116,7 @@ namespace te
         Event<void(const HResource&)> OnResourceLoaded;
 
         /** Called when the resource has been destroyed. Provides UUID of the destroyed resource.*/
-        Event<void(const UUID&)> OnResourceDestroyed;
+        Event<void(const UUID&, CoreType type)> OnResourceDestroyed;
 
         /** Called when the internal resource the handle is pointing to has changed. */
         Event<void(const HResource&)> OnResourceModified;

@@ -166,13 +166,6 @@ namespace te
         /** Fills a renderable component from a json document */
         static bool ImportJson(const nlohmann::json& document, CRenderable& renderable);
 
-    public:
-        /** @copydoc Component::OnResourceModifier */
-        void OnResourceModified(const HResource& resource) override;
-
-        /** @copydoc Component::OnResourceDestroyed */
-        void OnResourceDestroyed(const UUID& uuid) override;
-
     protected:
         /** Registers an Animation component that will be used for animating the renderable's mesh. */
         void RegisterAnimation(const HAnimation& animation);

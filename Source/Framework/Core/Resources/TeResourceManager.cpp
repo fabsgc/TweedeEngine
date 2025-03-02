@@ -34,9 +34,10 @@ namespace te
             return;
         }
 
-        const UUID& uuid = resource.GetUUID();
-        OnResourceDestroyed(uuid);
         resource._handleData->data->Destroy();
+        const UUID uuid = resource.GetUUID();
+        const CoreType type = resource._handleData->data->GetCoreType();
+        OnResourceDestroyed(uuid, type);
 
         auto iterFind = _loadedResources.find(uuid);
         if (iterFind != _loadedResources.end())

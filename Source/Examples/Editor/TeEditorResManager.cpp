@@ -26,4 +26,9 @@ namespace te
     { 
         _resources.clear();
     }
+
+    void EditorResManager::OnResourceDestroyed(const UUID& uuid, CoreType type)
+    {
+        Remove(_resources[type].Find(uuid));
+    }
 }
