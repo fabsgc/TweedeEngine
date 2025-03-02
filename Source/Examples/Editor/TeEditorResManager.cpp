@@ -25,6 +25,10 @@ namespace te
     void EditorResManager::OnShutDown()
     { 
         _resources.clear();
+
+        // For modules, we need to call Disconnect on event during shutdown
+        _onResourceModified.Disconnect();
+        _onResourceDestroyed.Disconnect();
     }
 
     void EditorResManager::OnResourceDestroyed(const UUID& uuid, CoreType type)

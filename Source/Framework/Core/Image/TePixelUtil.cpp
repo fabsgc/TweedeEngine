@@ -2837,6 +2837,7 @@ namespace te
         oo.setOutputHandler(&outputHandler);
 
         nvtt::Compressor compressor;
+        compressor.enableCudaAcceleration(true);
         if (!compressor.process(io, co, oo))
         {
             TE_DEBUG("Compression failed. Internal error.");
@@ -2981,6 +2982,7 @@ namespace te
         oo.setOutputHandler(&outputHandler);
 
         nvtt::Compressor compressor;
+        compressor.enableCudaAcceleration(true);
         if (!compressor.process(io, co, oo))
         {
             TE_DEBUG("Mipmap generation failed. Internal error.");

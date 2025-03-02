@@ -18,7 +18,7 @@ namespace te
         /** Called as soon as a resource is deleted inside the ResourceManager */
         virtual void OnResourceDestroyed(const UUID& uuid, CoreType type) = 0;
     
-    private:
+    protected:
         HEvent _onResourceModified;
         HEvent _onResourceDestroyed;
     };
