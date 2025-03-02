@@ -502,7 +502,7 @@ namespace te
 
         DecalRenderElement& renElement = rendererDecal.Element;
         renElement.Type = (UINT32)RenderElementType::Decal;
-        renElement.MeshElem = gRendererUtility().GetBoxStencil();
+        renElement.MeshElem = gRendererUtility().GetBoxStencil().get();
         renElement.SubMeshElem = &renElement.MeshElem->GetProperties().GetSubMesh();
 
         renElement.MaterialElem = decal->GetMaterial();
@@ -569,8 +569,9 @@ namespace te
 
     void RendererScene::SetMeshData(RendererRenderable* rendererRenderable, Renderable* renderable)
     {
-        SPtr<Mesh> mesh = renderable->GetMesh();
-        if (mesh != nullptr)
+        HMesh mesh = renderable->GetMesh();
+        HZPrepassMesh zPrepassMesh = renderable->GetZPrepassMesh();
+        if (mesh.IsLoaded())
         {
             MeshProperties& meshProps = mesh->GetProperties();
             SPtr<VertexDeclaration> vertexDecl = mesh->GetVertexData()->vertexDeclaration;
@@ -585,8 +586,8 @@ namespace te
                 renElement = &rendererRenderable->Elements[i];
 
                 renElement->Type = (UINT32)RenderElementType::Renderable;
-                renElement->MeshElem = mesh;
-                renElement->ZPrepassMeshElem = renderable->GetZPrepassMesh();
+                renElement->MeshElem = mesh.IsLoaded() ? mesh.Get() : nullptr;
+                renElement->ZPrepassMeshElem = zPrepassMesh.IsLoaded() ? zPrepassMesh.Get() : nullptr;
                 renElement->SubMeshElem = meshProps.GetSubMeshPtr(i);
                 renElement->BoneMatrixBuffer = renderable->GetBoneMatrixBuffer();
                 renElement->BonePrevMatrixBuffer = renderable->GetBonePrevMatrixBuffer();

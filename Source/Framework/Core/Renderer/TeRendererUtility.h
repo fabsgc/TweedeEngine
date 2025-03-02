@@ -68,7 +68,7 @@ namespace te
          * @param[in]	mesh			Mesh to draw.
          * @param[in]	numInstances	Number of times to draw the mesh using instanced rendering.
          */
-        void Draw(const SPtr<Mesh>& mesh, UINT32 numInstances = 1);
+        void Draw(Mesh& mesh, UINT32 numInstances = 1);
 
         /**
          * Draws the specified mesh.
@@ -77,7 +77,7 @@ namespace te
          * @param[in]	subMesh			Portion of the mesh to draw.
          * @param[in]	numInstances	Number of times to draw the mesh using instanced rendering.
          */
-        void Draw(const SPtr<Mesh>& mesh, const SubMesh& subMesh, UINT32 numInstances = 1);
+        void Draw(Mesh& mesh, const SubMesh& subMesh, UINT32 numInstances = 1);
 
         /**
          * Draws a quad over the entire viewport in normalized device coordinates.

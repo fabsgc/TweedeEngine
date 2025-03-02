@@ -221,15 +221,15 @@ namespace te
     {
         MeshImportOptions meshImportOptions;
 
-        _box = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/cube.obj", meshImportOptions).GetInternalPtr();
-        _plane = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", meshImportOptions).GetInternalPtr();
-        _sphere = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/sphere.obj", meshImportOptions).GetInternalPtr();
-        _monkey = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey.obj", meshImportOptions).GetInternalPtr();
+        _box = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/cube.obj", meshImportOptions);
+        _plane = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", meshImportOptions);
+        _sphere = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Primitives/sphere.obj", meshImportOptions);
+        _monkey = ResourceManager::Instance().Load<Mesh>("Data/Meshes/Monkey/monkey.obj", meshImportOptions);
 
-        TE_ASSERT_ERROR(_box.get(), "Failed to load box mesh");
-        TE_ASSERT_ERROR(_plane.get(), "Failed to load plane mesh");
-        TE_ASSERT_ERROR(_sphere.get(), "Failed to load sphere mesh");
-        TE_ASSERT_ERROR(_monkey.get(), "Failed to load monkey mesh");
+        TE_ASSERT_ERROR(_box.IsLoaded(), "Failed to load box mesh");
+        TE_ASSERT_ERROR(_plane.IsLoaded(), "Failed to load plane mesh");
+        TE_ASSERT_ERROR(_sphere.IsLoaded(), "Failed to load sphere mesh");
+        TE_ASSERT_ERROR(_monkey.IsLoaded(), "Failed to load monkey mesh");
 
         _boxRenderable = Renderable::Create();
         _boxRenderable->SetMesh(_box);

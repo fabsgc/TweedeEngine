@@ -11,7 +11,7 @@ namespace te
 
     void DecalRenderElement::Draw() const
     {
-        gRendererUtility().Draw(MeshElem, *SubMeshElem);
+        gRendererUtility().Draw(*MeshElem, *SubMeshElem);
     }
 
     RendererDecal::RendererDecal()

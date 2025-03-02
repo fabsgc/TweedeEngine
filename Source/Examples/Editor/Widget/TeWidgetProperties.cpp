@@ -321,7 +321,7 @@ namespace te
                 hasChanged = true;
         }
 
-        if (renderablePtr->GetMesh())
+        if (renderablePtr->GetMesh().IsLoaded())
         {
             if (ImGui::CollapsingHeader("SubMeshes", ImGuiTreeNodeFlags_DefaultOpen))
             {
@@ -390,7 +390,7 @@ namespace te
 
             if (!renderable.Empty() && !animation.Empty())
             {
-                if (renderable->GetMesh() && renderable->GetMesh()->GetSkeleton()) // if the renderable has a skeleton
+                if (renderable->GetMesh().IsLoaded() && renderable->GetMesh()->GetSkeleton()) // if the renderable has a skeleton
                 {
                     ImGuiExt::ComboOptions<UINT32> bonesOptions;
                     SPtr<Skeleton> skeleton = renderable->GetMesh()->GetSkeleton();
@@ -2193,18 +2193,18 @@ namespace te
     {
         bool hasChanged = false;
         const RenderableProperties& properties = renderable->GetProperties();
-        const SPtr<Mesh> mesh = renderable->GetMesh();
-        const SPtr<ZPrepassMesh> zPrepassMesh = renderable->GetZPrepassMesh();
+        const HMesh mesh = renderable->GetMesh();
+        const HZPrepassMesh zPrepassMesh = renderable->GetZPrepassMesh();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         ImGuiExt::ComboOptions<UUID> meshesOptions;
         ImGuiExt::ComboOptions<UUID> zPrepassMeshesOptions;
-        UUID emptyMesh = UUID(50, 0, 0, 0);
-        UUID loadMesh = UUID::EMPTY;
-        UUID meshUUID = (mesh) ? mesh->GetUUID() : emptyMesh;
-        UUID ZPrepassMeshUUID = (zPrepassMesh) ? zPrepassMesh->GetUUID() : emptyMesh;
-        EditorResManager::ResourcesContainer& meshes = EditorResManager::Instance().Get<Mesh>();
-        EditorResManager::ResourcesContainer& zPrepassMeshes = EditorResManager::Instance().Get<ZPrepassMesh>();
+        const UUID emptyMesh = UUID(50, 0, 0, 0);
+        const UUID loadMesh = UUID::EMPTY;
+        UUID meshUUID = mesh.IsLoaded() ? mesh->GetUUID() : emptyMesh;
+        UUID ZPrepassMeshUUID = zPrepassMesh.IsLoaded() ? zPrepassMesh->GetUUID() : emptyMesh;
+        const EditorResManager::ResourcesContainer& meshes = EditorResManager::Instance().Get<Mesh>();
+        const EditorResManager::ResourcesContainer& zPrepassMeshes = EditorResManager::Instance().Get<ZPrepassMesh>();
 
         // current mesh to use
         {
@@ -2222,13 +2222,13 @@ namespace te
                 }
                 else if (meshUUID == emptyMesh)
                 {
-                    renderable->SetMesh(nullptr);
+                    renderable->SetMesh(HMesh());
                     renderable->ClearAllMaterials();
                     hasChanged = true;
                 }
-                else if (meshUUID != ((mesh) ? mesh->GetUUID() : emptyMesh))
+                else if (meshUUID != (mesh.IsLoaded() ? mesh->GetUUID() : emptyMesh))
                 {
-                    renderable->SetMesh(gResourceManager().Get<Mesh>(meshUUID).GetInternalPtr());
+                    renderable->SetMesh(gResourceManager().Get<Mesh>(meshUUID));
                     renderable->ClearAllMaterials();
                     hasChanged = true;
 
@@ -2267,12 +2267,12 @@ namespace te
                 {
                     if (ZPrepassMeshUUID == emptyMesh)
                     {
-                        renderable->SetZPrepassMesh(nullptr);
+                        renderable->SetZPrepassMesh(HZPrepassMesh());
                         hasChanged = true;
                     }
                     else
                     {
-                        renderable->SetZPrepassMesh(gResourceManager().Get<ZPrepassMesh>(ZPrepassMeshUUID).GetInternalPtr());
+                        renderable->SetZPrepassMesh(gResourceManager().Get<ZPrepassMesh>(ZPrepassMeshUUID));
                         hasChanged = true;
                     }
                 }
@@ -2373,12 +2373,12 @@ namespace te
     bool WidgetProperties::ShowRenderableSubMeshes(SPtr<Renderable> renderable)
     {
         bool hasChanged = false;
-        SPtr<Mesh> mesh = renderable->GetMesh();
+        const HMesh mesh = renderable->GetMesh();
         ImGuiExt::ComboOptions<UUID> materialsOptions;
-        UUID emptyMaterial = UUID(50, 0, 0, 0);
+        const UUID emptyMaterial = UUID(50, 0, 0, 0);
         MeshProperties& meshProperties = mesh->GetProperties();
         const float width = ImGui::GetWindowContentRegionWidth() - 120.0f;
-        EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Material>();
+        const EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Material>();
 
         for (auto& resource : container.Res)
             materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
@@ -2387,11 +2387,11 @@ namespace te
 
         for (UINT32 i = 0; i < meshProperties.GetNumSubMeshes(); i++)
         {
-            SPtr<Material> material = renderable->GetMaterial(i);
+            const SPtr<Material> material = renderable->GetMaterial(i);
             UUID materialUUID = (material) ? material->GetUUID() : emptyMaterial;
-            SubMesh& subMesh = meshProperties.GetSubMesh(i);
-            String title = subMesh.MaterialName;
-            String id = "##" + subMesh.MaterialName + ToString(i);
+            const SubMesh& subMesh = meshProperties.GetSubMesh(i);
+            const String title = subMesh.MaterialName;
+            const String id = "##" + subMesh.MaterialName + ToString(i);
 
             // current material to use
             {
@@ -2931,8 +2931,8 @@ namespace te
                             {
                                 SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(_selections.ClickedComponent);
 
-                                // We will try to set the material attach to this mesh (in fact one material per submesh), and create it before if not exist
-                                renderable->SetMesh(mesh.GetInternalPtr());
+                                // We will try to set the materials attached to this mesh (in fact one material per submesh), and create them before if they don't exist
+                                renderable->SetMesh(mesh);
                                 meshLoaded = true;
 
                                 if (meshImportOptions.ImportMaterials)

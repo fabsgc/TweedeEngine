@@ -205,15 +205,15 @@ namespace te
             rapi.SetGpuParams(gpuParams, gpuParamsBindFlags, GPU_BIND_PARAM_BLOCK_ALL_EXCEPT, PerNonInstancedBuffer);
     }
 
-    void RendererUtility::Draw(const SPtr<Mesh>& mesh, UINT32 numInstances)
+    void RendererUtility::Draw(Mesh& mesh, UINT32 numInstances)
     {
-        Draw(mesh, mesh->GetProperties().GetSubMesh(0), numInstances);
+        Draw(mesh, mesh.GetProperties().GetSubMesh(0), numInstances);
     }
 
-    void RendererUtility::Draw(const SPtr<Mesh>& mesh, const SubMesh& subMesh, UINT32 numInstances)
+    void RendererUtility::Draw(Mesh& mesh, const SubMesh& subMesh, UINT32 numInstances)
     {
         RenderAPI& rapi = RenderAPI::Instance();
-        SPtr<VertexData> vertexData = mesh->GetVertexData();
+        SPtr<VertexData> vertexData = mesh.GetVertexData();
 
         rapi.SetVertexDeclaration(vertexData->vertexDeclaration);
 
@@ -241,7 +241,7 @@ namespace te
             rapi.SetVertexBuffers(startSlot, buffers, endSlot - startSlot + 1);
         }
 
-        SPtr<IndexBuffer> indexBuffer = mesh->GetIndexBuffer();
+        SPtr<IndexBuffer> indexBuffer = mesh.GetIndexBuffer();
         rapi.SetIndexBuffer(indexBuffer);
 
         rapi.SetDrawOperation(subMesh.DrawOp);
@@ -250,16 +250,16 @@ namespace te
 
         if (numInstances > 1)
         {
-            rapi.DrawIndexed(subMesh.IndexOffset + mesh->GetIndexOffset(), indexCount, mesh->GetVertexOffset(),
+            rapi.DrawIndexed(subMesh.IndexOffset + mesh.GetIndexOffset(), indexCount, mesh.GetVertexOffset(),
                 vertexData->vertexCount, numInstances);
         }
         else
         {
-            rapi.DrawIndexed(subMesh.IndexOffset + mesh->GetIndexOffset(), indexCount, mesh->GetVertexOffset(),
+            rapi.DrawIndexed(subMesh.IndexOffset + mesh.GetIndexOffset(), indexCount, mesh.GetVertexOffset(),
                 vertexData->vertexCount, 0);
         }
 
-        mesh->NotifyUsedOnGPU();
+        mesh.NotifyUsedOnGPU();
     }
 
     void RendererUtility::DrawScreenQuad(const Rect2& uv, const Vector2I& textureSize, UINT32 numInstances, bool flipUV)

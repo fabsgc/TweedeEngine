@@ -27,22 +27,16 @@ namespace te
         bool Clone(const HRenderable& c, const String& suffix = "");
 
         /** @copydoc Renderable::SetMesh */
-        void SetMesh(HMesh mesh) { _internal->SetMesh(mesh.GetInternalPtr()); }
+        void SetMesh(HMesh mesh) { _internal->SetMesh(mesh); }
 
         /** @copydoc Renderable::SetMesh */
-        void SetZPrepassMesh(HZPrepassMesh mesh) { _internal->SetZPrepassMesh(mesh.GetInternalPtr()); }
-
-        /** @copydoc Renderable::SetMesh */
-        void SetMesh(SPtr<Mesh> mesh) { _internal->SetMesh(mesh); }
-
-        /** @copydoc Renderable::SetMesh */
-        void SetZPrepassMesh(SPtr<ZPrepassMesh> mesh) { _internal->SetZPrepassMesh(mesh); }
+        void SetZPrepassMesh(HZPrepassMesh mesh) { _internal->SetZPrepassMesh(mesh); }
 
         /** @copydoc Renderable::GetMesh */
-        SPtr<Mesh> GetMesh() const { return _internal->GetMesh(); }
+        HMesh GetMesh() const { return _internal->GetMesh(); }
 
         /** @copydoc Renderable::GetZPrepassMesh */
-        SPtr<Mesh> GetZPrepassMesh() const { return _internal->GetZPrepassMesh(); }
+        HZPrepassMesh GetZPrepassMesh() const { return _internal->GetZPrepassMesh(); }
 
         /** @copydoc Renderable::SetMaterial */
         void SetMaterial(UINT32 idx, HMaterial material) { _internal->SetMaterial(idx, material.GetInternalPtr()); }

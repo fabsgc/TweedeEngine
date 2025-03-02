@@ -177,8 +177,8 @@ namespace te
         if (_internal)
         {
             auto& renderableDoc = document["renderable"];
-            renderableDoc["mesh"] = _internal->GetMesh() ? serialization::GetResourceName(_internal->GetMesh().get()) : "";
-            renderableDoc["zPrepassMesh"] = _internal->GetZPrepassMesh() ? serialization::GetResourceName(_internal->GetMesh().get()) : "";
+            renderableDoc["mesh"] = _internal->GetMesh().IsLoaded() ? serialization::GetResourceName(_internal->GetMesh().Get()) : "";
+            renderableDoc["zPrepassMesh"] = _internal->GetZPrepassMesh().IsLoaded() ? serialization::GetResourceName(_internal->GetZPrepassMesh().Get()) : "";
 
             for (const auto& material : _internal->GetMaterials())
             {
@@ -200,13 +200,13 @@ namespace te
             {
                 HMesh mesh = static_resource_cast<Mesh>(gResourceManager().Get(serialization::GetResourceUUID(renderableDoc["mesh"].get<String>())));
                 if (mesh.IsLoaded())
-                    renderable._internal->SetMesh(mesh.GetInternalPtr());
+                    renderable._internal->SetMesh(mesh);
             }
             if (renderableDoc.contains("zPrepassMesh"))
             {
                 HZPrepassMesh mesh = static_resource_cast<ZPrepassMesh>(gResourceManager().Get(serialization::GetResourceUUID(renderableDoc["zPrepassMesh"].get<String>())));
                 if (mesh.IsLoaded())
-                    renderable._internal->SetZPrepassMesh(mesh.GetInternalPtr());
+                    renderable._internal->SetZPrepassMesh(mesh);
             }
             if (renderableDoc.contains("materials"))
             {
@@ -234,11 +234,11 @@ namespace te
         if (_internal)
             return;
 
-        if (GetMesh() && GetMesh()->GetUUID() == resource->GetUUID())
+        if (GetMesh().IsLoaded() && GetMesh()->GetUUID() == resource->GetUUID())
         {
             SetMesh(static_resource_cast<Mesh>(resource));
         }
-        else if (GetZPrepassMesh()->GetUUID() == resource->GetUUID())
+        else if (GetZPrepassMesh().IsLoaded() && GetZPrepassMesh()->GetUUID() == resource->GetUUID())
         {
             SetZPrepassMesh(static_resource_cast<ZPrepassMesh>(resource));
         }
@@ -259,13 +259,13 @@ namespace te
         if (_internal)
             return;
 
-        if (GetMesh() && GetMesh()->GetUUID() == uuid)
+        if (GetMesh().IsLoaded() && GetMesh()->GetUUID() == uuid)
         {
-            SetMesh(nullptr);
+            SetMesh(HMesh());
         }
-        else if (GetZPrepassMesh()->GetUUID() == uuid)
+        else if (GetZPrepassMesh().IsLoaded() && GetZPrepassMesh()->GetUUID() == uuid)
         {
-            SetZPrepassMesh(nullptr);
+            SetZPrepassMesh(HZPrepassMesh());
         }
         else
         {

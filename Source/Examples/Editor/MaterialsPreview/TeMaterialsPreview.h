@@ -120,10 +120,10 @@ namespace te
         SPtr<Skybox> _skybox;
         SPtr<Light> _light;
 
-        SPtr<Mesh> _box;
-        SPtr<Mesh> _plane;
-        SPtr<Mesh> _sphere;
-        SPtr<Mesh> _monkey;
+        HMesh _box;
+        HMesh _plane;
+        HMesh _sphere;
+        HMesh _monkey;
 
         SPtr<Renderable> _boxRenderable;
         SPtr<Renderable> _planeRenderable;

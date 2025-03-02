@@ -32,7 +32,7 @@ namespace te
 
     struct ZPrepassElem
     {
-        const SPtr<Mesh>* MeshElem = nullptr; // Can be a Mesh of a ZPrepassMesh
+        Mesh* MeshElem = nullptr; // Can be a Mesh of a ZPrepassMesh
         SubMesh* SubMeshElem = nullptr;
         const SPtr<GpuParams>* GpuParamsElem = nullptr;
         UINT32 InstanceCount = 0;
@@ -54,8 +54,8 @@ namespace te
         static const Vector<String> CameraBuffer = { "PerCameraBuffer" };
         static const Vector<String> ObjectBuffer = { "PerObjectBuffer" };
 
-        Vector<ZPrepassElem*> zPrepassMeshElements;
         Vector<ZPrepassElem*> zMeshElements;
+        Vector<ZPrepassElem*> zInstancedMeshElements;
         UnorderedSet<Mesh*> zPrepassMeshTreated;
 
         for (auto& entry : elements)
@@ -63,33 +63,33 @@ namespace te
             if (!entry.RenderElem->UseForZPrepass)
                 continue;
 
-            SPtr<Mesh> zPrepassMesh = entry.RenderElem->ZPrepassMeshElem;
+            ZPrepassMesh* zPrepassMesh = entry.RenderElem->ZPrepassMeshElem;
 
             if (zPrepassMesh && entry.RenderElem->InstanceCount == 0)
             {
-                if (zPrepassMeshTreated.emplace(zPrepassMesh.get()).second)
+                if (zPrepassMeshTreated.emplace(zPrepassMesh).second)
                 {
                     MeshProperties& properties = zPrepassMesh->GetProperties();
 
                     for (UINT32 i = 0; i < properties.GetNumSubMeshes(); i++)
                     {
                         ZPrepassElem* zPrepassElem = te_pool_new<ZPrepassElem>();
-                        zPrepassElem->MeshElem = &entry.RenderElem->ZPrepassMeshElem;
+                        zPrepassElem->MeshElem = zPrepassMesh;
                         zPrepassElem->SubMeshElem = properties.GetSubMeshPtr(i);
                         zPrepassElem->InstanceCount = 0;
                         zPrepassElem->GpuParamsElem = &entry.RenderElem->GpuParamsElem[entry.PassIdx];
-                        zPrepassMeshElements.push_back(zPrepassElem);
+                        zMeshElements.push_back(zPrepassElem);
                     }
                 }
             }
             else
             {
                 ZPrepassElem* zPrepassElem = te_pool_new<ZPrepassElem>();
-                zPrepassElem->MeshElem = &entry.RenderElem->MeshElem;
+                zPrepassElem->MeshElem = entry.RenderElem->MeshElem;
                 zPrepassElem->SubMeshElem = entry.RenderElem->SubMeshElem;
                 zPrepassElem->InstanceCount = entry.RenderElem->InstanceCount;
                 zPrepassElem->GpuParamsElem = &entry.RenderElem->GpuParamsElem[entry.PassIdx];
-                zMeshElements.push_back(zPrepassElem);
+                zInstancedMeshElements.push_back(zPrepassElem);
             }
         }
 
@@ -117,27 +117,6 @@ namespace te
             drawCallsCounter++;
         };
 
-        if(zPrepassMeshElements.size() > 0)
-        {
-            HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepass);
-            const auto& techniques = shader->GetTechniques();
-
-            if (techniques.size() == 0)
-                return 0;
-
-            SPtr<Technique> technique = techniques[0];
-            if (technique->GetNumPasses() == 0)
-                return 0;
-
-            SPtr<Pass> pass = technique->GetPass(0);
-
-            for (auto& zPrepassElem : zPrepassMeshElements)
-            {
-                DrawZPrepassElem(pass, zPrepassElem);
-                te_pool_delete<ZPrepassElem>(static_cast<ZPrepassElem*>(zPrepassElem));
-            }
-        }
-
         if(zMeshElements.size() > 0)
         {
             HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepass);
@@ -153,6 +132,27 @@ namespace te
             SPtr<Pass> pass = technique->GetPass(0);
 
             for (auto& zPrepassElem : zMeshElements)
+            {
+                DrawZPrepassElem(pass, zPrepassElem);
+                te_pool_delete<ZPrepassElem>(static_cast<ZPrepassElem*>(zPrepassElem));
+            }
+        }
+
+        if(zInstancedMeshElements.size() > 0)
+        {
+            HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::ZPrepass);
+            const auto& techniques = shader->GetTechniques();
+
+            if (techniques.size() == 0)
+                return 0;
+
+            SPtr<Technique> technique = techniques[0];
+            if (technique->GetNumPasses() == 0)
+                return 0;
+
+            SPtr<Pass> pass = technique->GetPass(0);
+
+            for (auto& zPrepassElem : zInstancedMeshElements)
             {
                 DrawZPrepassElem(pass, zPrepassElem);
                 te_pool_delete<ZPrepassElem>(static_cast<ZPrepassElem*>(zPrepassElem));
@@ -617,7 +617,7 @@ namespace te
         inputs.CurrRenderAPI.SetRenderTarget(gpuInitializationPassNode->RenderTargetTex, FBT_DEPTH | FBT_STENCIL);
 
         SPtr<Mesh> mesh = gRendererUtility().GetSkyBoxMesh();
-        gRendererUtility().Draw(mesh, mesh->GetProperties().GetSubMesh(0));
+        gRendererUtility().Draw(*mesh, mesh->GetProperties().GetSubMesh(0));
 
         // Make sure that any compute shaders are able to read g-buffer by unbinding it
         inputs.CurrRenderAPI.SetRenderTarget(nullptr);

@@ -296,7 +296,7 @@ namespace te
                         if (command.IsElement)
                         {
                             const RenderableElement& element = *command.Element;
-                            gRendererUtility().Draw(element.MeshElem, *element.SubMeshElem, 0);
+                            gRendererUtility().Draw(*element.MeshElem, *element.SubMeshElem, 0);
                         }
                         else
                         {

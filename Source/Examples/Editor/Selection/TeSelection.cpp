@@ -179,9 +179,9 @@ namespace te
     void Selection::DrawRenderable(const SPtr<CRenderable>& renderable, const RendererUtility::RenderTextureData& viewportData)
     {
         RenderAPI& rapi = RenderAPI::Instance();
-        SPtr<Mesh> mesh = renderable->GetMesh();
+        HMesh mesh = renderable->GetMesh();
 
-        if (mesh)
+        if (mesh.IsLoaded())
         {
             _needOutline = true;
 
@@ -195,7 +195,7 @@ namespace te
             UINT32 numMeshes = properties.GetNumSubMeshes();
 
             for (UINT32 i = 0; i < numMeshes; i++)
-                gRendererUtility().Draw(mesh, properties.GetSubMesh(i), 1);
+                gRendererUtility().Draw(*mesh, properties.GetSubMesh(i), 1);
 
             rapi.PopMarker();
             rapi.SetRenderTarget(nullptr);

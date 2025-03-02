@@ -70,7 +70,7 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::Transform);
     }
 
-    void Renderable::SetMesh(SPtr<Mesh> mesh)
+    void Renderable::SetMesh(HMesh mesh)
     {
         if(mesh == _mesh)
             return;
@@ -79,7 +79,7 @@ namespace te
         _boneMatrixBuffer = nullptr;
         _bonePrevMatrixBuffer = nullptr;
 
-        if (_mesh)
+        if (_mesh.IsLoaded())
         {
             UINT32 numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
             _materials.resize(numSubMeshes);
@@ -98,7 +98,7 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
-    void Renderable::SetZPrepassMesh(SPtr<ZPrepassMesh> mesh)
+    void Renderable::SetZPrepassMesh(HZPrepassMesh mesh)
     {
         if (mesh == _ZPrepassMesh)
             return;
@@ -114,7 +114,7 @@ namespace te
 
     void Renderable::SetMaterial(UINT32 idx, const SPtr<Material>& material)
     {
-        if (!_mesh)
+        if (!_mesh.IsLoaded())
             return;
 
         if (idx >= (UINT32)_materials.size())
@@ -126,7 +126,7 @@ namespace te
 
     void Renderable::SetMaterials(const Vector<SPtr<Material>>& materials)
     {
-        if (!_mesh)
+        if (!_mesh.IsLoaded())
             return;
 
         _numMaterials = (UINT32)_materials.size();
@@ -145,7 +145,7 @@ namespace te
 
     void Renderable::SetMaterial(const SPtr<Material>& material, bool all)
     {
-        if (!_mesh)
+        if (!_mesh.IsLoaded())
             return;
 
         if (!all)
@@ -165,7 +165,7 @@ namespace te
 
     void Renderable::SetMaterial(const String& name, const SPtr<Material>& material)
     {
-        if (!_mesh)
+        if (!_mesh.IsLoaded())
             return;
 
         UINT32 numSubMeshes = _mesh->GetProperties().GetNumSubMeshes();
@@ -198,7 +198,7 @@ namespace te
     /** Remove all the instances of this material used on submesh for this renderable */
     void Renderable::RemoveMaterial(const SPtr<Material>& material)
     {
-        if (!_mesh)
+        if (!_mesh.IsLoaded())
             return;
 
         for(auto& element : _materials)
@@ -279,14 +279,12 @@ namespace te
 
     Bounds Renderable::GetBounds()
     {
-        SPtr<Mesh> mesh = GetMesh();
-
         if(!_boundsDirty)
             return _cachedBounds;
 
         _boundsDirty = false;
 
-        if (mesh == nullptr)
+        if (!_mesh.IsLoaded())
         {
             const Transform& tfrm = GetTransform();
 
@@ -298,7 +296,7 @@ namespace te
         }
         else
         {
-            _cachedBounds = mesh->GetProperties().GetBounds();
+            _cachedBounds = _mesh->GetProperties().GetBounds();
             _cachedBounds.TransformAffine(_tfrmMatrix);
             return _cachedBounds;
         }
@@ -306,9 +304,7 @@ namespace te
 
     Bounds Renderable::GetSubMeshBounds(UINT32 subMeshIdx)
     {
-        SPtr<Mesh> mesh = GetMesh();
-
-        if (!mesh || subMeshIdx > mesh->GetProperties().GetNumSubMeshes() - 1)
+        if (!_mesh.IsLoaded() || subMeshIdx > _mesh->GetProperties().GetNumSubMeshes() - 1)
         {
             const Transform& tfrm = GetTransform();
 
@@ -326,9 +322,9 @@ namespace te
         _subMeshesBoundsDirty = false;
         _subMeshesBounds.clear();
 
-        for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
+        for (UINT32 i = 0; i < _mesh->GetProperties().GetNumSubMeshes(); i++)
         {
-            SubMesh* subMesh = mesh->GetProperties().GetSubMeshPtr(i);
+            SubMesh* subMesh = _mesh->GetProperties().GetSubMeshPtr(i);
             if (subMesh)
             {
                 Bounds subMeshBounds = subMesh->SubMeshBounds;
@@ -469,7 +465,7 @@ namespace te
             return;
         }
 
-        if (_mesh)
+        if (_mesh.IsLoaded())
         {
             SPtr<Skeleton> skeleton = _mesh->GetSkeleton();
 

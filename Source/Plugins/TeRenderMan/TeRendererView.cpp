@@ -796,7 +796,7 @@ namespace te
             if (!renderable->GetInstancing())
                 return;
 
-            key.MeshElem = renderable->GetMesh().get();
+            key.MeshElem = renderable->GetMesh().Get();
             key.Materials = renderable->GetMaterialsPtr();
             key.MaterialCount = renderable->GetNumMaterials();
             key.Layer = renderable->GetLayer();

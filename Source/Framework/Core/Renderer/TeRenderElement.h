@@ -9,10 +9,10 @@ namespace te
     {
     public:
         /**	Pointer to the mesh to render. */
-        SPtr<Mesh> MeshElem;
+        Mesh* MeshElem;
 
         /**	Pointer to the z prepass mesh to render. */
-        SPtr<Mesh> ZPrepassMeshElem;
+        ZPrepassMesh* ZPrepassMeshElem;
 
         /**	Portion of the mesh to render. */
         SubMesh* SubMeshElem = nullptr;

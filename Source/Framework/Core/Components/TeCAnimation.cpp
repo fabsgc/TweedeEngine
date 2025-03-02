@@ -254,8 +254,8 @@ namespace te
             HRenderable animatedRenderable = static_object_cast<CRenderable>(SO()->GetComponent<CRenderable>());
             if (animatedRenderable)
             {
-                SPtr<Mesh> mesh = animatedRenderable->GetMesh();
-                if (mesh)
+                HMesh mesh = animatedRenderable->GetMesh();
+                if (mesh.IsLoaded())
                 {
                     const SPtr<Skeleton>& skeleton = mesh->GetSkeleton();
                     if (skeleton)

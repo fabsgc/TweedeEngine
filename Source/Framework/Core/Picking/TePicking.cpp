@@ -148,9 +148,8 @@ namespace te
         if (renderable.IsDestroyed())
             return;
 
-        SPtr<Mesh> mesh = renderable->GetMesh();
-
-        if (mesh)
+        HMesh mesh = renderable->GetMesh();
+        if (mesh.IsLoaded())
         {
             _material->BindRenderable(renderable);
             _material->Bind();
@@ -159,7 +158,7 @@ namespace te
             UINT32 numMeshes = properties.GetNumSubMeshes();
 
             for (UINT32 i = 0; i < numMeshes; i++)
-                gRendererUtility().Draw(mesh, properties.GetSubMesh(i), 1);
+                gRendererUtility().Draw(*mesh, properties.GetSubMesh(i), 1);
         }
     }
 
