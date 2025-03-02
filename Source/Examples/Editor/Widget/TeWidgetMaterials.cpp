@@ -18,7 +18,6 @@ namespace te
 {
     WidgetMaterials::WidgetMaterials()
         : Widget(WidgetType::Material)
-        , _currentMaterial(nullptr)
         , _materialCreationCounter(1)
         , _loadTexture(false)
         , _loadTextureUsed(nullptr)
@@ -43,16 +42,16 @@ namespace te
         bool hasChanged = false;
         char inputName[256];
         char inputUUID[64];
-        UUID load = UUID::EMPTY;
-        UUID empty = UUID(50, 0, 0, 0);
+        const UUID load = UUID::EMPTY;
+        const UUID empty = UUID(50, 0, 0, 0);
         MaterialProperties properties;
         float offsetListMaterials = 0.0f;
         SPtr<Texture> currentTexture = nullptr;
         ImGuiExt::ComboOptions<UUID> materialsOptions;
         UINT8 flags = (UINT8)ImGuiExt::ComboOptionFlag::ShowTexture;
-        UUID materialUUID = (_currentMaterial) ? _currentMaterial->GetUUID() : empty;
-        EditorResManager::ResourcesContainer& materials = EditorResManager::Instance().Get<Material>();
-        EditorResManager::ResourcesContainer& textures = EditorResManager::Instance().Get<Texture>();
+        UUID materialUUID = _currentMaterial.IsLoaded() ? _currentMaterial->GetUUID() : empty;
+        const EditorResManager::ResourcesContainer& materials = EditorResManager::Instance().Get<Material>();
+        const EditorResManager::ResourcesContainer& textures = EditorResManager::Instance().Get<Texture>();
         const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
         const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, 
@@ -151,7 +150,7 @@ namespace te
                 HMaterial material = Material::Create(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
                 material->SetName("Material " + ToString(_materialCreationCounter));
                 EditorResManager::Instance().Add(material);
-                _currentMaterial = material.GetInternalPtr();
+                _currentMaterial = material;
                 _materialCreationCounter++;
                 materialUUID = _currentMaterial->GetUUID();
             }
@@ -162,20 +161,17 @@ namespace te
         {
             for (auto& resource : materials.Res)
             {
-                if (!_currentMaterial)
+                if (!_currentMaterial.IsLoaded())
                 {
-                    _currentMaterial = gResourceManager().Get<Material>(resource.second->GetUUID()).GetInternalPtr();
+                    _currentMaterial = gResourceManager().Get<Material>(resource.second->GetUUID());
                     materialUUID = _currentMaterial->GetUUID();
                 }
 
-                SPtr<Texture> texture = _materialsPreview.GetPreview(
-                    static_resource_cast<Material>(resource.second).GetInternalPtr())
-                    .RenderTex->GetColorTexture(0);
-
+                SPtr<Texture> texture = _materialsPreview.GetPreview(static_resource_cast<Material>(resource.second)).RenderTex->GetColorTexture(0);
                 materialsOptions.AddOption(resource.second->GetUUID(), resource.second->GetName(), texture);
             }
 
-            if (_currentMaterial)
+            if (_currentMaterial.IsLoaded())
             {
                 currentTexture = _materialsPreview.GetPreview(_currentMaterial).RenderTex->GetColorTexture(0);
                 if (currentTexture && currentTexture->GetProperties().GetTextureType() == TextureType::TEX_TYPE_2D)
@@ -194,7 +190,7 @@ namespace te
                     materialsOptions, ImGui::GetWindowContentRegionWidth() - 32.0f - offsetListMaterials, flags))
                 {
                     if (materialUUID != _currentMaterial->GetUUID())
-                        _currentMaterial = gResourceManager().Get<Material>(materialUUID).GetInternalPtr();
+                        _currentMaterial = gResourceManager().Get<Material>(materialUUID);
                 }
 
                 // You can delete a material
@@ -208,7 +204,7 @@ namespace te
         }
 
         // Current material properties
-        if(_currentMaterial)
+        if(_currentMaterial.IsLoaded())
         {
             properties = _currentMaterial->GetProperties();
 
@@ -693,11 +689,8 @@ namespace te
         return textureLoaded;
     }
 
-    void WidgetMaterials::DeleteMaterial(SPtr<Material> material, const UUID& uuid)
+    void WidgetMaterials::DeleteMaterial(HMaterial material, const UUID& uuid)
     {
-        HMaterial handle = static_resource_cast<Material>(
-            gResourceManager()._createResourceHandle(material, uuid));
-
         Vector<HComponent> renderables = gSceneManager().GetRootNode()->GetComponents<CRenderable>(true);
 
         for (auto& component : renderables)
@@ -706,11 +699,11 @@ namespace te
             renderable->RemoveMaterial(material);
         }
 
+        _currentMaterial = HMaterial();
         _materialsPreview.DeletePreview(material);
 
-        EditorResManager::Instance().Remove<Material>(handle);
-        material = nullptr;
-        _currentMaterial = nullptr;
+        EditorResManager::Instance().Remove<Material>(material);
+        
         gEditor().NeedsRedraw();
     }
 }

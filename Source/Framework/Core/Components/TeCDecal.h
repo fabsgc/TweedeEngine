@@ -30,13 +30,10 @@ namespace te
         SPtr<Decal> GetInternal() const { return _internal; }
 
         /** @copydoc Decal::SetMaterial */
-        void SetMaterial(const HMaterial& material) { _internal->SetMaterial(material.GetInternalPtr()); }
-
-        /** @copydoc Decal::SetMaterial */
-        void SetMaterial(const SPtr<Material>& material) { _internal->SetMaterial(material); }
+        void SetMaterial(const HMaterial& material) { _internal->SetMaterial(material); }
 
         /** @copydoc SetMaterial */
-        const SPtr<Material>& GetMaterial() const { return _internal->GetMaterial(); }
+        HMaterial GetMaterial() const { return _internal->GetMaterial(); }
 
         /** @copydoc Decal::SetSize */
         void SetSize(const Vector2& size) { _internal->SetSize(size); }

@@ -112,7 +112,7 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
-    void Renderable::SetMaterial(UINT32 idx, const SPtr<Material>& material)
+    void Renderable::SetMaterial(UINT32 idx, HMaterial material)
     {
         if (!_mesh.IsLoaded())
             return;
@@ -124,46 +124,7 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
-    void Renderable::SetMaterials(const Vector<SPtr<Material>>& materials)
-    {
-        if (!_mesh.IsLoaded())
-            return;
-
-        _numMaterials = (UINT32)_materials.size();
-        UINT32 min = std::min(_numMaterials, (UINT32)materials.size());
-
-        for (UINT32 i = 0; i < min; i++)
-        {
-            _materials[i] = materials[i];
-        }
-
-        for (UINT32 i = min; i < _numMaterials; i++)
-            _materials[i] = nullptr;
-
-        _markCoreDirty(ActorDirtyFlag::GpuParams);
-    }
-
-    void Renderable::SetMaterial(const SPtr<Material>& material, bool all)
-    {
-        if (!_mesh.IsLoaded())
-            return;
-
-        if (!all)
-        {
-            SetMaterial(0, material);
-        }
-        else
-        {
-            for (UINT32 i = 0; i < _materials.size(); i++)
-            {
-                SetMaterial(i, material);
-            }
-        }
-
-        _markCoreDirty(ActorDirtyFlag::GpuParams);
-    }
-
-    void Renderable::SetMaterial(const String& name, const SPtr<Material>& material)
+    void Renderable::SetMaterial(const String& name, HMaterial material)
     {
         if (!_mesh.IsLoaded())
             return;
@@ -187,16 +148,55 @@ namespace te
             TE_DEBUG("No submesh currently use the material {" + name + "} in {" + _mesh->GetName() + "}");
     }
 
-    SPtr<Material> Renderable::GetMaterial(UINT32 idx) const
+    void Renderable::SetMaterials(const Vector<HMaterial>& materials)
+    {
+        if (!_mesh.IsLoaded())
+            return;
+
+        _numMaterials = (UINT32)_materials.size();
+        UINT32 min = std::min(_numMaterials, (UINT32)materials.size());
+
+        for (UINT32 i = 0; i < min; i++)
+        {
+            _materials[i] = materials[i];
+        }
+
+        for (UINT32 i = min; i < _numMaterials; i++)
+            _materials[i] = nullptr;
+
+        _markCoreDirty(ActorDirtyFlag::GpuParams);
+    }
+
+    void Renderable::SetMaterial(HMaterial material, bool all)
+    {
+        if (!_mesh.IsLoaded())
+            return;
+
+        if (!all)
+        {
+            SetMaterial(0, material);
+        }
+        else
+        {
+            for (UINT32 i = 0; i < _materials.size(); i++)
+            {
+                SetMaterial(i, material);
+            }
+        }
+
+        _markCoreDirty(ActorDirtyFlag::GpuParams);
+    }
+
+    HMaterial Renderable::GetMaterial(UINT32 idx) const
     {
         if (idx >= (UINT32)_materials.size())
-            return nullptr;
+            return HMaterial();
 
         return _materials[idx];
     }
 
     /** Remove all the instances of this material used on submesh for this renderable */
-    void Renderable::RemoveMaterial(const SPtr<Material>& material)
+    void Renderable::RemoveMaterial(const HMaterial& material)
     {
         if (!_mesh.IsLoaded())
             return;
@@ -219,7 +219,7 @@ namespace te
         _markCoreDirty(ActorDirtyFlag::GpuParams);
     }
 
-    bool Renderable::IsUsingMaterial(const SPtr<Material>& material)
+    bool Renderable::IsUsingMaterial(const HMaterial& material)
     {
         for (UINT32 i = 0; i < (UINT32)_materials.size(); i++)
         {

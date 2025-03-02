@@ -117,7 +117,7 @@ namespace te
     struct InstancedBuffer
     {
         Mesh* MeshElem;
-        const SPtr<Material>* Materials;
+        const HMaterial* Materials;
         UINT32 MaterialCount = 0;
         UINT32 Layer = 0;
         Vector<UINT32> Idx;

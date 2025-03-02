@@ -2236,8 +2236,7 @@ namespace te
                     for (UINT32 i = 0; i < renderable->GetMesh()->GetProperties().GetNumSubMeshes(); i++)
                     {
                         SubMesh& subMesh = renderable->GetMesh()->GetProperties().GetSubMesh(i);
-                        if (subMesh.Mat.IsLoaded())
-                            renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
+                        renderable->SetMaterial(i, subMesh.Mat);
                     }
                 }
             }
@@ -2387,8 +2386,8 @@ namespace te
 
         for (UINT32 i = 0; i < meshProperties.GetNumSubMeshes(); i++)
         {
-            const SPtr<Material> material = renderable->GetMaterial(i);
-            UUID materialUUID = (material) ? material->GetUUID() : emptyMaterial;
+            const HMaterial material = renderable->GetMaterial(i);
+            UUID materialUUID = material.IsLoaded() ? material->GetUUID() : emptyMaterial;
             const SubMesh& subMesh = meshProperties.GetSubMesh(i);
             const String title = subMesh.MaterialName;
             const String id = "##" + subMesh.MaterialName + ToString(i);
@@ -2399,12 +2398,12 @@ namespace te
                 {
                     if (materialUUID == emptyMaterial)
                     {
-                        renderable->SetMaterial(i, nullptr);
+                        renderable->SetMaterial(i, HMaterial());
                         hasChanged = true;
                     }
                     else
                     {
-                        renderable->SetMaterial(i, gResourceManager().Get<Material>(materialUUID).GetInternalPtr());
+                        renderable->SetMaterial(i, gResourceManager().Get<Material>(materialUUID));
                         hasChanged = true;
                     }
                 }
@@ -2941,14 +2940,13 @@ namespace te
 
                                     for (UINT32 i = 0; i < mesh->GetProperties().GetNumSubMeshes(); i++)
                                     {
+
                                         SubMesh& subMesh = mesh->GetProperties().GetSubMesh(i);
-                                        if (subMesh.Mat.IsLoaded())
-                                            renderable->SetMaterial(i, subMesh.Mat.GetInternalPtr());
-                                        else
-                                            renderable->SetMaterial(i, gBuiltinResources().GetDefaultMaterial());
+                                        if (subMesh.Mat.IsLoaded()) renderable->SetMaterial(i, subMesh.Mat);
+                                        else renderable->SetMaterial(i, gBuiltinResources().GetDefaultMaterial());
                                     }
                                 }
-                                else if (!renderable->GetMaterial(0))
+                                else if (!renderable->GetMaterial(0).IsLoaded())
                                 {
                                     renderable->SetMaterial(gBuiltinResources().GetDefaultMaterial(), true);
                                 }

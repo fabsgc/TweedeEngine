@@ -43,7 +43,7 @@ namespace te
          * @param[in]	passIdx			Index of the pass in the material.
          * @param[in]	techniqueIdx	Index of the technique the pass belongs to, if the material has multiple techniques.
          */
-        void SetPass(const SPtr<Material>& material, UINT32 passIdx, UINT32 techniqueIdx);
+        void SetPass(const Material& material, UINT32 passIdx, UINT32 techniqueIdx);
 
         /**
          * Activates the specified material pass for compute. Any further dispatch calls will be executed using this pass.
@@ -51,7 +51,7 @@ namespace te
          * @param[in]	material		Material containing the pass.
          * @param[in]	passIdx			Index of the pass in the material.
          */
-        void SetComputePass(const SPtr<Material>& material, UINT32 passIdx = 0);
+        void SetComputePass(const Material& material, UINT32 passIdx = 0);
 
         /**
          * Sets parameters (textures, samplers, buffers) for the currently active pass.

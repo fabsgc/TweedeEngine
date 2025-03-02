@@ -6,17 +6,6 @@ namespace te
 {
     Decal::Decal(const HMaterial& material, const Vector2& size, float maxDistance)
         : Serializable(CoreType::TID_Decal)
-        , _maxDistance(maxDistance)
-        , _size(size)
-    {
-        if (material.IsLoaded())
-            _material = material.GetInternalPtr();
-
-        UpdateBounds();
-    }
-
-    Decal::Decal(const SPtr<Material>& material, const Vector2& size, float maxDistance)
-        : Serializable(CoreType::TID_Decal)
         , _material(material)
         , _maxDistance(maxDistance)
         , _size(size)

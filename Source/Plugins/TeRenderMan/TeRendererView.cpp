@@ -33,7 +33,7 @@ namespace te
         {
             for (size_t i = 0; i < lhsSize; i++)
             {
-                if (lhs.Materials[i].get() != rhs.Materials[i].get())
+                if (lhs.Materials[i].Get() != rhs.Materials[i].Get())
                     return false;
             }
         }
@@ -884,7 +884,7 @@ namespace te
 
                 for (UINT32 i = 0; i < instancedBuffer.MaterialCount; i++)
                 {
-                    if (!instancedBuffer.Materials[i])
+                    if (!instancedBuffer.Materials[i].IsLoaded())
                         continue;
 
                     UINT32 shaderFlags = instancedBuffer.Materials[i]->GetShader()->GetFlags();

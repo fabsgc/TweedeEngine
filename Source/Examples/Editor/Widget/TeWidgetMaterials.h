@@ -20,10 +20,10 @@ namespace te
 
     protected:
         bool ShowLoadedTexture();
-        void DeleteMaterial(SPtr<Material> material, const UUID& uuid);
+        void DeleteMaterial(HMaterial material, const UUID& uuid);
 
     protected:
-        SPtr<Material> _currentMaterial;
+        HMaterial _currentMaterial;
         UINT32 _materialCreationCounter;
 
         // Data used to set the correct texture while loading

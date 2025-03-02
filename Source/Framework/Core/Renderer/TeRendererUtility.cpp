@@ -171,10 +171,10 @@ namespace te
         }
     }
 
-    void RendererUtility::SetPass(const SPtr<Material>& material, UINT32 passIdx, UINT32 techniqueIdx)
+    void RendererUtility::SetPass(const Material& material, UINT32 passIdx, UINT32 techniqueIdx)
     {
         RenderAPI& rapi = RenderAPI::Instance();
-        SPtr<Pass> pass = material->GetPass(passIdx, techniqueIdx);
+        SPtr<Pass> pass = material.GetPass(passIdx, techniqueIdx);
 
         TE_ASSERT_ERROR(pass != nullptr, "Failed to find a valid pass with passIdx=" + ToString(passIdx) + " and techniqueIdx=" + ToString(techniqueIdx))
 
@@ -182,10 +182,10 @@ namespace te
         rapi.SetStencilRef(pass->GetStencilRefValue());
     }
 
-    void RendererUtility::SetComputePass(const SPtr<Material>& material, UINT32 passIdx)
+    void RendererUtility::SetComputePass(const Material& material, UINT32 passIdx)
     {
         RenderAPI& rapi = RenderAPI::Instance();
-        SPtr<Pass> pass = material->GetPass(passIdx);
+        SPtr<Pass> pass = material.GetPass(passIdx);
         rapi.SetComputePipeline(pass->GetComputePipelineState());
     }
 

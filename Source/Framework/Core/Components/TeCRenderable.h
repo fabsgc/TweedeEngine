@@ -39,37 +39,25 @@ namespace te
         HZPrepassMesh GetZPrepassMesh() const { return _internal->GetZPrepassMesh(); }
 
         /** @copydoc Renderable::SetMaterial */
-        void SetMaterial(UINT32 idx, HMaterial material) { _internal->SetMaterial(idx, material.GetInternalPtr()); }
+        void SetMaterial(UINT32 idx, HMaterial material) { _internal->SetMaterial(idx, material); }
 
         /** @copydoc Renderable::SetMaterial */
-        void SetMaterial(HMaterial material, bool all = false) { _internal->SetMaterial(material.GetInternalPtr(), all); }
+        void SetMaterial(HMaterial material, bool all = false) { _internal->SetMaterial(material, all); }
 
         /** @copydoc Renderable::SetMaterial */
-        void SetMaterial(const String& name, HMaterial material) { _internal->SetMaterial(name, material.GetInternalPtr()); }
+        void SetMaterial(const String& name, HMaterial material) { _internal->SetMaterial(name, material); }
 
-        /** @copydoc Renderable::SetMaterial */
-        void SetMaterial(UINT32 idx, SPtr<Material> material) { _internal->SetMaterial(idx, material); }
-
-        /** @copydoc Renderable::SetMaterial */
-        void SetMaterial(SPtr<Material> material, bool all = false) { _internal->SetMaterial(material, all); }
-
-        /** @copydoc Renderable::SetMaterial */
-        void SetMaterial(const String& name, SPtr<Material> material) { _internal->SetMaterial(name, material); }
+         /** @copydoc Renderable::SetMaterials */
+        void SetMaterials(const Vector<HMaterial>& materials) { _internal->SetMaterials(materials); }
 
         /** @copydoc Renderable::RemoveMaterial */
-        void RemoveMaterial(const SPtr<Material>& material) { _internal->RemoveMaterial(material); }
+        void RemoveMaterial(const HMaterial& material) { _internal->RemoveMaterial(material); }
 
         /** @copydoc Renderable::GetMaterial */
-        SPtr<Material> GetMaterial(UINT32 idx) const { return _internal->GetMaterial(idx); }
-
-        /** @copydoc Renderable::SetMaterials */
-        void SetMaterials(const Vector<SPtr<Material>>& materials) { _internal->SetMaterials(materials); }
-
-        /** @copydoc Renderable::SetMaterials */
-        void SetMaterials(const Vector<HMaterial>& materials);
+        HMaterial GetMaterial(UINT32 idx) const { return _internal->GetMaterial(idx); }
 
         /** @copydoc Renderable::IsUsingMaterial */
-        bool IsUsingMaterial(const SPtr<Material>& material) { return _internal->IsUsingMaterial(material); }
+        bool IsUsingMaterial(const HMaterial& material) { return _internal->IsUsingMaterial(material); }
 
         /** @copydoc Renderable::UpdateMaterials */
         void UpdateMaterials() { _internal->UpdateMaterials(); }
@@ -78,7 +66,7 @@ namespace te
         void ClearAllMaterials() { _internal->ClearAllMaterials(); }
 
         /** @copydoc Renderable::GetMaterials */
-        const Vector<SPtr<Material>>& GetMaterials() { return _internal->GetMaterials(); }
+        const Vector<HMaterial>& GetMaterials() { return _internal->GetMaterials(); }
 
         /** @copydoc Renderable::SetCullDistanceFactor */
         void SetCullDistanceFactor(float factor) { _internal->SetCullDistanceFactor(factor); }

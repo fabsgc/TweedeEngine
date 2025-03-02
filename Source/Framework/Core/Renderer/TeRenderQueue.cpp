@@ -18,7 +18,7 @@ namespace te
 
     void RenderQueue::Add(const RenderElement* element, float distFromCamera, UINT32 techniqueIdx)
     {
-        SPtr<Material> material = element->MaterialElem;
+        Material* material = element->MaterialElem;
         SPtr<Shader> shader = material->GetShader();
 
         UINT32 queuePriority = shader->GetQueuePriority();

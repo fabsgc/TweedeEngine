@@ -38,21 +38,21 @@ namespace te
          *
          * @param[in]	material		Weak Ref on a Material.
          */
-        const RendererUtility::RenderTextureData& GetPreview(const WPtr<Material>& material);
+        const RendererUtility::RenderTextureData& GetPreview(HMaterial material);
 
         /**
          * Specifies that the given material preview need to be updated
          *
          * @param[in]	material		Weak Ref on a Material.
          */
-        void MarkDirty(const WPtr<Material>& material);
+        void MarkDirty(HMaterial& material);
 
         /**
          * Delete a material preview from the list
          *
          * @param[in]	material		Weak Ref on a Material.
          */
-        void DeletePreview(const WPtr<Material>& material);
+        void DeletePreview(HMaterial& material);
 
         /**
          * It's possible to generate a preview using sphere, box or plane primitive 
@@ -75,7 +75,7 @@ namespace te
          *
          * @param[in]	material		Weak Ref on a Material.
          */
-        void DrawMaterial(const WPtr<Material>& material, Preview& preview) const;
+        void DrawMaterial(HMaterial& material, Preview& preview) const;
 
         /**
          * Initialize the camera used to draw previews to their render textures
@@ -112,7 +112,7 @@ namespace te
         static const Color  BackgroundColor;
 
     private:
-        Map<WPtr<Material>, UPtr<Preview>, std::owner_less<WPtr<Material>>> _previews;
+        Map<UUID, UPtr<Preview>> _previews;
 
         SPtr<FrameData> _perFrameData;
         SPtr<Renderer> _renderer;
@@ -130,7 +130,7 @@ namespace te
         SPtr<Renderable> _sphereRenderable;
         SPtr<Renderable> _monkeyRenderable;
 
-        SPtr<Texture> _radiance;
+        HTexture _radiance;
 
         MeshPreviewType _meshPreviewType;
     };

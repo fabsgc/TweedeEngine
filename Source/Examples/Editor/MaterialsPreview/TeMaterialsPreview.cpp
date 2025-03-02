@@ -70,9 +70,11 @@ namespace te
         _perFrameData = te_unique_ptr_new<FrameData>();
     }
 
-    const RendererUtility::RenderTextureData& MaterialsPreview::GetPreview(const WPtr<Material>& material)
+    const RendererUtility::RenderTextureData& MaterialsPreview::GetPreview(HMaterial material)
     {
-        auto it = _previews.find(material);
+        const UUID uuid = material->GetUUID();
+
+        auto it = _previews.find(uuid);
         if (it != _previews.end())
         {
             if (it->second->IsDirty)
@@ -82,23 +84,23 @@ namespace te
         }
         else
         {
-            _previews[material] = te_unique_ptr_new<Preview>();
-            DrawMaterial(material, *_previews[material]);
+            _previews[uuid] = te_unique_ptr_new<Preview>();
+            DrawMaterial(material, *_previews[uuid]);
 
-            return *(_previews[material]->MatPreview);
+            return *(_previews[uuid]->MatPreview);
         }
     }
 
-    void MaterialsPreview::MarkDirty(const WPtr<Material>& material)
+    void MaterialsPreview::MarkDirty(HMaterial& material)
     {
-        auto it = _previews.find(material);
+        auto it = _previews.find(material->GetUUID());
         if (it != _previews.end())
             it->second->IsDirty = true;
     }
 
-    void MaterialsPreview::DeletePreview(const WPtr<Material>& material)
+    void MaterialsPreview::DeletePreview(HMaterial& material)
     { 
-        auto it = _previews.find(material);
+        auto it = _previews.find(material->GetUUID());
         if (it != _previews.end())
             _previews.erase(it);
     }
@@ -114,9 +116,8 @@ namespace te
         _meshPreviewType = type;
     }
 
-    void MaterialsPreview::DrawMaterial(const WPtr<Material>& material, Preview& preview) const
+    void MaterialsPreview::DrawMaterial(HMaterial& material, Preview& preview) const
     { 
-        SPtr<Material> mat = material.lock();
         SPtr<Renderable> renderable = nullptr;
 
         _camera->NotifyNeedsRedraw();
@@ -143,7 +144,7 @@ namespace te
 
         if (renderable)
         {
-            renderable->SetMaterial(mat);
+            renderable->SetMaterial(material);
             _renderer->NotifyRenderableAdded(renderable.get());
         }
 
@@ -258,7 +259,7 @@ namespace te
         textureCubeMapImportOptions.Format = PixelUtil::BestFormatFromFile(path, true);
         textureCubeMapImportOptions.SRGB = true;
 
-        _radiance = ResourceManager::Instance().Load<Texture>(path, textureCubeMapImportOptions).GetInternalPtr();
-        TE_ASSERT_ERROR(_radiance.get(), "Failed to load environment texture");
+        _radiance = ResourceManager::Instance().Load<Texture>(path, textureCubeMapImportOptions);
+        TE_ASSERT_ERROR(_radiance.IsLoaded(), "Failed to load environment texture");
     }
 }

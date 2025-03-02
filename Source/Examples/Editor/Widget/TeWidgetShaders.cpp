@@ -192,7 +192,7 @@ namespace te
                         auto material = static_resource_cast<Material>(resource.second);
                         if (material.IsLoaded() && material->GetShader() == _currentShader)
                         {
-                            gEditor().GetMaterialsPreview().MarkDirty(material.GetInternalPtr());
+                            gEditor().GetMaterialsPreview().MarkDirty(material);
                         }
                     }
                 }

@@ -48,7 +48,6 @@ namespace te
     {
         UINT32 drawCallsCounter = 0;
         RenderAPI& rapi = RenderAPI::Instance();
-        SPtr<Material> lastMaterial = nullptr;
 
         static const Vector<String> InstancedBuffer = { "PerInstanceBuffer" };
         static const Vector<String> CameraBuffer = { "PerCameraBuffer" };
@@ -167,7 +166,7 @@ namespace te
     {
         UINT32 drawCallsCounter = 0;
         RenderAPI& rapi = RenderAPI::Instance();
-        SPtr<Material> lastMaterial = nullptr;
+        Material* lastMaterial = nullptr;
         UINT32 gpuParamsBindFlags = 0;
 
         static const Vector<String> PerLightBuffer = { "PerLightsBuffer" };
@@ -179,7 +178,7 @@ namespace te
             rapi.PushMarker("[DRAW] Renderable", Color(0.7f, 0.8f, 0.2f));
 
             if(entry.ApplyPass)
-                gRendererUtility().SetPass(entry.RenderElem->MaterialElem, entry.PassIdx, entry.TechniqueIdx);
+                gRendererUtility().SetPass(*entry.RenderElem->MaterialElem, entry.PassIdx, entry.TechniqueIdx);
 
             // If Material is the same as the previous object, we only set constant buffer params
             // Instead, we set full gpu params

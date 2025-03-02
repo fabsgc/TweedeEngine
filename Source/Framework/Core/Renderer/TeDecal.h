@@ -25,10 +25,10 @@ namespace te
         UINT32 GetRendererId() const { return _rendererId; }
 
         /** Determines the material to use when rendering the decal. */
-        void SetMaterial(const SPtr<Material>& material) { _material = material; _markCoreDirty(); }
+        void SetMaterial(HMaterial material) { _material = material; _markCoreDirty(); }
 
         /** @copydoc setMaterial */
-        const SPtr<Material>& GetMaterial() const { return _material; }
+        HMaterial GetMaterial() const { return _material; }
 
         /** Width and height of the decal. */
         void SetSize(const Vector2& size) { _size = Vector2::Max(Vector2::ZERO, size); _markCoreDirty(); UpdateBounds(); }
@@ -121,14 +121,13 @@ namespace te
 
         Decal();
         Decal(const HMaterial& material, const Vector2& size, float maxDistance);
-        Decal(const SPtr<Material>& material, const Vector2& size, float maxDistance);
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
     protected:
         Bounds _bounds;
-        SPtr<Material> _material;
+        HMaterial _material;
         Matrix4 _tfrmMatrix = TeIdentity;
         Matrix4 _tfrmMatrixNoScale = TeIdentity;
         float _maxDistance = 10.0f;

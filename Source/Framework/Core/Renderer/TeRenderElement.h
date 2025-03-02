@@ -18,7 +18,7 @@ namespace te
         SubMesh* SubMeshElem = nullptr;
 
         /**	Material to render the mesh with. */
-        SPtr<Material> MaterialElem;
+        Material* MaterialElem;
 
         /** Material data buffer assigned to this material */
         SPtr<GpuParamBlockBuffer> PerMaterialParamBuffer;

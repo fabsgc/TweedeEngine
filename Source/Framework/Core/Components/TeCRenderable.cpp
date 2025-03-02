@@ -28,14 +28,6 @@ namespace te
             _internal->Destroy();
     }
 
-    void CRenderable::SetMaterials(const Vector<HMaterial>& materials)
-    {
-        for (auto& material : materials)
-        {
-            SetMaterial(material);
-        }
-    }
-
     Bounds CRenderable::GetBounds() const
     {
         _internal->UpdateState(*SO());
@@ -182,7 +174,7 @@ namespace te
 
             for (const auto& material : _internal->GetMaterials())
             {
-                renderableDoc["materials"].push_back(serialization::GetResourceName(material.get()));
+                renderableDoc["materials"].push_back(serialization::GetResourceName(material.Get()));
             }
 
             renderableDoc["layer"] = _internal->GetLayer();
@@ -215,7 +207,7 @@ namespace te
                 {
                     HMaterial mat = static_resource_cast<Material>(gResourceManager().Get(serialization::GetResourceUUID(material.get<String>())));
                     if (mat.IsLoaded())
-                        renderable._internal->SetMaterial(index, mat.GetInternalPtr());
+                        renderable._internal->SetMaterial(index, mat);
 
                     index++;
                 }
@@ -273,7 +265,7 @@ namespace te
             {
                 if (GetMaterial(i)->GetUUID() == uuid)
                 {
-                    SetMaterial(i, nullptr);
+                    SetMaterial(i, HMaterial());
                 }
             }
         }

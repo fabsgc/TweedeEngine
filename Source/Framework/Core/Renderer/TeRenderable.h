@@ -65,15 +65,7 @@ namespace te
          * Sets a material that will be used for rendering a sub-mesh with the specified index. If a sub-mesh doesn't have
          * a specific material set then the primary material will be used.
          */
-        void SetMaterial(UINT32 idx, const SPtr<Material>& material);
-
-        /**
-         * Sets the primary material to use for rendering. If all is set to true, any sub-mesh that doesn't have 
-         * an explicit material set will use this material.
-         *
-         * @note	This is equivalent to calling setMaterial(0, material).
-         */
-        void SetMaterial(const SPtr<Material>& material, bool all = false);
+        void SetMaterial(UINT32 idx, HMaterial material);
 
         /**
          * Sets a material, given its name in parameter. It's useful when you export a model and you want to set quickly
@@ -81,33 +73,41 @@ namespace te
          *
          * Be careful, submeshes with another material will not be assigned. A default material will be applied by renderer
          */
-        void SetMaterial(const String& name, const SPtr<Material>& material);
+        void SetMaterial(const String& name, HMaterial material);
+
+        /**
+         * Sets the primary material to use for rendering. If all is set to true, any sub-mesh that doesn't have 
+         * an explicit material set will use this material.
+         *
+         * @note	This is equivalent to calling setMaterial(0, material).
+         */
+        void SetMaterial(HMaterial material, bool all = false);
 
         /**
          * Determines all materials used for rendering this renderable. Each of the materials is used for rendering a single
          * sub-mesh. If number of materials is larger than number of sub-meshes, they will be ignored. If lower, the
          * remaining materials will be removed.
          */
-        void SetMaterials(const Vector<SPtr<Material>>& materials);
+        void SetMaterials(const Vector<HMaterial>& materials);
 
         /** @copydoc SetMaterials */
-        const Vector<SPtr<Material>>& GetMaterials() { return _materials; }
+        const Vector<HMaterial>& GetMaterials() { return _materials; }
 
-        const SPtr<Material>* GetMaterialsPtr() { return _materials.data(); }
+        const HMaterial* GetMaterialsPtr() { return _materials.data(); }
 
         /**	Returns the material used for rendering a sub-mesh with the specified index. */
-        SPtr<Material> GetMaterial(UINT32 idx) const;
+        HMaterial GetMaterial(UINT32 idx) const;
 
         UINT32 GetNumMaterials() { return (UINT32)_materials.size(); }
 
         /** Remove all the instances of this material used on submesh for this renderable */
-        void RemoveMaterial(const SPtr<Material>& material);
+        void RemoveMaterial(const HMaterial& material);
 
         /** Remove all materials set on every submesh */
         void ClearAllMaterials();
 
         /** We sometimes need to know if a material is currently used by a part of a renderable */
-        bool IsUsingMaterial(const SPtr<Material>& material);
+        bool IsUsingMaterial(const HMaterial& material);
 
         /** If a material used by this renderable has been modified, we need to send the notification and refresh gpu params */
         void UpdateMaterials();
@@ -278,7 +278,7 @@ namespace te
 
         HMesh _mesh;
         HZPrepassMesh _ZPrepassMesh;
-        Vector<SPtr<Material>> _materials;
+        Vector<HMaterial> _materials;
         UINT32 _numMaterials = 0;
         UINT32 _layer = 1;
 

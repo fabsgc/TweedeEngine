@@ -505,14 +505,10 @@ namespace te
         renElement.MeshElem = gRendererUtility().GetBoxStencil().get();
         renElement.SubMeshElem = &renElement.MeshElem->GetProperties().GetSubMesh();
 
-        renElement.MaterialElem = decal->GetMaterial();
+        renElement.MaterialElem = decal->GetMaterial().IsLoaded() ? decal->GetMaterial().Get() : nullptr;
 
         if (renElement.MaterialElem != nullptr && renElement.MaterialElem->GetShader() == nullptr)
             renElement.MaterialElem = nullptr;
-
-        // If no material use the default material
-        if (renElement.MaterialElem == nullptr)
-            renElement.MaterialElem = Material::Create(DefaultDecalMat::Get()->GetShader()).GetInternalPtr();
 
         // TODO decal
     }
@@ -595,16 +591,11 @@ namespace te
                 renElement->AnimationId = renderable->GetAnimationId();
                 renElement->UseForZPrepass = renderable->GetUseForZPrepass();
 
-                renElement->MaterialElem = renderable->GetMaterial(i);
-                if (renElement->MaterialElem == nullptr)
-                    renElement->MaterialElem = nullptr;
-
-                if (renElement->MaterialElem != nullptr && renElement->MaterialElem->GetShader() == nullptr)
-                    renElement->MaterialElem = nullptr;
+                renElement->MaterialElem = renderable->GetMaterial(i).IsLoaded() ? renderable->GetMaterial(i).Get() : nullptr;
 
                 // If no material use the default material
-                if (renElement->MaterialElem == nullptr)
-                    renElement->MaterialElem = gBuiltinResources().GetDefaultMaterial().GetInternalPtr();
+                if (renElement->MaterialElem == nullptr || renElement->MaterialElem->GetShader() == nullptr)
+                    renElement->MaterialElem = gBuiltinResources().GetDefaultMaterial().Get();
 
                 const SPtr<Shader>& shader = renElement->MaterialElem->GetShader();
 
