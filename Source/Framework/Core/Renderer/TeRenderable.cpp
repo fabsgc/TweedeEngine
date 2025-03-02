@@ -590,8 +590,8 @@ namespace te
     void Renderable::OnResourceDestroyed(const UUID& uuid, CoreType type)
     {
 
-        if (GetMesh().IsLoaded() && GetMesh()->GetUUID() == uuid ||
-            GetZPrepassMesh().IsLoaded() && GetZPrepassMesh()->GetUUID() == uuid)
+        if (_mesh.IsLoaded() && _mesh->GetUUID() == uuid ||
+            _ZPrepassMesh.IsLoaded() && _ZPrepassMesh->GetUUID() == uuid)
         {
             OnMeshChanged();
             _markCoreDirty(ActorDirtyFlag::GpuParams);

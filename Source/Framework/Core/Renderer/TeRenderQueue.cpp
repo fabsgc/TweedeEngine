@@ -18,14 +18,14 @@ namespace te
 
     void RenderQueue::Add(const RenderElement* element, float distFromCamera, UINT32 techniqueIdx)
     {
-        Material* material = element->MaterialElem;
-        SPtr<Shader> shader = material->GetShader();
+        const Material* material = element->MaterialElem;
+        const HShader& shader = material->GetShader();
 
-        UINT32 queuePriority = shader->GetQueuePriority();
-        QueueSortType sortType = shader->GetQueueSortType();
-        UINT32 shaderId = shader->GetId();
-        bool separablePasses = shader->GetAllowSeparablePasses();
-        UINT32 materialId = material->GetId();
+        const UINT32 queuePriority = shader->GetQueuePriority();
+        const QueueSortType sortType = shader->GetQueueSortType();
+        const UINT32 shaderId = shader->GetId();
+        const bool separablePasses = shader->GetAllowSeparablePasses();
+        const UINT32 materialId = material->GetId();
 
         switch (sortType)
         {

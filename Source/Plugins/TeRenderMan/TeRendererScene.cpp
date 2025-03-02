@@ -42,7 +42,7 @@ namespace te
             *GetBasePassVariation<true>(shaderCanWriteVelocity, animType) :
             *GetBasePassVariation<false>(shaderCanWriteVelocity, animType);
 
-        findDesc.Variation.AddParam(ShaderVariation::Param("TRANSPARENT", material.GetShader() && material.GetShader()->GetFlags() & (UINT32)ShaderFlag::Transparent));
+        findDesc.Variation.AddParam(ShaderVariation::Param("TRANSPARENT", material.GetShader().IsLoaded() && material.GetShader()->GetFlags() & (UINT32)ShaderFlag::Transparent));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_BASE_COLOR_MAP", properties.UseBaseColorMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_METALLIC_MAP", properties.UseMetallicMap));
         findDesc.Variation.AddParam(ShaderVariation::Param("USE_ROUGHNESS_MAP", properties.UseRoughnessMap));
@@ -507,7 +507,7 @@ namespace te
 
         renElement.MaterialElem = decal->GetMaterial().IsLoaded() ? decal->GetMaterial().Get() : nullptr;
 
-        if (renElement.MaterialElem != nullptr && renElement.MaterialElem->GetShader() == nullptr)
+        if (renElement.MaterialElem != nullptr && renElement.MaterialElem->GetShader().IsLoaded())
             renElement.MaterialElem = nullptr;
 
         // TODO decal
@@ -594,11 +594,10 @@ namespace te
                 renElement->MaterialElem = renderable->GetMaterial(i).IsLoaded() ? renderable->GetMaterial(i).Get() : nullptr;
 
                 // If no material use the default material
-                if (renElement->MaterialElem == nullptr || renElement->MaterialElem->GetShader() == nullptr)
+                if (renElement->MaterialElem == nullptr || !renElement->MaterialElem->GetShader().IsLoaded())
                     renElement->MaterialElem = gBuiltinResources().GetDefaultMaterial().Get();
 
-                const SPtr<Shader>& shader = renElement->MaterialElem->GetShader();
-
+                const HShader& shader = renElement->MaterialElem->GetShader();
                 const Vector<ShaderVariationParamInfo>& variationParams = shader->GetVariationParams();
                 const bool shaderCanWriteVelocity = std::find_if(variationParams.begin(), variationParams.end(),
                     [](const ShaderVariationParamInfo& x) { return x.Identifier == "WRITE_VELOCITY"; }) != variationParams.end();
@@ -646,8 +645,8 @@ namespace te
             // Prepare all parameter bindings
             for (auto& element : rendererRenderable->Elements)
             {
-                SPtr<Shader> shader = element.MaterialElem->GetShader();
-                if (shader == nullptr)
+                const HShader& shader = element.MaterialElem->GetShader();
+                if (!shader.IsLoaded())
                 {
                     TE_DEBUG("Missing shader on material.");
                     continue;

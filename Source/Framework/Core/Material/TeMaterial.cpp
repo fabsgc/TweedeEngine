@@ -32,6 +32,13 @@ namespace te
         , _variation(variation)
     { }
 
+    Material::Material(const HShader& shader, const ShaderVariation& variation, UINT32 id)
+    : Material(id, variation)
+    {
+        if(shader.IsLoaded())
+            SetShader(shader);
+    }
+
     Material::~Material()
     {
         for (auto& param : _params)
@@ -39,19 +46,6 @@ namespace te
             if(param.second.Param)
                 te_deallocate(param.second.Param); //I's sure that types here are primitive or very simple type sush as Vector3
         }
-    }
-
-    Material::Material(const HShader& shader, const ShaderVariation& variation, UINT32 id)
-        : Material(id, variation)
-    {
-        if(shader.IsLoaded())
-            SetShader(shader.GetInternalPtr());
-    }
-
-    Material::Material(const SPtr<Shader>& shader, const ShaderVariation& variation, UINT32 id)
-        : Material(id, variation)
-    {
-        SetShader(shader);
     }
 
     void Material::Initialize()
@@ -69,7 +63,7 @@ namespace te
     {
         _techniques.clear();
 
-        if (_shader != nullptr)
+        if (_shader.IsLoaded())
         {
             _shader->GetCompatibleTechniques(_techniques);
 
@@ -121,18 +115,12 @@ namespace te
         }
     }
 
-    void Material::SetShader(const SPtr<Shader>& shader)
+    void Material::SetShader(const HShader& shader)
     {
         _shader = shader;
 
-        if(_shader)
-            InitializeTechniques();
-    }
-
-    void Material::SetShader(const HShader& shader)
-    {
         if (shader.IsLoaded())
-            SetShader(shader.GetInternalPtr());
+            InitializeTechniques();
     }
 
     void Material::SetVariation(const ShaderVariation& variation)
@@ -292,7 +280,7 @@ namespace te
             }
         }
 
-        if (bestTechniqueIdx == (UINT32)-1 && createTechnique && _shader)
+        if (bestTechniqueIdx == (UINT32)-1 && createTechnique && _shader.IsLoaded())
         {
             SPtr<Technique> newTechnique = _shader->CreateTechnique(desc.Variation, desc.Tags);
             if (newTechnique)
@@ -368,7 +356,7 @@ namespace te
             }
         }
 
-        if (bestTechniqueIdx == (UINT32)-1 && createTechnique && _shader)
+        if (bestTechniqueIdx == (UINT32)-1 && createTechnique && _shader.IsLoaded())
         {
             SPtr<Technique> newTechnique = _shader->CreateTechnique(ShaderVariation(), {});
             if (newTechnique)
@@ -383,7 +371,7 @@ namespace te
 
     UINT32 Material::GetNumPasses(UINT32 techniqueIdx) const
     {
-        if (_shader == nullptr)
+        if (!_shader.IsLoaded())
             return 0;
 
         const auto& it = _techniques.find(techniqueIdx);
@@ -395,7 +383,7 @@ namespace te
 
     const SPtr<Pass> Material::GetPass(UINT32 passIdx, UINT32 techniqueIdx) const
     {
-        if (_shader == nullptr)
+        if (!_shader.IsLoaded())
             return nullptr;
 
         const auto& it = _techniques.find(techniqueIdx);
@@ -519,31 +507,7 @@ namespace te
         return static_resource_cast<Material>(gResourceManager()._createResourceHandle(materialPtr));
     }
 
-    HMaterial Material::Create(const SPtr<Shader>& shader)
-    {
-        UINT32 id = Material::NextMaterialId.fetch_add(1, std::memory_order_relaxed);
-        assert(id < std::numeric_limits<UINT32>::max() && "Created too many materials, reached maximum id.");
-
-        SPtr<Material> materialPtr = te_core_ptr<Material>(new (te_allocate<Material>()) Material(shader, ShaderVariation::EMPTY, id));
-        materialPtr->SetThisPtr(materialPtr);
-        materialPtr->Initialize();
-
-        return static_resource_cast<Material>(gResourceManager()._createResourceHandle(materialPtr));
-    }
-
     HMaterial Material::Create(const HShader& shader, const ShaderVariation& variation)
-    {
-        UINT32 id = Material::NextMaterialId.fetch_add(1, std::memory_order_relaxed);
-        assert(id < std::numeric_limits<UINT32>::max() && "Created too many materials, reached maximum id.");
-
-        SPtr<Material> materialPtr = te_core_ptr<Material>(new (te_allocate<Material>()) Material(shader, variation, id));
-        materialPtr->SetThisPtr(materialPtr);
-        materialPtr->Initialize();
-
-        return static_resource_cast<Material>(gResourceManager()._createResourceHandle(materialPtr));
-    }
-
-    HMaterial Material::Create(const SPtr<Shader>& shader, const ShaderVariation& variation)
     {
         UINT32 id = Material::NextMaterialId.fetch_add(1, std::memory_order_relaxed);
         assert(id < std::numeric_limits<UINT32>::max() && "Created too many materials, reached maximum id.");
@@ -578,7 +542,7 @@ namespace te
 
         nlohmann::json document;
 
-        document["shader"] = (_shader && gBuiltinResources().IsBuiltInResource(_shader->GetUUID())) ? serialization::GetResourceName(_shader.get()) : "";
+        document["shader"] = (_shader.IsLoaded() && gBuiltinResources().IsBuiltInResource(_shader->GetUUID())) ? serialization::GetResourceName(_shader.Get()) : "";
         _properties.ExportJson(document["properties"]);
 
         String dump = document.dump();
@@ -751,5 +715,51 @@ namespace te
         textures.AnisotropyDirectionMap = document["anisotropyDirectionMap"].get<String>();
 
         return textures;
+    }
+
+    void Material::OnResourceModified(const HResource& resource)
+    {
+        if (resource->GetResourceType() == CoreType::TID_Texture)
+        {
+            for (const auto& texture : _textures)
+            {
+                if (texture.second->TextureElem == resource.GetInternalPtr())
+                {
+                    _markCoreDirty(MaterialDirtyFlags::ParamResource);
+                    break;
+                }
+            }
+        }
+
+        if (resource->GetResourceType() == CoreType::TID_Shader)
+        {
+            if (_shader == resource)
+                InitializeTechniques();
+        }
+    }
+
+    void Material::OnResourceDestroyed(const UUID& uuid, CoreType type)
+    {
+        if (type == CoreType::TID_Texture)
+        {
+            for (auto& texture : _textures)
+            {
+                if (texture.second->TextureElem && texture.second->TextureElem->GetUUID() == uuid)
+                {
+                    _textures.erase(texture.first);
+                    _markCoreDirty(MaterialDirtyFlags::ParamResource);
+                    break;
+                }
+            }
+        }
+
+        if (type == CoreType::TID_Shader)
+        {
+            if (_shader.IsLoaded() && _shader->GetUUID() == uuid)
+            {
+                _shader = nullptr;
+                InitializeTechniques();
+            }
+        }
     }
 }

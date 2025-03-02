@@ -37,7 +37,7 @@ namespace te
         friend class RendererMaterialBase;
 
         /**	Initializes all materials on the core thread. */
-        static void InitMaterials(const Vector<SPtr<Shader>>& shaders);
+        static void InitMaterials(const Vector<HShader>& shaders);
 
         /**	Destroys all materials */
         static void DestroyMaterials();

@@ -572,15 +572,15 @@ namespace te
                         shaderTypeOptions.AddOption(BuiltinShader::TransparentCullNone, "Forward transparent no Cull");
                     }
 
-                    if (_currentMaterial->GetShader() == gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent).GetInternalPtr())
+                    if (_currentMaterial->GetShader() == gBuiltinResources().GetBuiltinShader(BuiltinShader::Transparent))
                         shaderType = BuiltinShader::Transparent;
 
-                    if(_currentMaterial->GetShader() == gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone).GetInternalPtr())
+                    if(_currentMaterial->GetShader() == gBuiltinResources().GetBuiltinShader(BuiltinShader::TransparentCullNone))
                         shaderType = BuiltinShader::TransparentCullNone;
 
                     if (ImGuiExt::RenderOptionCombo<BuiltinShader>(&shaderType, "##material_shader_type_option", "Shader", shaderTypeOptions, width))
                     {
-                        _currentMaterial->SetShader(gBuiltinResources().GetBuiltinShader(shaderType).GetInternalPtr());
+                        _currentMaterial->SetShader(gBuiltinResources().GetBuiltinShader(shaderType));
                         hasChanged = true;
                     }
                 }

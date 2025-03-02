@@ -39,7 +39,7 @@ namespace te
 
     struct RendererMaterialMetaData
     {
-        SPtr<Shader> ShaderElem = nullptr;
+        HShader ShaderElem;
         Vector<RendererMaterialBase*> Instances;
         ShaderVariations Variations;
         ShaderDefines Defines;
@@ -69,7 +69,7 @@ namespace te
         virtual void Initialize() = 0;
 
         /** Returns the shader used by the material. */
-        SPtr<Shader> GetShader() const { return _shader; }
+        const HShader& GetShader() const { return _shader; }
 
         /** Returns the internal parameter set containing GPU bindable parameters. */
         SPtr<GpuParams> GetParams() const { return _params; }
@@ -91,7 +91,7 @@ namespace te
     public:
         void InitPipelines()
         {
-            if(_shader == nullptr)
+            if(!_shader.IsLoaded())
             {
                 TE_DEBUG("Shader is NULL, can't create RendererMaterial");
                 return;
@@ -174,7 +174,7 @@ namespace te
         SPtr<GraphicsPipelineState> _graphicsPipeline;
         SPtr<ComputePipelineState> _computePipeline;
         UINT32 _stencilRef = 0;
-        SPtr<Shader> _shader;
+        HShader _shader;
     };
 
     /** Wrapper class around Material that allows a simple way to load and set up materials used by the renderer. */

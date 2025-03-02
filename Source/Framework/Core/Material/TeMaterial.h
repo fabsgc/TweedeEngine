@@ -1,6 +1,8 @@
 #pragma once
 
 #include "TeCorePrerequisites.h"
+
+#include "Resources/TeResourceListener.h"
 #include "Resources/TeResource.h"
 #include "RenderAPI/TeGpuParams.h"
 #include "RenderAPI/TeGpuBuffer.h"
@@ -444,7 +446,7 @@ namespace te
      * Material that controls how objects are rendered. It is represented by a shader and parameters used to set up that
      * shader. It provides a simple interface for manipulating the parameters.
      */
-    class TE_CORE_EXPORT Material : public Resource
+    class TE_CORE_EXPORT Material : public Resource, public ResourceListener
     {
     public:
         virtual ~Material();
@@ -462,9 +464,6 @@ namespace te
          * Sets a shader that will be used by the material. Material will be initialized using all compatible techniques
          * from the shader. Shader must be set before doing any other operations with the material.
          */
-        void SetShader(const SPtr<Shader>& shader);
-
-        /** @copydoc SetShader */
         void SetShader(const HShader& shader);
 
         /**
@@ -476,7 +475,7 @@ namespace te
         void SetVariation(const ShaderVariation& variation);
 
         /** Returns the currently active shader. */
-        SPtr<Shader> GetShader() const { return _shader; } 
+        const HShader& GetShader() const { return _shader; } 
 
         /**
          * Set of parameters that determine which subset of techniques in the assigned shader should be used. Only the
@@ -597,14 +596,8 @@ namespace te
         /** Creates a new material with the specified shader . */
         static HMaterial Create(const HShader& shader);
 
-        /** Creates a new material with the specified shader. */
-        static HMaterial Create(const SPtr<Shader>& shader);
-
         /** Creates a new material with the specified shader and variation. */
         static HMaterial Create(const HShader& shader, const ShaderVariation& variation);
-
-        /** Creates a new material with the specified shader and variation. */
-        static HMaterial Create(const SPtr<Shader>& shader, const ShaderVariation& variation);
 
         /**	Creates a new empty material but doesn't initialize it. */
         static SPtr<Material> CreateEmpty();
@@ -621,13 +614,18 @@ namespace te
         Material();
         Material(UINT32 id, const ShaderVariation& variation);
         Material(const HShader& shader, const ShaderVariation& variation, UINT32 id);
-        Material(const SPtr<Shader>& shader, const ShaderVariation& variation, UINT32 id);
 
         /**
          * Initializes the material by using the compatible techniques from the currently set shader. Shader must contain
          * the techniques that matches the current renderer and render system.
          */
         void InitializeTechniques();
+
+        /** @copydoc ResourceListener::OnResourceModified */
+        void OnResourceModified(const HResource& resource) override;
+
+        /** @copydoc ResourceListener::OnResourceDestroyed */
+        void OnResourceDestroyed(const UUID& uuid, CoreType type) override;
 
     protected:
         struct TextureData
@@ -655,7 +653,7 @@ namespace te
 
     protected:
         UINT32 _id;
-        SPtr<Shader> _shader;
+        HShader _shader;
         mutable Map<UINT32, SPtr<Technique>> _techniques;
         ShaderVariation _variation;
 

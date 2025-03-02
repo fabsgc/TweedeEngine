@@ -15,7 +15,7 @@ namespace te
 
         // Note: Ideally I want to avoid loading all materials, and instead just load those that are used.
         Vector<RendererMaterialData>& materials = GetMaterials();
-        Vector<SPtr<Shader>> shaders;
+        Vector<HShader> shaders;
 
         for (auto& material : materials)
         {
@@ -23,7 +23,7 @@ namespace te
             {
                 HShader shader = br.GetBuiltinShader(std::any_cast<BuiltinShader>(material.ShaderPath));
                 TE_ASSERT_ERROR(shader.IsLoaded(), "Shader not found")
-                shaders.push_back(shader.GetInternalPtr());
+                shaders.push_back(shader);
             }
             else if (material.ShaderPath.type() == typeid(String))
             {
@@ -64,7 +64,7 @@ namespace te
 #endif
     }
 
-    void RendererMaterialManager::InitMaterials(const Vector<SPtr<Shader>>& shaders)
+    void RendererMaterialManager::InitMaterials(const Vector<HShader>& shaders)
     {
         Vector<RendererMaterialData>& materials = GetMaterials();
         for (UINT32 i = 0; i < materials.size(); i++)
@@ -73,7 +73,7 @@ namespace te
             materials[i].ShaderPath = materials[i].ShaderPath;
             materials[i].MetaData->ShaderElem = shaders[i];
 
-            if (!shaders[i])
+            if (!shaders[i].IsLoaded())
             {
                 if (materials[i].ShaderPath.type() == typeid(String))
                 {

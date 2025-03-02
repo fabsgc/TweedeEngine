@@ -26,39 +26,39 @@ namespace te
     { 
         HShader shader = gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque);
         if (shader.IsLoaded())
-            _currentShader = shader.GetInternalPtr();
+            _currentShader = shader;
     }
 
     void WidgetShaders::Update()
     {
         bool hasChanged = false;
-        UUID empty = UUID(50, 0, 0, 0);
+        const UUID empty = UUID(50, 0, 0, 0);
         ImGuiExt::ComboOptions<UUID> shadersOptions;
-        UUID shaderUUID = (_currentShader) ? _currentShader->GetUUID() : empty;
-        EditorResManager::ResourcesContainer& shaders = EditorResManager::Instance().Get<Shader>();
-        EditorResManager::ResourcesContainer& materials = EditorResManager::Instance().Get<Material>();
+        UUID shaderUUID = _currentShader.IsLoaded() ? _currentShader->GetUUID() : empty;
+        const EditorResManager::ResourcesContainer& shaders = EditorResManager::Instance().Get<Shader>();
+        const EditorResManager::ResourcesContainer& materials = EditorResManager::Instance().Get<Material>();
         const float width = ImGui::GetWindowContentRegionWidth() - 110.0f;
 
         // Shaders list
         {
             for (auto& resource : shaders.Res)
             {
-                if (!_currentShader)
+                if (!_currentShader.IsLoaded())
                 {
-                    _currentShader = gResourceManager().Get<Shader>(resource.second->GetUUID()).GetInternalPtr();
+                    _currentShader = gResourceManager().Get<Shader>(resource.second->GetUUID());
                     shaderUUID = _currentShader->GetUUID();
                 }
 
                 shadersOptions.AddOption(resource.second->GetUUID(), resource.second->GetName());
             }
 
-            if (_currentShader)
+            if (_currentShader.IsLoaded())
             {
                 if (ImGuiExt::RenderOptionCombo<UUID>(&shaderUUID, "##shader_list_option", "",
                     shadersOptions, ImGui::GetWindowContentRegionWidth()))
                 {
                     if (shaderUUID != _currentShader->GetUUID())
-                        _currentShader = gResourceManager().Get<Shader>(shaderUUID).GetInternalPtr();
+                        _currentShader = gResourceManager().Get<Shader>(shaderUUID);
                 }
 
                 // Built Shader
@@ -202,7 +202,7 @@ namespace te
 
     void WidgetShaders::Build()
     {
-        if (!_currentShader)
+        if (!_currentShader.IsLoaded())
             return;
 
         _currentShader->Compile(true);
@@ -221,6 +221,23 @@ namespace te
         }
     }
 
-    void WidgetShaders::UpdateBackground()
-    { }
+    void WidgetShaders::OnResourceModified(const HResource& resource)
+    {
+        if (resource->GetCoreType() != CoreType::TID_Shader)
+            return;
+
+        if (_currentShader == resource)
+            Build();
+    }
+
+    void WidgetShaders::OnResourceDestroyed(const UUID& uuid, CoreType type)
+    {
+        if (type != CoreType::TID_Shader)
+            return;
+
+        HShader shader = gResourceManager().Get<Shader>(uuid);
+
+        if (_currentShader == shader)
+            _currentShader = nullptr;
+    }
 }
