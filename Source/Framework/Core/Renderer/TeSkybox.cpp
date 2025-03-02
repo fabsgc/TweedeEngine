@@ -13,7 +13,7 @@ namespace te
     {
         // This shouldn't normally happen, as filtered textures are generated when a radiance texture is assigned, but
         // we check for it anyway (something could have gone wrong).
-        if(_texture)
+        if(_texture.IsLoaded())
         {
             if (_filteredRadiance == nullptr || _irradiance == nullptr)
                 FilterTexture();
@@ -31,14 +31,9 @@ namespace te
         if (_renderer) _renderer->NotifySkyboxAdded(this);
     }
 
-    void Skybox::SetTexture(const HTexture& texture)
+    void Skybox::SetTexture(HTexture texture)
     {
-        SetTexture((texture.IsLoaded()) ? texture.GetInternalPtr() : nullptr);
-    }
-
-    void Skybox::SetTexture(const SPtr<Texture>& texture)
-    {
-        if (!texture)
+        if (!texture.IsLoaded())
         {
             _texture = nullptr;
             _filteredRadiance = nullptr;
@@ -150,7 +145,7 @@ namespace te
         rapi.PushMarker("[DRAW] FILTERED RADIANCE MAP", Color(0.67f, 0.49f, 0.26f));
 
         // Filter radiance
-        gIBLUtility().ScaleCubemap(_texture, 0, _filteredRadiance, 0);
+        gIBLUtility().ScaleCubemap(_texture.GetInternalPtr(), 0, _filteredRadiance, 0);
         gIBLUtility().FilterCubemapForSpecular(_filteredRadiance, nullptr);
 
         rapi.PopMarker();
@@ -158,9 +153,35 @@ namespace te
         rapi.PushMarker("[DRAW] IRRADIANCE MAP", Color(0.23f, 0.48f, 0.55f));
 
         // Generate irradiance
-        gIBLUtility().FilterCubemapForIrradiance(_texture, _irradiance);
+        gIBLUtility().FilterCubemapForIrradiance(_texture.GetInternalPtr(), _irradiance);
 
         rapi.PopMarker();
+    }
+
+    void Skybox::OnResourceModified(const HResource& resource)
+    {
+        if (resource->GetCoreType() == CoreType::TID_Texture)
+            return;
+
+        if (_texture == resource)
+        {
+            FilterTexture();
+            _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
+        }
+    }
+
+    void Skybox::OnResourceDestroyed(const UUID& uuid, CoreType type)
+    {
+        if (type == CoreType::TID_Texture)
+            return;
+
+        if (_texture->GetUUID() == uuid)
+        {
+            _texture = nullptr;
+            _filteredRadiance = nullptr;
+            _irradiance = nullptr;
+            _markCoreDirty((ActorDirtyFlag)SkyboxDirtyFlag::Texture);
+        }
     }
 
     const IBLUtility& gIBLUtility()

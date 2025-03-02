@@ -108,7 +108,7 @@ namespace te
         // TODO move it to Skybox::Serialize
 
         document["type"] = GetComponentType();
-        document["texture"] = serialization::GetResourceName(GetTexture().get());
+        document["texture"] = serialization::GetResourceName(GetTexture().IsLoaded() ? GetTexture().Get() : nullptr);
         document["brightness"] = GetBrightness();
         document["IBLIntensity"] = GetIBLIntensity();
 

@@ -596,13 +596,13 @@ namespace te
         if (inputs.Scene.SkyboxElem && inputs.View.GetRenderSettings().EnableSkybox)
             skybox = inputs.Scene.SkyboxElem;
 
-        SPtr<Texture> radiance = skybox ? skybox->GetTexture() : nullptr;
+        HTexture radiance = skybox ? skybox->GetTexture() : HTexture();
         float brightness = skybox ? skybox->GetBrightness() : 1.0f;
 
-        if (radiance != nullptr)
+        if (radiance.IsLoaded())
         {
             SkyboxMat* material = SkyboxMat::Get();
-            material->Bind(inputs.View.GetPerViewBuffer(), radiance, Color::White, brightness);
+            material->Bind(inputs.View.GetPerViewBuffer(), radiance.GetInternalPtr(), Color::White, brightness);
         }
         else
         {

@@ -4,6 +4,7 @@
 #include "Scene/TeSceneActor.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "Serialization/TeSerializable.h"
+#include "Resources/TeResourceListener.h"
 
 namespace te
 {
@@ -14,7 +15,7 @@ namespace te
         Texture = 1 << 5
     };
 
-    class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor, public Serializable
+    class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor, public Serializable, public ResourceListener
     {
     public:
         static constexpr float DEFAULT_IBL_INTENSITY = 5000.f;
@@ -40,16 +41,13 @@ namespace te
         float GetIBLIntensity() const { return _IBLIntensity; }
 
         /** @copydoc Skybox::GetTexture */
-        void SetTexture(const HTexture& texture);
-
-        /** @copydoc Skybox::GetTexture */
-        void SetTexture(const SPtr<Texture>& texture);
+        void SetTexture(HTexture texture);
 
         /**
          * Determines an environment map to use for sampling skybox radiance. Must be a cube-map texture, and should ideally
          * contain HDR data.
          */
-        SPtr<Texture> GetTexture() const { return _texture; }
+        HTexture GetTexture() const { return _texture; }
 
         /**
          * Determines an environment map to use for sampling skybox diffuse irradiance. Must be a cube-map texture, and should ideally
@@ -97,6 +95,12 @@ namespace te
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;
 
+        /** @copydoc ResourceListener::OnResourceModified */
+        void OnResourceModified(const HResource& resource) override;
+
+        /** @copydoc ResourceListener::OnResourceDestroyed */
+        void OnResourceDestroyed(const UUID& uuid, CoreType type) override;
+
     protected:
         /**< Multiplier to apply to evaluated skybox values before using them. */
         float _brightness = 1.0f;
@@ -105,7 +109,7 @@ namespace te
         float _IBLIntensity = DEFAULT_IBL_INTENSITY;
 
         /** Texture used to display in 3D scene */
-        SPtr<Texture> _texture;
+        HTexture _texture;
 
         /** Texture used to compute IBL specular irradiance */
         SPtr<Texture> _filteredRadiance;

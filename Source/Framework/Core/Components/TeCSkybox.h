@@ -27,13 +27,10 @@ namespace te
         bool Clone(const HSkybox& c, const String& suffix = "");
 
         /** @copydoc Skybox::GetTexture */
-        SPtr<Texture> GetTexture() const { return _internal->GetTexture(); }
+        HTexture GetTexture() const { return _internal->GetTexture(); }
 
         /** @copydoc Skybox::SetTexture */
         void SetTexture(const HTexture& texture) { _internal->SetTexture(texture); }
-
-        /** @copydoc Skybox::SetTexture */
-        void SetTexture(const SPtr<Texture>& texture) { _internal->SetTexture(texture); }
 
         /** @copydoc Skybox::GetDiffuseIrradiance */
         SPtr<Texture> GetDiffuseIrradiance() const { return _internal->GetDiffuseIrradiance(); }

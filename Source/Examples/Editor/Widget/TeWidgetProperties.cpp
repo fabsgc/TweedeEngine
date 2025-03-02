@@ -2525,10 +2525,10 @@ namespace te
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
         ImGuiExt::ComboOptions<UUID> texturesOptions;
-        UUID emptyTexture = UUID(50, 0, 0, 0);
-        UUID loadTexture = UUID::EMPTY;
-        UUID textureUUID = (skybox->GetTexture()) ? skybox->GetTexture()->GetUUID() : emptyTexture;
-        EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Texture>();
+        const UUID emptyTexture = UUID(50, 0, 0, 0);
+        const UUID loadTexture = UUID::EMPTY;
+        UUID textureUUID = (skybox->GetTexture().IsLoaded()) ? skybox->GetTexture()->GetUUID() : emptyTexture;
+        const EditorResManager::ResourcesContainer& container = EditorResManager::Instance().Get<Texture>();
 
         for (auto& resource : container.Res)
         {
@@ -2555,12 +2555,12 @@ namespace te
                 }
                 else if (textureUUID == emptyTexture)
                 {
-                    skybox->SetTexture(nullptr);
+                    skybox->SetTexture(HTexture());
                     hasChanged = true;
                 }
                 else
                 {
-                    skybox->SetTexture(gResourceManager().Get<Texture>(textureUUID).GetInternalPtr());
+                    skybox->SetTexture(gResourceManager().Get<Texture>(textureUUID));
                     hasChanged = true;
                 }
             }
@@ -3028,7 +3028,7 @@ namespace te
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
                     SPtr<CSkybox> skybox = std::static_pointer_cast<CSkybox>(_selections.ClickedComponent);
 
-                    skybox->SetTexture(texture.GetInternalPtr());
+                    skybox->SetTexture(texture);
 
                     skyboxLoaded = true;
                 }
