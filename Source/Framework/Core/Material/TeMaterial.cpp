@@ -86,7 +86,7 @@ namespace te
             outputParams.push_back(GpuParams::Create(graphicPipelineState));
 
             for (auto& texture : _textures)
-                outputParams[idx]->SetTexture(texture.first, texture.second->TextureElem, texture.second->TextureSurfaceElem);
+                outputParams[idx]->SetTexture(texture.first, texture.second->TextureElem.GetInternalPtr(), texture.second->TextureSurfaceElem);
 
             for (auto& samplerState : _samplerStates)
                 outputParams[idx]->SetSamplerState(samplerState.first, samplerState.second);
@@ -397,10 +397,10 @@ namespace te
     }
 
     /** Assigns a texture to the shader parameter with the specified name. */
-    void Material::SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
+    void Material::SetTexture(const String& name, HTexture value, const TextureSurface& surface)
     {
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
-        TE_ASSERT_ERROR(value != nullptr, "Texture should not be null");
+        TE_ASSERT_ERROR(value.IsLoaded(), "Texture should not be null");
 #endif
         auto it = _textures.find(name);
         if (it == _textures.end())
@@ -415,11 +415,11 @@ namespace te
         _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }
 
-    SPtr<Texture> Material::GetTexture(const String& name)
+    HTexture Material::GetTexture(const String& name)
     {
         auto it = _textures.find(name);
         if (it == _textures.end())
-            return nullptr;
+            return HTexture();
 
         return it->second->TextureElem;
     }
@@ -433,10 +433,10 @@ namespace te
         }
     }
 
-    void Material::SetLoadStoreTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface)
+    void Material::SetLoadStoreTexture(const String& name, HTexture value, const TextureSurface& surface)
     {
 #if TE_DEBUG_MODE == TE_DEBUG_ENABLED
-        TE_ASSERT_ERROR(value != nullptr, "Load store texture should not be null");
+        TE_ASSERT_ERROR(value.IsLoaded(), "Load store texture should not be null");
 #endif
         auto it = _loadStoreTextures.find(name);
         if (it == _loadStoreTextures.end())
@@ -475,16 +475,6 @@ namespace te
     const SPtr<SamplerState>& Material::GetSamplerState(const String& name)
     {
         return _samplerStates[name];
-    }
-
-    void Material::SetTexture(const String& name, const HTexture& value, const TextureSurface& surface)
-    {
-        SetTexture(name, value.GetInternalPtr(), surface);
-    }
-
-    void Material::SetLoadStoreTexture(const String& name, const HTexture& value, const TextureSurface& surface)
-    {
-        SetLoadStoreTexture(name, value.GetInternalPtr(), surface);
     }
 
     HMaterial Material::Create()
@@ -723,7 +713,16 @@ namespace te
         {
             for (const auto& texture : _textures)
             {
-                if (texture.second->TextureElem == resource.GetInternalPtr())
+                if (texture.second->TextureElem == resource)
+                {
+                    _markCoreDirty(MaterialDirtyFlags::ParamResource);
+                    break;
+                }
+            }
+
+            for (const auto& texture : _loadStoreTextures)
+            {
+                if (texture.second->TextureElem == resource)
                 {
                     _markCoreDirty(MaterialDirtyFlags::ParamResource);
                     break;
@@ -744,9 +743,19 @@ namespace te
         {
             for (auto& texture : _textures)
             {
-                if (texture.second->TextureElem && texture.second->TextureElem->GetUUID() == uuid)
+                if (texture.second->TextureElem.IsLoaded() && texture.second->TextureElem->GetUUID() == uuid)
                 {
                     _textures.erase(texture.first);
+                    _markCoreDirty(MaterialDirtyFlags::ParamResource);
+                    break;
+                }
+            }
+
+            for (auto& texture : _loadStoreTextures)
+            {
+                if (texture.second->TextureElem.IsLoaded() && texture.second->TextureElem->GetUUID() == uuid)
+                {
+                    _loadStoreTextures.erase(texture.first);
                     _markCoreDirty(MaterialDirtyFlags::ParamResource);
                     break;
                 }

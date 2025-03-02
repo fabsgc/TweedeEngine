@@ -14,8 +14,6 @@ namespace te
     class TE_CORE_EXPORT CHeightFieldCollider : public CCollider
     {
     public:
-        
-
         /** Return Component type */
         static CoreType GetComponentType() { return CoreType::TID_CHeightFieldCollider; }
 

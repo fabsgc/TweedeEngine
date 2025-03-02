@@ -530,16 +530,16 @@ namespace te
         const SPtr<Pass> GetPass(UINT32 passIdx = 0, UINT32 techniqueIdx = 0) const;
 
         /** Assigns a texture to the shader parameter with the specified name. */
-        void SetTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE);
+        void SetTexture(const String& name, HTexture value, const TextureSurface& surface = GpuParams::COMPLETE);
 
         /** Returns a pointer to the texture associated to "name". Returns nullptr if not exists */
-        SPtr<Texture> GetTexture(const String& name);
+        HTexture GetTexture(const String& name);
 
         /** We can reset a texture on a material */
         void RemoveTexture(const String& name);
 
         /** Assigns a texture to the shader parameter with the specified name. */
-        void SetLoadStoreTexture(const String& name, const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE);
+        void SetLoadStoreTexture(const String& name, HTexture value, const TextureSurface& surface = GpuParams::COMPLETE);
 
         /** Assigns a buffer to the shader parameter with the specified name. */
         void SetBuffer(const String& name, const SPtr<GpuBuffer>& value);
@@ -549,12 +549,6 @@ namespace te
 
         /** Get sampler state */
         const SPtr<SamplerState>& GetSamplerState(const String& name);
-
-        /** @copydoc Material::SetTexture */
-        void SetTexture(const String& name, const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE);
-
-        /** @copydoc Material::SetLoadStoreTexture */
-        void SetLoadStoreTexture(const String& name, const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE);
 
         /** Assigns a value to an arbitrary constant buffer parameter. */
         template <typename T>
@@ -631,16 +625,15 @@ namespace te
         struct TextureData
         {
             TextureData()
-                : TextureElem(nullptr)
-                , TextureSurfaceElem(TextureSurface(0, 0, 0, 0))
+                : TextureSurfaceElem(TextureSurface(0, 0, 0, 0))
             { }
 
-            TextureData(const SPtr<Texture>& value, const TextureSurface& surface = GpuParams::COMPLETE)
+            TextureData(HTexture value, const TextureSurface& surface = GpuParams::COMPLETE)
                 : TextureElem(value)
                 , TextureSurfaceElem(surface)
             { }
 
-            SPtr<Texture> TextureElem;
+            HTexture TextureElem;
             TextureSurface TextureSurfaceElem;
         };
 

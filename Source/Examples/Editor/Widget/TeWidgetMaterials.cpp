@@ -57,7 +57,7 @@ namespace te
         const auto& ShowTexture = [&](UUID& uuid, bool& textureUsed, const char* id, const char* label, const char* textureName, 
             ImGuiExt::ComboOptions<UUID>& options, float width, bool disable, TextureType texType, bool SRGB, bool isNormalMap)
         {
-            SPtr<Texture> texture = nullptr;
+            HTexture texture;
             bool hasChanged = false;
             uuid = empty;
             UINT8 flags = (UINT8)ImGuiExt::ComboOptionFlag::ShowTexture;
@@ -65,15 +65,15 @@ namespace te
             if (textureUsed)
             {
                 texture = _currentMaterial->GetTexture(textureName);
-                if (texture) uuid = texture->GetUUID();
+                if (texture.IsLoaded()) uuid = texture->GetUUID();
             }
 
             if (disable)
                 flags |= (UINT8)ImGuiExt::ComboOptionFlag::Disable;
 
-            if (texture && texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
+            if (texture.IsLoaded() && texture->GetProperties().GetTextureType() != TextureType::TEX_TYPE_CUBE_MAP)
             {
-                ImGuiExt::RenderImage(texture, Vector2(26.0f, 26.0f));
+                ImGuiExt::RenderImage(texture.GetInternalPtr(), Vector2(26.0f, 26.0f));
                 ImGui::SameLine();
 
                 ImVec2 cursor = ImGui::GetCursorPos();
@@ -117,7 +117,7 @@ namespace te
                     HTexture loadedTexture = gResourceManager().Get<Texture>(uuid);
                     if (loadedTexture.IsLoaded() && loadedTexture->GetProperties().GetTextureType() == texType)
                     {
-                        _currentMaterial->SetTexture(textureName, loadedTexture.GetInternalPtr());
+                        _currentMaterial->SetTexture(textureName, loadedTexture);
                         textureUsed = true;
                         hasChanged = true;
                     }
