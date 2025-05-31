@@ -330,7 +330,7 @@ namespace te
                     textureImportOptions.IsCubeMap = true;
                 }
 
-                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, ResourceManager::LoadingMode::Force);
+                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, _fileBrowser.Data.LoadMode);
                 if (texture.IsLoaded())
                 {
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
@@ -359,7 +359,7 @@ namespace te
                 meshImportOptions.ImportZPrepassMesh = _fileBrowser.Data.MeshParam.ImportZPrepassMesh;
                 meshImportOptions.CpuCached = false;
 
-                SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions, ResourceManager::LoadingMode::Force);
+                SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions, _fileBrowser.Data.LoadMode);
                 if (!resources->Empty())
                 {
                     for (auto& subRes : resources->Entries)
@@ -393,7 +393,7 @@ namespace te
                 AudioClipImportOptions audioImportOptions;
                 audioImportOptions.Is3D = _fileBrowser.Data.AudioParam.Is3D;
 
-                HAudioClip audio = EditorResManager::Instance().Load<AudioClip>(_fileBrowser.Data.SelectedPath, audioImportOptions, ResourceManager::LoadingMode::Force);
+                HAudioClip audio = EditorResManager::Instance().Load<AudioClip>(_fileBrowser.Data.SelectedPath, audioImportOptions, _fileBrowser.Data.LoadMode);
                 if (audio.IsLoaded())
                 {
                     audio->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));

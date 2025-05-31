@@ -57,16 +57,25 @@ namespace te
             ResourceHandle<T> resourceHandle;
             GetUUIDFromFile(filePath, uuid);
 
-            if (uuid.Empty() || mode == LoadingMode::Force)
+            if (uuid.Empty() || mode == LoadingMode::Force || mode == LoadingMode::Replace)
             {
                 resourceHandle = gImporter().Import<T>(filePath, options);
+                TE_ASSERT_ERROR(resourceHandle.IsLoaded(), "Resource not loaded for UUID: " + uuid.ToString());
 
                 if (resourceHandle.IsLoaded())
                 {
-                    uuid = resourceHandle.GetUUID();
-                    resourceHandle.GetInternalPtr()->_UUID = uuid;
-                    RegisterResource(uuid, filePath);
-                    _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
+                    if (mode == LoadingMode::Replace && !uuid.Empty())
+                    {
+                        HResource existingResource = Get(uuid);
+                        Update(existingResource, resourceHandle.GetInternalPtr());
+                    }
+                    else
+                    {
+                        uuid = resourceHandle.GetUUID();
+                        resourceHandle.GetInternalPtr()->_UUID = uuid;
+                        RegisterResource(uuid, filePath);
+                        _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
+                    }
 
                     return static_resource_cast<T>(Get(uuid));
                 }
@@ -83,10 +92,10 @@ namespace te
          * By using this importer, because non primary resources are not linked to a file, we need to 
          * find associated subResources and return a MultiResource instance
         */
-        SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, LoadingMode mode = LoadingMode::KeepExisting);
+        SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, LoadingMode loadingMode = LoadingMode::KeepExisting);
 
         /** Updates the internal resource the handle is pointing to. */
-        void Update(HResource& handle, const SPtr<Resource>& resource);
+        void Update(HResource& handle, SPtr<Resource> resource);
 
     public:
         /** Creates a new resource handle from a resource pointer. */

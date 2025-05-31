@@ -68,12 +68,12 @@ namespace te
         void OnShutDown() override;
 
         /** copydoc ResourceManager::LoadAll */
-        SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, ResourceManager::LoadingMode mode = ResourceManager::LoadingMode::KeepExisting);
+        SPtr<MultiResource> LoadAll(const std::filesystem::path& filePath, const ImportOptions& options, ResourceManager::LoadingMode loadingMode = ResourceManager::LoadingMode::KeepExisting);
 
         template <class T>
-        ResourceHandle<T> Load(const std::filesystem::path& filePath, const ImportOptions& options, ResourceManager::LoadingMode mode = ResourceManager::LoadingMode::KeepExisting)
+        ResourceHandle<T> Load(const std::filesystem::path& filePath, const ImportOptions& options, ResourceManager::LoadingMode loadingMode = ResourceManager::LoadingMode::KeepExisting)
         {
-            HResource resource = gResourceManager().Load<T>(filePath, options, mode);
+            HResource resource = gResourceManager().Load<T>(filePath, options, loadingMode);
 
             if (resource.IsLoaded())
             {

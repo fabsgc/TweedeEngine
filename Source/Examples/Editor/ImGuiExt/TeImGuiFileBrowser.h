@@ -27,6 +27,7 @@ SOFTWARE.
 #include "TeCorePrerequisites.h"
 #include "Importer/TeMeshImportOptions.h"
 #include "ImGui/imgui.h"
+#include "Resources/TeResourceManager.h"
 
 namespace te
 {
@@ -107,9 +108,11 @@ namespace te
                 String Ext;
                 bool   IsCancelled;
 
+                ResourceManager::LoadingMode LoadMode = ResourceManager::LoadingMode::Replace;
+
                 MeshParameters    MeshParam;
                 TextureParameters TexParam;
-                ProjectParameters   ProjectParam;
+                ProjectParameters ProjectParam;
                 AudioParameters   AudioParam;
 
             };

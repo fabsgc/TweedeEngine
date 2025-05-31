@@ -664,7 +664,7 @@ namespace te
                 textureImportOptions.IsNormalMap = false;
             }
 
-            HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions);
+            HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, _fileBrowser.Data.LoadMode);
             if (texture.IsLoaded())
             {
                 // Load texture from file

@@ -2914,7 +2914,7 @@ namespace te
             meshImportOptions.ImportZPrepassMesh = _fileBrowser.Data.MeshParam.ImportZPrepassMesh;
             meshImportOptions.CpuCached = false;
 
-            SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions);
+            SPtr<MultiResource> resources = EditorResManager::Instance().LoadAll(_fileBrowser.Data.SelectedPath, meshImportOptions, _fileBrowser.Data.LoadMode);
             if (!resources->Empty())
             {
                 for (auto& subRes : resources->Entries)
@@ -3022,7 +3022,7 @@ namespace te
                 textureSkyboxImportOptions.SRGB = _fileBrowser.Data.TexParam.SRGB;
                 textureSkyboxImportOptions.IsNormalMap = false;
 
-                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions);
+                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureSkyboxImportOptions, _fileBrowser.Data.LoadMode);
                 if (texture.IsLoaded())
                 {
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
@@ -3059,7 +3059,7 @@ namespace te
             AudioClipImportOptions audioClipImportOptions;
             audioClipImportOptions.Is3D = _fileBrowser.Data.AudioParam.Is3D;
 
-            HAudioClip audioClip = EditorResManager::Instance().Load<AudioClip>(_fileBrowser.Data.SelectedPath, audioClipImportOptions);
+            HAudioClip audioClip = EditorResManager::Instance().Load<AudioClip>(_fileBrowser.Data.SelectedPath, audioClipImportOptions, _fileBrowser.Data.LoadMode);
             if (audioClip.IsLoaded())
             {
                 audioClip->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));
@@ -3102,7 +3102,7 @@ namespace te
                 textureImportOptions.MaxMip = _fileBrowser.Data.TexParam.MaxMips;
                 textureImportOptions.Format = PixelUtil::BestFormatFromFile(_fileBrowser.Data.SelectedPath, _fileBrowser.Data.TexParam.Compress);
 
-                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, ResourceManager::LoadingMode::Force);
+                HTexture texture = EditorResManager::Instance().Load<Texture>(_fileBrowser.Data.SelectedPath, textureImportOptions, _fileBrowser.Data.LoadMode);
                 if (texture.IsLoaded())
                 {
                     texture->SetName(UTF8::FromANSI(_fileBrowser.Data.SelectedFileName));

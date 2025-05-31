@@ -13,8 +13,12 @@ namespace te
         {
             if (subRes.Res.IsLoaded())
             {
-                _resources[subRes.Res->GetCoreType()].Add(subRes.Res);
-                _resourcesIndex.push_back(subRes.Res.Get());
+                if (!_resources[subRes.Res->GetCoreType()].Find(subRes.Res->GetUUID()).IsLoaded())
+                {
+                    _resources[subRes.Res->GetCoreType()].Add(subRes.Res);
+                    _resourcesIndex.push_back(subRes.Res.Get());
+                }
+
                 output.push_back(subRes);                    
             }
         }

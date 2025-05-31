@@ -59,13 +59,37 @@ namespace te
         SPtr<MultiResource> resources;
         GetUUIDFromFile(filePath, uuid);
 
-        if (uuid.Empty() || mode == LoadingMode::Force)
+        if (uuid.Empty() || mode == LoadingMode::Force || mode == LoadingMode::Replace)
         {
-            Vector<SubResourceUUID> subResourcesUUID;
             resources = gImporter().ImportAll(filePath, options);
 
-            if (resources->Entries.size() > 0)
+            if (mode == LoadingMode::Replace && !uuid.Empty())
             {
+                Vector<SubResourceUUID>& subResourcesUUID = _resourcesChunks[uuid];
+
+                for (auto& entry : resources->Entries)
+                {
+                    HResource existingResource = Get(uuid);
+                    TE_ASSERT_ERROR(existingResource.IsLoaded(), "Resource not loaded for UUID: " + uuid.ToString());
+
+                    if (entry.Name == "primary")
+                    {
+                        Update(existingResource, entry.Res.GetInternalPtr());
+                    }
+                    else
+                    {
+                        // How to identify sub resources
+
+                        const UUID& resourceUuid = entry.Res.GetUUID();
+                        _loadedResources[resourceUuid] = entry.Res;
+                        subResourcesUUID.push_back({ entry.Name, resourceUuid });
+                    }
+                }
+            }
+            else
+            {
+                Vector<SubResourceUUID> subResourcesUUID;
+
                 for (auto& entry : resources->Entries)
                 {
                     const UUID& resourceUuid = entry.Res.GetUUID();
@@ -89,37 +113,28 @@ namespace te
         }
         else
         {
-            if (_resourcesChunks.find(uuid) != _resourcesChunks.end())
-            {
-                resources = te_shared_ptr_new<MultiResource>();
-                Vector<SubResourceUUID> subResourcesUuid = _resourcesChunks[uuid];
+            HResource res = Get(uuid);
+            TE_ASSERT_ERROR(res.IsLoaded(), "Primary resource not loaded for UUID: " + uuid.ToString());
 
-                resources->Entries.push_back({ "primary", Get(uuid) });
+            resources = te_shared_ptr_new<MultiResource>();
+            resources->Entries.push_back({ "primary", res });
 
-                for (auto& subRes : subResourcesUuid)
-                {
-                    HResource res = Get(subRes.Uuid);
-                    if (res.IsLoaded())
-                        resources->Entries.push_back({ subRes.Name, res });
-                }
-            }
-            else
+            for (auto& subElement : _resourcesChunks[uuid])
             {
-                HResource res = Get(uuid);
-                if (res.IsLoaded())
-                {
-                    resources = te_shared_ptr_new<MultiResource>();
-                    resources->Entries.push_back({ "primary", res });
-                }
+                HResource subRes = Get(subElement.Uuid);
+                TE_ASSERT_ERROR(res.IsLoaded(), "Sub resource not loaded for UUID: " + subElement.Uuid.ToString());
+                resources->Entries.push_back({ subElement.Name, subRes });
             }
         }
 
         return resources;
     }
 
-    void ResourceManager::Update(HResource& handle, const SPtr<Resource>& resource)
+    void ResourceManager::Update(HResource& handle, SPtr<Resource> resource)
     {
         const UUID& uuid = handle.GetUUID();
+
+        resource->SetUUID(uuid);
         handle.SetHandleData(resource, uuid);
 
         if (resource)

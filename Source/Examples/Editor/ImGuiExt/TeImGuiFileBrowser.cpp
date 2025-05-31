@@ -802,9 +802,22 @@ namespace te
                 {
                     // TODO engine resource loading (Native HResource)
                 }
+
+                static ImGuiExt::ComboOptions<ResourceManager::LoadingMode> loadingModeOptions;
+                if (loadingModeOptions.Options.size() == 0)
+                {
+                    loadingModeOptions.AddOption(ResourceManager::LoadingMode::Replace, "Update resource if exists");
+                    loadingModeOptions.AddOption(ResourceManager::LoadingMode::KeepExisting, "Do not update resource if exists");
+                    loadingModeOptions.AddOption(ResourceManager::LoadingMode::Force, "Create new resource if exists");
+                }
+                
+                ImGui::Separator();
+                ImGuiExt::RenderOptionCombo<ResourceManager::LoadingMode>(&Data.LoadMode, "##file_dialog_parameters_loading_mode", "Loading Mode", loadingModeOptions, 300);
             }
             else if (dialog_mode == DialogMode::SAVE && ext == ".project")
-            { /** TODO */ }
+            { 
+                /** TODO */
+            }
 
             ImGui::Separator();
 
