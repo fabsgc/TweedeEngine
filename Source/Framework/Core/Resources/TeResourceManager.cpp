@@ -66,23 +66,37 @@ namespace te
             if (mode == LoadingMode::Replace && !uuid.Empty())
             {
                 Vector<SubResourceUUID>& subResourcesUUID = _resourcesChunks[uuid];
+                auto currentSubResource = subResourcesUUID.begin();
+
+                HResource existingResource = Get(uuid);
+                TE_ASSERT_ERROR(existingResource.IsLoaded(), "Resource not loaded for UUID: " + uuid.ToString());
 
                 for (auto& entry : resources->Entries)
                 {
-                    HResource existingResource = Get(uuid);
-                    TE_ASSERT_ERROR(existingResource.IsLoaded(), "Resource not loaded for UUID: " + uuid.ToString());
-
                     if (entry.Name == "primary")
                     {
                         Update(existingResource, entry.Res.GetInternalPtr());
                     }
-                    else
+                    else if (entry.Res.IsLoaded())
                     {
-                        // How to identify sub resources
+                        if (currentSubResource != subResourcesUUID.end())
+                        {
+                            HResource existingSubResource = Get(currentSubResource->Uuid);
+                            TE_ASSERT_ERROR(existingSubResource.IsLoaded(), "Sub resource not loaded for UUID: " + currentSubResource->Uuid.ToString());
+
+                            if (entry.Res.Get()->GetCoreType() == existingSubResource.Get()->GetCoreType())
+                            {
+                                Update(existingSubResource, entry.Res.GetInternalPtr());
+                                currentSubResource++;
+                                continue;
+                            }
+                        }
 
                         const UUID& resourceUuid = entry.Res.GetUUID();
                         _loadedResources[resourceUuid] = entry.Res;
                         subResourcesUUID.push_back({ entry.Name, resourceUuid });
+
+                        currentSubResource++;
                     }
                 }
             }
