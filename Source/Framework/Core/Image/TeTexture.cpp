@@ -4,6 +4,7 @@
 #include "Image/TeTextureManager.h"
 #include "Image/TePixelUtil.h"
 #include "Utility/TeBitwise.h"
+#include "ThirdParty/dds/dds.h"
 
 namespace te
 {
@@ -54,6 +55,39 @@ namespace te
         return dst;
     }
 
+    void TextureProperties::ExportJson(nlohmann::json& document) const
+    {
+        document["type"] = static_cast<uint32_t>(GetTextureType());
+        document["format"] = GetFormat();
+        document["width"] = GetWidth();
+        document["height"] = GetHeight();
+        document["depth"] = GetDepth();
+        document["numMipmaps"] = GetNumMipmaps();
+        document["usage"] = GetUsage();
+        document["hwGamma"] = IsHardwareGammaEnabled();
+        document["numSamples"] = GetNumSamples();
+        document["numArraySlices"] = _desc.NumArraySlices;
+        document["debugName"] = _desc.DebugName;        
+    }
+
+    TextureProperties TextureProperties::ImportJson(const nlohmann::json& document)
+    {
+        TextureProperties properties;
+        properties._desc.Type = static_cast<TextureType>(document["type"].get<uint32_t>());
+        properties._desc.Format = static_cast<PixelFormat>(document["format"].get<uint32_t>());
+        properties._desc.Width = document["width"].get<uint32_t>();
+        properties._desc.Height = document["height"].get<uint32_t>();
+        properties._desc.Depth = document["depth"].get<uint32_t>();
+        properties._desc.NumMips = document["numMipmaps"].get<uint32_t>();
+        properties._desc.Usage = document["usage"].get<uint32_t>();
+        properties._desc.HwGamma = document["hwGamma"].get<bool>();
+        properties._desc.NumSamples = document["numSamples"].get<uint32_t>();
+        properties._desc.NumArraySlices = document["numArraySlices"].get<uint32_t>();
+        properties._desc.DebugName = document["debugName"].get<String>();
+
+        return properties;
+    }
+
     SPtr<Texture> Texture::WHITE;
     SPtr<Texture> Texture::BLACK;
     SPtr<Texture> Texture::NORMAL;
@@ -77,7 +111,7 @@ namespace te
     {
         Resource::Initialize();
 
-        _size = CalculateSize();
+        _size = static_cast<uint32_t>(CalculateSize(_properties));
 
         // Allocate CPU buffers if needed
         if ((_properties.GetUsage() & TU_CPUCACHED) != 0)
@@ -320,10 +354,18 @@ namespace te
         WriteDataImpl(src, mipLevel, face, discardWholeBuffer, queueIdx);
     }
 
-    UINT32 Texture::CalculateSize() const
+    size_t Texture::CalculateSize(const TextureProperties& properties)
     {
-        return _properties.GetNumFaces() * PixelUtil::GetMemorySize(_properties.GetWidth(),
-               _properties.GetHeight(), _properties.GetDepth(), _properties.GetFormat());
+        size_t size = 0;
+        for (int i = 0; i < (int)properties.GetNumMipmaps() + 1; i++)
+        {
+            UINT32 mipWidth, mipHeight, mipDepth;
+            PixelUtil::GetSizeForMipLevel(properties.GetWidth(), properties.GetHeight(), properties.GetDepth(), i, mipWidth, mipHeight, mipDepth);
+            
+            size += (properties.GetNumFaces() * PixelUtil::GetMemorySize(mipWidth, mipHeight, mipDepth, properties.GetFormat()));
+        }
+
+        return size;
     }
 
     HTexture Texture::Create(const TEXTURE_DESC& desc)
@@ -475,7 +517,33 @@ namespace te
     {
         Resource::Serialize(serializer);
 
-        // TODO Serialization
+        {
+            nlohmann::json document;
+            _properties.ExportJson(document["properties"]);
+
+            String dump = document.dump();
+            serializer->WriteString(dump);
+        }
+
+        {
+            size_t textureSize = CalculateSize(_properties);
+            size_t ddsSize = sizeof(dds::Header) + textureSize;
+            uint8_t* dds = te_allocate<uint8_t>(static_cast<uint32_t>(ddsSize));
+
+            dds::write_header(
+                dds,
+                PixelUtil::GetDXGIFormat(_properties.GetFormat(), _properties.IsHardwareGammaEnabled()),
+                _properties.GetWidth(),
+                _properties.GetHeight(),
+                _properties.GetNumMipmaps() + 1,
+                _properties.GetNumArraySlices(),
+                _properties.GetTextureType() == TEX_TYPE_CUBE_MAP,
+                _properties.GetDepth()
+            );
+
+            serializer->WriteBuffer(dds, ddsSize);
+            te_deallocate(dds);
+        }
     }
 
     bool Texture::Deserialize(StreamReader* deserializer, Texture* object)
@@ -487,6 +555,30 @@ namespace te
             return false;
 
         Resource::Deserialize(deserializer, object);
+
+        TextureProperties properties;
+
+        {
+            String dump;
+            deserializer->ReadString(dump);
+            nlohmann::json document = nlohmann::json::parse(dump);
+            properties = TextureProperties::ImportJson(document["properties"]);
+        }
+
+        {
+            uint8_t* dds = nullptr;
+            deserializer->ReadBuffer(&dds, 0);
+            size_t textureSize = CalculateSize(properties);
+            size_t ddsSize = sizeof(dds::Header) + textureSize;
+
+            dds::Header ddsHeader = dds::read_header(dds, ddsSize);
+            if (ddsHeader.is_valid())
+            {
+
+            }
+
+            te_deallocate(dds);
+        }
 
         // TODO Serialization
         return false;

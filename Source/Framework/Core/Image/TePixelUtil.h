@@ -5,6 +5,7 @@
 #include "Image/TeTexture.h"
 #include "Math/TeVector2I.h"
 #include "Threading/TeThreading.h"
+#include "ThirdParty/dds/dds.h"
 
 #include <atomic>
 
@@ -322,7 +323,12 @@ namespace te
          * Supported extensions : .jpg, .jpeg, .png, .tif, .tiff, .dds, .tga, .bmp
          */
         static PixelFormat BestFormatFromFile(const std::filesystem::path& path, bool compress);
-    
+
+        /**
+         * Provides a mapping between PixelFormat and dds::DXGI_FORMAT.
+         */
+        static dds::DXGI_FORMAT GetDXGIFormat(PixelFormat pf, bool gamma);
+        
     private:
         static RecursiveMutex _recursiveMutex;
     };

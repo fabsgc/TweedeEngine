@@ -101,7 +101,7 @@ namespace te
         /** Export the instance in a Json object */
         void ExportJson(nlohmann::json& document) const;
 
-        /** Creates a Bounds from a json document */
+        /** Creates a MeshProperties from a json document */
         static MeshProperties ImportJson(const nlohmann::json& document);
 
     protected:

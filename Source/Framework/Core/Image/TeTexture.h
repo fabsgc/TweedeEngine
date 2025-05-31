@@ -7,6 +7,7 @@
 #include "Math/TeVector3I.h"
 #include "RenderAPI/TeCommonTypes.h"
 #include "RenderAPI/TeTextureView.h"
+#include "ThirdParty/Json/json.h"
 
 namespace te
 {
@@ -175,6 +176,13 @@ namespace te
          * @note	Thread safe.
          */
         SPtr<PixelData> AllocBuffer(UINT32 face, UINT32 mipLevel) const;
+    
+    public:
+        /** Export the instance in a Json object */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Creates a TextureProperties from a json document */
+        static TextureProperties ImportJson(const nlohmann::json& document);
 
     protected:
         friend class Texture;
@@ -293,7 +301,7 @@ namespace te
         const TextureProperties& GetProperties() const { return _properties; }
 
         /** Calculates the size of the texture, in bytes. */
-        UINT32 CalculateSize() const;
+        static size_t CalculateSize(const TextureProperties& properties);
 
         /** Creates a new empty texture. */
         static HTexture Create(const TEXTURE_DESC& desc);
