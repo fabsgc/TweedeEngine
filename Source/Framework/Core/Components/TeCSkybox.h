@@ -60,6 +60,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** Fills a skybox component from a json document */
+        static bool ImportJson(const nlohmann::json& document, CSkybox& skybox);
+
     protected:
         mutable SPtr<Skybox> _internal;
 

@@ -217,6 +217,11 @@ namespace te
                 renderable._internal->SetLayer(renderableDoc["layer"].get<UINT32>());
             }
         }
+        else
+        {
+            TE_DEBUG("Renderable component JSON document does not contain 'renderable' field.");
+            return false;
+        }
 
         return true;
     }

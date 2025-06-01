@@ -179,6 +179,11 @@ namespace te
             if (lightDoc.contains("color"))
                 object.SetColor(Color::ImportJson(lightDoc["color"]));
         }
+        else
+        {
+            TE_DEBUG("Failed to import CLight from JSON, missing 'light' section.");
+            return false;
+        }
 
         return true;
     }

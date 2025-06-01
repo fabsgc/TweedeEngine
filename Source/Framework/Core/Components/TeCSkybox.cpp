@@ -3,6 +3,7 @@
 #include "Renderer/TeRenderer.h"
 #include "Renderer/TeSkybox.h"
 #include "Serialization/TeUtility.h"
+#include "Resources/TeResourceManager.h"
 
 namespace te
 {
@@ -105,13 +106,41 @@ namespace te
     {
         Component::ExportJson(document);
 
-        // TODO move it to Skybox::Serialize
-
         document["type"] = GetComponentType();
-        document["texture"] = serialization::GetResourceName(GetTexture().IsLoaded() ? GetTexture().Get() : nullptr);
-        document["brightness"] = GetBrightness();
-        document["IBLIntensity"] = GetIBLIntensity();
 
-        // TODO serialization
+        if (_internal)
+        {
+            auto& skyboxDoc = document["skybox"];
+
+            skyboxDoc["texture"] = serialization::GetResourceName(GetTexture().IsLoaded() ? GetTexture().Get() : nullptr);
+            skyboxDoc["brightness"] = GetBrightness();
+            skyboxDoc["IBLIntensity"] = GetIBLIntensity();
+        }
+    }
+
+    bool CSkybox::ImportJson(const nlohmann::json& document, CSkybox& skybox)
+    {
+        Component::ImportJson(document, skybox);
+
+        if (document.contains("skybox"))
+        {
+            const auto& skyboxDoc = document["skybox"];
+            if (skyboxDoc.contains("texture"))
+            {
+                HTexture texture = static_resource_cast<Texture>(gResourceManager().Get(serialization::GetResourceUUID(skyboxDoc["texture"].get<String>())));
+                skybox.SetTexture(texture);
+            }
+            if (skyboxDoc.contains("brightness"))
+                skybox.SetBrightness(skyboxDoc["brightness"].get<float>());
+            if (skyboxDoc.contains("IBLIntensity"))
+                skybox.SetIBLIntensity(skyboxDoc["IBLIntensity"].get<float>());
+
+            return true;
+        }
+        else
+        {
+            TE_DEBUG("Failed to import CSkybox from JSON, missing 'skybox' section.");
+            return false;
+        }
     }
 }

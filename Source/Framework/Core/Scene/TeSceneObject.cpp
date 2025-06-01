@@ -1442,6 +1442,7 @@ namespace te
                     case CoreType::TID_CSkybox:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CSkybox>());
+                        CSkybox::ImportJson(element.value(), *static_cast<CSkybox*>(component.Get()));
                     }
                     break;
 
