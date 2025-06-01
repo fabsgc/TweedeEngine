@@ -35,7 +35,7 @@ set(TE_UTILITY_INC_THIRDPARTY
     "Utility/ThirdParty/RenderDoc/replay/renderdoc_replay.h"
     "Utility/ThirdParty/RenderDoc/replay/vk_pipestate.h"
     "Utility/ThirdParty/Slugify/slugify.hpp"
-    "Utility/ThirdParty/Dds/dds.h"
+    "Utility/ThirdParty/dds/dds.h"
 )
 set(TE_UTILITY_SRC_THIRDPARTY
     "Utility/ThirdParty/Md5/md5.cpp"
