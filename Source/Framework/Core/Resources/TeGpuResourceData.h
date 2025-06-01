@@ -38,6 +38,15 @@ namespace te
         void SetData(UPtr<UINT8[]> &data);
 
         /**
+         * Sets the internal pointer to point at provided data. GpuResourceData can take ownership of provided memory.
+         * @note If any internal data is allocated, it is freed.
+         *
+         * @param[in] data	Pointer to the data to use as the internal buffer.
+         * @param[in] ownsData	Determines will this class take ownership of the data and free it when done.
+         */
+        void SetData(UINT8* data, bool ownsData = true);
+
+        /**
          * Allocates an internal buffer of a certain size. If there is another buffer already allocated, it will be freed
          * and new one will be allocated. Buffer size is determined based on parameters used for initializing the class.
          */

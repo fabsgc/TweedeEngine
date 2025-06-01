@@ -38,6 +38,13 @@ namespace te
         _ownsData = true;
     }
 
+    void GpuResourceData::SetData(UINT8* data, bool ownsData)
+    {
+        FreeInternalBuffer();
+        _data = data;
+        _ownsData = ownsData;
+    }
+
     void GpuResourceData::AllocateInternalBuffer()
     {
         AllocateInternalBuffer(GetInternalBufferSize());
