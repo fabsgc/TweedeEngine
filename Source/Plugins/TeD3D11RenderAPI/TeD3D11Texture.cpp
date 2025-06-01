@@ -801,12 +801,11 @@ namespace te
             }
         } break;
 
-        case TEX_TYPE_2D: {
+        case TEX_TYPE_2D:
+        case TEX_TYPE_CUBE_MAP: {
             D3D11_TEXTURE2D_DESC desc;
             _2DTex->GetDesc(&desc);
 
-            desc.SampleDesc.Count = 1;
-            desc.SampleDesc.Quality = 0;
             desc.BindFlags = 0;
             desc.MiscFlags = 0;
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
@@ -836,6 +835,10 @@ namespace te
                 TE_ASSERT_ERROR(false, msg.c_str());
             }
         } break;
+
+        default:
+            TE_ASSERT_ERROR(false, "Unknown texture type for staging buffer creation");
+            return false;
         }
 
         return true;
