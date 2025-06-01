@@ -4,7 +4,7 @@
 #include "Image/TeTextureManager.h"
 #include "Image/TePixelUtil.h"
 #include "Utility/TeBitwise.h"
-#include "ThirdParty/dds/dds.h"
+#include "ThirdParty/Dds/dds.h"
 
 namespace te
 {

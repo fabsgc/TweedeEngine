@@ -5,7 +5,7 @@
 #include "Image/TeTexture.h"
 #include "Math/TeVector2I.h"
 #include "Threading/TeThreading.h"
-#include "ThirdParty/dds/dds.h"
+#include "ThirdParty/Dds/dds.h"
 
 #include <atomic>
 
