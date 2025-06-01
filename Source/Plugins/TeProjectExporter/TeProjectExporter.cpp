@@ -8,6 +8,8 @@
 #include "Project/TeProject.h"
 #include "Utility/TeFileSystem.h"
 
+#include <system_error>
+
 namespace te
 { 
     ProjectExporter::ProjectExporter()
@@ -33,8 +35,11 @@ namespace te
         BinaryWriter* serializer = te_new<BinaryWriter>(filePath);
 
         const std::filesystem::path resourcesPath = serialization::GetProjectResourcesPath(workingDirectory);
-        std::filesystem::remove_all(resourcesPath);
-        std::filesystem::create_directory(resourcesPath);
+        std::error_code error;
+        std::filesystem::remove_all(resourcesPath, error);
+        
+        if (error == std::error_condition())
+            std::filesystem::create_directory(resourcesPath);
         
         project->SetPath(filePath);
         project->Serialize(serializer);

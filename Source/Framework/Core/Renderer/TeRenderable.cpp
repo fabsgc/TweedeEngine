@@ -589,7 +589,6 @@ namespace te
 
     void Renderable::OnResourceDestroyed(const UUID& uuid, CoreType type)
     {
-
         if (_mesh.IsLoaded() && _mesh->GetUUID() == uuid ||
             _ZPrepassMesh.IsLoaded() && _ZPrepassMesh->GetUUID() == uuid)
         {
