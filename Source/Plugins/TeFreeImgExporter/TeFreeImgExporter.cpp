@@ -195,7 +195,7 @@ namespace te
             {
                 TE_DEBUG("Can't save bitmap pixel color : ");
             }
-            });
+        });
 
         if (!FreeImage_Save(FIFFormat, bitmap, filePath.generic_string().c_str(), FIFFormat == FREE_IMAGE_FORMAT::FIF_JPEG ? JPEG_QUALITYSUPERB : 0))
         {
