@@ -403,8 +403,7 @@ namespace te
 
     SPtr<Texture> Texture::CreateEmpty()
     {
-        // TODO serialization
-        return TextureManager::Instance().CreateTexture(TEXTURE_DESC());
+        return TextureManager::Instance().CreateEmpty();
     }
 
     SPtr<TextureView> Texture::CreateView(const TEXTURE_VIEW_DESC& desc)
@@ -526,8 +525,9 @@ namespace te
         }
 
         {
-            size_t textureSize = CalculateSize(_properties);
-            size_t ddsSize = sizeof(dds::Header) + textureSize;
+            const size_t textureSize = CalculateSize(_properties);
+            const size_t headerSize = sizeof(dds::Header);
+            const size_t ddsSize = sizeof(dds::Header) + textureSize;
             uint8_t* dds = te_allocate<uint8_t>(static_cast<uint32_t>(ddsSize));
 
             dds::write_header(
@@ -541,6 +541,26 @@ namespace te
                 _properties.GetDepth()
             );
 
+            uint8_t* ddsOffset = dds + sizeof(dds::Header);
+
+            for (uint32_t face = 0; face < _properties.GetNumFaces(); face++)
+            {
+                for (uint32_t mip = 0; mip < _properties.GetNumMipmaps() + 1; mip++)
+                {
+                    uint32_t mipWidth, mipHeight, mipDepth;
+                    PixelUtil::GetSizeForMipLevel(_properties.GetWidth(), _properties.GetHeight(), _properties.GetDepth(),
+                        mip, mipWidth, mipHeight, mipDepth);
+
+                    PixelData pixelData(mipWidth, mipHeight, mipDepth, _properties.GetFormat());
+                    pixelData.AllocateInternalBuffer();
+
+                    const_cast<Texture*>(this)->ReadData(pixelData, mip, face);
+
+                    memcpy(ddsOffset, pixelData.GetData(), pixelData.GetSize());
+                    ddsOffset += pixelData.GetConsecutiveSize();
+                }
+            }
+
             serializer->WriteBuffer(dds, ddsSize);
             te_deallocate(dds);
         }
@@ -548,9 +568,6 @@ namespace te
 
     bool Texture::Deserialize(StreamReader* deserializer, Texture* object)
     {
-        // object must be null here as we need some data (size, type etc.) to be able to create a texture
-        // try to create a Vector<PixelData> and call the appropriate constructor
-
         if (!object)
             return false;
 
@@ -568,19 +585,40 @@ namespace te
         {
             uint8_t* dds = nullptr;
             deserializer->ReadBuffer(&dds, 0);
-            size_t textureSize = CalculateSize(properties);
-            size_t ddsSize = sizeof(dds::Header) + textureSize;
+            const size_t textureSize = CalculateSize(properties);
+            const size_t headerSize = sizeof(dds::Header);
+            const size_t ddsSize = headerSize + textureSize;
 
             dds::Header ddsHeader = dds::read_header(dds, ddsSize);
             if (ddsHeader.is_valid())
             {
+                object->_properties = properties;
+                object->Initialize();
 
+                uint8_t* ddsOffset = dds + sizeof(dds::Header);
+
+                for (uint32_t face = 0; face < properties.GetNumFaces(); face++)
+                {
+                    for (uint32_t mip = 0; mip < properties.GetNumMipmaps() + 1; mip++)
+                    {
+                        SPtr<PixelData> pixelData = object->GetProperties().AllocBuffer(0, mip);
+                        pixelData->SetData(ddsOffset, false);
+
+                        object->WriteData(*pixelData, mip, face);
+                        ddsOffset += pixelData->GetConsecutiveSize();
+                    }
+                }
+            }
+            else
+            {
+                TE_DEBUG("Failed to read DDS header from the provided data. The data may be corrupted or not a valid DDS file.");
+                te_deallocate(dds);
+                return false;
             }
 
             te_deallocate(dds);
         }
 
-        // TODO Serialization
-        return false;
+        return true;
     }
 }

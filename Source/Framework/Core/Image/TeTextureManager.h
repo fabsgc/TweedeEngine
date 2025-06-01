@@ -33,6 +33,15 @@ namespace te
         SPtr<Texture> CreateTexture(const TEXTURE_DESC& desc, const SPtr<PixelData>& pixelData);
 
         /**
+         * Creates a completely empty and uninitialized Texture.
+         *
+         * @note
+         * Internal method. Should only be used for very specific purposes, like deserialization, as it requires additional
+         * manual initialization that is not required normally.
+         */
+        SPtr<Texture> CreateEmpty();
+
+        /**
          * Creates a new RenderTexture and automatically generates a single color surface and (optionally) a depth/stencil
          * surface.
          *

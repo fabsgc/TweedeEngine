@@ -117,7 +117,7 @@ namespace te
         /** Returns the size of a single pixel of the provided pixel format, in bits. */
         static UINT32 GetNumElemBits(PixelFormat format);
 
-        /** Returns the size of the memory region required to hold pixels of the provided size ana format. */
+        /** Returns the size of the memory region required to hold pixels of the provided size and format. */
         static UINT32 GetMemorySize(UINT32 width, UINT32 height, UINT32 depth, PixelFormat format);
         
         /** Calculates the size of a mip level of a texture with the provided size. */

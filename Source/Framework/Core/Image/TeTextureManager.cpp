@@ -80,6 +80,12 @@ namespace te
         return newTex;
     }
 
+    SPtr<Texture> TextureManager::CreateEmpty()
+    {
+        SPtr<Texture> newTex = CreateTextureInternal(TEXTURE_DESC(), nullptr);
+        return newTex;
+    }
+
     SPtr<RenderTexture> TextureManager::CreateRenderTexture(const TEXTURE_DESC& colorDesc, bool createDepth, 
         PixelFormat depthStencilFormat)
     {
