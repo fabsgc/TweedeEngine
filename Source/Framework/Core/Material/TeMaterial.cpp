@@ -548,10 +548,18 @@ namespace te
 
         Resource::Deserialize(deserializer, object);
 
-        // TODO Serialization
+        String dump;
+        deserializer->ReadString(dump);
+        nlohmann::json document = nlohmann::json::parse(dump);
+
+        object->_properties = MaterialProperties::ImportJson(document["properties"]);
 
         object->Initialize();
-        return false;
+        object->SetShader(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
+
+        // TODO Serialization
+
+        return true;
     }
 
     void MaterialProperties::ExportJson(nlohmann::json& document) const
@@ -592,7 +600,7 @@ namespace te
             { "useOpacityMap", UseOpacityMap },
             { "useAnisotropyDirectionMap", UseAnisotropyDirectionMap },
             { "doIndirectLighting", DoIndirectLighting },
-            { "doDirectLighting", DoDirectLighting },
+            { "doDirectLighting", DoDirectLighting }
         };
 
         BaseColor.ExportJson(document["baseColor"]);
@@ -635,7 +643,7 @@ namespace te
         properties.TransmittanceColor = Color::ImportJson(document["transmittanceColor"]);
         properties.AtDistance = document["atDistance"].get<float>();
         properties.Absorption = Vector3::ImportJson(document["absorption"]);
-        properties.RefractType = static_cast<RefractionType>(document[""].get<uint32_t>());
+        properties.RefractType = static_cast<RefractionType>(document["refractType"].get<uint32_t>());
         properties.UseBaseColorMap = document["useBaseColorMap"].get<bool>();
         properties.UseMetallicMap = document["useMetallicMap"].get<bool>();
         properties.UseRoughnessMap = document["useRoughnessMap"].get<bool>();
