@@ -119,6 +119,12 @@ namespace te
         /** @copydoc Module::OnShutDown */
         void OnShutDown() override;
 
+        /**	Returns the name of one of the builtin shader types. */
+        String GetBuiltinShaderName(const UUID& uuid) const;
+
+        /**	Returns the name of one of the builtin shader types. */
+        BuiltinShader GetBuiltinShaderType(const String& name) const;
+
         /**	Returns one of the builtin shader types. */
         HShader GetBuiltinShader(BuiltinShader type);
 

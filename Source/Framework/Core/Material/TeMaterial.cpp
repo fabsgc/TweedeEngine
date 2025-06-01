@@ -532,13 +532,33 @@ namespace te
 
         nlohmann::json document;
 
-        document["shader"] = (_shader.IsLoaded() && gBuiltinResources().IsBuiltInResource(_shader->GetUUID())) ? serialization::GetResourceName(_shader.Get()) : "";
         _properties.ExportJson(document["properties"]);
+
+        document["shader"] = (_shader.IsLoaded() && !gBuiltinResources().IsBuiltInResource(_shader->GetUUID())) 
+            ? serialization::GetResourceName(_shader.Get()) 
+            : gBuiltinResources().GetBuiltinShaderName(_shader->GetUUID());
+
+        auto& texturesDoc = document["textures"];
+        for (const auto& texture : _textures)
+        {
+            auto& textureDoc = texturesDoc[texture.first];
+            texture.second->ExportJson(textureDoc);
+        }
+
+        auto& loadStoreTexturesDoc = document["loadStoreTextures"];
+        for (const auto& loadStoreTexture : _loadStoreTextures)
+        {
+            auto& loadStoreTextureDoc = loadStoreTexturesDoc[loadStoreTexture.first];
+            loadStoreTexture.second->ExportJson(loadStoreTextureDoc);
+        }
 
         String dump = document.dump();
         serializer->WriteString(dump);
 
         // TODO Serialization
+        // variation
+        // buffers
+        // params
     }
 
     bool Material::Deserialize(StreamReader* deserializer, Material* object)
@@ -554,10 +574,47 @@ namespace te
 
         object->_properties = MaterialProperties::ImportJson(document["properties"]);
 
+        if (document.contains("shader"))
+        {
+            const String shaderName = document["shader"].get<String>();
+            if (gBuiltinResources().GetBuiltinShaderType(shaderName) == (BuiltinShader)-1)
+            {
+                HShader shader = static_resource_cast<Shader>(gResourceManager().Get(serialization::GetResourceUUID(shaderName)));
+                object->SetShader(shader);
+            }
+            else
+            {
+                object->SetShader(gBuiltinResources().GetBuiltinShader(gBuiltinResources().GetBuiltinShaderType(shaderName)));
+            }
+        }
+        else
+        {
+            object->SetShader(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
+        }
+
+        auto texturesDoc = document["textures"];
+        for (auto& texture : texturesDoc.items())
+        {
+            nlohmann::json textureDoc = texture.value();
+            SPtr<Material::TextureData> textureData = te_shared_ptr_new<Material::TextureData>(Material::TextureData::ImportJson(textureDoc));
+            object->_textures[texture.key()] = textureData;
+        }
+
+        auto loadStoreTexturesDoc = document["loadStoreTextures"];
+        for (auto& loadStoreTexture : loadStoreTexturesDoc.items())
+        {
+            nlohmann::json loadStoreTextureDoc = loadStoreTexture.value();
+            SPtr<Material::TextureData> textureData = te_shared_ptr_new<Material::TextureData>(Material::TextureData::ImportJson(loadStoreTextureDoc));
+            object->_loadStoreTextures[loadStoreTexture.key()] = textureData;
+        }
+
         object->Initialize();
         object->SetShader(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
 
         // TODO Serialization
+        // variation
+        // buffers
+        // params
 
         return true;
     }
@@ -792,5 +849,30 @@ namespace te
                 gResourceManager().OnResourceModified(gResourceManager().Get(GetUUID()));
             }
         }
+    }
+
+    void Material::TextureData::ExportJson(nlohmann::json& document) const
+    {
+        document["texture"] = serialization::GetResourceName(TextureElem.IsLoaded() ? TextureElem.Get() : nullptr);
+        TextureSurfaceElem.ExportJson(document["surface"]);
+    }
+    
+    Material::TextureData Material::TextureData::ImportJson(const nlohmann::json& document)
+    {
+        TextureData textureData;
+
+        if (document.contains("texture"))
+        {
+            HTexture texture = static_resource_cast<Texture>(gResourceManager().Get(serialization::GetResourceUUID(document["texture"].get<String>())));
+            if (texture.IsLoaded())
+                textureData.TextureElem = texture;            
+        }
+
+        if (document.contains("surface"))
+            textureData.TextureSurfaceElem = TextureSurface::ImportJson(document["surface"]);
+        else
+            textureData.TextureSurfaceElem = GpuParams::COMPLETE;
+
+        return textureData;
     }
 }

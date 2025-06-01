@@ -35,6 +35,92 @@ namespace te
     void BuiltinResources::OnShutDown()
     { }
 
+
+
+    String BuiltinResources::GetBuiltinShaderName(const UUID& uuid) const
+    {
+        auto builtinShaderNames = std::map<UUID, String>
+        {
+            { _shaderOpaque.GetUUID(), "Opaque"},
+            { _shaderTransparent.GetUUID(), "Transparent"},
+            { _shaderTransparentCullNone.GetUUID(), "TransparentCullNone"},
+            { _shaderZPrepass.GetUUID(), "ZPrepass"},
+            { _shaderBlit.GetUUID(), "Blit"},
+            { _shaderSkybox.GetUUID(), "Skybox"},
+            { _shaderFXAA.GetUUID(), "FXAA"},
+            { _shaderToneMapping.GetUUID(), "ToneMapping"},
+            { _shaderBloom.GetUUID(), "Bloom"},
+            { _shaderMotionBlur.GetUUID(), "MotionBlur"},
+            { _shaderGaussianBlur.GetUUID(), "GaussianBlur"},
+            { _shaderPicking.GetUUID(), "Picking"},
+            { _shaderHudPicking.GetUUID(), "HudPicking"},
+            { _shaderSelection.GetUUID(), "Selection"},
+            { _shaderBlitSelection.GetUUID(), "BlitSelection"},
+            { _shaderHudSelection.GetUUID(), "HudSelection"},
+            { _shaderBulletDebug.GetUUID(), "BulletDebug"},
+            { _shaderSSAO.GetUUID(), "SSAO"},
+            { _shaderSSAOBlur.GetUUID(), "SSAOBlur"},
+            { _shaderSSAODownSample.GetUUID(), "SSAODownSample"},
+            { _shaderDecal.GetUUID(), "Decal"},
+            { _shaderTextureDownsample.GetUUID(), "TextureDownsample"},
+            { _shaderTextureCubeDownsample.GetUUID(), "TextureCubeDownsample"},
+            { _shaderReflectionCubeImportanceSample.GetUUID(), "ReflectionCubeImportanceSample"},
+            { _shaderIrradianceComputeSH.GetUUID(), "IrradianceComputeSH" },
+            { _shaderIrradianceReduceSH.GetUUID(), "IrradianceReduceSH" },
+            { _shaderIrradianceProjectSH.GetUUID(), "IrradianceProjectSH" },
+            { _shaderShadowDepthNormal.GetUUID(), "ShadowDepthNormal" },
+            { _shaderShadowDepthCube.GetUUID(), "ShadowDepthCube" }
+        };
+
+        auto it = builtinShaderNames.find(uuid);
+        if (it != builtinShaderNames.end())
+            return it->second;
+
+        return "";
+    }
+
+    BuiltinShader BuiltinResources::GetBuiltinShaderType(const String& name) const
+    {
+        auto builtinShaderTypes = std::map<String, BuiltinShader>
+        {
+            { "Opaque", BuiltinShader::Opaque },
+            { "Transparent", BuiltinShader::Transparent },
+            { "TransparentCullNone", BuiltinShader::TransparentCullNone },
+            { "ZPrepass", BuiltinShader::ZPrepass },
+            { "Blit", BuiltinShader::Blit },
+            { "Skybox", BuiltinShader::Skybox },
+            { "FXAA", BuiltinShader::FXAA },
+            { "ToneMapping", BuiltinShader::ToneMapping },
+            { "Bloom", BuiltinShader::Bloom },
+            { "MotionBlur", BuiltinShader::MotionBlur },
+            { "GaussianBlur", BuiltinShader::GaussianBlur },
+            { "Picking", BuiltinShader::Picking },
+            { "HudPicking", BuiltinShader::HudPicking },
+            { "Selection", BuiltinShader::Selection },
+            { "BlitSelection", BuiltinShader::BlitSelection },
+            { "HudSelection", BuiltinShader::HudSelection },
+            { "BulletDebug", BuiltinShader::BulletDebug },
+            { "SSAO", BuiltinShader::SSAO },
+            { "SSAOBlur", BuiltinShader::SSAOBlur },
+            { "SSAODownSample", BuiltinShader::SSAODownSample },
+            { "Decal", BuiltinShader::Decal },
+            { "TextureDownsample", BuiltinShader::TextureDownsample },
+            { "TextureCubeDownsample", BuiltinShader::TextureCubeDownsample },
+            { "ReflectionCubeImportanceSample", BuiltinShader::ReflectionCubeImportanceSample },
+            { "IrradianceComputeSH", BuiltinShader::IrradianceComputeSH},
+            { "IrradianceReduceSH", BuiltinShader::IrradianceReduceSH},
+            { "IrradianceProjectSH", BuiltinShader::IrradianceProjectSH},
+            { "ShadowDepthNormal", BuiltinShader::ShadowDepthNormal},
+            { "ShadowDepthCube", BuiltinShader::ShadowDepthCube},
+        };
+        
+        auto it = builtinShaderTypes.find(name);
+        if (it != builtinShaderTypes.end())
+            return it->second;
+        
+        return (BuiltinShader)-1;
+    }
+
     HShader BuiltinResources::GetBuiltinShader(BuiltinShader type)
     {
         switch(type)

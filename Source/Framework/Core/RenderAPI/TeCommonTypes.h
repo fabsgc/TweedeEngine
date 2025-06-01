@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ThirdParty/Json/json.h"
+
 namespace te
 {
 #undef None
@@ -573,6 +575,28 @@ namespace te
             , Face(face)
             , NumFaces(numFaces)
         { }
+
+        void ExportJson(nlohmann::json& document) const
+        {
+            document["mipLevel"] = MipLevel;
+            document["numMipLevels"] = NumMipLevels;
+            document["face"] = Face;
+            document["numFaces"] = NumFaces;
+        }
+
+        static TextureSurface ImportJson(const nlohmann::json& document)
+        {
+            TextureSurface surface;
+            if (document.contains("mipLevel"))
+                surface.MipLevel = document["mipLevel"].get<UINT32>();
+            if (document.contains("numMipLevels"))
+                surface.NumMipLevels = document["numMipLevels"].get<UINT32>();
+            if (document.contains("face"))
+                surface.Face = document["face"].get<UINT32>();
+            if (document.contains("numFaces"))
+                surface.NumFaces = document["numFaces"].get<UINT32>();
+            return surface;
+        }
 
         /** First mip level to reference. */
         UINT32 MipLevel;

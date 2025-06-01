@@ -48,7 +48,14 @@ namespace te
 
         nlohmann::json document;
 
-        for (const auto& resource : _resources)
+        auto resources = _resources;
+
+        std::sort(resources.begin(), resources.end(),
+            [](const Resource* a, const Resource* b) {
+                return a->GetCoreType() < b->GetCoreType();
+            });
+
+        for (const auto& resource : resources)
         {
             document["resources"].push_back(serialization::GetResourceName(resource));
         }

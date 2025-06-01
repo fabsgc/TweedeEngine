@@ -60,7 +60,10 @@ namespace te
             if (uuid.Empty() || mode == LoadingMode::Force || mode == LoadingMode::Replace)
             {
                 resourceHandle = gImporter().Import<T>(filePath, options);
-                TE_ASSERT_ERROR(resourceHandle.IsLoaded(), "Resource not loaded for UUID: " + uuid.ToString());
+                if (!resourceHandle.IsLoaded())
+                {
+                    TE_DEBUG("Resource not loaded for UUID: " + uuid.ToString() + " and path : " + filePath.generic_string());
+                }
 
                 if (resourceHandle.IsLoaded())
                 {

@@ -632,10 +632,14 @@ namespace te
                 : TextureSurfaceElem(TextureSurface(0, 0, 0, 0))
             { }
 
-            TextureData(HTexture value, const TextureSurface& surface = GpuParams::COMPLETE)
+            TextureData(const HTexture& value, const TextureSurface& surface = GpuParams::COMPLETE)
                 : TextureElem(value)
                 , TextureSurfaceElem(surface)
             { }
+
+            void ExportJson(nlohmann::json& document) const;
+
+            static TextureData ImportJson(const nlohmann::json& document);
 
             HTexture TextureElem;
             TextureSurface TextureSurfaceElem;
