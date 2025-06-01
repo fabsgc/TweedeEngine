@@ -75,6 +75,7 @@ namespace te
                         resourceHandle.GetInternalPtr()->_UUID = uuid;
                         RegisterResource(uuid, filePath);
                         _loadedResources[uuid] = static_resource_cast<Resource>(resourceHandle);
+                        OnResourceLoaded(resourceHandle);
                     }
 
                     return static_resource_cast<T>(Get(uuid));
@@ -122,16 +123,17 @@ namespace te
 
     public:
         /** Called when a resource has been loaded. Provides a handle to the loaded resource. */
-        Event<void(const HResource&)> OnResourceLoaded;
-
-        /** Called when the resource has been destroyed. Provides UUID of the destroyed resource.*/
-        Event<void(const UUID&, CoreType type)> OnResourceDestroyed;
+        Event<void(const HResource&)> OnResourceLoaded;        
 
         /** Called when the internal resource the handle is pointing to has changed. */
         Event<void(const HResource&)> OnResourceModified;
 
+        /** Called when the resource has been destroyed. Provides UUID of the destroyed resource.*/
+        Event<void(const UUID&, CoreType type)> OnResourceDestroyed;
+
     private:
         friend class ResourceHandleBase;
+        friend class ResourceListener;
 
         /**	Destroys a resource, freeing its memory. */
         void Destroy(ResourceHandleBase& resource);

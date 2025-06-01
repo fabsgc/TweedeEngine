@@ -12,6 +12,9 @@ namespace te
         virtual ~ResourceListener();
     
     protected:
+        /** Called as soon as a resource is created inside the ResourceManager */
+        virtual void OnResourceLoaded(const HResource& resource) = 0;
+
         /** Called as soon as a resource is modified inside the ResourceManager */
         virtual void OnResourceModified(const HResource& resource) = 0;
 
@@ -19,6 +22,7 @@ namespace te
         virtual void OnResourceDestroyed(const UUID& uuid, CoreType type) = 0;
     
     protected:
+        HEvent _onResourceLoaded;
         HEvent _onResourceModified;
         HEvent _onResourceDestroyed;
     };

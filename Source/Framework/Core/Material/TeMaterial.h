@@ -615,6 +615,10 @@ namespace te
          */
         void InitializeTechniques();
 
+    protected:
+        /** @copydoc ResourceListener::OnResourceLoaded */
+        void OnResourceLoaded(const HResource& resource) override {};
+
         /** @copydoc ResourceListener::OnResourceModified */
         void OnResourceModified(const HResource& resource) override;
 

@@ -709,36 +709,47 @@ namespace te
 
     void Material::OnResourceModified(const HResource& resource)
     {
-        if (resource->GetResourceType() == CoreType::TID_Texture)
+        if (resource.GetUUID() == GetUUID())
+            return;
+
+        if (resource.IsLoaded() && resource->GetCoreType() == CoreType::TID_Texture)
         {
             for (const auto& texture : _textures)
             {
-                if (texture.second->TextureElem == resource)
+                if (texture.second->TextureElem.GetUUID() == resource.GetUUID())
                 {
                     _markCoreDirty(MaterialDirtyFlags::ParamResource);
+                    gResourceManager().OnResourceModified(gResourceManager().Get(GetUUID()));
                     break;
                 }
             }
 
             for (const auto& texture : _loadStoreTextures)
             {
-                if (texture.second->TextureElem == resource)
+                if (texture.second->TextureElem.GetUUID() == resource.GetUUID())
                 {
                     _markCoreDirty(MaterialDirtyFlags::ParamResource);
+                    gResourceManager().OnResourceModified(gResourceManager().Get(GetUUID()));
                     break;
                 }
             }
         }
 
-        if (resource->GetResourceType() == CoreType::TID_Shader)
+        if (resource.IsLoaded() && resource->GetCoreType() == CoreType::TID_Shader)
         {
-            if (_shader == resource)
+            if (_shader.GetUUID() == resource.GetUUID())
+            {
                 InitializeTechniques();
+                gResourceManager().OnResourceModified(gResourceManager().Get(GetUUID()));
+            }
         }
     }
 
     void Material::OnResourceDestroyed(const UUID& uuid, CoreType type)
     {
+        if (uuid == GetUUID())
+            return;
+
         if (type == CoreType::TID_Texture)
         {
             for (auto& texture : _textures)
@@ -747,6 +758,7 @@ namespace te
                 {
                     _textures.erase(texture.first);
                     _markCoreDirty(MaterialDirtyFlags::ParamResource);
+                    gResourceManager().OnResourceModified(gResourceManager().Get(GetUUID()));
                     break;
                 }
             }
@@ -757,6 +769,7 @@ namespace te
                 {
                     _loadStoreTextures.erase(texture.first);
                     _markCoreDirty(MaterialDirtyFlags::ParamResource);
+                    gResourceManager().OnResourceModified(gResourceManager().Get(GetUUID()));
                     break;
                 }
             }
@@ -768,6 +781,7 @@ namespace te
             {
                 _shader = nullptr;
                 InitializeTechniques();
+                gResourceManager().OnResourceModified(gResourceManager().Get(GetUUID()));
             }
         }
     }

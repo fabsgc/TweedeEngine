@@ -7,6 +7,7 @@
 #include "Components/TeCCamera.h"
 #include "ImGuiExt/TeImGuiFileBrowser.h"
 #include "MaterialsPreview/TeMaterialsPreview.h"
+#include "Resources/TeResourceListener.h"
 
 namespace te
 {
@@ -15,7 +16,7 @@ namespace te
     class Hud;
     class MaterialsPreview;
 
-    class Editor : public Module<Editor>
+    class Editor : public Module<Editor>, public ResourceListener
     {
     public:
         enum class EditorState
@@ -226,6 +227,16 @@ namespace te
 
         /** Check is editor is in play mode or not */
         bool IsEditorRunning() const { return gCoreApplication().GetState().IsFlagSet(ApplicationState::Mode::Game); }
+
+    protected:
+        /** @copydoc ResourceListener::OnResourceLoaded */
+        void OnResourceLoaded(const HResource& resource) override {};
+
+        /** @copydoc ResourceListener::OnResourceModified */
+        void OnResourceModified(const HResource& resource) override;
+
+        /** @copydoc ResourceListener::OnResourceDestroyed */
+        void OnResourceDestroyed(const UUID& uuid, CoreType type) override {};
 
     protected:
         void InitializeInput();

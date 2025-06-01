@@ -125,7 +125,7 @@ namespace te
 
         Vector<Resource*>& GetAllResources() 
         {
-            return _resourcesIndex; 
+            return _resourcesIndex;
         }
 
         template <class T>
@@ -158,8 +158,11 @@ namespace te
         }
 
     protected:
+        /** @copydoc ResourceListener::OnResourceLoaded */
+        void OnResourceLoaded(const HResource& resource) override { };
+
         /** @copydoc ResourceListener::OnResourceModified */
-        void OnResourceModified(const HResource& resource) override {}
+        void OnResourceModified(const HResource& resource) override;
 
         /** @copydoc ResourceListener::OnResourceDestroyed */
         void OnResourceDestroyed(const UUID& uuid, CoreType type) override;

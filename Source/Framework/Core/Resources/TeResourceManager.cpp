@@ -102,7 +102,7 @@ namespace te
             }
             else
             {
-                Vector<SubResourceUUID> subResourcesUUID;
+                Vector<SubResourceUUID>& subResourcesUUID = _resourcesChunks[uuid];
 
                 for (auto& entry : resources->Entries)
                 {
@@ -119,10 +119,11 @@ namespace te
                     {
                         _loadedResources[resourceUuid] = entry.Res;
                         subResourcesUUID.push_back({ entry.Name, resourceUuid });
+                        
                     }
-                }
 
-                _resourcesChunks[uuid] = subResourcesUUID;
+                    OnResourceLoaded(entry.Res);
+                }
             }
         }
         else

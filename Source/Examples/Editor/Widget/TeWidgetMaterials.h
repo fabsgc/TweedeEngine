@@ -22,6 +22,9 @@ namespace te
     protected:
         bool ShowLoadedTexture();
 
+        /** @copydoc ResourceListener::OnResourceLoaded */
+        void OnResourceLoaded(const HResource& resource) override { };
+
         /** @copydoc ResourceListener::OnResourceModified */
         void OnResourceModified(const HResource& resource) override;
 

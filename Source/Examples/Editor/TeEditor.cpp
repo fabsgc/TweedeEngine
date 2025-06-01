@@ -1507,6 +1507,12 @@ namespace te
         NeedsRedraw();
     }
 
+    void Editor::OnResourceModified(const HResource& resource)
+    {
+        NeedsRedraw();
+        GetSettings().State = Editor::EditorState::Modified;
+    }
+
     void Editor::LoadScene()
     {
 #if TE_PLATFORM == TE_PLATFORM_WIN32

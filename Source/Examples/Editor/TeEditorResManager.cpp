@@ -13,11 +13,10 @@ namespace te
         {
             if (subRes.Res.IsLoaded())
             {
-                if (!_resources[subRes.Res->GetCoreType()].Find(subRes.Res->GetUUID()).IsLoaded())
-                {
-                    _resources[subRes.Res->GetCoreType()].Add(subRes.Res);
-                    _resourcesIndex.push_back(subRes.Res.Get());
-                }
+                Remove(_resources[subRes.Res->GetCoreType()].Find(subRes.Res->GetUUID()));
+
+                _resources[subRes.Res->GetCoreType()].Add(subRes.Res);
+                _resourcesIndex.push_back(subRes.Res.Get());
 
                 output.push_back(subRes);                    
             }
@@ -33,6 +32,23 @@ namespace te
         // For modules, we need to call Disconnect on event during shutdown
         _onResourceModified.Disconnect();
         _onResourceDestroyed.Disconnect();
+    }
+
+    void EditorResManager::OnResourceModified(const HResource& resource)
+    {
+        if (resource.IsLoaded())
+        {
+            CoreType type = resource->GetCoreType();
+            auto it = _resources[type].Find(resource.GetUUID());
+
+            if (it.IsLoaded())
+            {
+                _resources[type].Remove(it);
+
+                _resources[type].Add(const_cast<HResource&>(resource));
+                _resourcesIndex.push_back(resource.Get());
+            }
+        }
     }
 
     void EditorResManager::OnResourceDestroyed(const UUID& uuid, CoreType type)

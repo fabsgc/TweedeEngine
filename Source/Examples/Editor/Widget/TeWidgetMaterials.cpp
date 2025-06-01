@@ -618,10 +618,9 @@ namespace te
             if (hasChanged)
             {
                 // We must update gpu params on all renderables who are using this material
-                Vector<HComponent> components = gEditor().GetSceneRoot()->GetComponents(CoreType::TID_CRenderable, true);
                 _currentMaterial->SetProperties(properties);
 
-                for (auto& component : components)
+                for (auto& component : gEditor().GetSceneRoot()->GetComponents(CoreType::TID_CRenderable, true))
                 {
                     SPtr<CRenderable> renderable = std::static_pointer_cast<CRenderable>(component.GetInternalPtr());
                     if (renderable->IsUsingMaterial(_currentMaterial))
