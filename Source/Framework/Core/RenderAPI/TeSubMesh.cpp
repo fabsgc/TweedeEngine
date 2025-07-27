@@ -1,5 +1,6 @@
 #include "RenderAPI/TeSubMesh.h"
 
+#include "Resources/TeResourceManager.h"
 #include "Serialization/TeUtility.h"
 
 namespace te
@@ -33,10 +34,11 @@ namespace te
         subMesh.IndexCount = document["indexCount"].get<uint32_t>();
         subMesh.DrawOp = static_cast<DrawOperationType>(document["drawOp"].get<uint32_t>());
         subMesh.MaterialName = document["materialName"].get<String>();
-        subMesh.Name = document["material"].get<String>();
+        subMesh.Name = document["name"].get<String>();
+        subMesh.Mat = static_resource_cast<Material>(gResourceManager().Get(serialization::GetResourceUUID(document["material"].get<String>())));
+        subMesh.MatProperties = MaterialProperties::ImportJson(document["materialProperties"]);
+        subMesh.MatTextures = MaterialTextures::ImportJson(document["materialTextures"]);
         subMesh.SubMeshBounds = Bounds::ImportJson(document["subMeshBounds"]);
-        //subMesh.Mat = 
-        // TODO serialization
 
         return subMesh;
     }
