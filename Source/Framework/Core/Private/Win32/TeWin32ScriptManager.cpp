@@ -26,7 +26,7 @@ namespace te
         output += "/ZI /nologo /W3 /WX- /diagnostics:classic /MP /Od /Ob0 /D WIN32 /D _WINDOWS ";
         output += "/D DEBUG /D _WINDLL /D _MBCS /Gm- /RTC1 /MDd /GS- /fp:precise /Zc:wchar_t ";
         output += "/Zc:forScope /Zc:inline /GR- /std:c++20 ";
-        output += script->GetPath().generic_string() + " ";
+        output += script->GetPath().generic_string() + " "; // TODO Serialization : use temp path (uuid hash) instead of resource path
         output += "/Gd /TP /wd4577 /wd4530 /bigobj /link ";
         output += "/OUT:" + script->GetUUID().ToString() + ".dll ";
         output += "/OPT:NOREF /OPT:NOICF ";
