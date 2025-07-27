@@ -332,4 +332,9 @@ namespace te
 
         // TODO serialization
     }
+
+    bool CCameraUI::ImportJson(const nlohmann::json& document, CCameraUI& camera)
+    {
+        return false;
+    }
 }

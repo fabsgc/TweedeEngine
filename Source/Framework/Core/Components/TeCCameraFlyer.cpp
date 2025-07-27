@@ -170,4 +170,9 @@ namespace te
 
         // TODO serialization
     }
+
+    bool CCameraFlyer::ImportJson(const nlohmann::json& document, CCameraFlyer& camera)
+    {
+        return false;
+    }
 }

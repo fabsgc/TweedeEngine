@@ -33,6 +33,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** Fills a camera component from a json document */
+        static bool ImportJson(const nlohmann::json& document, CCameraFlyer& camera);
+
     protected:
         friend class SceneObject;
 

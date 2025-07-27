@@ -43,6 +43,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** Fills a camera component from a json document */
+        static bool ImportJson(const nlohmann::json& document, CCameraUI& camera);
+
     public:
         static const String ROTATE_BINDING;
         static const String MOVE_BINDING;

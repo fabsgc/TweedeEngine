@@ -217,13 +217,16 @@ namespace te
         /* @copydoc Component::MarkDirty */
         virtual void MarkDirty() { _internal->_markCoreDirty(); }
 
+    protected:
+        /** Checks if the world transform of the camera changed, and if needed updates the view matrix. */
+        void UpdateView() const;
+
     public:
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
-    protected:
-        /** Checks if the world transform of the camera changed, and if needed updates the view matrix. */
-        void UpdateView() const;
+        /** Fills a camera component from a json document */
+        static bool ImportJson(const nlohmann::json& document, CCamera& camera);
 
     protected:
         mutable SPtr<Camera> _internal;

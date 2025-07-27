@@ -1409,18 +1409,21 @@ namespace te
                     case CoreType::TID_CCamera:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CCamera>());
+                        CCamera::ImportJson(element.value(), *static_cast<CCamera*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CCameraFlyer:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CCameraFlyer>());
+                        CCamera::ImportJson(element.value(), *static_cast<CCamera*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CCameraUI:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CCameraUI>());
+                        CCameraUI::ImportJson(element.value(), *static_cast<CCameraUI*>(component.Get()));
                     }
                     break;
 
