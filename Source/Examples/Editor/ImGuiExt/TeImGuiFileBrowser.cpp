@@ -680,6 +680,7 @@ namespace te
         ImGui::SetNextWindowSize(window_size);
         ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f,0.5f));
 
+        // TODO by default, we don't want to show the parameters modal if we are not loading a mesh, texture or a sound.
         if (ImGui::BeginPopupModal(parameters_file_modal_id.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
         {
             String ext = (Data.SelectedFileExt);
@@ -811,12 +812,15 @@ namespace te
                     loadingModeOptions.AddOption(ResourceManager::LoadingMode::Force, "Create new resource if exists");
                 }
                 
-                ImGui::Separator();
-                ImGuiExt::RenderOptionCombo<ResourceManager::LoadingMode>(&Data.LoadMode, "##file_dialog_parameters_loading_mode", "Loading Mode", loadingModeOptions, 300);
+                if (ext != ".cpp")
+                {
+                    ImGui::Separator();
+                    ImGuiExt::RenderOptionCombo<ResourceManager::LoadingMode>(&Data.LoadMode, "##file_dialog_parameters_loading_mode", "Loading Mode", loadingModeOptions, 300);
+                }
             }
             else if (dialog_mode == DialogMode::SAVE && ext == ".project")
             { 
-                /** TODO */
+                // TODO
             }
 
             ImGui::Separator();
