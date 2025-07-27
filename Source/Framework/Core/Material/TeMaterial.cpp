@@ -592,7 +592,7 @@ namespace te
             object->SetShader(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
         }
 
-        auto texturesDoc = document["textures"];
+        auto& texturesDoc = document["textures"];
         for (auto& texture : texturesDoc.items())
         {
             nlohmann::json textureDoc = texture.value();
@@ -600,7 +600,7 @@ namespace te
             object->_textures[texture.key()] = textureData;
         }
 
-        auto loadStoreTexturesDoc = document["loadStoreTextures"];
+        auto& loadStoreTexturesDoc = document["loadStoreTextures"];
         for (auto& loadStoreTexture : loadStoreTexturesDoc.items())
         {
             nlohmann::json loadStoreTextureDoc = loadStoreTexture.value();
