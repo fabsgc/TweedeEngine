@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "CoreUtility/TeCoreObject.h"
-#include "Serialization/TeSerializable.h"
 #include "Scene/TeSceneActor.h"
 #include "Math/TeVector2.h"
 #include "Math/TeBounds.h"
@@ -13,7 +12,7 @@ namespace te
      * Specifies a decal that will be projected onto scene geometry. User can set the material to use when rendering
      * the decal, as well as control decal orientation and size.
      */
-    class TE_CORE_EXPORT Decal : public CoreObject, public SceneActor, public Serializable
+    class TE_CORE_EXPORT Decal : public CoreObject, public SceneActor
     {
     public:
         virtual ~Decal();
@@ -119,7 +118,7 @@ namespace te
     protected:
         friend class CDecal;
 
-        Decal();
+        Decal() = default;
         Decal(const HMaterial& material, const Vector2& size, float maxDistance);
 
         /** @copydoc CoreObject::Initialize */

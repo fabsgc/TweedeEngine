@@ -5,7 +5,6 @@
 #include "Scene/TeSceneActor.h"
 #include "Math/TeSphere.h"
 #include "Image/TeColor.h"
-#include "Serialization/TeSerializable.h"
 
 namespace te
 {
@@ -17,7 +16,7 @@ namespace te
     };
 
     /** Illuminates a portion of the scene covered by the light. */
-    class TE_CORE_EXPORT Light : public CoreObject, public SceneActor, public Serializable
+    class TE_CORE_EXPORT Light : public CoreObject, public SceneActor
     {
     public:
         enum class Type

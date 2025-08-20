@@ -3,7 +3,6 @@
 #include "TeCorePrerequisites.h"
 #include "Scene/TeSceneActor.h"
 #include "CoreUtility/TeCoreObject.h"
-#include "Serialization/TeSerializable.h"
 #include "Resources/TeResourceListener.h"
 
 namespace te
@@ -15,7 +14,7 @@ namespace te
         Texture = 1 << 5
     };
 
-    class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor, public Serializable, public ResourceListener
+    class TE_CORE_EXPORT Skybox : public CoreObject, public SceneActor, public ResourceListener
     {
     public:
         static constexpr float DEFAULT_IBL_INTENSITY = 5000.f;

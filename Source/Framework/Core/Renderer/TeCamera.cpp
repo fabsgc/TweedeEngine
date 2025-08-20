@@ -14,7 +14,6 @@ namespace te
     const float Camera::SENSOR_HEIGHT = 24.0f;
 
     Camera::Camera(SPtr<RenderTarget> target, float left, float top, float width, float height)
-        : Serializable(CoreType::TID_Camera)
     {
         InvalidateFrustum();
         _viewport = Viewport::Create(target, left, top, width, height);
@@ -27,7 +26,6 @@ namespace te
     }
 
     Camera::Camera(const SPtr<Viewport>& viewport)
-        : Serializable(CoreType::TID_Camera)
     {
         InvalidateFrustum();
         _viewport = viewport;

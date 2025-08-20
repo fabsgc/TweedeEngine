@@ -34,10 +34,6 @@ namespace te
         return buffer;
     }
 
-    Renderable::Renderable()
-        : Serializable(CoreType::TID_Renderable)
-    { }
-
     Renderable::~Renderable()
     {
         if (_renderer) _renderer->NotifyRenderableRemoved(this);

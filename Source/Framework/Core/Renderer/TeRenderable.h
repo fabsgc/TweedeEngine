@@ -4,7 +4,6 @@
 #include "CoreUtility/TeCoreObject.h"
 #include "Scene/TeSceneActor.h"
 #include "Math/TeBounds.h"
-#include "Serialization/TeSerializable.h"
 #include "Resources/TeResourceListener.h"
 
 namespace te
@@ -33,7 +32,7 @@ namespace te
     };
 
     /** Illuminates a portion of the scene covered by the Renderable. */
-    class TE_CORE_EXPORT Renderable : public CoreObject, public SceneActor, public Serializable, public ResourceListener
+    class TE_CORE_EXPORT Renderable : public CoreObject, public SceneActor, public ResourceListener
     {
     public:
         virtual ~Renderable();
@@ -256,7 +255,7 @@ namespace te
     protected:
         friend class CRenderable;
 
-        Renderable();
+        Renderable() = default;
 
         /** @copydoc CoreObject::Initialize */
         void Initialize() override;

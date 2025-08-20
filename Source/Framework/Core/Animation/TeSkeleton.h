@@ -6,7 +6,6 @@
 #include "Math/TeMatrix4.h"
 #include "Math/TeVector3.h"
 #include "Scene/TeTransform.h"
-#include "Serialization/TeSerializable.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "Animation/TeSkeletonMask.h"
 #include "Animation/TeAnimationClip.h"
@@ -99,7 +98,7 @@ namespace te
      * Contains information about bones required for skeletal animation. Allows caller to evaluate a set of animation
      * clips at a specific time and output the relevant skeleton pose.
      */
-    class TE_CORE_EXPORT Skeleton : public CoreObject, public Serializable
+    class TE_CORE_EXPORT Skeleton : public CoreObject
     {
     public:
         virtual ~Skeleton();
@@ -175,7 +174,7 @@ namespace te
         static SPtr<Skeleton> ImportJson(const nlohmann::json& document);
 
     private:
-        Skeleton();
+        Skeleton() = default;
         Skeleton(BONE_DESC* bones, UINT32 numBones);
 
         UINT32 _numBones = 0;

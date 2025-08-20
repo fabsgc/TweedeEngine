@@ -5,17 +5,12 @@
 namespace te
 {
     Decal::Decal(const HMaterial& material, const Vector2& size, float maxDistance)
-        : Serializable(CoreType::TID_Decal)
-        , _material(material)
+        : _material(material)
         , _maxDistance(maxDistance)
         , _size(size)
     {
         UpdateBounds();
     }
-
-    Decal::Decal()
-        : Serializable(CoreType::TID_Decal)
-    { }
 
     Decal::~Decal()
     { 

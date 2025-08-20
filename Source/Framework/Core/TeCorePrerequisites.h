@@ -92,14 +92,6 @@ namespace te
         TID_CCylinderCollider         = 1129,
         TID_CCapsuleCollider          = 1130,
         TID_CHeightFieldCollider      = 1131,
-
-        TID_Light                     = 1200,
-        TID_Decal                     = 1201,
-        TID_Skybox                    = 1202,
-        TID_Camera                    = 1203,
-        TID_Renderable                = 1204,
-
-        TID_Skeleton                  = 1300,
         
         TID_Resource                  = 1400,
         TID_Project                   = 1401,
