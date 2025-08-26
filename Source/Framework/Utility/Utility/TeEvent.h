@@ -94,7 +94,7 @@ namespace te
                 _connections = nullptr;
 
             if (connection->HandleLinks == 0) 
-                free(connection);       
+                Free(connection);       
         }
 
         /** Disconnects all connections in the event. */
@@ -109,7 +109,7 @@ namespace te
                 conn->Deactivate();
 
                 if (conn->HandleLinks == 0)
-                    free(conn);
+                    Free(conn);
 
                 conn = next;
             }
