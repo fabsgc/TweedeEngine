@@ -173,6 +173,8 @@ namespace te
 
     bool CCameraFlyer::ImportJson(const nlohmann::json& document, CCameraFlyer& camera)
     {
+        Component::ImportJson(document, camera);
+
         return false;
     }
 }

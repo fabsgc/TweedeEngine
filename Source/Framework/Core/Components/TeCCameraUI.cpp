@@ -335,6 +335,8 @@ namespace te
 
     bool CCameraUI::ImportJson(const nlohmann::json& document, CCameraUI& camera)
     {
+        Component::ImportJson(document, camera);
+
         return false;
     }
 }

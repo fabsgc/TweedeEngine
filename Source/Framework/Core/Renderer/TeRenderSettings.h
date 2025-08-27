@@ -450,6 +450,9 @@ namespace te
         /** Export the instance in a Json object */
         void ExportJson(nlohmann::json& document) const;
 
+        /** Import the instance from a Json object */
+        static void ImportJson(const nlohmann::json& document, RenderSettings& renderSettings);
+
         /**
          * Parameters used for customizing automatic scene exposure.
          *

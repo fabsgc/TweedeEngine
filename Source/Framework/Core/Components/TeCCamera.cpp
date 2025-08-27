@@ -145,12 +145,36 @@ namespace te
         document["main"] = IsMain();
         
         GetRenderSettings()->ExportJson(document["renderSettings"]);
-
-        // TODO serialization
     }
 
     bool CCamera::ImportJson(const nlohmann::json& document, CCamera& camera)
     {
-        return false;
+        Component::ImportJson(document, camera);
+
+        // Camera properties
+        if (document.contains("nearClipDistance")) camera.SetNearClipDistance(document["nearClipDistance"].get<float>());
+        if (document.contains("farClipDistance")) camera.SetFarClipDistance(document["farClipDistance"].get<float>());
+        if (document.contains("aspectRatio")) camera.SetAspectRatio(document["aspectRatio"].get<float>());
+        if (document.contains("focalLength")) camera.SetFocalLength(document["focalLength"].get<float>());
+        if (document.contains("aperture")) camera.SetAperture(document["aperture"].get<float>());
+        if (document.contains("shutterSpeed")) camera.SetShutterSpeed(document["shutterSpeed"].get<float>());
+        if (document.contains("sensitivity")) camera.SetSensitivity(document["sensitivity"].get<uint32_t>());
+        if (document.contains("projectionType")) camera.SetProjectionType(static_cast<ProjectionType>(document["projectionType"].get<int>()));
+        if (document.contains("orthoWindowHeight")) camera.SetOrthoWindowHeight(document["orthoWindowHeight"].get<float>());
+        if (document.contains("orthoWindowWidth")) camera.SetOrthoWindowWidth(document["orthoWindowWidth"].get<float>());
+        if (document.contains("priority")) camera.SetPriority(document["priority"].get<int32_t>());
+        if (document.contains("layers")) camera.SetLayers(document["layers"].get<uint32_t>());
+        if (document.contains("MSAACount")) camera.SetMSAACount(document["MSAACount"].get<uint32_t>());
+        if (document.contains("main")) camera.SetMain(document["main"].get<bool>());
+
+        // RenderSettings
+        if (document.contains("renderSettings"))
+        {
+            auto settings = camera.GetRenderSettings();
+            RenderSettings::ImportJson(document["renderSettings"], *settings);
+            camera.SetRenderSettings(settings);
+        }
+
+        return true;
     }
 }
