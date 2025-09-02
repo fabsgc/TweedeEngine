@@ -61,6 +61,9 @@ namespace te
     public:
         virtual ~AudioClip() = default;
 
+        /**  @copydoc Resource::GetResourceType */
+        static CoreType GetResourceType() { return CoreType::TID_AudioClip; }
+
         /** Returns the size of a single sample, in bits. */
         UINT32 GetBitDepth() const { return _desc.BitDepth; }
         
