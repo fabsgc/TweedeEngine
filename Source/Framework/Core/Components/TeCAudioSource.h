@@ -118,6 +118,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** Fills an audio source component from a json document */
+        static bool ImportJson(const nlohmann::json& document, CAudioSource& audioSource);
+
     protected:
         friend class SceneObject;
 

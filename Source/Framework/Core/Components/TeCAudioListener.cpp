@@ -130,6 +130,16 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        if (_internal)
+        {
+            // TODO serialization
+        }
+    }
+
+    bool CAudioListener::ImportJson(const nlohmann::json& document, CAudioListener& audioListener)
+    {
+        Component::ImportJson(document, audioListener);
+
+        return false;
     }
 }
