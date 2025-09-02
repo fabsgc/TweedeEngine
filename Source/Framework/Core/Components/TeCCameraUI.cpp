@@ -330,13 +330,19 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        _target.ExportJson(document["target"]);
     }
 
     bool CCameraUI::ImportJson(const nlohmann::json& document, CCameraUI& camera)
     {
         Component::ImportJson(document, camera);
 
-        return false;
+        if (document.contains("target"))
+        {
+            camera._target = Vector3::ImportJson(document["target"]);
+            camera.SetTarget(camera._target);
+        }
+
+        return true;
     }
 }

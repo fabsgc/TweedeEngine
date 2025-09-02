@@ -167,14 +167,12 @@ namespace te
         Component::ExportJson(document);
 
         document["type"] = GetComponentType();
-
-        // TODO serialization
     }
 
     bool CCameraFlyer::ImportJson(const nlohmann::json& document, CCameraFlyer& camera)
     {
         Component::ImportJson(document, camera);
 
-        return false;
+        return true;
     }
 }
