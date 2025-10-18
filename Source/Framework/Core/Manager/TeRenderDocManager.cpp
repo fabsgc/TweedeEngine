@@ -60,6 +60,34 @@ namespace te
 
         _rdcAPI->TriggerCapture();
 
+        OpenRenderDocUI();
+#endif
+    }
+
+    void RenderDocManager::StartFrameCapture()
+    {
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
+        if (_rdcAPI == nullptr || _rdcAPI->IsFrameCapturing())
+            return;
+
+        _rdcAPI->StartFrameCapture(nullptr, nullptr);
+#endif
+    }
+
+    void RenderDocManager::EndFrameCapture()
+    {
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED
+        if (_rdcAPI == nullptr || !_rdcAPI->IsFrameCapturing())
+            return;
+
+        _rdcAPI->EndFrameCapture(nullptr, nullptr);
+
+        OpenRenderDocUI();
+#endif
+    }
+
+    void RenderDocManager::OpenRenderDocUI()
+    {
         // If the RenderDoc UI is already running, make sure it's visible.
         if (_rdcAPI->IsTargetControlConnected())
         {
@@ -74,6 +102,5 @@ namespace te
         {
             TE_DEBUG("Failed to launch RenderDoc");
         }
-#endif
     }
 }

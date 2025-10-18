@@ -28,6 +28,8 @@ namespace te
         // Check if texture is up to date
         CheckRenderTexture(param.Width, param.Height);
 
+        rapi.PushMarker("[DRAW] GPU Picking", Color(0.67f, 0.25f, 0.50f));
+
         // Bind camera param buffer
         _material->BindCamera(camera);
 
@@ -38,6 +40,8 @@ namespace te
         Draw(camera, root);
 
         rapi.SetRenderTarget(nullptr);
+
+        rapi.PopMarker();
 
         CleanGameObjectsList();
     }

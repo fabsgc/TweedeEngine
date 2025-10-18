@@ -187,6 +187,7 @@ namespace te
     {
         DestroyInternal();
         Component::OnDestroyed();
+        _internal->Destroy();
     }
 
     void CAnimation::RestoreInternal(bool previewMode)
@@ -239,10 +240,6 @@ namespace te
             _animatedRenderable->UnregisterAnimation();
 
         _primaryPlayingClip = nullptr;
-
-        // This should release the last reference and destroy the internal listener
-        _internal = nullptr;
-
         _eventTriggered.Disconnect();
     }
 

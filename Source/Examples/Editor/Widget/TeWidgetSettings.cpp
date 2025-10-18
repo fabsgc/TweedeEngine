@@ -179,10 +179,16 @@ namespace te
         if (ImGui::CollapsingHeader("Editor", ImGuiTreeNodeFlags_DefaultOpen))
         {
             bool displayBoundaries = gEditor().GetDisplayBoundaries();
-            if (ImGuiExt::RenderOptionBool(displayBoundaries, "##settings_editor_boundaries", "Display bouding boxes of selected object"))
+            if (ImGuiExt::RenderOptionBool(displayBoundaries, "##settings_editor_boundaries", "Display bounding boxes of selected object"))
             {
                 gEditor().SetDisplayBoundaries(displayBoundaries);
                 gEditor().NeedsRedraw();
+            }
+
+            bool captureGPUPicking = gEditor().GetCaptureGPUPicking();
+            if (ImGuiExt::RenderOptionBool(captureGPUPicking, "##settings_editor_capture_gpu_picking", "Capture GPU picking render"))
+            {
+                gEditor().SetCaptureGPUPicking(captureGPUPicking);
             }
         }
     }

@@ -201,6 +201,12 @@ namespace te
         // Should we display the boundaries of the current selected object
         void SetDisplayBoundaries(bool displayBoundaries) { _displayBoundaries = displayBoundaries; }
 
+        // Should we capture gpu picking render
+        bool GetCaptureGPUPicking() const { return _captureGPUPicking; }
+
+        // Should we capture gpu picking render
+        void SetCaptureGPUPicking(bool capture) { _captureGPUPicking = capture; }
+
         /** Create new project */
         bool NewProject(const std::filesystem::path& path);
 
@@ -324,6 +330,9 @@ namespace te
         // Display boundaries of selected objects
         bool _displayBoundaries;
 
+        // Should we capture gpu picking render
+        bool _captureGPUPicking;
+
         // We only enable Guizmo if there is a viewport with the default camera enabled
         ImGuizmoState _guizmoState;
         ImGuizmo::OPERATION _guizmoOperation;
@@ -335,21 +344,31 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
         HMesh _furnitureMesh;
-        HZPrepassMesh _zPrepassSphereMesh;
+        HMesh _monkeyMesh;
+        HMesh _planeMesh;
+        HZPrepassMesh _zPrepassFurnitureMesh;
         HTexture _skyboxTexture;
         HMaterial _furnitureMaterial;
 
-        HSceneObject _sceneRenderableSO;
-        HSceneObject _sceneLightSO;
-        HSceneObject _sceneSkyboxSO;
-        HSceneObject _sceneSoundSO;
+        HSceneObject furnitureSO;
+        HSceneObject lightSO;
+        HSceneObject skyboxSO;
+        HSceneObject soundSO;
 
         HLight _light;
         HSkybox _skybox;
-        HRenderable _renderable;
+        HRenderable _furniture;
         HAudioSource _audioSource;
         HAudioClip _audioClip;
         HScript _script;
+
+        HMesh _knightMesh;
+        HTexture _knightTexture;
+        HMaterial _knightMaterial;
+        HSceneObject _knightSO;
+        HRenderable _knight;
+        HAnimationClip _knightClip;
+        HAnimation _knightAnimation;
 #endif
     };
 

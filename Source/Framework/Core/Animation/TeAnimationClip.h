@@ -261,7 +261,7 @@ namespace te
         SPtr<AnimationCurves> _curves;
 
         /**
-         * A set of curves containing motion of the root bone. If this is non-empty it should be true that mCurves does not
+         * A set of curves containing motion of the root bone. If this is non-empty it should be true that _curves does not
          * contain animation curves for the root bone. Root motion will not be evaluated through normal animation process
          * but is instead provided for the user for manual evaluation.
          */

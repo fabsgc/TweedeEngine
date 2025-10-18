@@ -117,6 +117,14 @@ namespace te
             []() { return true; },
             []() { return true; },
             []() { 
+                if (gEditor().GetCaptureGPUPicking())
+                {
+                    RenderDocManager::Instance().StartFrameCapture();
+                    gEditor().MakePickingDirty();
+                    gEditor().NeedsPicking(0, 0);
+                    RenderDocManager::Instance().EndFrameCapture();
+                }
+
                 gEditor().NeedsRedraw();
                 RenderDocManager::Instance().FrameCapture();
             },

@@ -83,7 +83,7 @@ namespace te
 
         for (UINT32 i = 0; i < numBones; i++)
         {
-           _boneTransforms[i] = bones[i].LocalTfrm;
+            _boneTransforms[i] = bones[i].LocalTfrm;
             _invBindPoses[i] = bones[i].InvBindPose;
             _bonesInfo[i].Name = bones[i].Name;
             _bonesInfo[i].Parent = bones[i].Parent;

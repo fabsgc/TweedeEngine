@@ -20,6 +20,11 @@ namespace te
         void OnShutDown() override;
 
         void FrameCapture();
+        void StartFrameCapture();
+        void EndFrameCapture();
+    
+    private:
+        void OpenRenderDocUI();
 
     private:
         DynLib* _rdcLib = nullptr;

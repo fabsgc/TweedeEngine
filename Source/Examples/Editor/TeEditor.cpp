@@ -35,7 +35,6 @@
 #include "Components/TeCAudioSource.h"
 #include "Components/TeCAudioListener.h"
 #include "Components/TeCRigidBody.h"
-#include "Components/TeCMeshSoftBody.h"
 #include "Components/TeCEllipsoidSoftBody.h"
 #include "Components/TeCRopeSoftBody.h"
 #include "Components/TeCPatchSoftBody.h"
@@ -53,8 +52,6 @@
 #include "Components/TeCMeshCollider.h"
 #include "Components/TeCConeCollider.h"
 #include "Components/TeCHeightFieldCollider.h"
-#include "Components/TeCAnimation.h"
-#include "Scene/TeSceneManager.h"
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeBuiltinResources.h"
 #include "TeEditorResManager.h"
@@ -151,6 +148,7 @@ namespace te
         , _physicsDirty(true)
         , _animationDebug(true)
         , _displayBoundaries(true)
+        , _captureGPUPicking(false)
         , _guizmoState(ImGuizmoState::Active)
         , _guizmoOperation(ImGuizmo::OPERATION::TRANSLATE)
         , _guizmoMode(ImGuizmo::MODE::WORLD)
@@ -441,8 +439,8 @@ namespace te
         _viewportCameraSO = SceneObject::Create("UIViewportCamera", (UINT32)SOF_Internal | SOF_Persistent | SOF_DontSave);
         _viewportCameraSO->SetParent(_viewportSO);
 
-        _viewportCameraSO->SetPosition(Vector3(2.5f, 1.5f, -2.5f));
-        _viewportCameraSO->LookAt(Vector3(0.0f, 0.0f, 0.0f));
+        _viewportCameraSO->SetPosition(Vector3(3.5f, 1.5f, -3.5f));
+        _viewportCameraSO->LookAt(Vector3(0.0f, 2.0f, 0.0f));
 
         _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
         _viewportCamera->GetViewport()->SetClearColorValue(Color(0.42f, 0.67f, 0.94f, 1.0f));
@@ -1548,9 +1546,9 @@ namespace te
         SPtr<MultiResource> MultiResourcesMesh = EditorResManager::Instance().LoadAll("Data/Meshes/VintageWooden/VintageWooden.obj", meshImportOptions);
 
         _furnitureMesh = static_resource_cast<Mesh>(MultiResourcesMesh->Entries[0].Res);
-        _zPrepassSphereMesh = static_resource_cast<ZPrepassMesh>(MultiResourcesMesh->Entries[1].Res);
-        //_monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
-        //_planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
+        _zPrepassFurnitureMesh = static_resource_cast<ZPrepassMesh>(MultiResourcesMesh->Entries[1].Res);
+        _monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
+        _planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
 
         textureCubeMapImportOptions.Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_syferfontein_1024.png", true);
         _skyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_syferfontein_1024.png", textureCubeMapImportOptions);
@@ -1568,8 +1566,8 @@ namespace te
 
         if (_furnitureMesh.IsLoaded())
             _furnitureMesh->SetName("Furniture Mesh");
-        if (_zPrepassSphereMesh.IsLoaded())
-            _zPrepassSphereMesh->SetName("Furniture Mesh");
+        if (_zPrepassFurnitureMesh.IsLoaded())
+            _zPrepassFurnitureMesh->SetName("Z Furniture Mesh");
         if (_skyboxTexture.IsLoaded())
             _skyboxTexture->SetName("Skybox Texture");
         if (_audioClip.IsLoaded())
@@ -1606,9 +1604,9 @@ namespace te
         // ######################################################
         if (_skyboxTexture.IsLoaded())
         {
-            _sceneSkyboxSO = SceneObject::Create("Skybox");
-            _sceneSkyboxSO->SetParent(_sceneSO);
-            _skybox = _sceneSkyboxSO->AddComponent<CSkybox>();
+            skyboxSO = SceneObject::Create("Skybox");
+            skyboxSO->SetParent(_sceneSO);
+            _skybox = skyboxSO->AddComponent<CSkybox>();
             _skybox->SetTexture(_skyboxTexture);
             _skybox->SetBrightness(1.f);
             _skybox->SetIBLIntensity(15000.f);
@@ -1618,48 +1616,48 @@ namespace te
 
         // FILL SCENE WITH DIRECTIONAL LIGHT
         // ######################################################
-        _sceneLightSO = SceneObject::Create("Light");
-        _sceneLightSO->SetParent(_sceneSO);
-        _light = _sceneLightSO->AddComponent<CLight>(Light::Type::Directional);
+        lightSO = SceneObject::Create("Light");
+        lightSO->SetParent(_sceneSO);
+        _light = lightSO->AddComponent<CLight>(Light::Type::Directional);
         _light->Initialize();
         _light->SetIntensity(60000.f);
         _light->SetCastShadows(true);
 
         Quaternion rot = {};
         rot.FromEulerAngles(Radian(Degree(-21.69f)), Radian(Degree(36.4f)), Radian(Degree(15.06f)));
-        _sceneLightSO->SetRotation(rot);
-        _sceneLightSO->Move(Vector3(0.0f, 4.0f, 4.0f));
+        lightSO->SetRotation(rot);
+        lightSO->Move(Vector3(0.0f, 4.0f, 4.0f));
         // ######################################################
 
         // FILL SCENE WITH MESHES
         // ######################################################
         if (_furnitureMesh.IsLoaded() && _furnitureMaterial.IsLoaded())
         {
-            _sceneRenderableSO = SceneObject::Create("Object");
-            _sceneRenderableSO->SetParent(_sceneSO);
-            _renderable = _sceneRenderableSO->AddComponent<CRenderable>();
-            _renderable->SetMesh(_furnitureMesh);
-            _renderable->SetZPrepassMesh(_zPrepassSphereMesh);
-            _renderable->SetMaterial(_furnitureMaterial);
-            _renderable->SetName("Renderable");
-            _renderable->Initialize();
-            _renderable->SetCastLight(true);
-            _renderable->SetCastShadows(true);
-            _renderable->SetReceiveShadows(true);
-            _renderable->SetUseForZPrepass(true);
-            _renderable->SetUseForLightProbes(true);
-            _renderable->SetUseForLightProbes(true);
+            furnitureSO = SceneObject::Create("Object");
+            furnitureSO->SetParent(_sceneSO);
+            _furniture = furnitureSO->AddComponent<CRenderable>();
+            _furniture->SetMesh(_furnitureMesh);
+            _furniture->SetZPrepassMesh(_zPrepassFurnitureMesh);
+            _furniture->SetMaterial(_furnitureMaterial);
+            _furniture->SetName("Renderable");
+            _furniture->Initialize();
+            _furniture->SetCastLight(true);
+            _furniture->SetCastShadows(true);
+            _furniture->SetReceiveShadows(true);
+            _furniture->SetUseForZPrepass(true);
+            _furniture->SetUseForLightProbes(true);
+            _furniture->SetUseForLightProbes(true);
 
-            _sceneRenderableSO->Rotate(Vector3::UNIT_Y, Radian(Math::HALF_PI));
-            _sceneRenderableSO->Move(Vector3(0.0f, -1.0f, 0.0f));
+            furnitureSO->Rotate(Vector3::UNIT_Y, Radian(Math::HALF_PI));
+            furnitureSO->Move(Vector3(0.0f, -1.0f, 0.0f));
         }
         // ######################################################
 
         // FILL SCENE WITH SOUND
         // ######################################################
-        _sceneSoundSO = SceneObject::Create("Sound");
-        _sceneSoundSO->SetParent(_sceneSO);
-        _audioSource = _sceneSoundSO->AddComponent<CAudioSource>();
+        soundSO = SceneObject::Create("Sound");
+        soundSO->SetParent(_sceneSO);
+        _audioSource = soundSO->AddComponent<CAudioSource>();
         _audioSource->Initialize();
         _audioSource->SetClip(_audioClip);
         // ######################################################
@@ -1675,7 +1673,65 @@ namespace te
             EditorResManager::Instance().Add(_script);*/
         }
 
+        {
+            MeshImportOptions knightImportOptions;
+            knightImportOptions.ImportZPrepassMesh = false;
+            knightImportOptions.ImportCollisionShape = false;
+            knightImportOptions.ImportMaterials = false;
+            knightImportOptions.ImportTextures = false;
+            knightImportOptions.ImportAnimations = true;
+            knightImportOptions.ImportSkin = true;
+            knightImportOptions.ScaleSystemUnit = true;
+            knightImportOptions.ScaleFactor = 2.0f;
+            knightImportOptions.ForceGenNormals = true;
+            knightImportOptions.GenSmoothNormals = true;
+
+            SPtr<MultiResource> kightResources = EditorResManager::Instance().LoadAll("Data/Meshes/Knight/Knight.fbx", knightImportOptions);
+
+            _knightMesh = static_resource_cast<Mesh>(kightResources->Entries[0].Res);
+            _knightClip = static_resource_cast<AnimationClip>(kightResources->Entries[1].Res);
+
+            TextureImportOptions knightTextureImportOptions;
+            knightTextureImportOptions.Format = PixelUtil::BestFormatFromFile("Data/Textures/Knight/diffuse.png", true);
+            HTexture knightDiffuse = EditorResManager::Instance().Load<Texture>("Data/Textures/Knight/diffuse.png", textureImportOptions);
+            //HTexture knightNormal = EditorResManager::Instance().Load<Texture>("Data/Textures/Knight/normal.png", textureImportOptions);
+
+            MaterialProperties knightMaterialProp;
+            knightMaterialProp.BaseColor = Color(1.0f, 0.54f, 0.05f, 1.0f);
+            knightMaterialProp.Metallic = 0.0f;
+            knightMaterialProp.Roughness = 0.8f;
+            knightMaterialProp.UseBaseColorMap = true;
+            //knightMaterialProp.UseNormalMap = true;
+
+            _knightMaterial = Material::Create(_shader);
+            _knightMaterial->SetName("Knight Material");
+            _knightMaterial->SetProperties(knightMaterialProp);
+            _knightMaterial->SetTexture("BaseColorMap", knightDiffuse);
+            //_knightMaterial->SetTexture("NormalMap", knightNormal);
+
+            if (_knightMesh.IsLoaded())
+            {
+                _knightMesh->SetName("Knight Mesh");
+
+                _knightSO = SceneObject::Create("Knight");
+                _knightSO->SetParent(_sceneSO);
+
+                _knightSO->Rotate(Vector3::UNIT_Y, Radian(Math::HALF_PI));
+                _knightSO->Move(Vector3(2.0f, -1.0f, 0.0f));
+
+                _knight = _knightSO->AddComponent<CRenderable>();
+                _knight->SetMesh(_knightMesh);
+                _knight->SetMaterial(_knightMaterial, true);
+                _knight->Initialize();
+
+                _knightAnimation = _knightSO->AddComponent<CAnimation>();
+                _knightAnimation->Initialize();
+                _knightAnimation->SetDefaultClip(_knightClip);
+            }
+        }
+
         EditorResManager::Instance().Add<Material>(_furnitureMaterial);
+        EditorResManager::Instance().Add<Material>(_knightMaterial);
 #endif
     }
 
