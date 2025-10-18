@@ -542,7 +542,7 @@ namespace te
         };
 
         if (_skeleton)
-            _skeleton->ExportJson(document["skelon"]);
+            _skeleton->ExportJson(document["skeleton"]);
 
         String dump = document.dump();
         serializer->WriteString(dump);
@@ -640,14 +640,28 @@ namespace te
 
         uint32_t layout = 0;
 
-        if (document["vertexLayout"]["VES_POSITION"]) { layout |= static_cast<uint32_t>(VertexLayout::Position); }
-        if (document["vertexLayout"]["VES_BLEND_WEIGHTS"]) { layout |= static_cast<uint32_t>(VertexLayout::BoneWeights); }
-        if (document["vertexLayout"]["VES_NORMAL"]) { layout |= static_cast<uint32_t>(VertexLayout::Normal); }
-        if (document["vertexLayout"]["VES_COLOR"]) { layout |= static_cast<uint32_t>(VertexLayout::Color); }
-        if (document["vertexLayout"]["VES_TEXCOORD0"]) { layout |= static_cast<uint32_t>(VertexLayout::UV0); }
-        if (document["vertexLayout"]["VES_TEXCOORD1"]) { layout |= static_cast<uint32_t>(VertexLayout::UV1); }
-        if (document["vertexLayout"]["VES_BITANGENT"]) { layout |= static_cast<uint32_t>(VertexLayout::BiTangent); }
-        if (document["vertexLayout"]["VES_TANGENT"]) { layout |= static_cast<uint32_t>(VertexLayout::Tangent); }
+        if (document.contains("vertexLayout"))
+        {
+            if (document["vertexLayout"]["VES_POSITION"].get<bool>()) { layout |= static_cast<uint32_t>(VertexLayout::Position); }
+            if (document["vertexLayout"]["VES_BLEND_WEIGHTS"].get<bool>()) { layout |= static_cast<uint32_t>(VertexLayout::BoneWeights); }
+            if (document["vertexLayout"]["VES_NORMAL"].get<bool>()) { layout |= static_cast<uint32_t>(VertexLayout::Normal); }
+            if (document["vertexLayout"]["VES_COLOR"].get<bool>()) { layout |= static_cast<uint32_t>(VertexLayout::Color); }
+            if (document["vertexLayout"]["VES_TEXCOORD0"].get<bool>()) { layout |= static_cast<uint32_t>(VertexLayout::UV0); }
+            if (document["vertexLayout"]["VES_TEXCOORD1"].get<bool>()) { layout |= static_cast<uint32_t>(VertexLayout::UV1); }
+            if (document["vertexLayout"]["VES_BITANGENT"].get<bool>()) { layout |= static_cast<uint32_t>(VertexLayout::BiTangent); }
+            if (document["vertexLayout"]["VES_TANGENT"].get<bool>()) { layout |= static_cast<uint32_t>(VertexLayout::Tangent); }
+        }
+        else
+        {
+            layout = static_cast<uint32_t>(VertexLayout::Position);
+            if (object->_properties.GetNumVertices() > 0)
+            {
+                layout |= static_cast<uint32_t>(VertexLayout::Normal);
+                layout |= static_cast<uint32_t>(VertexLayout::UV0);
+            }
+
+            TE_DEBUG("Deserializing mesh without vertex layout info. Assuming POSITION, NORMAL and UV0 are present.");
+        }
 
         const SPtr<RendererMeshData> rendererMeshData = RendererMeshData::Create(object->_properties.GetNumVertices(), object->_properties.GetNumIndices(), static_cast<VertexLayout>(layout), object->_indexType);
         const uint32_t vertexCount = object->_properties.GetNumVertices();
@@ -727,13 +741,11 @@ namespace te
         object->_CPUData = rendererMeshData->GetData();
         object->_tempInitialMeshData = rendererMeshData->GetData();
         object->_vertexDesc = rendererMeshData->GetData()->GetVertexDesc();
-        if (document["skeleton"]) object->_skeleton = Skeleton::ImportJson(document["skeleton"]);
+        if (document.contains("skeleton")) object->_skeleton = Skeleton::ImportJson(document["skeleton"]);
 
         object->Initialize();
 
         return true;
-
-        // TODO Serialization (skeleton)
     }
 
     ZPrepassMesh::ZPrepassMesh()

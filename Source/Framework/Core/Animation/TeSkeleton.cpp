@@ -355,13 +355,36 @@ namespace te
 
     void Skeleton::ExportJson(nlohmann::json& document) const
     {
-        // TODO Serialization
+        document["numBones"] = _numBones;
+
+        for (uint32_t i = 0; i < _numBones; i++)
+        {
+            nlohmann::json boneJson;
+
+            boneJson["name"] = _bonesInfo[i].Name;
+            boneJson["parent"] = _bonesInfo[i].Parent;
+
+            _boneTransforms[i].ExportJson(boneJson["boneTransform"]);
+            _invBindPoses[i].ExportJson(boneJson["invBindPose"]);
+
+            document["bones"].push_back(boneJson);
+        }
     }
 
     SPtr<Skeleton> Skeleton::ImportJson(const nlohmann::json& document)
     {
-        // TODO Serialization
+        uint32_t numBones = document["numBones"].get<uint32_t>();
+        BONE_DESC* bones = te_newN<BONE_DESC>(numBones);
 
-        return nullptr;
+        for (uint32_t i = 0; i < numBones; i++)
+        {
+            const nlohmann::json& boneJson = document.at("bones").at(i);
+            bones[i].Name = boneJson["name"].get<String>();
+            bones[i].Parent = boneJson["parent"].get<uint32_t>();
+            bones[i].LocalTfrm = Transform::ImportJson(boneJson["boneTransform"]);
+            bones[i].InvBindPose = Matrix4::ImportJson(boneJson["invBindPose"]);
+        }
+
+        return Skeleton::Create(bones, numBones);
     }
 }
