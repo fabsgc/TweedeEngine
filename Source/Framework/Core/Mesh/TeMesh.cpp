@@ -8,6 +8,7 @@
 #include "Resources/TeResourceManager.h"
 #include "TeCorePrerequisites.h"
 #include "Renderer/TeRendererMeshData.h"
+#include "Animation/TeSkeleton.h"
 
 namespace te
 {
@@ -540,6 +541,9 @@ namespace te
             { "VES_TANGENT", meshData->HasElement(VertexElementSemantic::VES_TANGENT) }
         };
 
+        if (_skeleton)
+            _skeleton->ExportJson(document["skelon"]);
+
         String dump = document.dump();
         serializer->WriteString(dump);
 
@@ -616,8 +620,6 @@ namespace te
             serializer->WriteBuffer((uint8_t*)tangents, vertexCount * sizeof(Vector4));
             te_deleteN<Vector4>(tangents, vertexCount);
         }
-
-        // TODO Serialization (Skeleton)
     }
 
     bool Mesh::Deserialize(StreamReader* deserializer, Mesh* object)
@@ -725,7 +727,7 @@ namespace te
         object->_CPUData = rendererMeshData->GetData();
         object->_tempInitialMeshData = rendererMeshData->GetData();
         object->_vertexDesc = rendererMeshData->GetData()->GetVertexDesc();
-        object->_skeleton = nullptr;
+        if (document["skeleton"]) object->_skeleton = Skeleton::ImportJson(document["skeleton"]);
 
         object->Initialize();
 
