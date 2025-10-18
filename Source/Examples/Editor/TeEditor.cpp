@@ -1547,8 +1547,8 @@ namespace te
 
         _furnitureMesh = static_resource_cast<Mesh>(MultiResourcesMesh->Entries[0].Res);
         _zPrepassFurnitureMesh = static_resource_cast<ZPrepassMesh>(MultiResourcesMesh->Entries[1].Res);
-        _monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
-        _planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
+        //_monkeyMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Monkey/monkey-hd.obj", meshImportOptions)->Entries[0].Res);
+        //_planeMesh = static_resource_cast<Mesh>(EditorResManager::Instance().LoadAll("Data/Meshes/Primitives/plane.obj", meshImportOptions)->Entries[0].Res);
 
         textureCubeMapImportOptions.Format = PixelUtil::BestFormatFromFile("Data/Textures/Skybox/skybox_syferfontein_1024.png", true);
         _skyboxTexture = EditorResManager::Instance().Load<Texture>("Data/Textures/Skybox/skybox_syferfontein_1024.png", textureCubeMapImportOptions);

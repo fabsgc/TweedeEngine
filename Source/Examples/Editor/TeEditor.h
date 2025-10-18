@@ -344,8 +344,8 @@ namespace te
 #if TE_PLATFORM == TE_PLATFORM_WIN32
         // TODO Temp for debug purpose
         HMesh _furnitureMesh;
-        HMesh _monkeyMesh;
-        HMesh _planeMesh;
+        //HMesh _monkeyMesh;
+        //HMesh _planeMesh;
         HZPrepassMesh _zPrepassFurnitureMesh;
         HTexture _skyboxTexture;
         HMaterial _furnitureMaterial;
