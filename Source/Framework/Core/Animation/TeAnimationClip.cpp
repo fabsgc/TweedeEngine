@@ -263,6 +263,34 @@ namespace te
     void AnimationClip::Serialize(StreamWriter* serializer) const
     {
         Resource::Serialize(serializer);
+
+        nlohmann::json document;
+
+        document["isAdditive"] = _isAdditive;
+        document["sampleRate"] = _sampleRate;
+
+        for (const auto& event : _events)
+        {
+            nlohmann::json eventJson;
+            eventJson["name"] = event.Name;
+            eventJson["time"] = event.Time;
+            document["events"].push_back(eventJson);
+        }
+
+        for (const auto& nameMapping : _nameMapping)
+        {
+            nlohmann::json nameMappingJson;
+            nameMappingJson["name"] = nameMapping.first;
+
+            for (uint32_t i = 0; i < static_cast<uint32_t>(CurveType::Count); i++)
+                nameMappingJson["indices"].push_back(nameMapping.second[i]);
+        }
+
+        document["curves"] = nlohmann::json::object(); // TODO Serialization of curves
+        document["rootMotion"] = nlohmann::json::object(); // TODO Serialization of root motion
+
+        String dump = document.dump();
+        serializer->WriteString(dump);
     }
 
     bool AnimationClip::Deserialize(StreamReader* deserializer, AnimationClip* object)
@@ -271,6 +299,33 @@ namespace te
             return false;
 
         Resource::Deserialize(deserializer, object);
+
+        String dump;
+        deserializer->ReadString(dump);
+        nlohmann::json document = nlohmann::json::parse(dump);
+
+        object->_isAdditive = document["isAdditive"].get<bool>();
+        object->_sampleRate = document["sampleRate"].get<float>();
+
+        for (const auto& eventJson : document["events"])
+        {
+            AnimationEvent event;
+            event.Name = eventJson["name"].get<String>();
+            event.Time = eventJson["time"].get<float>();
+            object->_events.push_back(event);
+        }
+
+        for (const auto& nameMappingJson : document["nameMapping"])
+        {
+            String name = nameMappingJson["name"].get<String>();
+            const auto& indicesJson = nameMappingJson["indices"];
+
+            uint32_t* indices = object->_nameMapping[name].data();
+            for (uint32_t i = 0; i < static_cast<uint32_t>(CurveType::Count); i++)
+                indices[i] = indicesJson[i].get<uint32_t>();
+        }
+
+        object->Initialize();
 
         // TODO Serialization
         return false;
