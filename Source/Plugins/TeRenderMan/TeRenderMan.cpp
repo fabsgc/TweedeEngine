@@ -193,18 +193,6 @@ namespace te
             // Generate Instanced Buffers
             viewGroup.GenerateInstanced(sceneInfo, _options->InstancingMode);
 
-            // Render shadow maps
-            // Render only shadow maps for lights needed for this viewGroup
-            // If a shadow map has been drawn by a previous view, do not draw it again
-            {
-                _renderAPI.PushMarker("[DRAW] Shadows", Color(0.3f, 0.47f, 0.7f));
-
-                SPtr<ShadowRendering> shadowRenderer = viewGroup.GetShadowRenderer();
-                shadowRenderer->RenderShadowMaps(*_scene, viewGroup, frameInfo);
-
-                _renderAPI.PopMarker();
-            }
-
             // Update various buffers required by each renderable
             {
                 UINT32 numRenderables = (UINT32)visibility.Renderables.size();
@@ -216,6 +204,18 @@ namespace te
 
                     _scene->PrepareVisibleRenderable(i, frameInfo);
                 }
+            }
+
+            // Render shadow maps
+            // Render only shadow maps for lights needed for this viewGroup
+            // If a shadow map has been drawn by a previous view, do not draw it again
+            {
+                _renderAPI.PushMarker("[DRAW] Shadows", Color(0.3f, 0.47f, 0.7f));
+
+                SPtr<ShadowRendering> shadowRenderer = viewGroup.GetShadowRenderer();
+                shadowRenderer->RenderShadowMaps(*_scene, viewGroup, frameInfo);
+
+                _renderAPI.PopMarker();
             }
         }
 

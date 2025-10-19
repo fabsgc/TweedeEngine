@@ -379,6 +379,9 @@ namespace te
 
     void Renderable::UpdatePrevFrameAnimationBuffers()
     {
+        if (!_properties.WriteVelocity)
+            return;
+
         if (_animType == RenderableAnimType::Skinned)
             std::swap(_boneMatrixBuffer, _bonePrevMatrixBuffer);
     }
