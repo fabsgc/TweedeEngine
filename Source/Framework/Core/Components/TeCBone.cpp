@@ -154,4 +154,11 @@ namespace te
 
         // TODO serialization
     }
+
+    bool CBone::ImportJson(const nlohmann::json& document, CBone& bone)
+    {
+        Component::ImportJson(document, bone);
+
+        return false;
+    }
 }

@@ -558,4 +558,11 @@ namespace te
 
         // TODO serialization
     }
+
+    bool CAnimation::ImportJson(const nlohmann::json& document, CAnimation& animation)
+    {
+        Component::ImportJson(document, animation);
+
+        return false;
+    }
 }

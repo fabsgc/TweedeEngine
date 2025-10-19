@@ -33,6 +33,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** Fills a bone component from a json document */
+        static bool ImportJson(const nlohmann::json& document, CBone& bone);
+
     protected:
         friend class CAnimation;
 

@@ -132,6 +132,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** Fills an animation component from a json document */
+        static bool ImportJson(const nlohmann::json& document, CAnimation& animation);
+
     protected:
         friend class CBone;
         friend class CRenderable;

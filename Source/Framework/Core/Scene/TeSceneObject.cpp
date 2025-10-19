@@ -34,7 +34,6 @@
 #include "Components/TeCCapsuleCollider.h"
 #include "Components/TeCMeshCollider.h"
 #include "Components/TeCConeCollider.h"
-#include "Components/TeCAnimation.h"
 #include "Components/TeCDecal.h"
 
 #include "Scripting/TeScriptManager.h"
@@ -1452,12 +1451,14 @@ namespace te
                     case CoreType::TID_CAnimation:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CAnimation>());
+                        CAnimation::ImportJson(element.value(), *static_cast<CAnimation*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CBone:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CBone>());
+                        CBone::ImportJson(element.value(), *static_cast<CBone*>(component.Get()));
                     }
                     break;
 
