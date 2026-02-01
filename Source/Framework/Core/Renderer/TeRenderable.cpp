@@ -6,7 +6,6 @@
 #include "Animation/TeAnimation.h"
 #include "Animation/TeAnimationManager.h"
 #include "RenderAPI/TeGpuBuffer.h"
-#include "Serialization/TeUtility.h"
 
 namespace te
 {
