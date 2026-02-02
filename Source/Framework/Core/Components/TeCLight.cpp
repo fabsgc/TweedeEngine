@@ -27,7 +27,7 @@ namespace te
 
     CLight::~CLight()
     { 
-        if(!_internal->IsDestroyed())
+        if(_internal && !_internal->IsDestroyed())
             _internal->Destroy();
     }
 
@@ -70,7 +70,10 @@ namespace te
     {
         gSceneManager()._unbindActor(_internal);
         Component::OnDestroyed();
-        _internal->Destroy();
+
+        if (_internal && !_internal->IsDestroyed())
+            _internal->Destroy();
+        _internal = nullptr;
     }
 
     bool CLight::Clone(const HComponent& c, const String& suffix)

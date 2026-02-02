@@ -111,7 +111,10 @@ namespace te
 
         gSceneManager()._unbindActor(_internal);
         Component::OnDestroyed();
-        _internal->Destroy();
+
+        if (_internal && !_internal->IsDestroyed())
+            _internal->Destroy();
+        _internal = nullptr;
     }
 
     bool CRenderable::Clone(const HComponent& c, const String& suffix)

@@ -113,6 +113,8 @@ namespace te
 
     void CAudioListener::DestroyInternal()
     {
+        if (_internal && !_internal->IsDestroyed())
+            _internal->Destroy();
         _internal = nullptr;
     }
 

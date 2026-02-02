@@ -328,6 +328,7 @@ namespace te
         if (_internal)
         {
             _internal->SetOwner(PhysicsOwnerType::None, nullptr);
+            if (!_internal->IsDestroyed()) _internal->Destroy();
             _internal = nullptr;
         }
 
