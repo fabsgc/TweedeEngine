@@ -118,4 +118,13 @@ namespace te
 
         // TODO serialization
     }
+
+    bool CDecal::ImportJson(const nlohmann::json& document, CDecal& decal)
+    {
+        Component::ImportJson(document, decal);
+
+        // TODO deserialization
+
+        return true;
+    }
 }

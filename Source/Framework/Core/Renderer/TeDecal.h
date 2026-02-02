@@ -105,6 +105,12 @@ namespace te
         /**	Creates the object with without initializing it. Used for serialization. */
         static SPtr<Decal> CreateEmpty();
 
+        /** Serializes this decal to a JSON document. */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Deserializes a decal from a JSON document. */
+        static bool ImportJson(const nlohmann::json& document, Decal& decal);
+
     protected:
         /** Updates the internal bounds for the decal. Call this whenever a property affecting the bounds changes. */
         void UpdateBounds();

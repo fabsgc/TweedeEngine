@@ -76,6 +76,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** Fills a decal component from a json document */
+        static bool ImportJson(const nlohmann::json& document, CDecal& decal);
+
     protected:
         friend class SceneObject;
 

@@ -135,4 +135,16 @@ namespace te
 
         _oldActive = _active;
     }
+
+    void Decal::ExportJson(nlohmann::json& document) const
+    {
+        // TODO serialization
+    }
+
+    bool Decal::ImportJson(const nlohmann::json& document, Decal& decal)
+    {
+        // TODO serialization
+
+        return true;
+    }
 }
