@@ -31,6 +31,15 @@ namespace te
             info.NumSamples = _numSamples;
             info.SampleRate = _desc.Frequency;
 
+            // If we need to keep source data, read everything into memory and keep a copy
+            _streamData->Seek(_streamOffset);
+
+            auto memStream = te_shared_ptr_new<MemoryDataStream>(_streamSize);
+            _sourceStreamData = memStream;
+            
+            _streamData->Read(memStream->Data(), _streamSize);
+            _sourceStreamSize = _streamSize;
+
             // Load decompressed data into a sound buffer
             bool loadDecompressed =
                 _desc.ReadMode == AudioReadMode::LoadDecompressed ||
@@ -73,7 +82,6 @@ namespace te
 
                 _streamData = nullptr;
                 _streamOffset = 0;
-                _streamSize = 0;
 
                 te_delete(sampleBuffer);
             }
@@ -158,7 +166,7 @@ namespace te
         TE_DEBUG("Attempting to read samples while sample data is not available.");
     }
 
-    SPtr<DataStream> OAAudioClip::GetSourceStream(UINT32& size)
+    SPtr<DataStream> OAAudioClip::GetSourceStream(UINT32& size) const
     {
         Lock lock(_mutex);
 

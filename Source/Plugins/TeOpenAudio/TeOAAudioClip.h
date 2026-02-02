@@ -35,7 +35,7 @@ namespace te
         void Initialize() override;
 
         /** @copydoc AudioClip::GetSourceStream */
-        SPtr<DataStream> GetSourceStream(UINT32& size) override;
+        SPtr<DataStream> GetSourceStream(UINT32& size) const override;
 
     private:
         mutable Mutex _mutex;
@@ -45,7 +45,7 @@ namespace te
 
         // These streams exist to save original audio data in case it's needed later (usually for saving with the editor, or
         // manual data manipulation). In normal usage (in-game) these will be null so no memory is wasted.
-        SPtr<DataStream> _sourceStreamData;
+        mutable SPtr<DataStream> _sourceStreamData;
         UINT32 _sourceStreamSize = 0;
     };
 }

@@ -129,8 +129,8 @@ namespace te
         /** @copydoc Resource::Initialize */
         void Initialize() override;
 
-        /** Returns original audio data. Only available if @p keepSourceData has been provided on creation. */
-        virtual SPtr<DataStream> GetSourceStream(UINT32& size) = 0;
+        /** Returns original audio data */
+        virtual SPtr<DataStream> GetSourceStream(UINT32& size) const = 0;
 
     protected:
         AUDIO_CLIP_DESC _desc;

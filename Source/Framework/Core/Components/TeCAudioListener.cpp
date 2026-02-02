@@ -134,7 +134,8 @@ namespace te
 
         if (_internal)
         {
-            // TODO serialization
+           _internal->GetVelocity().ExportJson(document["velocity"]);
+           _lastPosition.ExportJson(document["lastPosition"]);
         }
     }
 
@@ -142,6 +143,11 @@ namespace te
     {
         Component::ImportJson(document, audioListener);
 
-        return false;
+        if (document.contains("velocity"))
+            audioListener._internal->SetVelocity(Vector3::ImportJson(document["velocity"]));
+        if (document.contains("lastPosition"))
+            audioListener._lastPosition = Vector3::ImportJson(document["lastPosition"]);
+
+        return true;
     }
 }

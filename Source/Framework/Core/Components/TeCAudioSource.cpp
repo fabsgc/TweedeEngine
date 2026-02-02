@@ -2,6 +2,9 @@
 
 #include "Scene/TeSceneManager.h"
 #include "Utility/TeTime.h"
+#include "Serialization/TeUtility.h"
+#include "Resources/TeResourceManager.h"
+#include "Audio/TeAudioClip.h"
 #include "../TeCoreApplication.h"
 
 namespace te
@@ -283,7 +286,18 @@ namespace te
 
         if (_internal)
         {
-            // TODO serialization
+            document["clip"] = _audioClip.IsLoaded() ? serialization::GetResourceName(_audioClip.Get()) : "";
+            document["volume"] = _volume;
+            document["pitch"] = _pitch;
+            document["loop"] = _loop;
+            document["priority"] = _priority;
+            document["minDistance"] = _minDistance;
+            document["attenuation"] = _attenuation;
+            document["play3D"] = _play3D;
+            document["playOnStart"] = _playOnStart;
+
+            _lastPosition.ExportJson(document["lastPosition"]);
+            _velocity.ExportJson(document["velocity"]);
         }
     }
 
@@ -291,6 +305,34 @@ namespace te
     {
         Component::ImportJson(document, audioSource);
 
-        return false;
+        if (document.contains("clip"))
+        {
+            HAudioClip clip = static_resource_cast<AudioClip>(gResourceManager().Get(serialization::GetResourceUUID(document["clip"].get<String>())));
+            audioSource.SetClip(clip);
+        }
+
+        if (document.contains("volume"))
+            audioSource.SetVolume(document["volume"].get<float>());
+        if (document.contains("pitch"))
+            audioSource.SetPitch(document["pitch"].get<float>());
+        if (document.contains("loop"))
+            audioSource.SetIsLooping(document["loop"].get<bool>());
+        if (document.contains("priority"))
+            audioSource.SetPriority(document["priority"].get<int32_t>());
+        if (document.contains("minDistance"))
+            audioSource.SetMinDistance(document["minDistance"].get<float>());
+        if (document.contains("attenuation"))
+            audioSource.SetAttenuation(document["attenuation"].get<float>());
+        if (document.contains("play3D"))
+            audioSource.SetIsPlay3D(document["play3D"].get<bool>());
+        if (document.contains("playOnStart"))
+            audioSource.SetPlayOnStart(document["playOnStart"].get<bool>());
+
+        if (document.contains("lastPosition"))
+            audioSource._lastPosition = Vector3::ImportJson(document["lastPosition"]);
+        if (document.contains("velocity"))
+            audioSource._velocity = Vector3::ImportJson(document["velocity"]);
+
+        return true;
     }
 }
