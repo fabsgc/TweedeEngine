@@ -2,7 +2,6 @@
 
 #include "TeCorePrerequisites.h"
 #include "Animation/TeAnimationManager.h"
-#include "Serialization/TeSerializable.h"
 #include "CoreUtility/TeCoreObject.h"
 #include "Animation/TeSkeleton.h"
 #include "Animation/TeSkeletonMask.h"
@@ -222,7 +221,7 @@ namespace te
      * tick depending on set properties. The evaluated data is used for skeletal animation and updating attached scene objects 
      * and bones (if skeleton is attached), or the data is made available for manual queries in the case of generic animation.
      */
-    class TE_CORE_EXPORT Animation : public CoreObject, public Serializable
+    class TE_CORE_EXPORT Animation : public CoreObject
     {
     public:
         virtual ~Animation();

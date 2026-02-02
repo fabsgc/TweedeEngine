@@ -99,7 +99,6 @@ namespace te
         TID_Font                      = 1403,
         TID_AudioClip                 = 1404,
         TID_AnimationClip             = 1405,
-        TID_Animation                 = 1406,
         TID_Texture                   = 1407,
         TID_Material                  = 1408,
         TID_Pass                      = 1409,
