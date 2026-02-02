@@ -150,15 +150,16 @@ namespace te
     {
         Component::ExportJson(document);
 
-        document["type"] = GetComponentType();
-
-        // TODO serialization
+        document["boneName"] = _boneName;
     }
 
     bool CBone::ImportJson(const nlohmann::json& document, CBone& bone)
     {
         Component::ImportJson(document, bone);
 
-        return false;
+        if (document.contains("boneName"))
+            bone.SetBoneName(document["boneName"].get<String>());
+
+        return true;
     }
 }
