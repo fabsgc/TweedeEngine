@@ -1297,7 +1297,7 @@ namespace te
                     BoneWeight* weights = (BoneWeight*)te_allocate(bufferSize * sizeof(BoneWeight));
                     for (UINT32 i = 0; i < (UINT32)numVertices; i++)
                     {
-                        uint32_t* indices[] = { &weights[i].Index0, &weights[i].Index1, &weights[i].Index2, &weights[i].Index3 };
+                        uint8_t* indices[] = { &weights[i].Index0, &weights[i].Index1, &weights[i].Index2, &weights[i].Index3 };
                         float* amounts[] = { &weights[i].Weight0, &weights[i].Weight1, &weights[i].Weight2, &weights[i].Weight3 };
 
                         for (UINT32 j = 0; j < 4; j++)
@@ -1311,11 +1311,11 @@ namespace te
                                 if (iterFind != boneMap.end())
                                     *indices[j] = iterFind->second;
                                 else
-                                    *indices[j] = -1;
+                                    *indices[j] = 0;
                             }
                             else
                             {
-                                *indices[j] = boneIdx;
+                                *indices[j] = 0;
                             }
 
                             *amounts[j] = mesh->BoneInfluences[i].Weights[j];

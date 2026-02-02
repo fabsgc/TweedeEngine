@@ -227,6 +227,9 @@ namespace te
         /** @copydoc Component::OnDestroyed */
         void OnDestroyed() override;
 
+        /** Sets preview mode */
+        void SetPreviewMode(bool previewMode) { _previewMode = previewMode; }
+
     protected:
         SPtr<Animation> _internal = nullptr;
 

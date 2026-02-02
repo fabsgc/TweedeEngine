@@ -234,19 +234,19 @@ namespace te
             !vertexDesc->HasElement(VES_BLEND_INDICES))
             return false;
 
-        UINT32 numElements = _meshData->GetNumVertices();
+        uint32_t numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(BoneWeight) == size);
 
-        UINT8* weightPtr = _meshData->GetElementData(VES_BLEND_WEIGHTS);
-        UINT8* indexPtr = _meshData->GetElementData(VES_BLEND_INDICES);
+        uint8_t* weightPtr = _meshData->GetElementData(VES_BLEND_WEIGHTS);
+        uint8_t* indexPtr = _meshData->GetElementData(VES_BLEND_INDICES);
 
-        UINT32 stride = vertexDesc->GetVertexStride(0);
+        uint32_t stride = vertexDesc->GetVertexStride(0);
 
         BoneWeight* weightDst = buffer;
-        for (UINT32 i = 0; i < numElements; i++)
+        for (uint32_t i = 0; i < numElements; i++)
         {
-            UINT8* indices = (UINT8*)indexPtr;
-            float* weights = (float*)weightPtr;
+            uint8_t* indices = indexPtr;
+            float* weights = reinterpret_cast<float*>(weightPtr);
 
             weightDst->Index0 = indices[0];
             weightDst->Index1 = indices[1];
@@ -274,24 +274,24 @@ namespace te
             !vertexDesc->HasElement(VES_BLEND_INDICES))
             return;
 
-        UINT32 numElements = _meshData->GetNumVertices();
+        uint32_t numElements = _meshData->GetNumVertices();
         assert(numElements * sizeof(BoneWeight) == size);
 
-        UINT8* weightPtr = _meshData->GetElementData(VES_BLEND_WEIGHTS);
-        UINT8* indexPtr = _meshData->GetElementData(VES_BLEND_INDICES);
+        uint8_t* weightPtr = _meshData->GetElementData(VES_BLEND_WEIGHTS);
+        uint8_t* indexPtr = _meshData->GetElementData(VES_BLEND_INDICES);
 
-        UINT32 stride = vertexDesc->GetVertexStride(0);
+        uint32_t stride = vertexDesc->GetVertexStride(0);
 
         BoneWeight* weightSrc = buffer;
-        for (UINT32 i = 0; i < numElements; i++)
+        for (uint32_t i = 0; i < numElements; i++)
         {
-            UINT8* indices = (UINT8*)indexPtr;
-            float* weights = (float*)weightPtr;
+            uint8_t* indices = indexPtr;
+            float* weights = reinterpret_cast<float*>(weightPtr);
 
-            indices[0] = static_cast<UINT8>(weightSrc->Index0);
-            indices[1] = static_cast<UINT8>(weightSrc->Index1);
-            indices[2] = static_cast<UINT8>(weightSrc->Index2);
-            indices[3] = static_cast<UINT8>(weightSrc->Index3);
+            indices[0] = weightSrc->Index0;
+            indices[1] = weightSrc->Index1;
+            indices[2] = weightSrc->Index2;
+            indices[3] = weightSrc->Index3;
 
             weights[0] = weightSrc->Weight0;
             weights[1] = weightSrc->Weight1;

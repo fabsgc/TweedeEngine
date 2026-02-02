@@ -413,6 +413,80 @@ namespace te
         return rightKeyIdx;
     }
 
+    template <>
+    void TAnimationCurve<float>::ExportJson(nlohmann::json& document) const
+    {
+        nlohmann::json keyframesJson = nlohmann::json::array();
+        for (const auto& keyframe : _keyframes)
+        {
+            nlohmann::json keyframeJson;
+            keyframeJson["time"] = keyframe.TimeInSpline;
+            keyframeJson["value"] = keyframe.Value;
+            keyframesJson.push_back(keyframeJson);
+        }
+
+        document["keyframes"] = keyframesJson;
+        document["start"] = _start;
+        document["end"] = _end;
+        document["length"] = _length;
+    }
+
+    template <class T>
+    void TAnimationCurve<T>::ExportJson(nlohmann::json& document) const
+    {
+        nlohmann::json keyframesJson = nlohmann::json::array();
+        for (const auto& keyframe : _keyframes)
+        {
+            nlohmann::json keyframeJson;
+            keyframeJson["time"] = keyframe.TimeInSpline;
+            keyframe.Value.ExportJson(keyframeJson["value"]);
+            keyframesJson.push_back(keyframeJson);
+        }
+
+        document["keyframes"] = keyframesJson;
+        document["start"] = _start;
+        document["end"] = _end;
+        document["length"] = _length;
+    }
+
+    template <>
+    bool TAnimationCurve<float>::ImportJson(const nlohmann::json& document, TAnimationCurve<float>& animationCurve)
+    {
+        Vector<TKeyframe<float>> keyframes;
+        for (const auto& keyframeJson : document["keyframes"])
+        {
+            TKeyframe<float> keyframe;
+            keyframe.TimeInSpline = keyframeJson["time"].get<float>();
+            keyframe.Value = keyframeJson["value"].get<float>();
+            animationCurve._keyframes.push_back(keyframe);
+        }
+
+        animationCurve._start = document["start"].get<float>();
+        animationCurve._end = document["end"].get<float>();
+        animationCurve._length = document["length"].get<float>();
+
+        return true;
+    }
+
+    template <class T>
+    bool TAnimationCurve<T>::ImportJson(const nlohmann::json& document, TAnimationCurve<T>& animationCurve)
+    {
+        Vector<TKeyframe<T>> keyframes;
+        for (const auto& keyframeJson : document["keyframes"])
+        {
+            TKeyframe<T> keyframe;
+            keyframe.TimeInSpline = keyframeJson["time"].get<float>();
+            keyframe.Value = T::ImportJson(keyframeJson["value"]);
+            animationCurve._keyframes.push_back(keyframe);
+        }
+
+        animationCurve._start = document["start"].get<float>();
+        animationCurve._end = document["end"].get<float>();
+        animationCurve._length = document["length"].get<float>();
+
+        return true;
+    }
+
     template class TAnimationCurve<Vector3>;
     template class TAnimationCurve<Vector2>;
     template class TAnimationCurve<Quaternion>;

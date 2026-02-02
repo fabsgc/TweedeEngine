@@ -77,6 +77,81 @@ namespace te
             Generic.erase(iterFind);
     }
 
+    void AnimationCurves::ExportJson(nlohmann::json& document) const
+    {
+        const auto exportFunc = [](const auto& curves, nlohmann::json& doc, const String& key)
+        {
+            doc = nlohmann::json::array();
+
+            for (const auto& entry : curves)
+            {
+                nlohmann::json curveJson;
+                entry.ExportJson(curveJson);
+                doc.push_back(curveJson);
+            }
+        };
+
+        exportFunc(Position, document["position"], "position");
+        exportFunc(Rotation, document["rotation"], "rotation");
+        exportFunc(Scale, document["scale"], "scale");
+        exportFunc(Generic, document["generic"], "generic");
+    }
+
+    bool AnimationCurves::ImportJson(const nlohmann::json& document, AnimationCurves& curves)
+    {
+        for (const auto& curveJson : document["position"])
+        {
+            TNamedAnimationCurve<Vector3> curve;
+            if (TNamedAnimationCurve<Vector3>::ImportJson(curveJson, curve))
+            {
+                curves.AddPositionCurve(curve.Name, curve.Curve);
+            }
+        }
+
+        for (const auto& curveJson : document["rotation"])
+        {
+            TNamedAnimationCurve<Quaternion> curve;
+            if (TNamedAnimationCurve<Quaternion>::ImportJson(curveJson, curve))
+            {
+                curves.AddRotationCurve(curve.Name, curve.Curve);
+            }
+        }
+
+        for (const auto& curveJson : document["scale"])
+        {
+            TNamedAnimationCurve<Vector3> curve;
+            if (TNamedAnimationCurve<Vector3>::ImportJson(curveJson, curve))
+            {
+                curves.AddScaleCurve(curve.Name, curve.Curve);
+            }
+        }
+
+        for (const auto& curveJson : document["generic"])
+        {
+            TNamedAnimationCurve<float> curve;
+            if (TNamedAnimationCurve<float>::ImportJson(curveJson, curve))
+            {
+                curves.AddGenericCurve(curve.Name, curve.Curve);
+            }
+        }
+
+        return true;
+    }
+
+    void RootMotion::ExportJson(nlohmann::json& document) const
+    {
+        Position.ExportJson(document["position"]);
+        Rotation.ExportJson(document["rotation"]);
+    }
+
+    bool RootMotion::ImportJson(const nlohmann::json& document, RootMotion& curves)
+    {
+        TAnimationCurve<Vector3>::ImportJson(document["position"], curves.Position);
+        TAnimationCurve<Quaternion>::ImportJson(document["rotation"], curves.Rotation);
+
+        return true;
+    }
+
     AnimationClip::AnimationClip()
         : Resource(CoreType::TID_AnimationClip)
         , _curves(te_shared_ptr_new<AnimationCurves>())
@@ -230,6 +305,7 @@ namespace te
     {
         Resource::Initialize();
         BuildNameMapping();
+        CalculateLength();
     }
 
     void AnimationClip::GetBoneMapping(const Skeleton& skeleton, AnimationCurveMapping* mapping) const
@@ -277,17 +353,11 @@ namespace te
             document["events"].push_back(eventJson);
         }
 
-        for (const auto& nameMapping : _nameMapping)
-        {
-            nlohmann::json nameMappingJson;
-            nameMappingJson["name"] = nameMapping.first;
+        document["curves"] = nlohmann::json::object();
+        _curves->ExportJson(document["curves"]);
 
-            for (uint32_t i = 0; i < static_cast<uint32_t>(CurveType::Count); i++)
-                nameMappingJson["indices"].push_back(nameMapping.second[i]);
-        }
-
-        document["curves"] = nlohmann::json::object(); // TODO Serialization of curves
-        document["rootMotion"] = nlohmann::json::object(); // TODO Serialization of root motion
+        document["rootMotion"] = nlohmann::json::object();
+        _rootMotion->ExportJson(document["rootMotion"]);
 
         String dump = document.dump();
         serializer->WriteString(dump);
@@ -315,19 +385,11 @@ namespace te
             object->_events.push_back(event);
         }
 
-        for (const auto& nameMappingJson : document["nameMapping"])
-        {
-            String name = nameMappingJson["name"].get<String>();
-            const auto& indicesJson = nameMappingJson["indices"];
-
-            uint32_t* indices = object->_nameMapping[name].data();
-            for (uint32_t i = 0; i < static_cast<uint32_t>(CurveType::Count); i++)
-                indices[i] = indicesJson[i].get<uint32_t>();
-        }
+        AnimationCurves::ImportJson(document["curves"], *object->_curves);
+        RootMotion::ImportJson(document["rootMotion"], *object->_rootMotion);
 
         object->Initialize();
 
-        // TODO Serialization
-        return false;
+        return true;
     }
 }

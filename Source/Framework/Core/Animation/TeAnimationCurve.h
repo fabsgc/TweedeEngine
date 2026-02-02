@@ -117,6 +117,12 @@ namespace te
         bool operator== (const TAnimationCurve<T>& rhs) const;
         bool operator!= (const TAnimationCurve<T>& rhs) const { return !operator==(rhs); }
 
+        /** @copydoc Component::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Fills an animation curve from a json document */
+        static bool ImportJson(const nlohmann::json& document, TAnimationCurve<T>& animationCurve);
+
     private:
         /**
          * Returns a pair of keys that can be used for interpolating to field the value at the provided time.
@@ -177,6 +183,23 @@ namespace te
             , Curve(curve)
         { }
 
+        /** @copydoc Component::ExportJson */
+        void ExportJson(nlohmann::json& document) const
+        {
+            document["name"] = Name;
+            document["flags"] = Flags;
+            Curve.ExportJson(document["curve"]);
+        }
+
+        /** Fills a named animation curve from a json document */
+        static bool ImportJson(const nlohmann::json& document, TNamedAnimationCurve<T>& animationCurve)
+        {
+            animationCurve.Name = document["name"].get<String>();
+            animationCurve.Flags = document["flags"].get<UINT32>();
+            TAnimationCurve<T>::ImportJson(document["curve"], animationCurve.Curve);
+            return true;
+        }
+
         /** Name of the curve. */
         String Name;
 
@@ -186,4 +209,7 @@ namespace te
         /** Actual curve containing animation data. */
         TAnimationCurve<T> Curve;
     };
+
+    void TAnimationCurve<float>::ExportJson(nlohmann::json& document) const;
+    bool TAnimationCurve<float>::ImportJson(const nlohmann::json& document, TAnimationCurve<float>& animationCurve);
 }

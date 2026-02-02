@@ -73,6 +73,12 @@ namespace te
         /** Removes an existing curve from the clip. */
         void RemoveGenericCurve(const String& name);
 
+        /** @copydoc Component::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Fills animation curves from a json document */
+        static bool ImportJson(const nlohmann::json& document, AnimationCurves& curves);
+
         /** Curves for animating scene object's position. */
         Vector<TNamedAnimationCurve<Vector3>> Position;
 
@@ -100,6 +106,12 @@ namespace te
 
         /** Animation curve representing the rotation of the root bone. */
         TAnimationCurve<Quaternion> Rotation;
+
+        /** @copydoc Component::ExportJson */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Fills root motion curves from a json document */
+        static bool ImportJson(const nlohmann::json& document, RootMotion& curves);
     };
 
     /** Event that is triggered when animation reaches a certain point. */

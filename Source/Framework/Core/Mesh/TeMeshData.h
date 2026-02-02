@@ -10,10 +10,10 @@ namespace te
     /** Contains per-vertex bone weights and indexes used for skinning, for up to four bones. */
     struct BoneWeight
     {
-        uint32_t Index0;
-        uint32_t Index1;
-        uint32_t Index2;
-        uint32_t Index3;
+        uint8_t Index0;
+        uint8_t Index1;
+        uint8_t Index2;
+        uint8_t Index3;
 
         float Weight0;
         float Weight1;

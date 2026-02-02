@@ -5,6 +5,8 @@
 #include "Components/TeCBone.h"
 #include "TeCoreApplication.h"
 #include "Mesh/TeMesh.h"
+#include "Serialization/TeUtility.h"
+#include "Resources/TeResourceManager.h"
 
 using namespace std::placeholders;
 
@@ -187,7 +189,6 @@ namespace te
     {
         DestroyInternal();
         Component::OnDestroyed();
-        _internal->Destroy();
     }
 
     void CAnimation::RestoreInternal(bool previewMode)
@@ -238,6 +239,10 @@ namespace te
     {
         if (_animatedRenderable != nullptr)
             _animatedRenderable->UnregisterAnimation();
+
+        if (_internal && !_internal->IsDestroyed())
+            _internal->Destroy();
+        _internal = nullptr;
 
         _primaryPlayingClip = nullptr;
         _eventTriggered.Disconnect();
@@ -556,13 +561,50 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        document["defaultClip"] = _defaultClip.IsLoaded() ? serialization::GetResourceName(_defaultClip.Get()) : "";
+        document["primaryPlayingClip"] = _primaryPlayingClip.IsLoaded() ? serialization::GetResourceName(_primaryPlayingClip.Get()) : "";
+        document["wrapMode"] = static_cast<uint32_t>(_wrapMode);
+        document["speed"] = _speed;
+        document["enableCull"] = _enableCull;
+        document["previewMode"] = _previewMode;
     }
 
     bool CAnimation::ImportJson(const nlohmann::json& document, CAnimation& animation)
     {
         Component::ImportJson(document, animation);
 
-        return false;
+        if (document.contains("previewMode"))
+        {
+            animation.SetPreviewMode(document["previewMode"].get<bool>());
+        }
+
+        if (document.contains("defaultClip"))
+        {
+            HAnimationClip clip = static_resource_cast<AnimationClip>(gResourceManager().Get(serialization::GetResourceUUID(document["defaultClip"].get<String>())));
+            animation.SetDefaultClip(clip);
+        }
+
+        if (document.contains("primaryPlayingClip"))
+        {
+            HAnimationClip clip = static_resource_cast<AnimationClip>(gResourceManager().Get(serialization::GetResourceUUID(document["primaryPlayingClip"].get<String>())));
+            animation._primaryPlayingClip = clip;
+        }
+
+        if (document.contains("wrapMode"))
+        {
+            animation.SetWrapMode(static_cast<AnimWrapMode>(document["wrapMode"].get<uint32_t>()));
+        }
+
+        if (document.contains("speed"))
+        {
+            animation.SetSpeed(document["speed"].get<float>());
+        }
+
+        if (document.contains("enableCull"))
+        {
+            animation.SetEnableCull(document["enableCull"].get<bool>());
+        }
+
+        return true;
     }
 }
