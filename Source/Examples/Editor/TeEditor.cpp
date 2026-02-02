@@ -1725,8 +1725,8 @@ namespace te
                 _knight->Initialize();
 
                 _knightAnimation = _knightSO->AddComponent<CAnimation>();
-                _knightAnimation->Initialize();
                 _knightAnimation->SetDefaultClip(_knightClip);
+                _knightAnimation->Initialize();
             }
         }
 
