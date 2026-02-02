@@ -1465,12 +1465,14 @@ namespace te
                     case CoreType::TID_CAudioListener:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CAudioListener>());
+                        CAudioListener::ImportJson(element.value(), *static_cast<CAudioListener*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CAudioSource:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CAudioSource>());
+                        CAudioSource::ImportJson(element.value(), *static_cast<CAudioSource*>(component.Get()));
                     }
                     break;
 

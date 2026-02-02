@@ -393,6 +393,8 @@ namespace te
     {
         CBody::ExportJson(document);
 
+        document["type"] = GetComponentType();
+
         // TODO serialization
     }
 }

@@ -179,6 +179,8 @@ namespace te
     void CSoftBody::ExportJson(nlohmann::json& document) const
     {
         CBody::ExportJson(document);
+        
+        document["type"] = GetComponentType();
 
         // TODO serialization
     }

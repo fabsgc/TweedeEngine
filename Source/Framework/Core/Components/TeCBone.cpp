@@ -150,6 +150,7 @@ namespace te
     {
         Component::ExportJson(document);
 
+        document["type"] = GetComponentType();
         document["boneName"] = _boneName;
     }
 
