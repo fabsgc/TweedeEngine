@@ -69,10 +69,7 @@ jobs:
         make
 
     - name: Run tests
-      run: |
-        pwd
-        cd /home/runner/work/TweedeEngine/TweedeEngine/bin/GNU.${{env.BUILD_TYPE}}.x64/
-        /Tests
+      run: /home/runner/work/TweedeEngine/TweedeEngine/bin/GNU.${{env.BUILD_TYPE}}.x64/Tests
 
   Windows:
     runs-on: windows-latest
