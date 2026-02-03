@@ -82,3 +82,6 @@ jobs:
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Run tests
+      run: D:\a\TweedeEngine\TweedeEngine\bin\MSVC.${{env.BUILD_TYPE}}.x64\Tests.exe
