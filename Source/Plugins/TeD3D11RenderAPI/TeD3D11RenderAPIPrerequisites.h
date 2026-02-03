@@ -31,6 +31,7 @@ namespace te
     class D3D11VideoModeList;
     class D3D11RenderAPIFactory;
     class D3D11RenderWindow;
+    class D3D11HeadlessRenderWindow;
     class D3D11HLSLProgramFactory;
     class D3D11Device;
     class D3D11InputLayoutManager;

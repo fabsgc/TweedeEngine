@@ -162,7 +162,7 @@ namespace te
         _platformData = te_new<InputPrivateData>();
 
         if(IsWindow((HWND)_windowHandle) == 0)
-            TE_ASSERT_ERROR(false, "RawInputManager failed to initialized. Invalid HWND provided.");
+            TE_ASSERT_ERROR(false, "RawInputManager failed to initialize. Invalid HWND provided.");
 
         HINSTANCE hInst = GetModuleHandle(0);
 

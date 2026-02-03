@@ -23,21 +23,28 @@ namespace te
         dipdw.diph.dwHow = DIPH_DEVICE;
         dipdw.dwData = DI_BUFFER_SIZE_MOUSE;
 
-        if (FAILED(data->DirectInput->CreateDevice(GUID_SysMouse, &data->Mouse, nullptr)))
-            TE_ASSERT_ERROR(false, "DirectInput mouse init: Failed to create device.");
+        if (IsWindow((HWND)hWnd) == 0)
+        {
+            TE_ASSERT_ERROR(false, "DirectInput mouse init: Invalid HWND provided.");
+        }
+        else
+        {
+            if (FAILED(data->DirectInput->CreateDevice(GUID_SysMouse, &data->Mouse, nullptr)))
+                TE_ASSERT_ERROR(false, "DirectInput mouse init: Failed to create device.");
 
-        if (FAILED(data->Mouse->SetDataFormat(&c_dfDIMouse2)))
-            TE_ASSERT_ERROR(false, "DirectInput mouse init: Failed to set format.");
+            if (FAILED(data->Mouse->SetDataFormat(&c_dfDIMouse2)))
+                TE_ASSERT_ERROR(false, "DirectInput mouse init: Failed to set format.");
 
-        if (FAILED(data->Mouse->SetCooperativeLevel(hWnd, data->CoopSettings)))
-            TE_ASSERT_ERROR(false, "DirectInput mouse init: Failed to set coop level.");
+            if (FAILED(data->Mouse->SetCooperativeLevel(hWnd, data->CoopSettings)))
+                TE_ASSERT_ERROR(false, "DirectInput mouse init: Failed to set coop level.");
 
-        if (FAILED(data->Mouse->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph)))
-            TE_ASSERT_ERROR(false, "DirectInput mouse init: Failed to set property.");
+            if (FAILED(data->Mouse->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph)))
+                TE_ASSERT_ERROR(false, "DirectInput mouse init: Failed to set property.");
 
-        HRESULT hr = data->Mouse->Acquire();
-        if (FAILED(hr) && hr != DIERR_OTHERAPPHASPRIO)
-            TE_ASSERT_ERROR(false, "DirectInput mouse init: Failed to acquire device.");
+            HRESULT hr = data->Mouse->Acquire();
+            if (FAILED(hr) && hr != DIERR_OTHERAPPHASPRIO)
+                TE_ASSERT_ERROR(false, "DirectInput mouse init: Failed to acquire device.");
+        }
 
         data->HWnd = hWnd;
     }

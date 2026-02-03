@@ -4,6 +4,7 @@
 #include "RenderAPI/TeRenderTarget.h"
 #include "RenderAPI/TeVideoMode.h"
 #include "Utility/TeEvent.h"
+#include "Math/TeVector2I.h"
 
 namespace te
 {
@@ -57,6 +58,7 @@ namespace te
         bool ToolWindow; /**< Tool windows have no task bar entry and always remain on top of their parent window. */
         bool Modal; /**< When a modal window is open all other windows will be locked until modal window is closed. */
         bool HideUntilSwap; /**< Window will be created as hidden and only be shown when the first framebuffer swap happens. */
+        bool HeadLess; /**< If true, no actual OS window is created. Useful for servers or other non-graphical uses. */
     };
 
     /** Contains various properties that describe a render window. */
@@ -89,13 +91,11 @@ namespace te
     {
     public:
         RenderWindow(const RENDER_WINDOW_DESC& desc);
-        virtual ~RenderWindow();
+        virtual ~RenderWindow() = 0;
 
         void TriggerCallback();
 
-        virtual void Initialize() { RenderTarget::Initialize(); };
-
-        virtual void InitializeGui() const = 0;
+        virtual void InitializeGui() const {};
 
         /** Queries the render target for a custom attribute. This may be anything and is implementation specific. */
         virtual void GetCustomAttribute(const String& name, void* pData) const {}
@@ -107,10 +107,10 @@ namespace te
         virtual const RENDER_WINDOW_DESC& GetDesc() const { return _desc; }
 
         /** Converts screen position into window local position. */
-        virtual Vector2I ScreenToWindowPos(const Vector2I& screenPos) const = 0;
+        virtual Vector2I ScreenToWindowPos(const Vector2I& screenPos) const { return screenPos; };
 
         /** Converts window local position to screen position. */
-        virtual Vector2I WindowToScreenPos(const Vector2I& windowPos) const = 0;
+        virtual Vector2I WindowToScreenPos(const Vector2I& windowPos) const { return windowPos; };
 
         /**
          * Resize the window to specified width and height in pixels.
@@ -162,7 +162,7 @@ namespace te
          *
          * @param enabled 		True to enable vsync, false to disable.
          */
-        virtual void SetVSync(bool enabled) = 0;
+        virtual void SetVSync(bool enabled) {};
 
         /**
          * Switches the window to fullscreen mode. Child windows cannot go into fullscreen mode.

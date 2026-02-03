@@ -4,7 +4,6 @@
 #include "RenderAPI/TeRenderWindow.h"
 #include "Private/Win32/TeWin32Window.h"
 #include "Math/TeVector2I.h"
-#include "TeD3D11Device.h"
 
 namespace te
 {

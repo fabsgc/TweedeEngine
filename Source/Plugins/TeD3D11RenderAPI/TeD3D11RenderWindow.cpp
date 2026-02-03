@@ -1,5 +1,6 @@
 #include "TeD3D11RenderWindow.h"
 #include "Private/Win32/TeWin32Platform.h"
+#include "TeD3D11Device.h"
 #include "TeD3D11VideoModeInfo.h"
 #include "TeD3D11RenderAPI.h"
 #include "TeD3D11Utility.h"
@@ -439,7 +440,7 @@ namespace te
             texDesc.Format = PF_D32_S8X24;
             texDesc.Usage = TU_DEPTHSTENCIL;
             texDesc.NumSamples = GetProperties().MultisampleCount;
-            texDesc.DebugName = "Render Window";
+            texDesc.DebugName = "Depth Stencil Buffer";
 
             _depthStencilBuffer = Texture::CreatePtr(texDesc);
             _depthStencilView = _depthStencilBuffer->RequestView(0, 1, 0, 1, GVU_DEPTHSTENCIL, texDesc.DebugName);

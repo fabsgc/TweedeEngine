@@ -28,21 +28,28 @@ namespace te
         dipdw.diph.dwHow = DIPH_DEVICE;
         dipdw.dwData = DI_BUFFER_SIZE_KEYBOARD;
 
-        if (FAILED(data->DirectInput->CreateDevice(GUID_SysKeyboard, &data->Keyboard, nullptr)))
-            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to create device.");
+        if (IsWindow((HWND)hWnd) == 0)
+        {
+            TE_ASSERT_ERROR(false, "DirectInput mouse init: Invalid HWND provided.");
+        }
+        else
+        {
+            if (FAILED(data->DirectInput->CreateDevice(GUID_SysKeyboard, &data->Keyboard, nullptr)))
+                TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to create device.");
 
-        if (FAILED(data->Keyboard->SetDataFormat(&c_dfDIKeyboard)))
-            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set format.");
+            if (FAILED(data->Keyboard->SetDataFormat(&c_dfDIKeyboard)))
+                TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set format.");
 
-        if (FAILED(data->Keyboard->SetCooperativeLevel(hWnd, data->CoopSettings)))
-            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set coop level.");
+            if (FAILED(data->Keyboard->SetCooperativeLevel(hWnd, data->CoopSettings)))
+                TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set coop level.");
 
-        if (FAILED(data->Keyboard->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph)))
-            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set property.");
+            if (FAILED(data->Keyboard->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph)))
+                TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to set property.");
 
-        HRESULT hr = data->Keyboard->Acquire();
-        if (FAILED(hr) && hr != DIERR_OTHERAPPHASPRIO)
-            TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to acquire device.");
+            HRESULT hr = data->Keyboard->Acquire();
+            if (FAILED(hr) && hr != DIERR_OTHERAPPHASPRIO)
+                TE_ASSERT_ERROR(false, "DirectInput keyboard init: Failed to acquire device.");
+        }
 
         data->HWnd = hWnd;
     }

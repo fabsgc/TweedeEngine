@@ -1,5 +1,7 @@
 #include "TeD3D11RenderAPI.h"
+#include "TeD3D11Device.h"
 #include "TeD3D11RenderWindow.h"
+#include "TeD3D11HeadlessRenderWindow.h"
 #include "TeD3D11GpuParamBlockBuffer.h"
 #include "TeD3D11GpuBuffer.h"
 #include "TeD3D11RenderStateManager.h"
@@ -44,6 +46,14 @@ namespace te
 
     SPtr<RenderWindow> D3D11RenderAPI::CreateRenderWindow(const RENDER_WINDOW_DESC& windowDesc)
     {
+        if (windowDesc.HeadLess)
+        {
+            SPtr<D3D11HeadlessRenderWindow> window = te_core_ptr_new<D3D11HeadlessRenderWindow>(windowDesc, *_device, _DXGIFactory);
+            window->SetThisPtr(window);
+            window->Initialize();
+            return window;
+        }
+
         SPtr<D3D11RenderWindow> window = te_core_ptr_new<D3D11RenderWindow>(windowDesc, *_device, _DXGIFactory);
         window->SetThisPtr(window);
         window->Initialize();

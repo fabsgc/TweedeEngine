@@ -84,14 +84,15 @@ namespace te
         RenderAPIManager::Instance().Initialize(_startUpDesc.RenderAPI, _startUpDesc.WindowDesc);
         RenderAPI::Instance().Initialize();
         RenderAPI::Instance().SetDrawOperation(DOT_TRIANGLE_LIST);
+
         _window = RenderAPI::Instance().CreateRenderWindow(_startUpDesc.WindowDesc);
-        TE_ASSERT_ERROR(_window.get(), "Failed to create renderer");
+        TE_ASSERT_ERROR(_window.get(), "Failed to create render window");
 
         ParamBlockManager::StartUp();
 
         RendererManager::StartUp();
         LoadPlugin(_startUpDesc.Renderer, &_rendererPlugin);
-        _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer, "Default");
+        _renderer = RendererManager::Instance().Initialize(_startUpDesc.Renderer, "Default renderer");
         TE_ASSERT_ERROR(_renderer.get(), "Failed to create renderer");
 
         Importer::StartUp();
