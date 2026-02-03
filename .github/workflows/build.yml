@@ -60,6 +60,7 @@ jobs:
 
     - name: Configure CMake
       run: |
+        pwd
         mkdir build && cd build
         cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-12 -D CMAKE_CXX_COMPILER=g++-12 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
@@ -67,6 +68,11 @@ jobs:
       run: |
         cd build
         make
+
+    - name: Run tests
+      run: |
+        cd ../bin/GNU.${{env.BUILD_TYPE}}.x64/
+        /Tests
 
   Windows:
     runs-on: windows-latest
