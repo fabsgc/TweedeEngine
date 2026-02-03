@@ -19,7 +19,7 @@ int main()
     desc.Renderer = TE_RENDERER_MODULE;
     desc.Physics = TE_PHYSICS_MODULE;
     desc.Audio = TE_AUDIO_MODULE;
-    desc.Gui = "TeGLImGuiAPI";
+    desc.Gui = TE_GUI_MODULE;
 
     desc.Importers = {
         "TeFreeImgImporter",
