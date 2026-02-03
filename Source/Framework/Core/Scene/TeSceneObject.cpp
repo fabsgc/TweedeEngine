@@ -1398,7 +1398,7 @@ namespace te
 
         if (document.contains("components") && document["components"].size() > 0)
         {
-            for (const auto element : document["components"].items())
+            for (const auto& element : document["components"].items())
             {
                 HComponent component;
                 const CoreType type = static_cast<CoreType>(element.value()["type"].get<uint32_t>());
@@ -1602,7 +1602,7 @@ namespace te
 
         if (document.contains("children") && document["children"].size() > 0)
         {
-            for (const auto child : document["children"].items())
+            for (const auto& child : document["children"].items())
             {
                 SceneObject::ImportJson(so, child.value());
             }
@@ -1610,7 +1610,7 @@ namespace te
 
         if (document.contains("scripts") && document["scripts"].size() > 0)
         {
-
+            // TODO Serialization
         }
 
         return so;
