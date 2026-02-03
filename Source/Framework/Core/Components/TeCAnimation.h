@@ -66,7 +66,7 @@ namespace te
         void SetBounds(const AABox& bounds) { _internal->SetBounds(bounds); }
 
         /** @copydoc Animation::GetBounds */
-        const AABox& GetBounds() const { return _internal->GetBounds(); }
+        const AABox& GetBounds() const { return _internal ? _internal->GetBounds() : AABox::BOX_EMPTY; }
 
         /** @copydoc Animation::Play */
         void Play(const HAnimationClip& clip);
