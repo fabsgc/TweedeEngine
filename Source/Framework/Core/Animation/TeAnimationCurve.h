@@ -210,6 +210,9 @@ namespace te
         TAnimationCurve<T> Curve;
     };
 
+    template <>
     void TAnimationCurve<float>::ExportJson(nlohmann::json& document) const;
+
+    template <>
     bool TAnimationCurve<float>::ImportJson(const nlohmann::json& document, TAnimationCurve<float>& animationCurve);
 }
