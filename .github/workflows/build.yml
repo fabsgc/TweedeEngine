@@ -60,7 +60,6 @@ jobs:
 
     - name: Configure CMake
       run: |
-        pwd
         mkdir build && cd build
         cmake -G "Unix Makefiles" .. -D CMAKE_C_COMPILER=gcc-12 -D CMAKE_CXX_COMPILER=g++-12 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
@@ -71,7 +70,8 @@ jobs:
 
     - name: Run tests
       run: |
-        cd ../bin/GNU.${{env.BUILD_TYPE}}.x64/
+        pwd
+        cd /home/runner/work/TweedeEngine/TweedeEngine/bin/GNU.${{env.BUILD_TYPE}}.x64/
         /Tests
 
   Windows:
