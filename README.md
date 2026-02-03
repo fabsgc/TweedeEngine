@@ -1,7 +1,7 @@
 | CI            |
 | ------------- |
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/499d916d19ad4e1d9f57885f49cd65d3)](https://app.codacy.com/gh/fabsgc/TweedeEngine/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) 
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/tweedeengine-vqsh4)](https://ci.appveyor.com/project/fabsgc/tweedeengine-vqsh4)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/tweedeengine-vqsh4?svg=true)](https://ci.appveyor.com/project/fabsgc/tweedeengine-vqsh4)
 [![Github Build Status](https://github.com/fabsgc/TweedeEngine/actions/workflows/build.yml/badge.svg)](https://github.com/fabsgc/TweedeEngine/actions/workflows/build.yml)
 
 # TweedeEngine Framework
