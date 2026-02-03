@@ -3,9 +3,18 @@
 #include "TeD3D11Device.h"
 #include "TeD3D11Texture.h"
 #include "Image/TeTexture.h"
+#include "Manager/TeGuiManager.h"
+#include "Gui/TeGuiAPI.h"
 
 namespace te
 {
+    struct GuiAPIData
+    {
+        HWND HWnd;
+        ID3D11Device* PD3D11Device;
+        ID3D11DeviceContext* PD3D11DeviceContext;
+    };
+
     D3D11HeadlessRenderWindow::D3D11HeadlessRenderWindow(const RENDER_WINDOW_DESC& desc, D3D11Device& device, IDXGIFactory1* DXGIFactory)
         : RenderWindow(desc)
         , _device(device)
@@ -53,6 +62,17 @@ namespace te
             _depthStencilBuffer = Texture::CreatePtr(texDesc);
             _depthStencilView = _depthStencilBuffer->RequestView(0, 1, 0, 1, GVU_DEPTHSTENCIL, texDesc.DebugName);
         }
+    }
+
+    void D3D11HeadlessRenderWindow::InitializeGui() const
+    {
+        GuiAPIData data;
+        data.HWnd = nullptr;
+        data.PD3D11Device = _device.GetD3D11Device();
+        data.PD3D11DeviceContext = _device.GetImmediateContext();
+
+        SPtr<GuiAPI> guiAPI = GuiManager::Instance().GetGui();
+        guiAPI->Initialize((void*)&data);
     }
 
     void D3D11HeadlessRenderWindow::GetCustomAttribute(const String& name, void* pData) const

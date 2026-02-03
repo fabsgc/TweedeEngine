@@ -14,6 +14,9 @@ namespace te
         /** @copydoc RenderWindow::Initialize */
         void Initialize() override;
 
+        /** @copydoc RenderWindow::InitializeGui */
+        void InitializeGui() const override;
+
         /** @copydoc RenderWindow::GetCustomAttribute */
         void GetCustomAttribute(const String& name, void* pData) const override;
 
