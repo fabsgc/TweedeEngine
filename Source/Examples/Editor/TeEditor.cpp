@@ -439,7 +439,7 @@ namespace te
         _viewportCameraSO = SceneObject::Create("UIViewportCamera", (UINT32)SOF_Internal | SOF_Persistent | SOF_DontSave);
         _viewportCameraSO->SetParent(_viewportSO);
 
-        _viewportCameraSO->SetPosition(Vector3(3.5f, 1.5f, -3.5f));
+        _viewportCameraSO->SetPosition(Vector3(3.5f, 2.0f, -3.5f));
         _viewportCameraSO->LookAt(Vector3(0.0f, 2.0f, 0.0f));
 
         _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
@@ -1730,8 +1730,46 @@ namespace te
             }
         }
 
+        {
+            MeshImportOptions planeImportOptions;
+            planeImportOptions.ImportZPrepassMesh = false;
+            planeImportOptions.ImportCollisionShape = false;
+            planeImportOptions.ImportMaterials = false;
+            planeImportOptions.ImportTextures = false;
+
+            _planeMesh = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Primitives/plane.obj", planeImportOptions);
+
+            MaterialProperties planeMaterialProp;
+            planeMaterialProp.BaseColor = Color(0.5f, 0.5f, 0.5f, 1.0f);
+            planeMaterialProp.Metallic = 0.0f;
+            planeMaterialProp.Roughness = 0.8f;
+
+            _planeMaterial = Material::Create(_shader);
+            _planeMaterial->SetName("Plane Material");
+            _planeMaterial->SetProperties(planeMaterialProp);
+
+            if (_planeMesh.IsLoaded())
+            {
+                _planeMesh->SetName("Plane Mesh");
+
+                _planeSO = SceneObject::Create("Plane");
+                _planeSO->SetParent(_sceneSO);
+
+                _planeSO->Move(Vector3(0.0f, -1.0f, 0.0f));
+                _planeSO->SetScale(Vector3(0.3f, 0.3f, 0.3f));
+                _planeSO->Rotate(Vector3::UNIT_Y, Radian(Math::HALF_PI / 2.0f));
+
+                _plane = _planeSO->AddComponent<CRenderable>();
+                _plane->SetMesh(_planeMesh);
+                _plane->SetMaterial(_planeMaterial, true);
+                _plane->Initialize();
+            }
+
+        }
+
         EditorResManager::Instance().Add<Material>(_furnitureMaterial);
         EditorResManager::Instance().Add<Material>(_knightMaterial);
+        EditorResManager::Instance().Add<Material>(_planeMaterial);
 #endif
     }
 

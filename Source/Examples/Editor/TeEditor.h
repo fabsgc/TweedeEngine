@@ -369,6 +369,11 @@ namespace te
         HRenderable _knight;
         HAnimationClip _knightClip;
         HAnimation _knightAnimation;
+
+        HMesh _planeMesh;
+        HMaterial _planeMaterial;
+        HSceneObject _planeSO;
+        HRenderable _plane;
 #endif
     };
 
