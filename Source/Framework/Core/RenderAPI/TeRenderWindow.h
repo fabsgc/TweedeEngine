@@ -38,7 +38,7 @@ namespace te
             : Fullscreen(false), Vsync(false), Hidden(false), DepthBuffer(true)
             , MultisampleCount(0), MultisampleHint(""), Gamma(false), Left(-1), Top(-1), Title("Application")
             , ShowTitleBar(true), ShowBorder(true), AllowResize(true), ToolWindow(false), Modal(false)
-            , HideUntilSwap(false)
+            , HideUntilSwap(false), HeadLess(false)
         { }
 
         VideoMode Mode; /**< Output monitor, frame buffer resize and refresh rate. */
