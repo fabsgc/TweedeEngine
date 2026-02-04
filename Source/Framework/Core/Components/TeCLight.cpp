@@ -165,7 +165,7 @@ namespace te
                 object.SetCastShadows(lightDoc["castShadows"].get<bool>());
 
             if (lightDoc.contains("spotAngle"))
-                object.SetSpotAngle(Degree(lightDoc["spotAngle"].get<float>()));
+                object.SetSpotAngle(Radian(lightDoc["spotAngle"].get<float>()));
 
             if (lightDoc.contains("shadowBias"))
                 object.SetShadowBias(lightDoc["shadowBias"].get<float>());
