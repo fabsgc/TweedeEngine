@@ -1,5 +1,4 @@
 #include "Include/Shadow.hlsli"
-#include "Include/Skinning.hlsli"
 
 cbuffer PerShadowCubeMatrices : register(b2)
 {
@@ -13,9 +12,7 @@ cbuffer PerShadowCubeMasks : register(b3)
 
 VS_OUTPUT main( VS_INPUT IN )
 {
-    VS_OUTPUT OUT = (VS_OUTPUT)0;
-
-    return OUT;
+    return VS_MAIN(IN);
 }
 
 // TODO Shadow

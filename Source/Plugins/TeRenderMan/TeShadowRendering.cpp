@@ -362,6 +362,44 @@ namespace te
         mutable ShadowDepthCubeMat* Mat = nullptr;
     };
 
+    /** Specialization used for ShadowRenderQueue when rendering cube (omnidirectional) shadow maps (one face at a time). */
+	struct ShadowRenderQueueCubeSingleOptions
+	{
+        ShadowRenderQueueCubeSingleOptions(
+            const ConvexVolume& boundingVolume,
+            const SPtr<GpuParamBlockBuffer>& shadowParamsBuffer)
+            : BoundingVolume(boundingVolume), ShadowParamsBuffer(shadowParamsBuffer)
+		{ }
+
+        bool Intersects(const Sphere& bounds) const
+        {
+            return BoundingVolume.Intersects(bounds);
+        }
+
+        void Prepare(ShadowRenderQueue::Command& command, const Sphere& bounds) const
+        {
+        }
+
+        void BindMaterial(const ShaderVariation& variation) const
+        {
+            Mat = ShadowDepthNormalMat::Get(variation);
+            Mat->Bind(ShadowParamsBuffer);
+        }
+
+        void BindRenderable(ShadowRenderQueue::Command& command) const
+        {
+            RendererRenderable* renderable = command.Renderable;
+
+            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer, 
+                renderable->RenderablePtr->GetBoneMatrixBuffer());
+        }
+
+        const ConvexVolume& BoundingVolume;
+		const SPtr<GpuParamBlockBuffer>& ShadowParamsBuffer;
+
+		mutable ShadowDepthNormalMat* Mat = nullptr;
+    };
+
     /** Specialization used for ShadowRenderQueue when rendering spot light shadow maps. */
     struct ShadowRenderQueueSpotOptions
     {
@@ -877,10 +915,6 @@ namespace te
         Light* light = rendererLight._internal;
         RenderAPI& rapi = RenderAPI::Instance();
         const RenderAPICapabilities& caps = gCaps();
-        bool renderAllFacesAtOnce = caps.HasCapability(RSC_RENDER_TARGET_LAYERS);
-
-        if (!renderAllFacesAtOnce)
-            return;
 
         SPtr<GpuParamBlockBuffer> shadowParamsBuffer = gShadowParamsDef.CreateBuffer();
 
@@ -917,7 +951,7 @@ namespace te
         ShadowCubemap& cubemap = _shadowCubemaps[mapInfo.TextureIdx];
 
         mapInfo.DepthNear = 0.05f;
-        mapInfo.DepthFar = 1.f;
+        mapInfo.DepthFar = light->GetBounds().GetRadius();
         mapInfo.DepthFade = mapInfo.DepthFar;
         mapInfo.FadeRange = 0.0f;
         mapInfo.DepthRange = mapInfo.DepthFar - mapInfo.DepthNear;
@@ -925,7 +959,7 @@ namespace te
         mapInfo.SubjectBounds = light->GetBounds();
 
         // Note: Projecting on positive Z axis, because cubemaps use a left-handed coordinate system
-        Matrix4 proj = Matrix4::ProjectionPerspective(Degree(90.f), 1.f, 0.05f, 1.f, true);
+        Matrix4 proj = Matrix4::ProjectionPerspective(Degree(90.f), 1.f, 0.05f, light->GetBounds().GetRadius(), true);
         ConvexVolume localFrustum(proj);
 
         // Render cubemaps upside down if necessary
@@ -938,14 +972,20 @@ namespace te
             // upside down, but this is handled by the projection matrix. If both of those are enabled, then the effect
             // cancels out.
 
-            adjustedProj[1][1] = -proj[1][1];
+            //adjustedProj[1][1] = -proj[1][1];
         }
+
+        bool renderAllFacesAtOnce = caps.HasCapability(RSC_RENDER_TARGET_LAYERS);
+        renderAllFacesAtOnce = false; // TODO support this type of rendering for perfomance matter
 
         SPtr<GpuParamBlockBuffer> shadowCubeMatricesBuffer;
         SPtr<GpuParamBlockBuffer> shadowCubeMasksBuffer;
 
-        shadowCubeMatricesBuffer = gShadowCubeMatricesDef.CreateBuffer();
-        shadowCubeMasksBuffer = gShadowCubeMasksDef.CreateBuffer();
+        if (renderAllFacesAtOnce)
+        {
+            shadowCubeMatricesBuffer = gShadowCubeMatricesDef.CreateBuffer();
+            shadowCubeMasksBuffer = gShadowCubeMasksDef.CreateBuffer();
+        }
 
         gShadowParamsDef.gDepthBias.Set(shadowParamsBuffer, mapInfo.DepthBias);
         gShadowParamsDef.gInvDepthRange.Set(shadowParamsBuffer, 1.0f / mapInfo.DepthRange);
@@ -1010,13 +1050,44 @@ namespace te
 
             ConvexVolume frustum(worldPlanes);
 
-            frustums[i] = frustum;
+            if(renderAllFacesAtOnce)
+			{
+                frustums[i] = frustum;
 
-            // Register far plane of all frustums
-            boundingPlanes.push_back(worldPlanes[FRUSTUM_PLANE_FAR]);
-            gShadowCubeMatricesDef.gFaceVPMatrices.Set(shadowCubeMatricesBuffer, shadowViewProj, i);
+                // Register far plane of all frustums
+                boundingPlanes.push_back(worldPlanes[FRUSTUM_PLANE_FAR]);
+                gShadowCubeMatricesDef.gFaceVPMatrices.Set(shadowCubeMatricesBuffer, shadowViewProj, i);
+            }
+            else
+            {
+                rapi.PushMarker("[DRAW] Project Radial Shadow Face", Color(0.85f, 0.43f, 0.25f));
+
+                gShadowParamsDef.gMatViewProj.Set(shadowParamsBuffer, shadowViewProj);
+
+				RENDER_TEXTURE_DESC rtDesc;
+				rtDesc.DepthStencilSurface.Tex = cubemap.GetTexture();
+				rtDesc.DepthStencilSurface.Face = i;
+				rtDesc.DepthStencilSurface.NumFaces = 1;
+
+				SPtr<RenderTarget> faceRt = RenderTexture::Create(rtDesc);
+
+				rapi.SetRenderTarget(faceRt);
+				rapi.ClearRenderTarget(FBT_DEPTH);
+
+				// Render all renderables into the shadow map
+				ConvexVolume boundingVolume(boundingPlanes);
+				ShadowRenderQueueCubeSingleOptions cubeOptions(
+                    frustum,
+                    shadowParamsBuffer
+				);
+
+				ShadowRenderQueue::Execute(scene, frameInfo, cubeOptions, *light);
+
+                rapi.PopMarker();
+            }
         }
 
+        if (renderAllFacesAtOnce)
         {
             rapi.PushMarker("[DRAW] Project Radial Shadow", Color(0.85f, 0.43f, 0.25f));
 
