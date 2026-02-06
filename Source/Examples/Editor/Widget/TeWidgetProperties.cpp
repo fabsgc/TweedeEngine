@@ -2126,6 +2126,25 @@ namespace te
             }
         }
 
+        // mobility
+        {
+            static ImGuiExt::ComboOptions<ObjectMobility> objectMobilityOptions;
+            if (objectMobilityOptions.Options.size() == 0)
+            {
+                objectMobilityOptions.AddOption(ObjectMobility::Movable, "Movable");
+                objectMobilityOptions.AddOption(ObjectMobility::Immovable, "Immovable");
+                objectMobilityOptions.AddOption(ObjectMobility::Static, "Static");
+            }
+
+            ObjectMobility objectMobility = light->GetMobility();
+            if (ImGuiExt::RenderOptionCombo<ObjectMobility>(&objectMobility, "##renderable_properties_mobility_option", "Mobility", objectMobilityOptions, width))
+            {
+                hasChanged = true;
+                light->SetMobility(objectMobility);
+            }
+        }
+        ImGui::Separator();
+
         return hasChanged;
     }
 
@@ -2279,7 +2298,27 @@ namespace te
         }
         ImGui::Separator();
 
+        // mobility
+        {
+            static ImGuiExt::ComboOptions<ObjectMobility> objectMobilityOptions;
+            if (objectMobilityOptions.Options.size() == 0)
+            {
+                objectMobilityOptions.AddOption(ObjectMobility::Movable, "Movable");
+                objectMobilityOptions.AddOption(ObjectMobility::Immovable, "Immovable");
+                objectMobilityOptions.AddOption(ObjectMobility::Static, "Static");
+            }
+
+            ObjectMobility objectMobility = renderable->GetMobility();
+            if (ImGuiExt::RenderOptionCombo<ObjectMobility>(&objectMobility, "##renderable_properties_mobility_option", "Mobility", objectMobilityOptions, width))
+            {
+                hasChanged = true;
+                renderable->SetMobility(objectMobility);
+            }
+        }
+        ImGui::Separator();
+
         // velocity
+        if (renderable->GetMobility() != ObjectMobility::Static)
         {
             bool writeVelocity = properties.WriteVelocity;
             if (ImGuiExt::RenderOptionBool(writeVelocity, "##renderable_properties_velocity_option", "Write velocity"))
