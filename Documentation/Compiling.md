@@ -15,6 +15,7 @@
   - `cd Build`
   - `cmake -G "$generator$" -A x64 ..` 
     - Where *$generator$* should be replaced with any of the supported generators. Some common ones:
+    - `Visual Studio 18 2026` - Visual Studio 2022 (64-bit build)
     - `Visual Studio 17 2022` - Visual Studio 2022 (64-bit build)
     - `Visual Studio 16 2019` - Visual Studio 2019 (64-bit build)
     - `Visual Studio 15 2017` - Visual Studio 2017 (64-bit build)
