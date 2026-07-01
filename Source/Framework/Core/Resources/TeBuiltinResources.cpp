@@ -1822,7 +1822,7 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderShadowDepthNormalDesc;
         passDesc.PixelProgramDesc = _pixelShaderShadowDepthNormalDesc;
 
-        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_COUNTERCLOCKWISE;
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
@@ -1882,7 +1882,7 @@ namespace te
         passDesc.VertexProgramDesc = _vertexShaderShadowDepthDirectionalDesc;
         passDesc.PixelProgramDesc = _pixelShaderShadowDepthDirectionalDesc;
 
-        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_COUNTERCLOCKWISE;
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });

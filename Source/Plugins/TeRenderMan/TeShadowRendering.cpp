@@ -625,7 +625,7 @@ namespace te
             UINT32 lightIdx = entry.LightIdx;
             const RendererLight& light = sceneInfo.SpotLights[lightIdx];
 
-            if (!light._internal->GetCastShadows())
+            if (!light._internal->GetCastShadows() || !visibility.SpotLights[lightIdx])
                 continue;
 
             RenderSpotShadowMap(sceneInfo.SpotLights[lightIdx], entry, scene, frameInfo);
@@ -636,7 +636,7 @@ namespace te
             UINT32 lightIdx = entry.LightIdx;
             const RendererLight& light = sceneInfo.RadialLights[lightIdx];
 
-            if (!light._internal->GetCastShadows())
+            if (!light._internal->GetCastShadows() || !visibility.RadialLights[lightIdx])
                 continue;
             
             RenderRadialShadowMap(sceneInfo.RadialLights[lightIdx], entry, scene, frameInfo);
@@ -851,8 +851,6 @@ namespace te
         rapi.SetRenderTarget(atlas.GetTarget());
         rapi.SetViewport(mapInfo.NormArea);
         rapi.ClearViewport(FBT_DEPTH);
-
-        //float maxAttenuationRadius = Math::Sqrt(1.f / (4 * Math::PI * 0.0001f));
 
         mapInfo.DepthNear = 0.05f;
         mapInfo.DepthFar = light->GetBounds().GetRadius();
