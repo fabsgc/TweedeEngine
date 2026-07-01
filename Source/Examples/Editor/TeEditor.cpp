@@ -407,6 +407,7 @@ namespace te
     void Editor::InitializeScene()
     {
         _sceneSO = SceneObject::Create("Scene");
+        _sceneSO->SetMobility(ObjectMobility::Static);
         LoadScene();
         LoadEngineResources();
     }
@@ -439,7 +440,7 @@ namespace te
         _viewportCameraSO = SceneObject::Create("UIViewportCamera", (UINT32)SOF_Internal | SOF_Persistent | SOF_DontSave);
         _viewportCameraSO->SetParent(_viewportSO);
 
-        _viewportCameraSO->SetPosition(Vector3(3.5f, 2.0f, -3.5f));
+        _viewportCameraSO->SetPosition(Vector3(5.5f, 2.5f, -5.5f));
         _viewportCameraSO->LookAt(Vector3(0.0f, 2.0f, 0.0f));
 
         _viewportCamera = _viewportCameraSO->AddComponent<CCamera>();
@@ -448,8 +449,11 @@ namespace te
         _viewportCamera->SetMSAACount(gCoreApplication().GetWindow()->GetDesc().MultisampleCount);
         _viewportCamera->SetProjectionType(ProjectionType::PT_PERSPECTIVE);
         _viewportCamera->SetName("Viewport camera");
-        _viewportCamera->SetShutterSpeed(1.0f/2000.0f);
-        _viewportCamera->SetAperture(3.2f);
+        //_viewportCamera->SetShutterSpeed(1.0f/2000.0f);
+        //_viewportCamera->SetAperture(3.2f);
+        _viewportCamera->SetShutterSpeed(1.0f / 50.0f);
+        _viewportCamera->SetAperture(1.8f);
+        _viewportCamera->SetSensitivity(200);
         _viewportCamera->SetMSAACount(1);
 
         _viewportCameraUI = _viewportCameraSO->AddComponent<CCameraUI>();
@@ -992,6 +996,7 @@ namespace te
         LoadEngineResources();
 
         _sceneSO = SceneObject::Create("Scene");
+        _sceneSO->SetMobility(ObjectMobility::Static);
         _settings.State = EditorState::Modified;
 
         gResourceManager().Release(_project);
@@ -1032,6 +1037,7 @@ namespace te
             _project->SetName("Project");
 
             _sceneSO = SceneObject::Create("Scene");
+            _sceneSO->SetMobility(ObjectMobility::Static);
             _settings.State = EditorState::Modified;
 
             return false;
@@ -1465,6 +1471,7 @@ namespace te
     {
         _sceneSO->SetActive(false);
         _runningSceneSO = SceneObject::Create("Scene");
+        _runningSceneSO->SetMobility(ObjectMobility::Static);
         _runningSceneSO->Clone(_sceneSO);
         _runningSceneSO->SetActive(true);
 
@@ -1473,7 +1480,7 @@ namespace te
         // TODO : Find a way to associate joints to their bodies in the cloned scene
     }
 
-    /** When editor goes to stop mode, we destroy to copied scene and restore the original one */
+    /** When editor goes to stop mode, we destroy the copied scene and restore the original one */
     void Editor::DestroyRunningScene()
     {
         _selections.ClickedComponent = nullptr;
@@ -1605,28 +1612,68 @@ namespace te
         if (_skyboxTexture.IsLoaded())
         {
             skyboxSO = SceneObject::Create("Skybox");
+            skyboxSO->SetMobility(ObjectMobility::Static);
             skyboxSO->SetParent(_sceneSO);
             _skybox = skyboxSO->AddComponent<CSkybox>();
             _skybox->SetTexture(_skyboxTexture);
-            _skybox->SetBrightness(1.f);
-            _skybox->SetIBLIntensity(15000.f);
+            _skybox->SetBrightness(0.1f);
+            _skybox->SetIBLIntensity(250.f);
             _skybox->Initialize();
         }
         // ######################################################
 
-        // FILL SCENE WITH DIRECTIONAL LIGHT
+        // FILL SCENE WITH LIGHTS
         // ######################################################
-        lightSO = SceneObject::Create("Light");
-        lightSO->SetParent(_sceneSO);
-        _light = lightSO->AddComponent<CLight>(Light::Type::Directional);
-        _light->Initialize();
-        _light->SetIntensity(60000.f);
-        _light->SetCastShadows(true);
+        _lightsSO = SceneObject::Create("Lights");
+        _lightsSO->SetParent(_sceneSO);
+
+        _directionalLightSO = SceneObject::Create("Directional Light");
+        _directionalLightSO->SetParent(_lightsSO);
+
+        _directionalLight = _directionalLightSO->AddComponent<CLight>(Light::Type::Directional);
+        _directionalLight->Initialize();
+        _directionalLight->SetIntensity(150.f);
+        _directionalLight->SetCastShadows(true);
 
         Quaternion rot = {};
-        rot.FromEulerAngles(Radian(Degree(-21.69f)), Radian(Degree(36.4f)), Radian(Degree(15.06f)));
-        lightSO->SetRotation(rot);
-        lightSO->Move(Vector3(0.0f, 4.0f, 4.0f));
+        rot.FromEulerAngles(Degree(-21.69f), Degree(36.4f), Degree(15.06f));
+        _directionalLightSO->SetRotation(rot);
+        _directionalLightSO->Move(Vector3(0.0f, 4.0f, 4.0f));
+
+        _spotLightSO = SceneObject::Create("Spot Light");
+        _spotLightSO->SetParent(_lightsSO);
+
+        _spotLight = _spotLightSO->AddComponent<CLight>(Light::Type::Spot);
+        _spotLight->Initialize();
+        _spotLight->SetIntensity(6000.f);
+        _spotLight->SetCastShadows(true);
+        _spotLight->SetSpotAngle(Degree(75.f));
+
+        rot.FromEulerAngles(Degree(0.f), Degree(90.f), Degree(40.f));
+        _spotLightSO->SetRotation(rot);
+        _spotLightSO->Move(Vector3(3.9f, 1.0f, 0.0f));
+
+        _spotLight2SO = SceneObject::Create("Spot Light 2");
+        _spotLight2SO->SetParent(_lightsSO);
+
+        _spotLight2 = _spotLight2SO->AddComponent<CLight>(Light::Type::Spot);
+        _spotLight2->Initialize();
+        _spotLight2->SetIntensity(6000.f);
+        _spotLight2->SetCastShadows(true);
+        _spotLight2->SetSpotAngle(Degree(75.f));
+
+        rot.FromEulerAngles(Degree(25.23f), Degree(-137.7f), Degree(-21.2f));
+        _spotLight2SO->SetRotation(rot);
+        _spotLight2SO->Move(Vector3(-2.f, 2.f, -2.5f));
+
+        _pointLightSO = SceneObject::Create("Point Light");
+        _pointLightSO->SetParent(_lightsSO);
+
+        _pointLight = _pointLightSO->AddComponent<CLight>(Light::Type::Radial);
+        _pointLight->Initialize();
+        _pointLight->SetIntensity(6000.f);
+        _pointLight->SetCastShadows(true);
+        _pointLightSO->Move(Vector3(2.0f, 2.0f, -2.5f));
         // ######################################################
 
         // FILL SCENE WITH MESHES
@@ -1655,11 +1702,11 @@ namespace te
 
         // FILL SCENE WITH SOUND
         // ######################################################
-        soundSO = SceneObject::Create("Sound");
+        /*soundSO = SceneObject::Create("Sound");
         soundSO->SetParent(_sceneSO);
         _audioSource = soundSO->AddComponent<CAudioSource>();
         _audioSource->Initialize();
-        _audioSource->SetClip(_audioClip);
+        _audioSource->SetClip(_audioClip);*/
         // ######################################################
 
         // LOAD SCRIPT
@@ -1764,12 +1811,47 @@ namespace te
                 _plane->SetMaterial(_planeMaterial, true);
                 _plane->Initialize();
             }
+        }
 
+        {
+            MeshImportOptions sphereImportOptions;
+            sphereImportOptions.ImportZPrepassMesh = false;
+            sphereImportOptions.ImportCollisionShape = false;
+            sphereImportOptions.ImportMaterials = false;
+            sphereImportOptions.ImportTextures = false;
+
+            _sphereMesh = EditorResManager::Instance().Load<Mesh>("Data/Meshes/Primitives/sphere-hd.obj", sphereImportOptions);
+
+            MaterialProperties sphereMaterialProp;
+            sphereMaterialProp.BaseColor = Color(0.f, 0.3f, 0.8f, 1.0f);
+            sphereMaterialProp.Metallic = 0.0f;
+            sphereMaterialProp.Roughness = 0.05f;
+
+            _sphereMaterial = Material::Create(_shader);
+            _sphereMaterial->SetName("Sphere Material");
+            _sphereMaterial->SetProperties(sphereMaterialProp);
+
+            if (_sphereMesh.IsLoaded())
+            {
+                _sphereMesh->SetName("Sphere Mesh");
+
+                _sphereSO = SceneObject::Create("Sphere");
+                _sphereSO->SetParent(_sceneSO);
+
+                _sphereSO->Move(Vector3(0.f, 1.2f, -1.f));
+                _sphereSO->SetScale(Vector3(0.3f, 0.3f, 0.3f));
+
+                _sphere = _sphereSO->AddComponent<CRenderable>();
+                _sphere->SetMesh(_sphereMesh);
+                _sphere->SetMaterial(_sphereMaterial, true);
+                _sphere->Initialize();
+            }
         }
 
         EditorResManager::Instance().Add<Material>(_furnitureMaterial);
         EditorResManager::Instance().Add<Material>(_knightMaterial);
         EditorResManager::Instance().Add<Material>(_planeMaterial);
+        EditorResManager::Instance().Add<Material>(_sphereMaterial);
 #endif
     }
 

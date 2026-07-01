@@ -351,11 +351,9 @@ namespace te
         HMaterial _furnitureMaterial;
 
         HSceneObject furnitureSO;
-        HSceneObject lightSO;
         HSceneObject skyboxSO;
         HSceneObject soundSO;
 
-        HLight _light;
         HSkybox _skybox;
         HRenderable _furniture;
         HAudioSource _audioSource;
@@ -374,6 +372,25 @@ namespace te
         HMaterial _planeMaterial;
         HSceneObject _planeSO;
         HRenderable _plane;
+
+        HMesh _sphereMesh;
+        HMaterial _sphereMaterial;
+        HSceneObject _sphereSO;
+        HRenderable _sphere;
+
+        HSceneObject _lightsSO;
+
+        HSceneObject _directionalLightSO;
+        HLight _directionalLight;
+
+        HSceneObject _spotLightSO;
+        HLight _spotLight;
+
+        HSceneObject _spotLight2SO;
+        HLight _spotLight2;
+
+        HSceneObject _pointLightSO;
+        HLight _pointLight;
 #endif
     };
 
