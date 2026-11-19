@@ -176,6 +176,12 @@ namespace te
         /** Assigns a unique index to the variation that can later be used for quick lookup. */
         void SetIdx(UINT32 idx) const { _idx = idx; }
 
+        /** Exports the variation to a JSON document. */
+        void ExportJson(nlohmann::json& document) const;
+
+        /** Imports the variation from a JSON document. */
+        static bool ImportJson(const nlohmann::json& document, ShaderVariation& variation);
+
     private:
         friend class ShaderVariations;
 
