@@ -256,27 +256,6 @@ namespace te
             _scene->SetParamSkyboxParams(view.GetSceneCamera()->GetRenderSettings()->EnableSkybox);
             _scene->SetParamHDRParams(settings->EnableHDR, settings->Tonemapping.Enabled, settings->Gamma,
                 settings->ExposureScale, settings->Contrast, settings->Brightness);
-
-            // Find influencing lights for this view
-            // Update Light Buffers
-            {
-                Vector3I lightCounts;
-                const PerLightData* lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
-
-                for (const auto& element : view.GetOpaqueQueue()->GetSortedElements())
-                {
-                    if (!element.RenderElem->Properties ||
-                        !element.RenderElem->Properties->CastLights)
-                        continue;
-                    if ((lightCounts.x + lightCounts.y + lightCounts.z) == STANDARD_FORWARD_MAX_NUM_LIGHTS)
-                        break;
-
-                    // Compute list of lights that influence this Mesh
-                    const Bounds& bounds = element.RenderElem->MeshElem->GetProperties().GetBounds();
-                    viewGroup.GetVisibleLightData().GatherInfluencingLights(bounds, lights, lightCounts);
-                }
-                PerLightsBuffer::UpdatePerLights(lights, lightCounts.x + lightCounts.y + lightCounts.z);
-            }
         }
 
         const RenderSettings& settings = view.GetRenderSettings();

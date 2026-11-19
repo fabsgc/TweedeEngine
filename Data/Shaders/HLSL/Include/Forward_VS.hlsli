@@ -17,7 +17,7 @@ struct PerInstanceData
     uint   Layer;
     uint   HasAnimation;
     uint   WriteVelocity;
-    uint   CastLights;
+    uint   LightingFlags;
 };
 
 // #################### CONSTANT BUFFERS

@@ -273,7 +273,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         OUT.Scene.rgb = lit.Diffuse + lit.Specular;
 
 #if DO_DIRECT_LIGHTING == 1
-        OUT.Scene.rgb += DoDirectLighting(V, P, N, NoV, pixel, castLight, occlusion);
+        OUT.Scene.rgb += DoDirectLighting(V, P, N, NoV, pixel, castLight, receiveShadows, occlusion);
 #endif // DO_DIRECT_LIGHTING
 
 #if TRANSPARENT == 1
