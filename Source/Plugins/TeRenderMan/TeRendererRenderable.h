@@ -61,6 +61,7 @@ namespace te
         void Draw() const override;
 
         UINT64 AnimationId = 0;
+        Bounds WorldBounds;
         RenderableAnimType AnimType = RenderableAnimType::None;
         SPtr<GpuBuffer> BoneMatrixBuffer;
         SPtr<GpuBuffer> BonePrevMatrixBuffer;

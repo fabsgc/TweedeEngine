@@ -552,11 +552,12 @@ namespace te
             loadStoreTexture.second->ExportJson(loadStoreTextureDoc);
         }
 
+        _variation.ExportJson(document["variation"]);
+
         String dump = document.dump();
         serializer->WriteString(dump);
 
         // TODO Serialization
-        // variation
         // buffers
         // params
     }
@@ -607,6 +608,8 @@ namespace te
             SPtr<Material::TextureData> textureData = te_shared_ptr_new<Material::TextureData>(Material::TextureData::ImportJson(loadStoreTextureDoc));
             object->_loadStoreTextures[loadStoreTexture.key()] = textureData;
         }
+
+        ShaderVariation::ImportJson(document["variation"], object->_variation);
 
         object->Initialize();
         object->SetShader(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));

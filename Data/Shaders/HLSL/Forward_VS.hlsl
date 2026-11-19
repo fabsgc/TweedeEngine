@@ -123,8 +123,8 @@ VS_OUTPUT main( VS_INPUT IN, uint instanceid : SV_InstanceID )
 #if WRITE_VELOCITY == 1
         OUT.Other.x = (gInstanceData[instanceid].WriteVelocity == 1) ? 1.0 : 0.0;
 #endif
-        OUT.Other.y = (gInstanceData[instanceid].CastLights == 1) ? 1.0 : 0.0;
-        OUT.Other.z = (gCamera.UseSRGB == 1) ? 1.0 : 0.0;
+        OUT.Other.y = (gInstanceData[instanceid].LightingFlags & PER_INSTANCE_LIGHTING_FLAG_CAST_LIGHTS) != 0 ? 1.0 : 0.0;
+        OUT.Other.z = (gInstanceData[instanceid].LightingFlags & PER_INSTANCE_LIGHTING_FLAG_RECEIVE_SHADOWS) != 0 ? 1.0 : 0.0;
     }
 
     float3x3 TBN = float3x3(OUT.Tangent.xyz, OUT.BiTangent.xyz, OUT.Normal);

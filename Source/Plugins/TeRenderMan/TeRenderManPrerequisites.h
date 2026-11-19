@@ -4,6 +4,7 @@
 #include "Renderer/TeParamBlocks.h"
 #include "Math/TeMatrix4.h"
 #include "Math/TeVector2.h"
+#include "Math/TeVector3.h"
 
 #define STANDARD_FORWARD_MIN_INSTANCED_BLOCK_SIZE 2
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE 128
@@ -14,6 +15,12 @@
 
 namespace te
 {
+    enum class PerInstanceLightingFlags : UINT32
+    {
+        CastLights = 0x1u,
+        ReceiveShadows = 0x2u
+    };
+
     struct PerCameraData
     {
         Vector3 ViewDir;
@@ -46,7 +53,7 @@ namespace te
         UINT32  Layer;
         UINT32  HasAnimation;
         UINT32  WriteVelocity;
-        UINT32  CastLights;
+        UINT32  LightingFlags;
     };
 
     struct PerMaterialData
@@ -87,7 +94,7 @@ namespace te
         Vector3 Direction;
         float   BoundsRadius;
         Vector3 SpotAngles;
-        UINT32  CastShadows;
+        UINT32  ShadowSlot;
     };
 
     // ############ Per Camera

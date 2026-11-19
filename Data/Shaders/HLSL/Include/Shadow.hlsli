@@ -42,10 +42,10 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 Position : SV_POSITION;
-#ifdef USES_GS
+#if USES_GS
     float4 WorldPosition : TEXCOORD0;
 #endif // USES_GS
-#ifdef USES_PS
+#if USES_PS
     float ShadowPosition : TEXCOORD0;
 #endif // USES_PS
 };
@@ -80,7 +80,7 @@ VS_OUTPUT VS_MAIN(VS_INPUT IN)
 
     worldPosition = mul(gMatWorld, worldPosition);
 
-#ifdef USES_GS
+#if USES_GS
     OUT.WorldPosition = worldPosition;
     OUT.Position = worldPosition;
 #else // USES_GS
@@ -93,7 +93,7 @@ VS_OUTPUT VS_MAIN(VS_INPUT IN)
     float ndcZ = clipPos.z / clipPos.w;
     float deviceZ = NDCZToDeviceZ(ndcZ);
 
-    #ifdef USES_PS
+    #if USES_PS
     if (deviceZ < 0)
     #else
     if (deviceZ < -gDepthBias)
@@ -107,7 +107,7 @@ VS_OUTPUT VS_MAIN(VS_INPUT IN)
     // If using a pixel shader, output shadow depth in clip space, as
     // we'll apply bias to it in PS (depth needs to be interpolated in
     // a perspective correct way)
-#ifdef USES_PS
+#if USES_PS
     OUT.ShadowPosition = clipPos.z;
 #else // Otherwise apply bias immediately
     clipPos.z = max(DeviceZToNDCZ(0), clipPos.z + gDepthBias);

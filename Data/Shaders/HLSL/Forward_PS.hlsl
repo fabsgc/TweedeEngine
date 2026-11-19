@@ -67,6 +67,23 @@ PS_OUTPUT main( VS_OUTPUT IN )
     float3		metallicRougness			= (float3)0;
     // #########################################################################
 
+#if DO_DIRECT_LIGHTING == 1
+    float3      geometricNormal             = cross(ddx(P), ddy(P));
+    float       geometricNormalLengthSq     = dot(geometricNormal, geometricNormal);
+
+    if (geometricNormalLengthSq > 1e-12)
+    {
+        geometricNormal *= rsqrt(geometricNormalLengthSq);
+        geometricNormal *= dot(geometricNormal, N_Raw) < 0.0 ? -1.0 : 1.0;
+    }
+    else
+    {
+        geometricNormal = N_Raw;
+    }
+#else
+    float3        geometricNormal           = N_Raw;
+#endif
+
     // ###################### PARALLAX MAP MAPPING
 #if USE_PARALLAX_MAP == 1
     {
@@ -273,7 +290,7 @@ PS_OUTPUT main( VS_OUTPUT IN )
         OUT.Scene.rgb = lit.Diffuse + lit.Specular;
 
 #if DO_DIRECT_LIGHTING == 1
-        OUT.Scene.rgb += DoDirectLighting(V, P, N, NoV, pixel, castLight, occlusion);
+        OUT.Scene.rgb += DoDirectLighting(V, P, N, geometricNormal, NoV, pixel, castLight, receiveShadows, occlusion);
 #endif // DO_DIRECT_LIGHTING
 
 #if TRANSPARENT == 1

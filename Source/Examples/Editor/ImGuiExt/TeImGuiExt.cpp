@@ -715,7 +715,7 @@ namespace te
 
                 if (ImGuiExt::RenderOptionFloat(cameraSettings->ShadowSettings.DirectionalShadowDistance, "##shadows_directional_shadow_distance_option", "Dir. Shadow Dist.", 1.0f, 512.0f, widthShadows))
                     hasChanged = true;
-                if (ImGuiExt::RenderOptionInt((int&)cameraSettings->ShadowSettings.NumCascades, "##shadows_num_cascades_option", "Num Cascades.", 1, 6, widthShadows))
+                if (ImGuiExt::RenderOptionInt((int&)cameraSettings->ShadowSettings.NumCascades, "##shadows_num_cascades_option", "Num Cascades.", 2, 6, widthShadows))
                     hasChanged = true;
                 if (ImGuiExt::RenderOptionFloat(cameraSettings->ShadowSettings.CascadeDistributionExponent, "##shadows_cascade_distribution_component_option", "Cascade Distrib.", 1.0f, 4.0f, widthShadows))
                     hasChanged = true;

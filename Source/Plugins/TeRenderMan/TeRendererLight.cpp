@@ -7,15 +7,19 @@ namespace te
     PerLightsParamDef gPerLightsParamDef;
     SPtr<GpuParamBlockBuffer> gPerLightsParamBuffer;
 
-    void PerLightsBuffer::UpdatePerLights(const PerLightData* (&lights)[STANDARD_FORWARD_MAX_NUM_LIGHTS], UINT32 lightNumber)
+    void PerLightsBuffer::UpdatePerLights(const InfluencingLight* lights, const UINT32* shadowSlots, UINT32 lightNumber)
     {
         if (!gPerLightsParamBuffer)
             gPerLightsParamBuffer = gPerLightsParamDef.CreateBuffer();
 
         gPerLightsParamDef.gLightsNumber.Set(gPerLightsParamBuffer, lightNumber);
 
-        for (size_t i = 0; i < lightNumber; i++)
-            gPerLightsParamDef.gLights.Set(gPerLightsParamBuffer, const_cast<PerLightData&>(*lights[i]), (UINT32)i);
+        for (UINT32 i = 0; i < lightNumber; i++)
+        {
+            PerLightData data = *lights[i].Data;
+            data.ShadowSlot = shadowSlots[i];
+            gPerLightsParamDef.gLights.Set(gPerLightsParamBuffer, data, i);
+        }
     }
 
     RendererLight::RendererLight(Light* light)
@@ -55,7 +59,7 @@ namespace te
         output.SpotAngles.z = 1.0f / std::max(1.0f - output.SpotAngles.y, 0.001f);
         output.Color = color.GetAsVector3();
         output.BoundsRadius = _internal->GetBounds().GetRadius();
-        output.CastShadows = _internal->GetCastShadows() ? 1 : 0;
+        output.ShadowSlot = 0;
         output.Type = type;
     }
 
@@ -160,103 +164,45 @@ namespace te
         }
     }
 
-    void VisibleLightData::GatherInfluencingLights(const Bounds& bounds,
-        const PerLightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS], Vector3I& counts) const
+    UINT32 VisibleLightData::GatherInfluencingLights(const Bounds& bounds,
+        InfluencingLight (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS]) const
     {
-        UINT32 outputIndices[STANDARD_FORWARD_MAX_NUM_LIGHTS];
-        UINT32 numInfluencingLights = 0;
-
-        UINT32 numDirLights = GetNumDirLights();
-        for (UINT32 i = 0; i < numDirLights; i++)
+        const Sphere& receiver = bounds.GetSphere();
+        UINT32 lightIndex = 0;
+        UINT32 count = 0;
+        for (const auto& lightsPerType : _visibleLights)
         {
-            if (numInfluencingLights >= STANDARD_FORWARD_MAX_NUM_LIGHTS)
-                return;
-
-            outputIndices[numInfluencingLights] = i;
-            numInfluencingLights++;
-        }
-
-        UINT32 pointLightOffset = numInfluencingLights;
-
-        float distances[STANDARD_FORWARD_MAX_NUM_LIGHTS];
-        for (UINT32 i = 0; i < STANDARD_FORWARD_MAX_NUM_LIGHTS; i++)
-            distances[i] = std::numeric_limits<float>::max();
-
-        // Note: This is an ad-hoc way of evaluating light influence, a better way might be wanted
-        UINT32 numLights = (UINT32)_visibleLightData.size();
-        UINT32 furthestLightIdx = (UINT32)-1;
-        float furthestDistance = 0.0f;
-        for (UINT32 j = numDirLights; j < numLights; j++)
-        {
-            const PerLightData* lightData = &_visibleLightData[j];
-
-            Sphere lightSphere(lightData->Position, lightData->BoundsRadius);
-            if (bounds.GetSphere().Intersects(lightSphere))
+            for (const RendererLight* source : lightsPerType)
             {
-                float distance = bounds.GetSphere().GetCenter().SquaredDistance(lightData->Position);
-
-                // See where in the array can we fit the light
-                if (numInfluencingLights < STANDARD_FORWARD_MAX_NUM_LIGHTS)
+                const PerLightData& light = _visibleLightData[lightIndex++];
+                float score = light.Intensity * std::max({light.Color.x, light.Color.y, light.Color.z});
+                if (light.Type != (UINT32)Light::Type::Directional)
                 {
-                    outputIndices[numInfluencingLights] = j;
-                    distances[numInfluencingLights] = distance;
+                    if (!receiver.Intersects(source->_internal->GetBounds()))
+                        continue;
 
-                    if (distance > furthestDistance)
-                    {
-                        furthestLightIdx = numInfluencingLights;
-                        furthestDistance = distance;
-                    }
-
-                    numInfluencingLights++;
+                    const float distanceSquared = receiver.GetCenter().SquaredDistance(light.Position);
+                    const float scale = light.Type == (UINT32)Light::Type::Radial ? 12.56637f : 3.14159f;
+                    score /= scale * std::max(distanceSquared, 0.0001f);
                 }
-                else if (distance < furthestDistance)
+
+                if (score <= 0.0f || (count == STANDARD_FORWARD_MAX_NUM_LIGHTS && score <= output[count - 1].Score))
+                    continue;
+
+                if (count < STANDARD_FORWARD_MAX_NUM_LIGHTS)
+                    ++count;
+
+                UINT32 index = count - 1;
+                while (index > 0 && score > output[index - 1].Score)
                 {
-                    outputIndices[furthestLightIdx] = j;
-                    distances[furthestLightIdx] = distance;
-
-                    furthestDistance = distance;
-                    for (UINT32 k = 0; k < STANDARD_FORWARD_MAX_NUM_LIGHTS; k++)
-                    {
-                        if (distances[k] > furthestDistance)
-                        {
-                            furthestDistance = distances[k];
-                            furthestLightIdx = k;
-                        }
-                    }
+                    output[index] = output[index - 1];
+                    --index;
                 }
+                output[index] = { &light, source, score };
             }
         }
 
-        // Output actual light data, sorted by type
-        counts = Vector3I(0, 0, 0);
-
-        for (UINT32 i = 0; i < pointLightOffset; i++)
-        {
-            output[i] = &_visibleLightData[outputIndices[i]];
-            counts.x += 1;
-        }
-
-        UINT32 outputIdx = pointLightOffset;
-        UINT32 spotLightIdx = GetNumDirLights() + GetNumRadialLights();
-        for (UINT32 i = pointLightOffset; i < numInfluencingLights; i++)
-        {
-            bool isSpot = outputIndices[i] >= spotLightIdx;
-            if (isSpot)
-                continue;
-
-            output[outputIdx++] = &_visibleLightData[outputIndices[i]];
-            counts.y += 1;
-        }
-
-        for (UINT32 i = pointLightOffset; i < numInfluencingLights; i++)
-        {
-            bool isSpot = outputIndices[i] >= spotLightIdx;
-            if (!isSpot)
-                continue;
-
-            output[outputIdx++] = &_visibleLightData[outputIndices[i]];
-            counts.z += 1;
-        }
+        return count;
     }
     
     void VisibleLightData::GatherLights(const PerLightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],

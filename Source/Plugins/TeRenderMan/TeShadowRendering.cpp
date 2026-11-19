@@ -102,12 +102,13 @@ namespace te
         NormArea.height = Area.height / (float)atlasSize;
     }
 
-    ShadowMapAtlas::ShadowMapAtlas(UINT32 size)
+    ShadowMapAtlas::ShadowMapAtlas(UINT32 size, PixelFormat format)
         : _layout(0, 0, size, size, true)
         , _lastUsedCounter(0)
+        , _format(format)
     {
         _atlas = gGpuResourcePool().Get(
-            POOLED_RENDER_TEXTURE_DESC::Create2D(SHADOW_MAP_FORMAT, size, size, TU_DEPTHSTENCIL));
+            POOLED_RENDER_TEXTURE_DESC::Create2D(_format, size, size, TU_DEPTHSTENCIL));
     }
 
     bool ShadowMapAtlas::AddMap(UINT32 size, Rect2I& area, UINT32 border)
@@ -147,8 +148,9 @@ namespace te
         return _atlas->RenderTex;
     }
 
-    ShadowMapBase::ShadowMapBase(UINT32 size)
+    ShadowMapBase::ShadowMapBase(UINT32 size, PixelFormat format)
         : _size(size)
+        , _format(format)
         , _isUsed(false)
         , _lastUsedCounter(0)
     { }
@@ -158,11 +160,11 @@ namespace te
         return _shadowMap->Tex;
     }
 
-    ShadowCubemap::ShadowCubemap(UINT32 size)
-        : ShadowMapBase(size)
+    ShadowCubemap::ShadowCubemap(UINT32 size, PixelFormat format)
+        : ShadowMapBase(size, format)
     {
         _shadowMap = gGpuResourcePool().Get(
-            POOLED_RENDER_TEXTURE_DESC::CreateCube(SHADOW_MAP_FORMAT, size, size, TU_DEPTHSTENCIL));
+            POOLED_RENDER_TEXTURE_DESC::CreateCube(_format, size, size, TU_DEPTHSTENCIL));
     }
 
     SPtr<RenderTexture> ShadowCubemap::GetTarget() const
@@ -170,14 +172,14 @@ namespace te
         return _shadowMap->RenderTex;
     }
 
-    ShadowCascadedMap::ShadowCascadedMap(UINT32 size, UINT32 numCascades)
-        : ShadowMapBase(size)
+    ShadowCascadedMap::ShadowCascadedMap(UINT32 size, UINT32 numCascades, PixelFormat format)
+        : ShadowMapBase(size, format)
         , _numCascades(numCascades)
         , _targets(numCascades)
         , _shadowInfos(numCascades)
     {
-        _shadowMap = gGpuResourcePool().Get(POOLED_RENDER_TEXTURE_DESC::Create2D(SHADOW_MAP_FORMAT, size, size,
-            TU_DEPTHSTENCIL, 0, false, numCascades));
+        _shadowMap = gGpuResourcePool().Get(POOLED_RENDER_TEXTURE_DESC::Create2D(_format, size, size,
+            TU_DEPTHSTENCIL, 0, false, std::max(numCascades, 2u)));
 
         RENDER_TEXTURE_DESC rtDesc;
         rtDesc.DepthStencilSurface.Tex = _shadowMap->Tex;
@@ -493,10 +495,127 @@ namespace te
         _shadowParamsBuffer = nullptr;
     }
 
+    static constexpr UINT32 ForwardShadowSlots = 2;
+    static constexpr UINT32 ForwardShadowCascades = 6;
+    static const String ForwardShadowTextureNames[(UINT32)Light::Type::Count][ForwardShadowSlots] =
+    {
+        { "DirectionalShadowMap0", "DirectionalShadowMap1" },
+        { "PointShadowMap0", "PointShadowMap1" },
+        { "SpotShadowMap0", "SpotShadowMap1" }
+    };
+
+    TE_PARAM_BLOCK_BEGIN(ForwardShadowParamsDef)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Matrix4, gCascadeMatrices, ForwardShadowSlots * ForwardShadowCascades)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gCascadeSplits, ForwardShadowSlots * ForwardShadowCascades)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gDirectionalShadowParams, ForwardShadowSlots)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Matrix4, gSpotShadowMatrices, ForwardShadowSlots)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gSpotShadowAreas, ForwardShadowSlots)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gSpotShadowParams, ForwardShadowSlots)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gPointShadowParams, ForwardShadowSlots)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gPointShadowBias, ForwardShadowSlots)
+    TE_PARAM_BLOCK_END
+
+    static ForwardShadowParamsDef gForwardShadowParamsDef;
+
+    void ShadowRendering::BindForwardShadows(GpuParams& params, const RendererView& view,
+        const InfluencingLight* lights, UINT32 lightCount, UINT32* shadowSlots)
+    {
+        if (!_forwardShadowBuffer)
+            _forwardShadowBuffer = gForwardShadowParamsDef.CreateBuffer();
+
+        params.SetParamBlockBuffer("ForwardShadowBuffer", _forwardShadowBuffer);
+        if (!view.GetRenderSettings().ShadowSettings.Enabled)
+            return;
+
+        const UINT32 viewIdx = view.GetViewIdx();
+        UINT32 usedSlots[(UINT32)Light::Type::Count] = {};
+        for (UINT32 lightIdx = 0; lightIdx < lightCount; ++lightIdx)
+        {
+            const Light& light = *lights[lightIdx].Source->_internal;
+            const auto type = light.GetType();
+            const UINT32 typeIdx = (UINT32)type;
+            const UINT32 slot = usedSlots[typeIdx];
+            if (slot == ForwardShadowSlots || !light.GetCastShadows())
+                continue;
+
+            const UINT32 sceneIdx = light.GetRendererId();
+            SPtr<Texture> texture;
+            if (type == Light::Type::Directional)
+            {
+                const auto& viewShadows = _directionalLightShadows[sceneIdx].ViewShadows;
+                if (viewIdx >= viewShadows.size() || viewShadows[viewIdx].NumShadows == 0)
+                    continue;
+
+                const auto& map = _cascadedShadowMaps[viewShadows[viewIdx].StartIdx];
+                const UINT32 cascadeCount = map.GetNumCascades();
+                gForwardShadowParamsDef.gDirectionalShadowParams.Set(_forwardShadowBuffer, Vector4((float)cascadeCount, 0, 0, 0), slot);
+                for (UINT32 cascade = 0; cascade < cascadeCount; ++cascade)
+                {
+                    const auto& info = map.GetShadowInfo(cascade);
+                    const UINT32 index = slot * ForwardShadowCascades + cascade;
+                    gForwardShadowParamsDef.gCascadeMatrices.Set(_forwardShadowBuffer, info.ShadowVPTransform, index);
+                    gForwardShadowParamsDef.gCascadeSplits.Set(_forwardShadowBuffer,
+                        Vector4(info.DepthNear, info.DepthFade, info.FadeRange, info.DepthBias), index);
+                }
+                texture = map.GetTexture();
+            }
+            else
+            {
+                const bool spot = type == Light::Type::Spot;
+                const auto& shadows = spot ? _spotLightShadows[sceneIdx] : _radialLightShadows[sceneIdx];
+                if (shadows.NumShadows == 0)
+                    continue;
+
+                const auto& info = _shadowInfos[shadows.StartIdx];
+                const float fade = Math::Clamp(info.FadePerView[viewIdx], 0.0f, 1.0f);
+                if (fade <= 0.0f)
+                    continue;
+
+                if (spot)
+                {
+                    const Rect2& area = info.NormArea;
+                    gForwardShadowParamsDef.gSpotShadowMatrices.Set(_forwardShadowBuffer, info.ShadowVPTransform, slot);
+                    gForwardShadowParamsDef.gSpotShadowAreas.Set(_forwardShadowBuffer,
+                        Vector4(area.x, area.y, area.width, area.height), slot);
+                    gForwardShadowParamsDef.gSpotShadowParams.Set(_forwardShadowBuffer,
+                        Vector4(1.0f / info.DepthRange, fade, info.DepthBias, 0), slot);
+                    texture = _dynamicShadowMaps[info.TextureIdx].GetTexture();
+                }
+                else
+                {
+                    gForwardShadowParamsDef.gPointShadowParams.Set(_forwardShadowBuffer,
+                        Vector4(info.CubeDepthProjection.x, info.CubeDepthProjection.y, 1.0f / info.DepthRange, fade), slot);
+                    gForwardShadowParamsDef.gPointShadowBias.Set(_forwardShadowBuffer,
+                        Vector4(info.DepthBias, 0, 0, 0), slot);
+                    texture = _shadowCubemaps[info.TextureIdx].GetTexture();
+                }
+            }
+
+            params.SetTexture(GPT_PIXEL_PROGRAM, ForwardShadowTextureNames[typeIdx][slot], texture);
+            shadowSlots[lightIdx] = ++usedSlots[typeIdx];
+        }
+    }
+
+    void ShadowRendering::ClearForwardShadowTextures(GpuParams& params)
+    {
+        for (const auto& names : ForwardShadowTextureNames)
+            for (const auto& name : names)
+                params.SetTexture(GPT_PIXEL_PROGRAM, name, nullptr);
+    }
+
     void ShadowRendering::RenderShadowMaps(RendererScene& scene, const RendererViewGroup& viewGroup, const FrameInfo& frameInfo)
     {
         const SceneInfo& sceneInfo = scene.GetSceneInfo();
         const VisibilityInfo& visibility = viewGroup.GetVisibilityInfo();
+
+        UINT32 shadowFilteringQuality = 0;
+        for (UINT32 i = 0; i < viewGroup.GetNumViews(); ++i)
+        {
+            const UINT32 quality = Math::Clamp(
+                viewGroup.GetView(i)->GetRenderSettings().ShadowSettings.ShadowFilteringQuality, 1u, 4u);
+            shadowFilteringQuality = std::max(shadowFilteringQuality, quality);
+        }
+        _shadowMapFormat = shadowFilteringQuality <= 2 ? PF_D16 : PF_D32;
 
         // Clear all transient data from last frame
         _shadowInfos.clear();
@@ -606,6 +725,7 @@ namespace te
         }
 
         // Render shadow maps
+        RenderAPI::Instance().SetViewport(Rect2(0.0f, 0.0f, 1.0f, 1.0f));
         for (UINT32 i = 0; i < (UINT32)sceneInfo.DirectionalLights.size(); ++i)
         {
             const RendererLight& light = sceneInfo.DirectionalLights[i];
@@ -691,12 +811,13 @@ namespace te
         shadowInfo.Area = Rect2I(0, 0, mapSize, mapSize);
         shadowInfo.UpdateNormArea(mapSize);
 
-        UINT32 numCascades = view.GetRenderSettings().ShadowSettings.NumCascades;
+        UINT32 numCascades = Math::Clamp(view.GetRenderSettings().ShadowSettings.NumCascades, 1u, ForwardShadowCascades);
         for (UINT32 i = 0; i < (UINT32)_cascadedShadowMaps.size(); i++)
         {
             ShadowCascadedMap& shadowMap = _cascadedShadowMaps[i];
 
-            if (!shadowMap.IsUsed() && shadowMap.GetSize() == mapSize && shadowMap.GetNumCascades() == numCascades)
+            if (!shadowMap.IsUsed() && shadowMap.GetSize() == mapSize && shadowMap.GetNumCascades() == numCascades &&
+                shadowMap.GetFormat() == _shadowMapFormat)
             {
                 shadowInfo.TextureIdx = i;
                 shadowMap.MarkAsUsed();
@@ -708,7 +829,7 @@ namespace te
         if (shadowInfo.TextureIdx == (UINT32)-1)
         {
             shadowInfo.TextureIdx = (UINT32)_cascadedShadowMaps.size();
-            _cascadedShadowMaps.push_back(ShadowCascadedMap(mapSize, numCascades));
+            _cascadedShadowMaps.push_back(ShadowCascadedMap(mapSize, numCascades, _shadowMapFormat));
 
             ShadowCascadedMap& shadowMap = _cascadedShadowMaps.back();
             shadowMap.MarkAsUsed();
@@ -821,13 +942,17 @@ namespace te
             _shadowParamsBuffer = gShadowParamsDef.CreateBuffer();
 
         bool foundSpace = false;
+        bool clearAtlas = true;
         for (UINT32 i = 0; i < (UINT32)_dynamicShadowMaps.size(); i++)
         {
             ShadowMapAtlas& atlas = _dynamicShadowMaps[i];
+            const bool wasEmpty = atlas.IsEmpty();
 
-            if (atlas.AddMap(options.MapSize, mapInfo.Area, SHADOW_MAP_BORDER))
+            if (atlas.GetFormat() == _shadowMapFormat &&
+                atlas.AddMap(options.MapSize, mapInfo.Area, SHADOW_MAP_BORDER))
             {
                 mapInfo.TextureIdx = i;
+                clearAtlas = wasEmpty;
 
                 foundSpace = true;
                 break;
@@ -837,10 +962,11 @@ namespace te
         if (!foundSpace)
         {
             mapInfo.TextureIdx = (UINT32)_dynamicShadowMaps.size();
-            _dynamicShadowMaps.push_back(ShadowMapAtlas(MAX_ATLAS_SIZE));
+            _dynamicShadowMaps.push_back(ShadowMapAtlas(MAX_ATLAS_SIZE, _shadowMapFormat));
 
             ShadowMapAtlas& atlas = _dynamicShadowMaps.back();
-            atlas.AddMap(options.MapSize, mapInfo.Area, SHADOW_MAP_BORDER);
+            if (!atlas.AddMap(options.MapSize, mapInfo.Area, SHADOW_MAP_BORDER))
+                return;
         }
 
         mapInfo.UpdateNormArea(MAX_ATLAS_SIZE);
@@ -849,8 +975,9 @@ namespace te
         rapi.PushMarker("[DRAW] Project Spot Shadow", Color(0.85f, 0.43f, 0.25f));
 
         rapi.SetRenderTarget(atlas.GetTarget());
+        if (clearAtlas)
+            rapi.ClearRenderTarget(FBT_DEPTH);
         rapi.SetViewport(mapInfo.NormArea);
-        rapi.ClearViewport(FBT_DEPTH);
 
         mapInfo.DepthNear = 0.05f;
         mapInfo.DepthFar = light->GetBounds().GetRadius();
@@ -928,7 +1055,8 @@ namespace te
         {
             ShadowCubemap& cubemap = _shadowCubemaps[i];
 
-            if (!cubemap.IsUsed() && cubemap.GetSize() == options.MapSize)
+            if (!cubemap.IsUsed() && cubemap.GetSize() == options.MapSize &&
+                cubemap.GetFormat() == _shadowMapFormat)
             {
                 mapInfo.TextureIdx = i;
                 cubemap.MarkAsUsed();
@@ -940,7 +1068,7 @@ namespace te
         if (mapInfo.TextureIdx == (UINT32)-1)
         {
             mapInfo.TextureIdx = (UINT32)_shadowCubemaps.size();
-            _shadowCubemaps.push_back(ShadowCubemap(options.MapSize));
+            _shadowCubemaps.push_back(ShadowCubemap(options.MapSize, _shadowMapFormat));
 
             ShadowCubemap& cubemap = _shadowCubemaps.back();
             cubemap.MarkAsUsed();
@@ -962,6 +1090,8 @@ namespace te
 
         // Render cubemaps upside down if necessary
         Matrix4 adjustedProj = proj;
+        rapi.ConvertProjectionMatrix(proj, adjustedProj);
+        mapInfo.CubeDepthProjection = Vector2(adjustedProj[2][2], adjustedProj[2][3]);
         if (caps.Convention.UV_YAxis == Conventions::Axis::Up)
         {
             // All big APIs use the same cubemap sampling coordinates, as well as the same face order. But APIs that
@@ -1165,7 +1295,8 @@ namespace te
         // If light fully (or nearly fully) covers the screen, use full shadow map resolution, otherwise
         // scale it down to smaller power of two, while clamping to minimal allowed resolution
         UINT32 effectiveMapSize = Bitwise::NextPow2((UINT32)maxMapSize);
-        effectiveMapSize = Math::Clamp(effectiveMapSize, MIN_SHADOW_MAP_SIZE, _shadowMapSize);
+        const UINT32 maxMapSizeForType = border > 0 ? std::min(_shadowMapSize, MAX_ATLAS_SIZE) : _shadowMapSize;
+        effectiveMapSize = Math::Clamp(effectiveMapSize, MIN_SHADOW_MAP_SIZE, maxMapSizeForType);
 
         // Leave room for border
         size = std::max(effectiveMapSize - 2 * border, 1u);
@@ -1349,9 +1480,9 @@ namespace te
 
     float ShadowRendering::GetDepthBias(const Light& light, float radius, float depthRange, UINT32 mapSize)
     {
-        const static float RADIAL_LIGHT_BIAS = 0.005f;
-        const static float SPOT_DEPTH_BIAS = 0.01f;
-        const static float DIR_DEPTH_BIAS = 0.001f; // In clip space units
+        const static float RADIAL_LIGHT_BIAS = 0.01f;
+        const static float SPOT_DEPTH_BIAS = 0.02f;
+        const static float DIR_DEPTH_BIAS = 3.0f; // In shadow-map texels
         const static float DEFAULT_RESOLUTION = 512.f;
 
         // Increase bias if map size smaller than some resolution
@@ -1372,10 +1503,9 @@ namespace te
         switch (light.GetType())
         {
         case Light::Type::Directional:
-            defaultBias = DIR_DEPTH_BIAS * deviceDepthRange;
-
-            // Use larger bias for further away cascades
-            defaultBias *= depthRange * 0.01f;
+            // Keep the bias proportional to a shadow texel as cascade depth ranges change.
+            defaultBias = DIR_DEPTH_BIAS * deviceDepthRange * (2.0f * radius / (float)mapSize) /
+                std::max(depthRange, 0.0001f);
             break;
         case Light::Type::Radial:
             defaultBias = RADIAL_LIGHT_BIAS;

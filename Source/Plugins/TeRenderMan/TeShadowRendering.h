@@ -15,6 +15,8 @@
 
 namespace te
 {
+    struct InfluencingLight;
+
     TE_PARAM_BLOCK_BEGIN(ShadowParamsDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
         TE_PARAM_BLOCK_ENTRY(Vector2, gNDCZToDeviceZ)
@@ -150,9 +152,6 @@ namespace te
         static ShadowDepthCubeMat* GetVariation(bool skinned);
     };
 
-    /** Pixel format used for rendering and storing shadow maps. */
-    const PixelFormat SHADOW_MAP_FORMAT = PF_D16;
-
     /** Information about a shadow cast from a single light. */
     struct ShadowInfo
     {
@@ -179,6 +178,7 @@ namespace te
 
         /** View-projection matrix for each cubemap face, used for omni-directional shadows. */
         Matrix4 ShadowVPTransforms[6];
+        Vector2 CubeDepthProjection;
 
         /** Bounds of the geometry the shadow is being applied on. */
         Sphere SubjectBounds;
@@ -194,7 +194,7 @@ namespace te
     class ShadowMapAtlas
     {
     public:
-        ShadowMapAtlas(UINT32 size);
+        ShadowMapAtlas(UINT32 size, PixelFormat format);
 
         /**
         * Registers a new map in the shadow map atlas. Returns true if the map fits in the atlas, or false otherwise.
@@ -214,6 +214,9 @@ namespace te
          */
         UINT32 GetLastUsedCounter() const { return _lastUsedCounter; }
 
+        /** Returns the pixel format used by the atlas. */
+        PixelFormat GetFormat() const { return _format; }
+
         /** Returns the bindable atlas texture. */
         SPtr<Texture> GetTexture() const;
 
@@ -225,13 +228,14 @@ namespace te
 
         TextureAtlasLayout _layout;
         UINT32 _lastUsedCounter;
+        PixelFormat _format;
     };
 
     /** Contains common code for different shadow map types. */
     class ShadowMapBase
     {
     public:
-        ShadowMapBase(UINT32 size);
+        ShadowMapBase(UINT32 size, PixelFormat format);
         virtual ~ShadowMapBase() {}
 
         /** Returns the bindable shadow map texture. */
@@ -239,6 +243,9 @@ namespace te
 
         /** Returns the size of a single face of the shadow map texture, in pixels. */
         UINT32 GetSize() const { return _size; }
+
+        /** Returns the pixel format used by the shadow map. */
+        PixelFormat GetFormat() const { return _format; }
 
         /** Makes the shadow map available for re-use and increments the counter returned by getLastUsedCounter(). */
         void Clear() { _isUsed = false; _lastUsedCounter++; }
@@ -259,6 +266,7 @@ namespace te
     protected:
         SPtr<PooledRenderTexture> _shadowMap;
         UINT32 _size;
+        PixelFormat _format;
 
         bool _isUsed;
         UINT32 _lastUsedCounter;
@@ -268,7 +276,7 @@ namespace te
     class ShadowCubemap : public ShadowMapBase
     {
     public:
-        ShadowCubemap(UINT32 size);
+        ShadowCubemap(UINT32 size, PixelFormat format);
 
         /** Returns a render target encompassing all six faces of the shadow cubemap. */
         SPtr<RenderTexture> GetTarget() const;
@@ -278,7 +286,7 @@ namespace te
     class ShadowCascadedMap : public ShadowMapBase
     {
     public:
-        ShadowCascadedMap(UINT32 size, UINT32 numCascades);
+        ShadowCascadedMap(UINT32 size, UINT32 numCascades, PixelFormat format);
 
         /** Returns the total number of cascades in the cascade shadow map. */
         UINT32 GetNumCascades() const { return _numCascades; }
@@ -333,6 +341,10 @@ namespace te
 
         /** Changes the default shadow map size. Will cause all shadow maps to be rebuilt. */
         void SetShadowMapSize(UINT32 size);
+
+        void BindForwardShadows(GpuParams& params, const RendererView& view, const InfluencingLight* lights,
+            UINT32 lightCount, UINT32* shadowSlots);
+        static void ClearForwardShadowTextures(GpuParams& params);
 
     private:
         /** Renders cascaded shadow maps for the provided directional light viewed from the provided view. */
@@ -420,6 +432,8 @@ namespace te
 
     private:
         UINT32 _shadowMapSize;
+        /** Pixel format selected from the highest shadow filtering quality in the current view group. */
+        PixelFormat _shadowMapFormat = PF_D32;
 
         Vector<ShadowMapAtlas> _dynamicShadowMaps;
         Vector<ShadowCascadedMap> _cascadedShadowMaps;
@@ -436,5 +450,6 @@ namespace te
         Vector<ShadowMapOptions> _radialLightShadowOptions; // Transient
 
         SPtr<GpuParamBlockBuffer> _shadowParamsBuffer;
+        SPtr<GpuParamBlockBuffer> _forwardShadowBuffer;
     };
 }

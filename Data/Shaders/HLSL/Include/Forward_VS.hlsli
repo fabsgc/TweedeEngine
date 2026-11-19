@@ -4,6 +4,8 @@
 // #################### DEFINES
 
 #define STANDARD_FORWARD_MAX_INSTANCED_BLOCK 128
+#define PER_INSTANCE_LIGHTING_FLAG_CAST_LIGHTS 0x1u
+#define PER_INSTANCE_LIGHTING_FLAG_RECEIVE_SHADOWS 0x2u
 
 // #################### STRUCTS
 
@@ -17,7 +19,7 @@ struct PerInstanceData
     uint   Layer;
     uint   HasAnimation;
     uint   WriteVelocity;
-    uint   CastLights;
+    uint   LightingFlags;
 };
 
 // #################### CONSTANT BUFFERS

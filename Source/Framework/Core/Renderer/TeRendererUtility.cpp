@@ -191,8 +191,8 @@ namespace te
 
     void RendererUtility::SetPassParams(const SPtr<GpuParams> gpuParams, UINT32 gpuParamsBindFlags, bool isInstanced)
     {
-        static const Vector<String> PerInstancedBuffer = { "PerCameraBuffer", "PerLightsBuffer", "PerFrameBuffer" };
-        static const Vector<String> PerNonInstancedBuffer = { "PerCameraBuffer", "PerLightsBuffer", "PerFrameBuffer", "PerInstanceBuffer"};
+        static const Vector<String> PerInstancedBuffer = { "PerCameraBuffer", "PerLightsBuffer", "PerFrameBuffer", "ForwardShadowBuffer" };
+        static const Vector<String> PerNonInstancedBuffer = { "PerCameraBuffer", "PerLightsBuffer", "PerFrameBuffer", "ForwardShadowBuffer", "PerInstanceBuffer" };
 
         if (gpuParams == nullptr)
             return;
@@ -334,7 +334,6 @@ namespace te
         rapi.DrawIndexed(0, 6, _nextQuadVBSlot * 4, 4, numInstances);
 
         _nextQuadVBSlot = (_nextQuadVBSlot + 1) % NUM_QUAD_VB_SLOTS;
-        _nextQuadVBSlot = 0;
     }
 
     void RendererUtility::Blit(const SPtr<Texture>& texture, const Rect2I& area, bool flipUV, bool isDepth)
