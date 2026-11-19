@@ -6,7 +6,6 @@
 #include "TeRendererLight.h"
 #include "TeRendererScene.h"
 #include "TeRendererTextures.h"
-#include "TeShadowRendering.h"
 #include "TeRenderManOptions.h"
 #include "Renderer/TeCamera.h"
 #include "Renderer/TeSkybox.h"
@@ -171,10 +170,8 @@ namespace te
         UINT32 gpuParamsBindFlags = 0;
 
         static const Vector<String> PerLightBuffer = { "PerLightsBuffer" };
-        static const Vector<String> ForwardShadowBuffer = { "ForwardShadowBuffer" };
         static const Vector<String> PerCameraBuffer = { "PerCameraBuffer" };
         static const Vector<String> PerFrameBuffer = { "PerFrameBuffer" };
-        SPtr<GpuParams> lastShadowParams;
 
         for(auto& entry : elements)
         {
@@ -213,6 +210,12 @@ namespace te
                 lastMaterial = entry.RenderElem->MaterialElem;
 
                 entry.RenderElem->GpuParamsElem[entry.PassIdx]
+                    ->SetParamBlockBuffer("PerLightsBuffer", gPerLightsParamBuffer);
+
+                rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
+                    GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, PerLightBuffer);
+
+                entry.RenderElem->GpuParamsElem[entry.PassIdx]
                     ->SetParamBlockBuffer("PerCameraBuffer", view.GetPerViewBuffer());
 
                 rapi.SetGpuParams(entry.RenderElem->GpuParamsElem[entry.PassIdx],
@@ -233,36 +236,12 @@ namespace te
 
             bool isInstanced = (entry.RenderElem->InstanceCount > 0) ? true : false;
 
-            const auto& params = entry.RenderElem->GpuParamsElem[entry.PassIdx];
-            if (params->GetParamBlockDesc(GPT_PIXEL_PROGRAM, "PerLightsBuffer"))
-            {
-                const auto& renderable = static_cast<const RenderableElement&>(*entry.RenderElem);
-                InfluencingLight lights[STANDARD_FORWARD_MAX_NUM_LIGHTS];
-                UINT32 shadowSlots[STANDARD_FORWARD_MAX_NUM_LIGHTS] = {};
-                const UINT32 count = viewGroup.GetVisibleLightData().GatherInfluencingLights(renderable.WorldBounds, lights);
-                if (params->GetParamBlockDesc(GPT_PIXEL_PROGRAM, "ForwardShadowBuffer"))
-                {
-                    viewGroup.GetShadowRenderer()->BindForwardShadows(*params, view, lights, count, shadowSlots);
-                    rapi.SetGpuParams(params, GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, ForwardShadowBuffer);
-                    gpuParamsBindFlags |= GPU_BIND_TEXTURE;
-                    lastShadowParams = params;
-                }
-                PerLightsBuffer::UpdatePerLights(lights, shadowSlots, count);
-                params->SetParamBlockBuffer("PerLightsBuffer", gPerLightsParamBuffer);
-                rapi.SetGpuParams(params, GPU_BIND_PARAM_BLOCK, GPU_BIND_PARAM_BLOCK_LISTED, PerLightBuffer);
-            }
-
-            gRendererUtility().SetPassParams(params, gpuParamsBindFlags, isInstanced);
+            gRendererUtility().SetPassParams(entry.RenderElem->GpuParamsElem[entry.PassIdx], gpuParamsBindFlags, isInstanced);
             entry.RenderElem->Draw();
-            if (lastShadowParams == params)
-                ShadowRendering::ClearForwardShadowTextures(*params);
 
             rapi.PopMarker();
             drawCallsCounter++;
         }
-
-        if (lastShadowParams)
-            rapi.SetGpuParams(lastShadowParams, GPU_BIND_TEXTURE | GPU_BIND_BUFFER);
 
         return drawCallsCounter;
     }

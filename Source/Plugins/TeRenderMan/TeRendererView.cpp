@@ -377,7 +377,6 @@ namespace te
             for (auto& renderElem : sceneInfo.Renderables[i]->Elements)
             {
                 Bounds bounds = sceneInfo.Renderables[i]->RenderablePtr->GetSubMeshBounds(j);
-                renderElem.WorldBounds = bounds;
                 const float distanceToCamera = (_properties.ViewOrigin - bounds.GetSphere().GetCenter()).Length();
                 j++;
 
@@ -448,14 +447,14 @@ namespace te
             // We will use first element of this block for its data (each element has same internal data)
             UINT32 idx = instancedBuffer.Idx[lowerBlockBound];
 
-            Bounds blockBounds = sceneInfo.RenderableCullInfos[idx].Boundaries;
+            const AABox& boundingBox = sceneInfo.RenderableCullInfos[idx].Boundaries.GetBox();
+            const float distanceToCamera = (_properties.ViewOrigin - boundingBox.GetCenter()).Length();
+
             PerInstanceData data;
 
             for (auto subElemIdx = lowerBlockBound; subElemIdx < upperBlockBound; subElemIdx++)
             {
                 UINT32 elemId = instancedBuffer.Idx[subElemIdx];
-                if (subElemIdx != lowerBlockBound)
-                    blockBounds.Merge(sceneInfo.RenderableCullInfos[elemId].Boundaries);
                 const Renderable* renderable = sceneInfo.Renderables[elemId]->RenderablePtr;
                 const Matrix4& tfrmNoScale = renderable->GetMatrixNoScale();
 
@@ -470,8 +469,8 @@ namespace te
                 data.Layer = (UINT32)renderable->GetLayer();
                 data.HasAnimation = (renderable->IsAnimated()) ? 1 : 0;
                 data.WriteVelocity = (renderable->GetWriteVelocity()) ? 1 : 0;
-                data.LightingFlags = (renderable->GetCastLights() ? 1u : 0u) | (renderable->GetReceiveShadows() ? 2u : 0u);
-                _instanceDataPool[currInstBlock][subElemIdx - lowerBlockBound] = data;
+                data.CastLights = (renderable->GetCastLights()) ? 1 : 0;
+                                _instanceDataPool[currInstBlock][subElemIdx - lowerBlockBound] = data;
                 instancedObjectCounter++;
 
                 if (instancedObjectCounter > STANDARD_FORWARD_MAX_INSTANCED_BLOCK_SIZE* STANDARD_FORWARD_MAX_INSTANCED_BLOCKS_NUMBER)
@@ -482,7 +481,6 @@ namespace te
             sceneInfo.Renderables[idx]->UpdatePerInstanceBuffer(_instanceDataPool[currInstBlock], upperBlockBound - lowerBlockBound, currInstBlock);
 
             // We create all instanced render element using first RendererRenderable data
-            const float distanceToCamera = (_properties.ViewOrigin - blockBounds.GetBox().GetCenter()).Length();
             for (auto& renderElem : sceneInfo.Renderables[idx]->Elements)
             {
                 RenderableElement* elem = te_pool_new<RenderableElement>(false);
@@ -490,7 +488,6 @@ namespace te
                 elem->SubMeshElem = renderElem.SubMeshElem;
                 elem->MaterialElem = renderElem.MaterialElem;
                 elem->AnimationId = renderElem.AnimationId;
-                elem->WorldBounds = blockBounds;
                 elem->AnimType = renderElem.AnimType;
                 elem->DefaultTechniqueIdx = renderElem.DefaultTechniqueIdx;
                 elem->Type = renderElem.Type;
@@ -786,8 +783,6 @@ namespace te
         const auto numDirectionalLights = (UINT32)sceneInfo.DirectionalLights.size();
         _visibility.DirectionalLights.resize(numDirectionalLights, true);
         _visibility.DirectionalLights.assign(numDirectionalLights, true);
-
-        _visibleLightData.Update(sceneInfo, *this);
 
         // TODO calculate Decal visibility
     }

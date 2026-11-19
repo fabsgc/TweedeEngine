@@ -62,7 +62,7 @@ struct LightData
     float  BoundsRadius;
     float3 SpotAngles;
     
-    uint   ShadowSlot;
+    uint   CastShadows;
 };
 
 struct PixelData
@@ -168,10 +168,6 @@ Texture2D PreIntegratedEnvGF : register(t19);
 SamplerState AnisotropicSampler : register(s0);
 SamplerState BilinearSampler : register(s1);
 SamplerState NoFilterSampler : register(s2);
-
-#if DO_DIRECT_LIGHTING == 1
-#include "Include/ForwardShadows.hlsli"
-#endif
 
 // #################### HELPER FUNCTIONS
 
@@ -920,30 +916,21 @@ LightingResult DoIndirectLighting(float3 V, float3 P, float3 N, float NoV, const
 // V : view vector
 // P : position vector in world space
 // N : normal
-float3 DoDirectLighting(float3 V, float3 P, float3 N, float NoV, const PixelData pixel, bool castLight,
-    bool receiveShadows, float occlusion)
+float3 DoDirectLighting(float3 V, float3 P, float3 N, float NoV, const PixelData pixel, bool castLight, float occlusion)
 {
     float3 result = (float3)0;
 
     if (castLight)
     {
-        [loop]
+        [unroll]
         for( uint i = 0; i < gLightsNumber; ++i )
         {
-            LightData light = gLights[i];
-            float3 contribution = 0.0;
-            if (light.Type == DIRECTIONAL_LIGHT)
-                contribution = DoDirectionalLight(light, pixel, NoV, V, P, N, occlusion);
-            else if (light.Type == POINT_LIGHT)
-                contribution = DoPointLight(light, pixel, NoV, V, P, N, occlusion);
-            else if (light.Type == SPOT_LIGHT)
-                contribution = DoSpotLight(light, pixel, NoV, V, P, N, occlusion);
-
-            [branch]
-            if (receiveShadows && light.ShadowSlot != 0 && any(contribution > 0.0))
-                contribution *= GetForwardShadowVisibility(light, P, N);
-
-            result += contribution;
+            if(gLights[i].Type == DIRECTIONAL_LIGHT)
+                result += DoDirectionalLight( gLights[i], pixel, NoV, V, P, N, occlusion );
+            else if(gLights[i].Type == POINT_LIGHT)
+                result += DoPointLight( gLights[i], pixel, NoV, V, P, N, occlusion  );
+            else if(gLights[i].Type == SPOT_LIGHT)
+                result += DoSpotLight( gLights[i], pixel, NoV, V, P, N, occlusion  );
         }
     }
 

@@ -15,8 +15,6 @@
 
 namespace te
 {
-    struct InfluencingLight;
-
     TE_PARAM_BLOCK_BEGIN(ShadowParamsDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
         TE_PARAM_BLOCK_ENTRY(Vector2, gNDCZToDeviceZ)
@@ -153,7 +151,7 @@ namespace te
     };
 
     /** Pixel format used for rendering and storing shadow maps. */
-    const PixelFormat SHADOW_MAP_FORMAT = PF_D32;
+    const PixelFormat SHADOW_MAP_FORMAT = PF_D16;
 
     /** Information about a shadow cast from a single light. */
     struct ShadowInfo
@@ -181,7 +179,6 @@ namespace te
 
         /** View-projection matrix for each cubemap face, used for omni-directional shadows. */
         Matrix4 ShadowVPTransforms[6];
-        Vector2 CubeDepthProjection;
 
         /** Bounds of the geometry the shadow is being applied on. */
         Sphere SubjectBounds;
@@ -337,10 +334,6 @@ namespace te
         /** Changes the default shadow map size. Will cause all shadow maps to be rebuilt. */
         void SetShadowMapSize(UINT32 size);
 
-        void BindForwardShadows(GpuParams& params, const RendererView& view, const InfluencingLight* lights,
-            UINT32 lightCount, UINT32* shadowSlots);
-        static void ClearForwardShadowTextures(GpuParams& params);
-
     private:
         /** Renders cascaded shadow maps for the provided directional light viewed from the provided view. */
         void RenderCascadedShadowMaps(const RendererView& view, UINT32 lightIdx, RendererScene& scene,
@@ -443,6 +436,5 @@ namespace te
         Vector<ShadowMapOptions> _radialLightShadowOptions; // Transient
 
         SPtr<GpuParamBlockBuffer> _shadowParamsBuffer;
-        SPtr<GpuParamBlockBuffer> _forwardShadowBuffer;
     };
 }

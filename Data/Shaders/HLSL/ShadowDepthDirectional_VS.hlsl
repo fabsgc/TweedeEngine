@@ -1,5 +1,5 @@
 #define CLAMP_TO_NEAR_PLANE 1
-#define USES_PS 0
+#define USES_PS 1
 
 #include "Include/Shadow.hlsli"
 

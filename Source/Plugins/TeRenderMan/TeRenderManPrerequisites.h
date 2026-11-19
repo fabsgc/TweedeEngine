@@ -46,7 +46,7 @@ namespace te
         UINT32  Layer;
         UINT32  HasAnimation;
         UINT32  WriteVelocity;
-        UINT32  LightingFlags;
+        UINT32  CastLights;
     };
 
     struct PerMaterialData
@@ -87,7 +87,7 @@ namespace te
         Vector3 Direction;
         float   BoundsRadius;
         Vector3 SpotAngles;
-        UINT32  ShadowSlot;
+        UINT32  CastShadows;
     };
 
     // ############ Per Camera

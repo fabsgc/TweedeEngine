@@ -8,13 +8,6 @@ namespace te
     struct SceneInfo;
     class RendererViewGroup;
 
-    struct InfluencingLight
-    {
-        const PerLightData* Data;
-        const RendererLight* Source;
-        float Score;
-    };
-
     /** Helper class used for manipulating the PerObject parameter buffer. */
     class PerLightsBuffer
     {
@@ -25,7 +18,7 @@ namespace te
          *  @param[in]	lightNumber	  Number of lights to be rendered for this pass
          *  @param[in]	lights  	  Array of lights data
          */
-        static void UpdatePerLights(const InfluencingLight* lights, const UINT32* shadowSlots, UINT32 lightNumber);
+        static void UpdatePerLights(const PerLightData* (&lights)[STANDARD_FORWARD_MAX_NUM_LIGHTS], UINT32 lightNumber);
     };
 
     /**	Renderer information specific to a single light. */
@@ -72,11 +65,14 @@ namespace te
          * the provided bounds. A maximum number of STANDARD_FORWARD_MAX_NUM_LIGHTS will be output. If there are more
          * influencing lights, only the most important ones will be returned.
          *
-         * The lights are returned in descending order of estimated direct-light contribution.
+         * The lights will be output in the following order: directional, radial, spot. @p counts will contain the number
+         * of directional lights (component 'x'), number of radial lights (component 'y') and number of spot lights
+         * (component 'z');
          *
          * Update() must have been called with most recent scene/view information before calling this method.
          */
-        UINT32 GatherInfluencingLights(const Bounds& bounds, InfluencingLight (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS]) const;
+        void GatherInfluencingLights(const Bounds& bounds, const PerLightData* (&output)[STANDARD_FORWARD_MAX_NUM_LIGHTS],
+            Vector3I& counts) const;
 
         /**
          * Scans the list of lights visible in the view frustum. A maximum number of STANDARD_FORWARD_MAX_NUM_LIGHTS will be output. 
