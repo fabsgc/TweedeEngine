@@ -183,32 +183,28 @@ namespace te
             if(entry.ApplyPass)
                 gRendererUtility().SetPass(*entry.RenderElem->MaterialElem, entry.PassIdx, entry.TechniqueIdx);
 
-            // If Material is the same as the previous object, we only set constant buffer params
-            // Instead, we set full gpu params
+            // These textures are view-specific and each renderable has its own GpuParams.
+            if (entry.RenderElem->MaterialElem->GetProperties().DoIndirectLighting)
+            {
+                if (view.GetRenderSettings().EnableSkybox)
+                {
+                    Skybox* skybox = scene.SkyboxElem;
+                    SPtr<Texture> diffuseIrradiance = skybox ? skybox->GetDiffuseIrradiance() : nullptr;
+                    SPtr<Texture> specularIrradiance = skybox ? skybox->GetSpecularIrradiance() : nullptr;
+
+                    entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("DiffuseIrrMap", diffuseIrradiance);
+                    entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PrefilteredRadianceMap", specularIrradiance);
+                }
+            }
+
+            if (gRendererTextures().PreIntegratedEnvGF)
+                entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF", gRendererTextures().PreIntegratedEnvGF);
+
+            // If Material is the same as the previous object, we can skip rebinding its samplers.
+            // Textures can still vary per renderable, so they are bound for every object.
             // We also set camera buffer view here (because it will set PerCameraBuffer correctly for the current pass on this material only once)
             if (!lastMaterial || lastMaterial != entry.RenderElem->MaterialElem)
             {
-                // If Globall Illumination is enabled and if a Skybox with a texture exists,
-                // We bind this texture for this material
-                if (entry.RenderElem->MaterialElem->GetProperties().DoIndirectLighting)
-                {
-                    if (view.GetRenderSettings().EnableSkybox)
-                    {
-                        Skybox* skybox = scene.SkyboxElem;
-                        SPtr<Texture> diffuseIrradiance = skybox ? skybox->GetDiffuseIrradiance() : nullptr;
-                        SPtr<Texture> specularIrradiance = skybox ? skybox->GetSpecularIrradiance() : nullptr;
-
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("DiffuseIrrMap", diffuseIrradiance);
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PrefilteredRadianceMap", specularIrradiance);
-                    }
-                }
-
-                // We bind PreIntegratedEnvGF
-                {
-                    if(gRendererTextures().PreIntegratedEnvGF)
-                        entry.RenderElem->GpuParamsElem[entry.PassIdx]->SetTexture("PreIntegratedEnvGF", gRendererTextures().PreIntegratedEnvGF);
-                }
-
                 gpuParamsBindFlags = GPU_BIND_ALL;
                 lastMaterial = entry.RenderElem->MaterialElem;
 
@@ -228,7 +224,7 @@ namespace te
             }
             else
             {
-                gpuParamsBindFlags = GPU_BIND_PARAM_BLOCK | GPU_BIND_BUFFER;
+                gpuParamsBindFlags = GPU_BIND_PARAM_BLOCK | GPU_BIND_BUFFER | GPU_BIND_TEXTURE;
             }
 
             bool isInstanced = (entry.RenderElem->InstanceCount > 0) ? true : false;
