@@ -312,6 +312,7 @@ namespace te
         GPU_PROGRAM_DESC _pixelShaderShadowDepthDirectionalDesc;
 
         GPU_PROGRAM_DESC _vertexShaderShadowDepthCubeDesc;
+        GPU_PROGRAM_DESC _geometryShaderShadowDepthCubeDesc;
         GPU_PROGRAM_DESC _pixelShaderShadowDepthCubeDesc;
 
         BLEND_STATE_DESC _blendOpaqueStateDesc;

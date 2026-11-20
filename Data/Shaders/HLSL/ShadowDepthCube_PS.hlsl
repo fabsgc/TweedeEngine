@@ -1,20 +1,21 @@
-#define USES_PS 0
-
-#include "Include/Shadow.hlsli"
-
-cbuffer PerShadowCubeMatrices : register(b2)
+cbuffer PerShadowBuffer : register(b0)
 {
-    float4x4 gFaceVPMatrices[6];
+    float4x4 gMatViewProj;
+    float2 gNDCZToDeviceZ;
+    float gDepthBias;
+    float gInvDepthRange;
+    float4 gShadowLightDirection;
+    float4 gShadowLightPosition;
 };
 
-cbuffer PerShadowCubeMasks : register(b3)
+struct PS_INPUT
 {
-    uint gFaceMasks[6];
+    float4 Position : SV_POSITION;
+    float ShadowPosition : TEXCOORD0;
 };
 
-float4 main( PS_INPUT IN ) : SV_Target0
+float4 main(PS_INPUT IN, out float OUT : SV_Depth) : SV_Target0
 {
-    return float4(0.0, 0.0, 0.0, 1.0);
+    OUT = saturate(IN.ShadowPosition * gInvDepthRange + gDepthBias);
+    return 0.0;
 }
-
-// TODO Shadow

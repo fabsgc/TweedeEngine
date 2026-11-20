@@ -1185,8 +1185,8 @@ namespace te
             //adjustedProj[1][1] = -proj[1][1];
         }
 
-        bool renderAllFacesAtOnce = caps.HasCapability(RSC_RENDER_TARGET_LAYERS);
-        renderAllFacesAtOnce = false; // TODO support this type of rendering for perfomance matter
+        bool renderAllFacesAtOnce = caps.HasCapability(RSC_RENDER_TARGET_LAYERS) &&
+            caps.HasCapability(RSC_GEOMETRY_PROGRAM);
 
         SPtr<GpuParamBlockBuffer> shadowCubeMatricesBuffer;
         SPtr<GpuParamBlockBuffer> shadowCubeMasksBuffer;

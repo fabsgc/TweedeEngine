@@ -376,7 +376,7 @@ namespace te
             }
         }
 
-        auto PopulateParamBlocks = [&](GpuParamBlockDesc& gpuParamBlockDesc, bool sortBySlot = false)
+        auto PopulateParamBlocks = [&](GpuParamBlockDesc& gpuParamBlockDesc, UINT32 firstSlot, bool sortBySlot)
         {
             UINT32 slot = gpuParamBlockDesc.Slot;
             SPtr<GpuParamBlockBuffer> buffer = gpuParams->GetParamBlockBuffer(gpuParamBlockDesc.Set, slot);
@@ -389,7 +389,7 @@ namespace te
                 static_cast<const D3D11GpuParamBlockBuffer*>(buffer.get());
 
             if(sortBySlot)
-                *(_gpuResContainer.constBuffers.begin() + slot) = d3d11paramBlockBuffer->GetD3D11Buffer();
+                _gpuResContainer.constBuffers[slot - firstSlot] = d3d11paramBlockBuffer->GetD3D11Buffer();
             else
                 _gpuResContainer.constBuffers.push_back(d3d11paramBlockBuffer->GetD3D11Buffer());
         };
@@ -514,20 +514,21 @@ namespace te
                 //The easiest case : we bind all paramblock buffers (constant buffers)
                 if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_ALL)
                 {
-                    UINT32 currentSlot = 0;
                     slotConstBuffers = 32;
-
-                    // If we send all constant buffers, we need to be sure that there are ordered by their slot
-                    // because paramDesc->ParamBlocks is a map ordered by name
-                    _gpuResContainer.constBuffers.resize(paramDesc->ParamBlocks.size());
+                    UINT32 lastSlot = 0;
 
                     for (auto& paramBlocksDesc : paramDesc->ParamBlocks)
                     {
-                        PopulateParamBlocks(paramBlocksDesc.second, true);
-                        currentSlot = (UINT32)paramBlocksDesc.second.Slot;
+                        UINT32 slot = paramBlocksDesc.second.Slot;
+                        slotConstBuffers = std::min(slotConstBuffers, slot);
+                        lastSlot = std::max(lastSlot, slot);
+                    }
 
-                        if (currentSlot < slotConstBuffers)
-                            slotConstBuffers = (UINT32)currentSlot;
+                    if (!paramDesc->ParamBlocks.empty())
+                    {
+                        _gpuResContainer.constBuffers.resize(lastSlot - slotConstBuffers + 1, nullptr);
+                        for (auto& paramBlocksDesc : paramDesc->ParamBlocks)
+                            PopulateParamBlocks(paramBlocksDesc.second, slotConstBuffers, true);
                     }
                 }
                 else //Here we only bind listed
@@ -544,7 +545,7 @@ namespace te
 
                         if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_ALL_EXCEPT && findNameInList == paramBlocksToBind.end())
                         {
-                            PopulateParamBlocks(paramBlocksDesc.second);
+                            PopulateParamBlocks(paramBlocksDesc.second, 0, false);
                             currentSlot = paramBlocksDesc.second.Slot;
 
                             if (currentSlot < slotConstBuffers)
@@ -552,7 +553,7 @@ namespace te
                         }
                         else if (gpuParamsBlockBindFlags & (UINT32)GPU_BIND_PARAM_BLOCK_LISTED && findNameInList != paramBlocksToBind.end())
                         {
-                            PopulateParamBlocks(paramBlocksDesc.second);
+                            PopulateParamBlocks(paramBlocksDesc.second, 0, false);
                             currentSlot = paramBlocksDesc.second.Slot;
 
                             if (currentSlot < slotConstBuffers)

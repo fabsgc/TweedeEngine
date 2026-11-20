@@ -4,6 +4,7 @@
 #include "Material/TePass.h"
 #include "Material/TeMaterial.h"
 #include "Material/TeTechnique.h"
+#include "RenderAPI/TeRenderAPI.h"
 #include "Utility/TeDataStream.h"
 #include "Importer/TeTextureImportOptions.h"
 #include "Utility/TePoolAllocator.h"
@@ -776,6 +777,16 @@ namespace te
             _vertexShaderShadowDepthCubeDesc.Language = "hlsl";
             _vertexShaderShadowDepthCubeDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
             _vertexShaderShadowDepthCubeDesc.Source = shaderFile.GetAsString();
+        }
+
+        {
+            FileStream shaderFile(SHADERS_FOLDER + String("HLSL/ShadowDepthCube_GS.hlsl"));
+            _geometryShaderShadowDepthCubeDesc.Type = GPT_GEOMETRY_PROGRAM;
+            _geometryShaderShadowDepthCubeDesc.FilePath = SHADERS_FOLDER + String("HLSL/ShadowDepthCube_GS.hlsl");
+            _geometryShaderShadowDepthCubeDesc.EntryPoint = "main";
+            _geometryShaderShadowDepthCubeDesc.Language = "hlsl";
+            _geometryShaderShadowDepthCubeDesc.IncludePath = SHADERS_FOLDER + String("HLSL/");
+            _geometryShaderShadowDepthCubeDesc.Source = shaderFile.GetAsString();
         }
 
         {
@@ -1852,7 +1863,16 @@ namespace te
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.VertexProgramDesc = _vertexShaderShadowDepthCubeDesc;
 
-        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_COUNTERCLOCKWISE;
+        if (gCaps().HasCapability(RSC_RENDER_TARGET_LAYERS) &&
+            gCaps().HasCapability(RSC_GEOMETRY_PROGRAM))
+        {
+            passDesc.VertexProgramDesc.Source =
+                "#define USES_GS 1\n" + passDesc.VertexProgramDesc.Source;
+            passDesc.GeometryProgramDesc = _geometryShaderShadowDepthCubeDesc;
+            passDesc.PixelProgramDesc = _pixelShaderShadowDepthCubeDesc;
+        }
+
+        passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
         SPtr<Pass> pass = Pass::Create(passDesc);
         SPtr<Technique> technique = Technique::Create("hlsl", { pass });
