@@ -171,7 +171,7 @@ namespace te
         _restitution = restitution;
 
         if (_internal != nullptr)
-            _internal->SetRollingFriction(restitution);
+            _internal->SetRestitution(restitution);
     }
 
     void CBody::ApplyForce(const Vector3& force, ForceMode mode) const
@@ -250,6 +250,46 @@ namespace te
     {
         Component::ExportJson(document);
 
-        // TODO serialization
+        document["mass"] = _mass;
+        document["friction"] = _friction;
+        document["rollingFriction"] = _rollingFriction;
+        document["restitution"] = _restitution;
+        document["isKinematic"] = _isKinematic;
+        document["isTrigger"] = _isTrigger;
+        document["isDebug"] = _isDebug;
+        _velocity.ExportJson(document["velocity"]);
+        _angularVelocity.ExportJson(document["angularVelocity"]);
+        document["bodyFlags"] = static_cast<uint32_t>(_flags);
+        document["collisionReportMode"] = static_cast<uint32_t>(_collisionReportMode);
+    }
+
+    bool CBody::ImportJson(const nlohmann::json& document, CBody& body)
+    {
+        Component::ImportJson(document, body);
+
+        if (document.contains("mass"))
+            body.SetMass(document["mass"].get<float>());
+        if (document.contains("friction"))
+            body.SetFriction(document["friction"].get<float>());
+        if (document.contains("rollingFriction"))
+            body.SetRollingFriction(document["rollingFriction"].get<float>());
+        if (document.contains("restitution"))
+            body.SetRestitution(document["restitution"].get<float>());
+        if (document.contains("isKinematic"))
+            body.SetIsKinematic(document["isKinematic"].get<bool>());
+        if (document.contains("isTrigger"))
+            body.SetIsTrigger(document["isTrigger"].get<bool>());
+        if (document.contains("isDebug"))
+            body.SetIsDebug(document["isDebug"].get<bool>());
+        if (document.contains("velocity"))
+            body.SetVelocity(Vector3::ImportJson(document["velocity"]));
+        if (document.contains("angularVelocity"))
+            body.SetAngularVelocity(Vector3::ImportJson(document["angularVelocity"]));
+        if (document.contains("bodyFlags"))
+            body.SetFlags(static_cast<BodyFlag>(document["bodyFlags"].get<uint32_t>()));
+        if (document.contains("collisionReportMode"))
+            body.SetCollisionReportMode(static_cast<CollisionReportMode>(document["collisionReportMode"].get<uint32_t>()));
+
+        return true;
     }
 }

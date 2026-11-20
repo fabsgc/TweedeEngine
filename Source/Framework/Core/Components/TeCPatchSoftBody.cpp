@@ -6,10 +6,8 @@
 namespace te
 {
     CPatchSoftBody::CPatchSoftBody()
-        : CSoftBody(HSceneObject(), CoreType::TID_CPatchSoftBody)
-    {
-        SetName("PatchSoftBody");
-    }
+        : CPatchSoftBody(HSceneObject())
+    { }
 
     CPatchSoftBody::CPatchSoftBody(const HSceneObject& parent)
         : CSoftBody(parent, CoreType::TID_CPatchSoftBody)
@@ -87,7 +85,8 @@ namespace te
         _resolutionX = x;
         _resolutionY = y;
 
-        std::static_pointer_cast<PatchSoftBody>(_internal)->SetResolution(x, y);
+        if (_internal != nullptr)
+            std::static_pointer_cast<PatchSoftBody>(_internal)->SetResolution(x, y);
     }
 
     void CPatchSoftBody::GetResolution(UINT32& x, UINT32& y) const
@@ -117,10 +116,46 @@ namespace te
 
     void CPatchSoftBody::ExportJson(nlohmann::json& document) const
     {
-        CBody::ExportJson(document);
+        CSoftBody::ExportJson(document);
 
         document["type"] = GetComponentType();
+        _topLeft.ExportJson(document["topLeft"]);
+        _topRight.ExportJson(document["topRight"]);
+        _bottomLeft.ExportJson(document["bottomLeft"]);
+        _bottomRight.ExportJson(document["bottomRight"]);
+        document["resolutionX"] = _resolutionX;
+        document["resolutionY"] = _resolutionY;
+    }
 
-        // TODO serialization
+    bool CPatchSoftBody::ImportJson(const nlohmann::json& document, CPatchSoftBody& softBody)
+    {
+        CSoftBody::ImportJson(document, softBody);
+
+        Vector3 topLeft;
+        Vector3 topRight;
+        Vector3 bottomLeft;
+        Vector3 bottomRight;
+        softBody.GetCorners(topLeft, topRight, bottomLeft, bottomRight);
+
+        if (document.contains("topLeft"))
+            topLeft = Vector3::ImportJson(document["topLeft"]);
+        if (document.contains("topRight"))
+            topRight = Vector3::ImportJson(document["topRight"]);
+        if (document.contains("bottomLeft"))
+            bottomLeft = Vector3::ImportJson(document["bottomLeft"]);
+        if (document.contains("bottomRight"))
+            bottomRight = Vector3::ImportJson(document["bottomRight"]);
+        softBody.SetCorners(topLeft, topRight, bottomLeft, bottomRight);
+
+        UINT32 resolutionX;
+        UINT32 resolutionY;
+        softBody.GetResolution(resolutionX, resolutionY);
+        if (document.contains("resolutionX"))
+            resolutionX = document["resolutionX"].get<UINT32>();
+        if (document.contains("resolutionY"))
+            resolutionY = document["resolutionY"].get<UINT32>();
+        softBody.SetResolution(resolutionX, resolutionY);
+
+        return true;
     }
 }

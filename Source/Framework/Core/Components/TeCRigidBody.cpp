@@ -394,7 +394,22 @@ namespace te
         CBody::ExportJson(document);
 
         document["type"] = GetComponentType();
+        _angularFactor.ExportJson(document["angularFactor"]);
+        document["useGravity"] = _useGravity;
+        _centerOfMass.ExportJson(document["centerOfMass"]);
+    }
 
-        // TODO serialization
+    bool CRigidBody::ImportJson(const nlohmann::json& document, CRigidBody& rigidBody)
+    {
+        CBody::ImportJson(document, rigidBody);
+
+        if (document.contains("angularFactor"))
+            rigidBody.SetAngularFactor(Vector3::ImportJson(document["angularFactor"]));
+        if (document.contains("useGravity"))
+            rigidBody.SetUseGravity(document["useGravity"].get<bool>());
+        if (document.contains("centerOfMass"))
+            rigidBody.SetCenterOfMass(Vector3::ImportJson(document["centerOfMass"]));
+
+        return true;
     }
 }

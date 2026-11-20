@@ -115,15 +115,13 @@ namespace te
         Component::ExportJson(document);
 
         document["type"] = GetComponentType();
-
-        // TODO serialization
+        _internal->ExportJson(document);
     }
 
     bool CDecal::ImportJson(const nlohmann::json& document, CDecal& decal)
     {
         Component::ImportJson(document, decal);
-
-        // TODO deserialization
+        Decal::ImportJson(document, *decal._internal);
 
         return true;
     }

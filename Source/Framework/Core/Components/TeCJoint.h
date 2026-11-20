@@ -77,7 +77,14 @@ namespace te
         Joint* GetInternal() const { return _internal.get(); }
 
     public:
+        /** @copydoc Component::ExportJson */
         virtual void ExportJson(nlohmann::json& document) const override;
+
+        /** @copydoc Component::ImportJson */
+        static bool ImportJson(const nlohmann::json& document, CJoint& joint);
+
+        /** Resolves body references after the complete scene hierarchy has been imported. */
+        void ResolveBodyReferences(const HSceneObject& sceneRoot);
 
     protected:
         friend class SceneObject;
@@ -132,6 +139,7 @@ namespace te
         SPtr<Joint> _internal;
 
         HRigidBody _bodies[2];
+        UUID _bodyUUIDs[2];
         Vector3 _positions[2];
         Quaternion _rotations[2];
 

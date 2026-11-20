@@ -107,6 +107,19 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        document["radius"] = _radius;
+        document["height"] = _height;
+    }
+
+    bool CConeCollider::ImportJson(const nlohmann::json& document, CConeCollider& coneCollider)
+    {
+        Component::ImportJson(document, coneCollider);
+
+        if (document.contains("radius"))
+            coneCollider.SetRadius(document["radius"].get<float>());
+        if (document.contains("height"))
+            coneCollider.SetHeight(document["height"].get<float>());
+
+        return true;
     }
 }

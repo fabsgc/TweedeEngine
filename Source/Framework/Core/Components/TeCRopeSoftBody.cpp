@@ -55,7 +55,8 @@ namespace te
 
         _from = from;
 
-        std::static_pointer_cast<RopeSoftBody>(_internal)->SetFrom(from);
+        if (_internal != nullptr)
+            std::static_pointer_cast<RopeSoftBody>(_internal)->SetFrom(from);
     }
 
     void CRopeSoftBody::SetTo(const Vector3& to)
@@ -65,7 +66,8 @@ namespace te
 
         _to = to;
 
-        std::static_pointer_cast<RopeSoftBody>(_internal)->SetTo(to);
+        if (_internal != nullptr)
+            std::static_pointer_cast<RopeSoftBody>(_internal)->SetTo(to);
     }
 
     void CRopeSoftBody::SetResolution(UINT32 resolution)
@@ -75,7 +77,8 @@ namespace te
 
         _resolution = resolution;
 
-        std::static_pointer_cast<RopeSoftBody>(_internal)->SetResolution(resolution);
+        if (_internal != nullptr)
+            std::static_pointer_cast<RopeSoftBody>(_internal)->SetResolution(resolution);
     }
 
     void CRopeSoftBody::OnEnabled()
@@ -100,10 +103,25 @@ namespace te
 
     void CRopeSoftBody::ExportJson(nlohmann::json& document) const
     {
-        CBody::ExportJson(document);
+        CSoftBody::ExportJson(document);
 
         document["type"] = GetComponentType();
+        _from.ExportJson(document["from"]);
+        _to.ExportJson(document["to"]);
+        document["resolution"] = _resolution;
+    }
 
-        // TODO serialization
+    bool CRopeSoftBody::ImportJson(const nlohmann::json& document, CRopeSoftBody& softBody)
+    {
+        CSoftBody::ImportJson(document, softBody);
+
+        if (document.contains("from"))
+            softBody.SetFrom(Vector3::ImportJson(document["from"]));
+        if (document.contains("to"))
+            softBody.SetTo(Vector3::ImportJson(document["to"]));
+        if (document.contains("resolution"))
+            softBody.SetResolution(document["resolution"].get<UINT32>());
+
+        return true;
     }
 }

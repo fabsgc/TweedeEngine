@@ -2,6 +2,9 @@
 #include "Components/TeCRigidBody.h"
 #include "Scene/TeSceneObject.h"
 #include "Scene/TeSceneManager.h"
+#include "Physics/TePhysicsMesh.h"
+#include "Serialization/TeUtility.h"
+#include "Resources/TeResourceManager.h"
 
 namespace te
 {
@@ -119,6 +122,24 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        document["mesh"] = _mesh.IsLoaded() ? serialization::GetResourceName(_mesh.Get()) : "";
+        document["collisionType"] = static_cast<uint32_t>(_collisionType);
+    }
+
+    bool CMeshCollider::ImportJson(const nlohmann::json& document, CMeshCollider& collider)
+    {
+        Component::ImportJson(document, collider);
+
+        if (document.contains("mesh"))
+        {
+            HPhysicsMesh mesh = static_resource_cast<PhysicsMesh>(
+                gResourceManager().Get(serialization::GetResourceUUID(document["mesh"].get<String>())));
+            collider.SetMesh(mesh);
+        }
+
+        if (document.contains("collisionType"))
+            collider.SetCollisionType(static_cast<PhysicsMeshType>(document["collisionType"].get<uint32_t>()));
+
+        return true;
     }
 }

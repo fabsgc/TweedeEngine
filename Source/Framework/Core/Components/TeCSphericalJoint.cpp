@@ -60,7 +60,12 @@ namespace te
         CJoint::ExportJson(document);
 
         document["type"] = GetComponentType();
+    }
 
-        // TODO serialization
+    bool CSphericalJoint::ImportJson(const nlohmann::json& document, CSphericalJoint& joint)
+    {
+        CJoint::ImportJson(document, joint);
+
+        return true;
     }
 }

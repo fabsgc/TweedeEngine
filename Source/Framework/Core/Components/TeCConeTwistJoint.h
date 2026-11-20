@@ -87,6 +87,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** @copydoc Component::ImportJson */
+        static bool ImportJson(const nlohmann::json& document, CConeTwistJoint& joint);
+
     protected:
         friend class SceneObject;
 

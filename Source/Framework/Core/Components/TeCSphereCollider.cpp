@@ -86,6 +86,16 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        document["radius"] = _radius;
+    }
+
+    bool CSphereCollider::ImportJson(const nlohmann::json& document, CSphereCollider& collider)
+    {
+        Component::ImportJson(document, collider);
+
+        if (document.contains("radius"))
+            collider.SetRadius(document["radius"].get<float>());
+
+        return true;
     }
 }

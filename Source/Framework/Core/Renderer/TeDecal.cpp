@@ -1,6 +1,8 @@
 #include "TeDecal.h"
 #include "Renderer/TeRenderer.h"
 #include "Material/TeMaterial.h"
+#include "Resources/TeResourceManager.h"
+#include "Serialization/TeUtility.h"
 
 namespace te
 {
@@ -138,12 +140,34 @@ namespace te
 
     void Decal::ExportJson(nlohmann::json& document) const
     {
-        // TODO serialization
+        document["material"] = _material.IsLoaded() ? serialization::GetResourceName(_material.Get()) : "";
+        _size.ExportJson(document["size"]);
+        document["maxDistance"] = _maxDistance;
+        document["layer"] = _layer;
+        document["layerMask"] = _layerMask;
     }
 
     bool Decal::ImportJson(const nlohmann::json& document, Decal& decal)
     {
-        // TODO serialization
+        if (document.contains("material"))
+        {
+            const String materialName = document["material"].get<String>();
+            if (!materialName.empty())
+            {
+                HMaterial material = gResourceManager().Get<Material>(serialization::GetResourceUUID(materialName));
+                if (material.IsLoaded())
+                    decal.SetMaterial(material);
+            }
+        }
+
+        if (document.contains("size"))
+            decal.SetSize(Vector2::ImportJson(document["size"]));
+        if (document.contains("maxDistance"))
+            decal.SetMaxDistance(document["maxDistance"].get<float>());
+        if (document.contains("layer"))
+            decal.SetLayer(document["layer"].get<UINT32>());
+        if (document.contains("layerMask"))
+            decal.SetLayerMask(document["layerMask"].get<UINT32>());
 
         return true;
     }

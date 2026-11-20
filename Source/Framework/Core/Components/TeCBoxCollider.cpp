@@ -88,6 +88,16 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        _extents.ExportJson(document["extents"]);
+    }
+
+    bool CBoxCollider::ImportJson(const nlohmann::json& document, CBoxCollider& boxCollider)
+    {
+        Component::ImportJson(document, boxCollider);
+
+        if (document.contains("extents"))
+            boxCollider.SetExtents(Vector3::ImportJson(document["extents"]));
+
+        return true;
     }
 }

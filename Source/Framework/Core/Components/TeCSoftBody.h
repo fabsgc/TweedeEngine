@@ -35,6 +35,9 @@ namespace te
         /** @copydoc Component::ExportJson */
         void ExportJson(nlohmann::json& document) const override;
 
+        /** @copydoc Component::ImportJson */
+        static bool ImportJson(const nlohmann::json& document, CSoftBody& softBody);
+
     protected:
         friend class SceneObject;
 

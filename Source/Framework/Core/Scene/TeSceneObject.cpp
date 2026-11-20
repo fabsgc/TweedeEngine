@@ -1479,114 +1479,133 @@ namespace te
                     case CoreType::TID_CRigidBody:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CRigidBody>());
+                        CRigidBody::ImportJson(element.value(), *static_cast<CRigidBody*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CMeshSoftBody:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CMeshSoftBody>());
+                        CMeshSoftBody::ImportJson(element.value(), *static_cast<CMeshSoftBody*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CEllipsoidSoftBody:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CEllipsoidSoftBody>());
+                        CEllipsoidSoftBody::ImportJson(element.value(), *static_cast<CEllipsoidSoftBody*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CRopeSoftBody:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CRopeSoftBody>());
+                        CRopeSoftBody::ImportJson(element.value(), *static_cast<CRopeSoftBody*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CPatchSoftBody:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CPatchSoftBody>());
+                        CPatchSoftBody::ImportJson(element.value(), *static_cast<CPatchSoftBody*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CConeTwistJoint:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CConeTwistJoint>());
+                        CConeTwistJoint::ImportJson(element.value(), *static_cast<CConeTwistJoint*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CD6Joint:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CD6Joint>());
+                        CD6Joint::ImportJson(element.value(), *static_cast<CD6Joint*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CHingeJoint:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CHingeJoint>());
+                        CHingeJoint::ImportJson(element.value(), *static_cast<CHingeJoint*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CSliderJoint:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CSliderJoint>());
+                        CSliderJoint::ImportJson(element.value(), *static_cast<CSliderJoint*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CSphericalJoint:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CSphericalJoint>());
+                        CSphericalJoint::ImportJson(element.value(), *static_cast<CSphericalJoint*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CBoxCollider:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CBoxCollider>());
+                        CBoxCollider::ImportJson(element.value(), *static_cast<CBoxCollider*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CCapsuleCollider:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CCapsuleCollider>());
+                        CCapsuleCollider::ImportJson(element.value(), *static_cast<CCapsuleCollider*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CConeCollider:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CConeCollider>());
+                        CConeCollider::ImportJson(element.value(), *static_cast<CConeCollider*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CCylinderCollider:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CCylinderCollider>());
+                        CCylinderCollider::ImportJson(element.value(), *static_cast<CCylinderCollider*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CHeightFieldCollider:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CHeightFieldCollider>());
+                        CHeightFieldCollider::ImportJson(element.value(), *static_cast<CHeightFieldCollider*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CMeshCollider:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CMeshCollider>());
+                        CMeshCollider::ImportJson(element.value(), *static_cast<CMeshCollider*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CPlaneCollider:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CPlaneCollider>());
+                        CPlaneCollider::ImportJson(element.value(), *static_cast<CPlaneCollider*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CSphereCollider:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CSphereCollider>());
+                        CSphereCollider::ImportJson(element.value(), *static_cast<CSphereCollider*>(component.Get()));
                     }
                     break;
 
                     case CoreType::TID_CDecal:
                     {
                         component = static_object_cast<Component>(so->AddComponent<CDecal>());
+                        CDecal::ImportJson(element.value(), *static_cast<CDecal*>(component.Get()));
                     }
                     break;
 
@@ -1611,6 +1630,21 @@ namespace te
         if (document.contains("scripts") && document["scripts"].size() > 0)
         {
             // TODO Serialization
+        }
+
+        if (parent.Empty())
+        {
+            Vector<CoreType> jointTypes =
+            {
+                CoreType::TID_CConeTwistJoint,
+                CoreType::TID_CD6Joint,
+                CoreType::TID_CHingeJoint,
+                CoreType::TID_CSliderJoint,
+                CoreType::TID_CSphericalJoint
+            };
+
+            for (const HComponent& component : so->GetComponents(jointTypes, true))
+                static_object_cast<CJoint>(component)->ResolveBodyReferences(so);
         }
 
         return so;

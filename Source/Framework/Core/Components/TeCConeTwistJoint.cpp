@@ -74,6 +74,7 @@ namespace te
 
         if (_internal)
         {
+            SetDamping(_damping);
             SetSoftnessLimit(_softnessLimit);
             SetBiasLimit(_biasLimit);
             SetRelaxationLimit(_relaxationLimit);
@@ -202,6 +203,43 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        document["damping"] = _damping;
+        document["softnessLimit"] = _softnessLimit;
+        document["biasLimit"] = _biasLimit;
+        document["relaxationLimit"] = _relaxationLimit;
+        document["swingSpan1"] = _swingSpan1.ValueDegrees();
+        document["swingSpan2"] = _swingSpan2.ValueDegrees();
+        document["twistSpan"] = _twistSpan.ValueDegrees();
+        document["angularOnly"] = _angularOnly;
+        document["motorEnabled"] = _motorEnabled;
+        document["motorImpulse"] = _motorImpulse;
+    }
+
+    bool CConeTwistJoint::ImportJson(const nlohmann::json& document, CConeTwistJoint& joint)
+    {
+        CJoint::ImportJson(document, joint);
+
+        if (document.contains("damping"))
+            joint.SetDamping(document["damping"].get<float>());
+        if (document.contains("softnessLimit"))
+            joint.SetSoftnessLimit(document["softnessLimit"].get<float>());
+        if (document.contains("biasLimit"))
+            joint.SetBiasLimit(document["biasLimit"].get<float>());
+        if (document.contains("relaxationLimit"))
+            joint.SetRelaxationLimit(document["relaxationLimit"].get<float>());
+        if (document.contains("swingSpan1"))
+            joint.SetSwingSpan1(Degree(document["swingSpan1"].get<float>()));
+        if (document.contains("swingSpan2"))
+            joint.SetSwingSpan2(Degree(document["swingSpan2"].get<float>()));
+        if (document.contains("twistSpan"))
+            joint.SetTwistSpan(Degree(document["twistSpan"].get<float>()));
+        if (document.contains("angularOnly"))
+            joint.SetAngularOnly(document["angularOnly"].get<bool>());
+        if (document.contains("motorEnabled"))
+            joint.SetMotorEnabled(document["motorEnabled"].get<bool>());
+        if (document.contains("motorImpulse"))
+            joint.SetMaxMotorImpulse(document["motorImpulse"].get<float>());
+
+        return true;
     }
 }

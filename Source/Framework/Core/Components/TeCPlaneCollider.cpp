@@ -92,6 +92,16 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        _normal.ExportJson(document["normal"]);
+    }
+
+    bool CPlaneCollider::ImportJson(const nlohmann::json& document, CPlaneCollider& collider)
+    {
+        Component::ImportJson(document, collider);
+
+        if (document.contains("normal"))
+            collider.SetNormal(Vector3::ImportJson(document["normal"]));
+
+        return true;
     }
 }

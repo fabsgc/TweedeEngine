@@ -55,7 +55,8 @@ namespace te
 
         _center = center;
 
-        std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetCenter(center);
+        if (_internal != nullptr)
+            std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetCenter(center);
     }
 
     void CEllipsoidSoftBody::SetRadius(const Vector3& radius)
@@ -65,7 +66,8 @@ namespace te
 
         _radius = radius;
 
-        std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetRadius(radius);
+        if (_internal != nullptr)
+            std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetRadius(radius);
     }
 
     void CEllipsoidSoftBody::SetResolution(UINT32 resolution)
@@ -75,7 +77,8 @@ namespace te
 
         _resolution = resolution;
 
-        std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetResolution(resolution);
+        if (_internal != nullptr)
+            std::static_pointer_cast<EllipsoidSoftBody>(_internal)->SetResolution(resolution);
     }
 
     void CEllipsoidSoftBody::OnEnabled()
@@ -100,10 +103,26 @@ namespace te
 
     void CEllipsoidSoftBody::ExportJson(nlohmann::json& document) const
     {
-        CBody::ExportJson(document);
+        CSoftBody::ExportJson(document);
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        _center.ExportJson(document["center"]);
+        _radius.ExportJson(document["radius"]);
+        document["resolution"] = _resolution;
+    }
+
+    bool CEllipsoidSoftBody::ImportJson(const nlohmann::json& document, CEllipsoidSoftBody& softBody)
+    {
+        CSoftBody::ImportJson(document, softBody);
+
+        if (document.contains("center"))
+            softBody.SetCenter(Vector3::ImportJson(document["center"]));
+        if (document.contains("radius"))
+            softBody.SetRadius(Vector3::ImportJson(document["radius"]));
+        if (document.contains("resolution"))
+            softBody.SetResolution(document["resolution"].get<UINT32>());
+
+        return true;
     }
 }

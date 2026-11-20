@@ -68,15 +68,16 @@ namespace te
 
         if (_internal)
         {
-            SetSoftnessLimit(_softnessLimit);
-            SetBiasLimit(_biasLimit);
-            SetRelaxationLimit(_relaxationLimit);
-            SetHighLimit(_highLimit);
-            SetLowLimit(_lowLimit);
-            SetAngularOnly(_angularOnly);
-            SetMotorEnabled(_motorEnabled);
-            SetMaxMotorImpulse(_motorImpulse);
-            SetMotorVelocity(_motorVelocity);
+            SPtr<HingeJoint> joint = std::static_pointer_cast<HingeJoint>(_internal);
+            joint->SetSoftnessLimit(_softnessLimit);
+            joint->SetBiasLimit(_biasLimit);
+            joint->SetRelaxationLimit(_relaxationLimit);
+            joint->SetHighLimit(_highLimit);
+            joint->SetLowLimit(_lowLimit);
+            joint->SetAngularOnly(_angularOnly);
+            joint->SetMotorEnabled(_motorEnabled);
+            joint->SetMaxMotorImpulse(_motorImpulse);
+            joint->SetMotorVelocity(_motorVelocity);
         }
     }
 
@@ -191,6 +192,40 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        document["softnessLimit"] = _softnessLimit;
+        document["biasLimit"] = _biasLimit;
+        document["relaxationLimit"] = _relaxationLimit;
+        document["highLimit"] = _highLimit.ValueDegrees();
+        document["lowLimit"] = _lowLimit.ValueDegrees();
+        document["angularOnly"] = _angularOnly;
+        document["motorEnabled"] = _motorEnabled;
+        document["motorImpulse"] = _motorImpulse;
+        document["motorVelocity"] = _motorVelocity;
+    }
+
+    bool CHingeJoint::ImportJson(const nlohmann::json& document, CHingeJoint& joint)
+    {
+        CJoint::ImportJson(document, joint);
+
+        if (document.contains("softnessLimit"))
+            joint.SetSoftnessLimit(document["softnessLimit"].get<float>());
+        if (document.contains("biasLimit"))
+            joint.SetBiasLimit(document["biasLimit"].get<float>());
+        if (document.contains("relaxationLimit"))
+            joint.SetRelaxationLimit(document["relaxationLimit"].get<float>());
+        if (document.contains("highLimit"))
+            joint.SetHighLimit(Degree(document["highLimit"].get<float>()));
+        if (document.contains("lowLimit"))
+            joint.SetLowLimit(Degree(document["lowLimit"].get<float>()));
+        if (document.contains("angularOnly"))
+            joint.SetAngularOnly(document["angularOnly"].get<bool>());
+        if (document.contains("motorEnabled"))
+            joint.SetMotorEnabled(document["motorEnabled"].get<bool>());
+        if (document.contains("motorImpulse"))
+            joint.SetMaxMotorImpulse(document["motorImpulse"].get<float>());
+        if (document.contains("motorVelocity"))
+            joint.SetMotorVelocity(document["motorVelocity"].get<float>());
+
+        return true;
     }
 }

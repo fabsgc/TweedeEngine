@@ -181,7 +181,16 @@ namespace te
         CBody::ExportJson(document);
         
         document["type"] = GetComponentType();
+        _scale.ExportJson(document["scale"]);
+    }
 
-        // TODO serialization
+    bool CSoftBody::ImportJson(const nlohmann::json& document, CSoftBody& softBody)
+    {
+        CBody::ImportJson(document, softBody);
+
+        if (document.contains("scale"))
+            softBody.SetScale(Vector3::ImportJson(document["scale"]));
+
+        return true;
     }
 }

@@ -88,35 +88,35 @@ namespace te
 
         if (_internal)
         {
-            SetLowerLinLimit(_lowerLinLimit);
-            SetUpperLinLimit(_upperLinLimit);
-            SetLowerAngLimit(_lowerAngLimit);
-            SetUpperAngLimit(_upperAngLimit);
-
-            SetSoftnessDirLin(_softnessDirLin);
-            SetRestitutionDirLin(_restitutionDirLin);
-            SetDampingDirLin(_dampingDirLin);
-            SetSoftnessDirAng(_softnessDirAng);
-            SetRestitutionDirAng(_restitutionDirAng);
-            SetDampingDirAng(_dampingDirAng);
-            SetSoftnessLimLin(_softnessLimLin);
-            SetRestitutionLimLin(_restitutionLimLin);
-            SetDampingLimLin(_dampingLimLin);
-            SetSoftnessLimAng(_softnessLimAng);
-            SetRestitutionLimAng(_restitutionLimAng);
-            SetDampingLimAng(_dampingLimAng);
-            SetSoftnessOrthoLin(_softnessOrthoLin);
-            SetRestitutionOrthoLin(_restitutionOrthoLin);
-            SetDampingOrthoLin(_dampingOrthoLin);
-            SetSoftnessOrthoAng(_softnessOrthoAng);
-            SetRestitutionOrthoAng(_restitutionOrthoAng);
-            SetDampingOrthoAng(_dampingOrthoAng);
-            SetPoweredLinMotor(_poweredLinMotor);
-            SetTargetLinMotorVelocity(_targetLinMotorVelocity);
-            SetMaxLinMotorForce(_maxLinMotorForce);
-            SetPoweredAngMotor(_poweredAngMotor);
-            SetTargetAngMotorVelocity(_targetAngMotorVelocity);
-            SetMaxAngMotorForce(_maxAngMotorForce);
+            SPtr<SliderJoint> joint = std::static_pointer_cast<SliderJoint>(_internal);
+            joint->SetLowerLinLimit(_lowerLinLimit);
+            joint->SetUpperLinLimit(_upperLinLimit);
+            joint->SetLowerAngLimit(_lowerAngLimit);
+            joint->SetUpperAngLimit(_upperAngLimit);
+            joint->SetSoftnessDirLin(_softnessDirLin);
+            joint->SetRestitutionDirLin(_restitutionDirLin);
+            joint->SetDampingDirLin(_dampingDirLin);
+            joint->SetSoftnessDirAng(_softnessDirAng);
+            joint->SetRestitutionDirAng(_restitutionDirAng);
+            joint->SetDampingDirAng(_dampingDirAng);
+            joint->SetSoftnessLimLin(_softnessLimLin);
+            joint->SetRestitutionLimLin(_restitutionLimLin);
+            joint->SetDampingLimLin(_dampingLimLin);
+            joint->SetSoftnessLimAng(_softnessLimAng);
+            joint->SetRestitutionLimAng(_restitutionLimAng);
+            joint->SetDampingLimAng(_dampingLimAng);
+            joint->SetSoftnessOrthoLin(_softnessOrthoLin);
+            joint->SetRestitutionOrthoLin(_restitutionOrthoLin);
+            joint->SetDampingOrthoLin(_dampingOrthoLin);
+            joint->SetSoftnessOrthoAng(_softnessOrthoAng);
+            joint->SetRestitutionOrthoAng(_restitutionOrthoAng);
+            joint->SetDampingOrthoAng(_dampingOrthoAng);
+            joint->SetPoweredLinMotor(_poweredLinMotor);
+            joint->SetTargetLinMotorVelocity(_targetLinMotorVelocity);
+            joint->SetMaxLinMotorForce(_maxLinMotorForce);
+            joint->SetPoweredAngMotor(_poweredAngMotor);
+            joint->SetTargetAngMotorVelocity(_targetAngMotorVelocity);
+            joint->SetMaxAngMotorForce(_maxAngMotorForce);
         }
     }
 
@@ -436,6 +436,97 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        document["lowerLinLimit"] = _lowerLinLimit;
+        document["upperLinLimit"] = _upperLinLimit;
+        document["lowerAngLimit"] = _lowerAngLimit.ValueDegrees();
+        document["upperAngLimit"] = _upperAngLimit.ValueDegrees();
+        document["softnessDirLin"] = _softnessDirLin;
+        document["restitutionDirLin"] = _restitutionDirLin;
+        document["dampingDirLin"] = _dampingDirLin;
+        document["softnessDirAng"] = _softnessDirAng;
+        document["restitutionDirAng"] = _restitutionDirAng;
+        document["dampingDirAng"] = _dampingDirAng;
+        document["softnessLimLin"] = _softnessLimLin;
+        document["restitutionLimLin"] = _restitutionLimLin;
+        document["dampingLimLin"] = _dampingLimLin;
+        document["softnessLimAng"] = _softnessLimAng;
+        document["restitutionLimAng"] = _restitutionLimAng;
+        document["dampingLimAng"] = _dampingLimAng;
+        document["softnessOrthoLin"] = _softnessOrthoLin;
+        document["restitutionOrthoLin"] = _restitutionOrthoLin;
+        document["dampingOrthoLin"] = _dampingOrthoLin;
+        document["softnessOrthoAng"] = _softnessOrthoAng;
+        document["restitutionOrthoAng"] = _restitutionOrthoAng;
+        document["dampingOrthoAng"] = _dampingOrthoAng;
+        document["poweredLinMotor"] = _poweredLinMotor;
+        document["targetLinMotorVelocity"] = _targetLinMotorVelocity;
+        document["maxLinMotorForce"] = _maxLinMotorForce;
+        document["poweredAngMotor"] = _poweredAngMotor;
+        document["targetAngMotorVelocity"] = _targetAngMotorVelocity;
+        document["maxAngMotorForce"] = _maxAngMotorForce;
+    }
+
+    bool CSliderJoint::ImportJson(const nlohmann::json& document, CSliderJoint& joint)
+    {
+        CJoint::ImportJson(document, joint);
+
+        if (document.contains("lowerLinLimit"))
+            joint.SetLowerLinLimit(document["lowerLinLimit"].get<float>());
+        if (document.contains("upperLinLimit"))
+            joint.SetUpperLinLimit(document["upperLinLimit"].get<float>());
+        if (document.contains("lowerAngLimit"))
+            joint.SetLowerAngLimit(Degree(document["lowerAngLimit"].get<float>()));
+        if (document.contains("upperAngLimit"))
+            joint.SetUpperAngLimit(Degree(document["upperAngLimit"].get<float>()));
+        if (document.contains("softnessDirLin"))
+            joint.SetSoftnessDirLin(document["softnessDirLin"].get<float>());
+        if (document.contains("restitutionDirLin"))
+            joint.SetRestitutionDirLin(document["restitutionDirLin"].get<float>());
+        if (document.contains("dampingDirLin"))
+            joint.SetDampingDirLin(document["dampingDirLin"].get<float>());
+        if (document.contains("softnessDirAng"))
+            joint.SetSoftnessDirAng(document["softnessDirAng"].get<float>());
+        if (document.contains("restitutionDirAng"))
+            joint.SetRestitutionDirAng(document["restitutionDirAng"].get<float>());
+        if (document.contains("dampingDirAng"))
+            joint.SetDampingDirAng(document["dampingDirAng"].get<float>());
+        if (document.contains("softnessLimLin"))
+            joint.SetSoftnessLimLin(document["softnessLimLin"].get<float>());
+        if (document.contains("restitutionLimLin"))
+            joint.SetRestitutionLimLin(document["restitutionLimLin"].get<float>());
+        if (document.contains("dampingLimLin"))
+            joint.SetDampingLimLin(document["dampingLimLin"].get<float>());
+        if (document.contains("softnessLimAng"))
+            joint.SetSoftnessLimAng(document["softnessLimAng"].get<float>());
+        if (document.contains("restitutionLimAng"))
+            joint.SetRestitutionLimAng(document["restitutionLimAng"].get<float>());
+        if (document.contains("dampingLimAng"))
+            joint.SetDampingLimAng(document["dampingLimAng"].get<float>());
+        if (document.contains("softnessOrthoLin"))
+            joint.SetSoftnessOrthoLin(document["softnessOrthoLin"].get<float>());
+        if (document.contains("restitutionOrthoLin"))
+            joint.SetRestitutionOrthoLin(document["restitutionOrthoLin"].get<float>());
+        if (document.contains("dampingOrthoLin"))
+            joint.SetDampingOrthoLin(document["dampingOrthoLin"].get<float>());
+        if (document.contains("softnessOrthoAng"))
+            joint.SetSoftnessOrthoAng(document["softnessOrthoAng"].get<float>());
+        if (document.contains("restitutionOrthoAng"))
+            joint.SetRestitutionOrthoAng(document["restitutionOrthoAng"].get<float>());
+        if (document.contains("dampingOrthoAng"))
+            joint.SetDampingOrthoAng(document["dampingOrthoAng"].get<float>());
+        if (document.contains("poweredLinMotor"))
+            joint.SetPoweredLinMotor(document["poweredLinMotor"].get<bool>());
+        if (document.contains("targetLinMotorVelocity"))
+            joint.SetTargetLinMotorVelocity(document["targetLinMotorVelocity"].get<float>());
+        if (document.contains("maxLinMotorForce"))
+            joint.SetMaxLinMotorForce(document["maxLinMotorForce"].get<float>());
+        if (document.contains("poweredAngMotor"))
+            joint.SetPoweredAngMotor(document["poweredAngMotor"].get<bool>());
+        if (document.contains("targetAngMotorVelocity"))
+            joint.SetTargetAngMotorVelocity(document["targetAngMotorVelocity"].get<float>());
+        if (document.contains("maxAngMotorForce"))
+            joint.SetMaxAngMotorForce(document["maxAngMotorForce"].get<float>());
+
+        return true;
     }
 }

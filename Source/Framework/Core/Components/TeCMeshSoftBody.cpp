@@ -2,6 +2,9 @@
 
 #include "Scene/TeSceneObject.h"
 #include "Physics/TePhysics.h"
+#include "Physics/TePhysicsMesh.h"
+#include "Resources/TeResourceManager.h"
+#include "Serialization/TeUtility.h"
 
 namespace te
 {
@@ -74,10 +77,23 @@ namespace te
 
     void CMeshSoftBody::ExportJson(nlohmann::json& document) const
     {
-        CBody::ExportJson(document);
+        CSoftBody::ExportJson(document);
 
         document["type"] = GetComponentType();
+        document["mesh"] = _mesh.IsLoaded() ? serialization::GetResourceName(_mesh.Get()) : "";
+    }
 
-        // TODO serialization
+    bool CMeshSoftBody::ImportJson(const nlohmann::json& document, CMeshSoftBody& softBody)
+    {
+        CSoftBody::ImportJson(document, softBody);
+
+        if (document.contains("mesh"))
+        {
+            HPhysicsMesh mesh = static_resource_cast<PhysicsMesh>(
+                gResourceManager().Get(serialization::GetResourceUUID(document["mesh"].get<String>())));
+            softBody.SetMesh(mesh);
+        }
+
+        return true;
     }
 }

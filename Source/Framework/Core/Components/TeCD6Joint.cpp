@@ -70,17 +70,17 @@ namespace te
 
         if (_internal)
         {
-            SetLowerLinLimit(_lowerLinLimit);
-            SetUpperLinLimit(_upperLinLimit);
-            SetLowerAngLimit(_lowerAngLimit);
-            SetUpperAngLimit(_upperAngLimit);
-
-            SetLinearSpring(_linearSpring);
-            SetAngularSpring(_angularSpring);
-            SetLinearStiffness(_linearStiffness);
-            SetLinearDamping(_linearDamping);
-            SetAngularStiffness(_angularStiffness);
-            SetAngularDamping(_angularDamping);
+            SPtr<D6Joint> joint = std::static_pointer_cast<D6Joint>(_internal);
+            joint->SetLowerLinLimit(_lowerLinLimit);
+            joint->SetUpperLinLimit(_upperLinLimit);
+            joint->SetLowerAngLimit(_lowerAngLimit);
+            joint->SetUpperAngLimit(_upperAngLimit);
+            joint->SetLinearSpring(_linearSpring);
+            joint->SetAngularSpring(_angularSpring);
+            joint->SetLinearStiffness(_linearStiffness);
+            joint->SetLinearDamping(_linearDamping);
+            joint->SetAngularStiffness(_angularStiffness);
+            joint->SetAngularDamping(_angularDamping);
         }
     }
 
@@ -103,7 +103,7 @@ namespace te
         _upperLinLimit = Math::Clamp(upperLinLimit, 0.0f, 1.0f);
 
         if (_internal != nullptr)
-            std::static_pointer_cast<D6Joint>(_internal)->SetLowerLinLimit(_upperLinLimit);
+            std::static_pointer_cast<D6Joint>(_internal)->SetUpperLinLimit(_upperLinLimit);
     }
 
     void CD6Joint::SetLowerAngLimit(Degree lowerAngLimit)
@@ -147,7 +147,7 @@ namespace te
         _angularSpring = angularSpring;
 
         if (_internal != nullptr)
-            std::static_pointer_cast<D6Joint>(_internal)->SetLinearSpring(angularSpring);
+            std::static_pointer_cast<D6Joint>(_internal)->SetAngularSpring(angularSpring);
     }
 
     void CD6Joint::SetLinearStiffness(float linearStiffness)
@@ -180,7 +180,7 @@ namespace te
         _linearDamping = linearDamping;
 
         if (_internal != nullptr)
-            std::static_pointer_cast<D6Joint>(_internal)->SetAngularStiffness(linearDamping);
+            std::static_pointer_cast<D6Joint>(_internal)->SetLinearDamping(linearDamping);
     }
 
     void CD6Joint::SetAngularDamping(float angularDamping)
@@ -200,6 +200,43 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        document["lowerLinLimit"] = _lowerLinLimit;
+        document["upperLinLimit"] = _upperLinLimit;
+        document["lowerAngLimit"] = _lowerAngLimit.ValueDegrees();
+        document["upperAngLimit"] = _upperAngLimit.ValueDegrees();
+        document["linearSpring"] = _linearSpring;
+        document["angularSpring"] = _angularSpring;
+        document["linearStiffness"] = _linearStiffness;
+        document["angularStiffness"] = _angularStiffness;
+        document["linearDamping"] = _linearDamping;
+        document["angularDamping"] = _angularDamping;
+    }
+
+    bool CD6Joint::ImportJson(const nlohmann::json& document, CD6Joint& joint)
+    {
+        CJoint::ImportJson(document, joint);
+
+        if (document.contains("lowerLinLimit"))
+            joint.SetLowerLinLimit(document["lowerLinLimit"].get<float>());
+        if (document.contains("upperLinLimit"))
+            joint.SetUpperLinLimit(document["upperLinLimit"].get<float>());
+        if (document.contains("lowerAngLimit"))
+            joint.SetLowerAngLimit(Degree(document["lowerAngLimit"].get<float>()));
+        if (document.contains("upperAngLimit"))
+            joint.SetUpperAngLimit(Degree(document["upperAngLimit"].get<float>()));
+        if (document.contains("linearSpring"))
+            joint.SetLinearSpring(document["linearSpring"].get<bool>());
+        if (document.contains("angularSpring"))
+            joint.SetAngularSpring(document["angularSpring"].get<bool>());
+        if (document.contains("linearStiffness"))
+            joint.SetLinearStiffness(document["linearStiffness"].get<float>());
+        if (document.contains("angularStiffness"))
+            joint.SetAngularStiffness(document["angularStiffness"].get<float>());
+        if (document.contains("linearDamping"))
+            joint.SetLinearDamping(document["linearDamping"].get<float>());
+        if (document.contains("angularDamping"))
+            joint.SetAngularDamping(document["angularDamping"].get<float>());
+
+        return true;
     }
 }

@@ -2,6 +2,9 @@
 #include "Components/TeCRigidBody.h"
 #include "Scene/TeSceneObject.h"
 #include "Scene/TeSceneManager.h"
+#include "Physics/TePhysicsHeightField.h"
+#include "Serialization/TeUtility.h"
+#include "Resources/TeResourceManager.h"
 
 namespace te
 {
@@ -131,6 +134,27 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        document["heightField"] = _heightField.IsLoaded() ? serialization::GetResourceName(_heightField.Get()) : "";
+        document["minHeight"] = _minHeight;
+        document["maxHeight"] = _maxHeight;
+    }
+
+    bool CHeightFieldCollider::ImportJson(const nlohmann::json& document, CHeightFieldCollider& collider)
+    {
+        Component::ImportJson(document, collider);
+
+        if (document.contains("heightField"))
+        {
+            HPhysicsHeightField heightField = static_resource_cast<PhysicsHeightField>(
+                gResourceManager().Get(serialization::GetResourceUUID(document["heightField"].get<String>())));
+            collider.SetHeightField(heightField);
+        }
+
+        if (document.contains("maxHeight"))
+            collider.SetMaxHeight(document["maxHeight"].get<float>());
+        if (document.contains("minHeight"))
+            collider.SetMinHeight(document["minHeight"].get<float>());
+
+        return true;
     }
 }

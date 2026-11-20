@@ -105,6 +105,19 @@ namespace te
 
         document["type"] = GetComponentType();
 
-        // TODO serialization
+        document["radius"] = _radius;
+        document["height"] = _height;
+    }
+
+    bool CCapsuleCollider::ImportJson(const nlohmann::json& document, CCapsuleCollider& collider)
+    {
+        Component::ImportJson(document, collider);
+
+        if (document.contains("radius"))
+            collider.SetRadius(document["radius"].get<float>());
+        if (document.contains("height"))
+            collider.SetHeight(document["height"].get<float>());
+
+        return true;
     }
 }

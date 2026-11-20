@@ -279,8 +279,8 @@ namespace te
             _internal->SetBreakTorque(_breakTorque);
             _internal->SetEnableCollision(_enableCollision);
 
-            SetOffsetPivot(JointBody::Anchor, _offsetPivots[(int)JointBody::Anchor]);
-            SetOffsetPivot(JointBody::Target, _offsetPivots[(int)JointBody::Target]);
+            _internal->SetOffsetPivot(JointBody::Anchor, _offsetPivots[(int)JointBody::Anchor]);
+            _internal->SetOffsetPivot(JointBody::Target, _offsetPivots[(int)JointBody::Target]);
         }
     }
 
@@ -403,6 +403,79 @@ namespace te
     {
         Component::ExportJson(document);
 
-        // TODO serialization
+        const JointBody anchor = JointBody::Anchor;
+        const JointBody target = JointBody::Target;
+
+        document["anchorBody"] = _bodies[(int)anchor] != nullptr ? _bodies[(int)anchor]->GetUUID().ToString() : "";
+        document["targetBody"] = _bodies[(int)target] != nullptr ? _bodies[(int)target]->GetUUID().ToString() : "";
+        _positions[(int)anchor].ExportJson(document["anchorPosition"]);
+        _positions[(int)target].ExportJson(document["targetPosition"]);
+        _rotations[(int)anchor].ExportJson(document["anchorRotation"]);
+        _rotations[(int)target].ExportJson(document["targetRotation"]);
+        _offsetPivots[(int)anchor].ExportJson(document["anchorOffsetPivot"]);
+        _offsetPivots[(int)target].ExportJson(document["targetOffsetPivot"]);
+        document["breakForce"] = _breakForce;
+        document["breakTorque"] = _breakTorque;
+        document["enableCollision"] = _enableCollision;
+        document["isBroken"] = _isBroken;
+    }
+
+    bool CJoint::ImportJson(const nlohmann::json& document, CJoint& joint)
+    {
+        Component::ImportJson(document, joint);
+
+        if (document.contains("anchorBody") && !document["anchorBody"].get<String>().empty())
+            joint._bodyUUIDs[(int)JointBody::Anchor] = UUID(document["anchorBody"].get<String>());
+        if (document.contains("targetBody") && !document["targetBody"].get<String>().empty())
+            joint._bodyUUIDs[(int)JointBody::Target] = UUID(document["targetBody"].get<String>());
+
+        if (document.contains("anchorPosition"))
+            joint.SetTransform(JointBody::Anchor, Vector3::ImportJson(document["anchorPosition"]), joint._rotations[(int)JointBody::Anchor]);
+        if (document.contains("targetPosition"))
+            joint.SetTransform(JointBody::Target, Vector3::ImportJson(document["targetPosition"]), joint._rotations[(int)JointBody::Target]);
+        if (document.contains("anchorRotation"))
+            joint.SetTransform(JointBody::Anchor, joint._positions[(int)JointBody::Anchor], Quaternion::ImportJson(document["anchorRotation"]));
+        if (document.contains("targetRotation"))
+            joint.SetTransform(JointBody::Target, joint._positions[(int)JointBody::Target], Quaternion::ImportJson(document["targetRotation"]));
+        if (document.contains("anchorOffsetPivot"))
+            joint.SetOffsetPivot(JointBody::Anchor, Vector3::ImportJson(document["anchorOffsetPivot"]));
+        if (document.contains("targetOffsetPivot"))
+            joint.SetOffsetPivot(JointBody::Target, Vector3::ImportJson(document["targetOffsetPivot"]));
+        if (document.contains("breakForce"))
+            joint.SetBreakForce(document["breakForce"].get<float>());
+        if (document.contains("breakTorque"))
+            joint.SetBreakTorque(document["breakTorque"].get<float>());
+        if (document.contains("enableCollision"))
+            joint.SetEnableCollision(document["enableCollision"].get<bool>());
+        if (document.contains("isBroken"))
+            joint.SetIsBroken(document["isBroken"].get<bool>());
+
+        return true;
+    }
+
+    void CJoint::ResolveBodyReferences(const HSceneObject& sceneRoot)
+    {
+        bool resolvedBody = false;
+
+        for (UINT32 i = 0; i < 2; i++)
+        {
+            if (_bodyUUIDs[i].Empty())
+                continue;
+
+            HComponent component = sceneRoot->GetComponent(_bodyUUIDs[i], true);
+            if (component == nullptr || component->GetCoreType() != CoreType::TID_CRigidBody)
+                continue;
+
+            HRigidBody rigidBody = static_object_cast<CRigidBody>(component);
+            if (rigidBody->GetInternal() == nullptr)
+                continue;
+
+            _bodies[i] = rigidBody;
+            _bodyUUIDs[i] = UUID::EMPTY;
+            resolvedBody = true;
+        }
+
+        if (resolvedBody && !_isBroken)
+            OnEnabled();
     }
 }
