@@ -60,6 +60,12 @@ namespace te
         /** @copydoc Light::SetShadowBias */
         float GetShadowBias() const { return _internal->GetShadowBias(); }
 
+        /** @copydoc Light::SetShadowSourceRadius */
+        void SetShadowSourceRadius(float radius) { _internal->SetShadowSourceRadius(radius); }
+
+        /** @copydoc Light::GetShadowSourceRadius */
+        float GetShadowSourceRadius() const { return _internal->GetShadowSourceRadius(); }
+
         /** @copydoc Light::SetCastShadowsType */
         void SetCastShadowsType(Light::CastShadowsType castShadowsType) { _internal->SetCastShadowsType(castShadowsType); }
 

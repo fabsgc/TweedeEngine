@@ -2153,6 +2153,7 @@ namespace te
         bool hasChanged = false;
         bool castShadows = light->GetCastShadows();
         float shadowBias = light->GetShadowBias();
+        float shadowSourceRadius = light->GetShadowSourceRadius();
         Light::CastShadowsType castShadowsType = light->GetCastShadowsType();
         const float width = ImGui::GetWindowContentRegionWidth() - 100.0f;
 
@@ -2191,6 +2192,19 @@ namespace te
                 {
                     hasChanged = true;
                     light->SetShadowBias(shadowBias);
+                }
+            }
+
+            // Shadow source radius
+            {
+                const bool directional = light->GetType() == Light::Type::Directional;
+                const char* label = directional ? "Source angular radius (rad)" : "Source radius (world)";
+                const float maxRadius = directional ? 0.1f : 1.0f;
+                if (ImGuiExt::RenderOptionFloat(shadowSourceRadius, "##light_shadow_source_radius_option",
+                    label, 0.0f, maxRadius, width))
+                {
+                    hasChanged = true;
+                    light->SetShadowSourceRadius(shadowSourceRadius);
                 }
             }
 

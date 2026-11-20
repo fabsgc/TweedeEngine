@@ -106,6 +106,7 @@ namespace te
                 _internal->_spotAngle = light->_spotAngle;
                 _internal->_bounds = light->_bounds;
                 _internal->_shadowBias = light->_shadowBias;
+                _internal->_shadowSourceRadius = light->_shadowSourceRadius;
                 _internal->_intensity = light->_intensity;
                 _internal->_castShadowsType = light->_castShadowsType;
                 _internal->_layer = light->_layer;
@@ -143,6 +144,7 @@ namespace te
             lightDoc["castShadowsType"] = static_cast<uint32_t>(_internal->GetCastShadowsType());
             lightDoc["spotAngle"] = _internal->GetSpotAngle().ValueRadians();
             lightDoc["shadowBias"] = _internal->GetShadowBias();
+            lightDoc["shadowSourceRadius"] = _internal->GetShadowSourceRadius();
             lightDoc["intensity"] = _internal->GetIntensity();
             lightDoc["layer"] = _internal->GetLayer();
             
@@ -169,6 +171,9 @@ namespace te
 
             if (lightDoc.contains("shadowBias"))
                 object.SetShadowBias(lightDoc["shadowBias"].get<float>());
+
+            if (lightDoc.contains("shadowSourceRadius"))
+                object.SetShadowSourceRadius(lightDoc["shadowSourceRadius"].get<float>());
 
             if (lightDoc.contains("intensity"))
                 object.SetIntensity(lightDoc["intensity"].get<float>());

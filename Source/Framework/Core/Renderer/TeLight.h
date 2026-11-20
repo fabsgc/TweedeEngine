@@ -51,7 +51,12 @@ namespace te
         UINT32 GetRendererId() const { return _rendererId; }
 
         /** @copydoc getType */
-        void SetType(Light::Type type) { _type = type; _markCoreDirty(); UpdateBounds(); }
+        void SetType(Light::Type type)
+        {
+            _type = type;
+            _markCoreDirty();
+            UpdateBounds();
+        }
 
         /**	Determines the type of the light. */
         Light::Type GetType() const { return _type; }
@@ -94,6 +99,19 @@ namespace te
 
         /** @copydoc SetShadowBias */
         float GetShadowBias() const { return _shadowBias; }
+
+        /**
+         * Sets the source radius used for soft shadow filtering. Point and spot lights use world units;
+         * directional lights use an angular radius in radians. A value of zero keeps hard shadows.
+         */
+        void SetShadowSourceRadius(float radius)
+        {
+            _shadowSourceRadius = radius > 0.0f ? radius : 0.0f;
+            _markCoreDirty();
+        }
+
+        /** @copydoc SetShadowSourceRadius */
+        float GetShadowSourceRadius() const { return _shadowSourceRadius; }
 
         /** Determines the color emitted by the light. */
         void SetColor(const Color& color) { _color = color; _markCoreDirty(); }
@@ -188,6 +206,7 @@ namespace te
         Degree _spotAngle; /**< Total angle covered by a spot light. */
         Sphere _bounds; /**< Sphere that bounds the light area of influence. */
         float _shadowBias; /**< See SetShadowBias */
+        float _shadowSourceRadius; /**< See SetShadowSourceRadius. */
         CastShadowsType _castShadowsType; /** A light can cast shadows for static geometry, dynamic geometry or both. */
         UINT32 _layer = 1;
 

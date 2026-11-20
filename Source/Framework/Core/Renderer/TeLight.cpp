@@ -18,6 +18,7 @@ namespace te
         , _intensity(DefaultIntensity)
         , _spotAngle(DefaultSpotAngle)
         , _shadowBias(DefaultShadowBias)
+        , _shadowSourceRadius(0.0f)
         , _castShadowsType(Light::CastShadowsType::Both)
     { }
 
@@ -29,6 +30,7 @@ namespace te
         , _intensity(intensity)
         , _spotAngle(spotAngle)
         , _shadowBias(DefaultShadowBias)
+        , _shadowSourceRadius(0.0f)
         , _castShadowsType(castShadowsType)
     { }
 

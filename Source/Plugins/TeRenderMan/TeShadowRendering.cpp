@@ -643,12 +643,14 @@ namespace te
     TE_PARAM_BLOCK_BEGIN(ForwardShadowParamsDef)
         TE_PARAM_BLOCK_ENTRY_ARRAY(Matrix4, gCascadeMatrices, ForwardShadowSlots * ForwardShadowCascades)
         TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gCascadeSplits, ForwardShadowSlots * ForwardShadowCascades)
+        TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gCascadePCSSParams, ForwardShadowSlots * ForwardShadowCascades)
         TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gDirectionalShadowParams, ForwardShadowSlots)
         TE_PARAM_BLOCK_ENTRY_ARRAY(Matrix4, gSpotShadowMatrices, ForwardShadowSlots)
         TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gSpotShadowAreas, ForwardShadowSlots)
         TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gSpotShadowParams, ForwardShadowSlots)
         TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gPointShadowParams, ForwardShadowSlots)
         TE_PARAM_BLOCK_ENTRY_ARRAY(Vector4, gPointShadowBias, ForwardShadowSlots)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gShadowPCSSParams)
     TE_PARAM_BLOCK_END
 
     static ForwardShadowParamsDef gForwardShadowParamsDef;
@@ -660,6 +662,11 @@ namespace te
             _forwardShadowBuffer = gForwardShadowParamsDef.CreateBuffer();
 
         params.SetParamBlockBuffer("ForwardShadowBuffer", _forwardShadowBuffer);
+        const UINT32 filteringQuality = Math::Clamp(
+            view.GetRenderSettings().ShadowSettings.ShadowFilteringQuality, 1u, 4u);
+        gForwardShadowParamsDef.gShadowPCSSParams.Set(_forwardShadowBuffer,
+            Vector4((float)(filteringQuality * 4u + 4u), 0.0f, 0.0f, 0.0f));
+
         if (!view.GetRenderSettings().ShadowSettings.Enabled)
             return;
 
@@ -684,7 +691,8 @@ namespace te
 
                 const auto& map = _cascadedShadowMaps[viewShadows[viewIdx].StartIdx];
                 const UINT32 cascadeCount = map.GetNumCascades();
-                gForwardShadowParamsDef.gDirectionalShadowParams.Set(_forwardShadowBuffer, Vector4((float)cascadeCount, 0, 0, 0), slot);
+                gForwardShadowParamsDef.gDirectionalShadowParams.Set(_forwardShadowBuffer,
+                    Vector4((float)cascadeCount, light.GetShadowSourceRadius(), (float)map.GetSize(), 0.0f), slot);
                 for (UINT32 cascade = 0; cascade < cascadeCount; ++cascade)
                 {
                     const auto& info = map.GetShadowInfo(cascade);
@@ -692,6 +700,8 @@ namespace te
                     gForwardShadowParamsDef.gCascadeMatrices.Set(_forwardShadowBuffer, info.ShadowVPTransform, index);
                     gForwardShadowParamsDef.gCascadeSplits.Set(_forwardShadowBuffer,
                         Vector4(info.DepthNear, info.DepthFade, info.FadeRange, info.DepthBias), index);
+                    gForwardShadowParamsDef.gCascadePCSSParams.Set(_forwardShadowBuffer,
+                        Vector4(info.DepthRange, 0.0f, 0.0f, 0.0f), index);
                 }
                 texture = map.GetTexture();
             }
@@ -714,7 +724,7 @@ namespace te
                     gForwardShadowParamsDef.gSpotShadowAreas.Set(_forwardShadowBuffer,
                         Vector4(area.x, area.y, area.width, area.height), slot);
                     gForwardShadowParamsDef.gSpotShadowParams.Set(_forwardShadowBuffer,
-                        Vector4(1.0f / info.DepthRange, fade, info.DepthBias, 0), slot);
+                        Vector4(1.0f / info.DepthRange, fade, info.DepthBias, light.GetShadowSourceRadius()), slot);
                     texture = _dynamicShadowMaps[info.TextureIdx].GetTexture();
                 }
                 else
@@ -722,7 +732,7 @@ namespace te
                     gForwardShadowParamsDef.gPointShadowParams.Set(_forwardShadowBuffer,
                         Vector4(info.CubeDepthProjection.x, info.CubeDepthProjection.y, 1.0f / info.DepthRange, fade), slot);
                     gForwardShadowParamsDef.gPointShadowBias.Set(_forwardShadowBuffer,
-                        Vector4(info.DepthBias, 0, 0, 0), slot);
+                        Vector4(info.DepthBias, light.GetShadowSourceRadius(), (float)info.Area.width, 0.0f), slot);
                     texture = _shadowCubemaps[info.TextureIdx].GetTexture();
                 }
             }

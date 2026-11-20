@@ -388,8 +388,8 @@ namespace te
         float CascadeDistributionExponent = 3.0f;
 
         /**
-         * Determines the number of samples used for percentage closer shadow map filtering. Higher values yield higher
-         * quality shadows, at the cost of performance. Valid range is [1, 4].
+         * Determines the blocker-search and filtering sample count used for percentage-closer soft shadows. Higher
+         * values yield higher quality shadows, at the cost of performance. Valid range is [1, 4].
          */
         UINT32 ShadowFilteringQuality = 4;
     };
