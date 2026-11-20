@@ -99,7 +99,7 @@ namespace te
             if (_renderer) 
             {
                 _renderer->NotifySkyboxRemoved(this);
-                _renderer->NotifySkyboxAdded(this);
+                if (_active) _renderer->NotifySkyboxAdded(this);
             }
         }
 
