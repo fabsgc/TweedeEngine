@@ -1850,7 +1850,6 @@ namespace te
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.VertexProgramDesc = _vertexShaderShadowDepthCubeDesc;
-        passDesc.PixelProgramDesc = _pixelShaderShadowDepthCubeDesc;
 
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_COUNTERCLOCKWISE;
 
@@ -1880,7 +1879,6 @@ namespace te
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.VertexProgramDesc = _vertexShaderShadowDepthDirectionalDesc;
-        passDesc.PixelProgramDesc = _pixelShaderShadowDepthDirectionalDesc;
 
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
