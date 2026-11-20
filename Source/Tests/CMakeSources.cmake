@@ -2,7 +2,7 @@ set (TE_TESTS_INC_NOFILTER
 )
 
 set (TE_TESTS_SRC_NOFILTER
-    "Main.cpp"
+    "Renderer.test.cpp"
 )
 
 source_group ("" FILES ${TE_TESTS_SRC_NOFILTER} ${TE_TESTS_INC_NOFILTER})

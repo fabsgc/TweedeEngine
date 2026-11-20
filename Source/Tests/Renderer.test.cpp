@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-TEST(Test, FirstTest) 
+TEST(Renderer, DrawScene)
 {
     EXPECT_TRUE(true);
 }
