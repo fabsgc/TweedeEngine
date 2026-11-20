@@ -81,11 +81,12 @@ float SampleSpotShadow(uint slot, float3 worldPosition, float3 worldNormal, floa
     float visibility = 1.0;
     if (clip.w > 0.0)
     {
-        float2 uv = GetShadowUV(clip.xy / clip.w);
+        float3 ndc = clip.xyz / clip.w;
+        float2 uv = GetShadowUV(ndc.xy);
         float2 shadowParams = gSpotShadowParams[slot].xy;
         float receiverBias = FORWARD_SHADOW_SLOPE_BIAS_SCALE * gSpotShadowParams[slot].z *
             (1.0 - saturate(dot(normalize(worldNormal), normalize(lightDirection))));
-        float depth = max(clip.z * shadowParams.x - receiverBias, 0.0);
+        float depth = max(ndc.z * shadowParams.x - receiverBias, 0.0);
         if (all(uv >= 0.0) && all(uv < 1.0) && depth >= 0.0 && depth <= 1.0)
         {
             float4 area = gSpotShadowAreas[slot];
