@@ -82,6 +82,7 @@
 
 #include "Utility/TeDataStream.h"
 
+#include <cmath>
 #include <filesystem>
 
 // TODO Temp for debug purpose
@@ -867,7 +868,27 @@ namespace te
                 break;
 
                 case CoreType::TID_CLight:
-                    // TODO draw bounding box
+                {
+                    /*HLight light = static_object_cast<CLight>(component->GetHandle());
+                    if (light->GetType() == Light::Type::Directional || light->GetType() == Light::Type::Spot)
+                    {
+                        Vector3 lineDirection(-worldMatrix[2][0], -worldMatrix[2][1], -worldMatrix[2][2]);
+                        if (lineDirection.Normalize() > 1e-8f)
+                        {
+                            const Vector3 center(worldMatrix[3][0], worldMatrix[3][1], worldMatrix[3][2]);
+                            const Vector3 lineStart = center - lineDirection * 1.5f;
+                            float lineMatrix[4][4] =
+                            {
+                                { 1.0f, 0.0f, 0.0f, 0.0f },
+                                { 0.0f, 1.0f, 0.0f, 0.0f },
+                                { lineDirection.x, lineDirection.y, lineDirection.z, 0.0f },
+                                { lineStart.x, lineStart.y, lineStart.z, 1.0f }
+                            };
+                            ImGuizmo::DrawPerspectiveFrustum(view, proj, &lineMatrix[0][0], 0.0f, 3.0f, 1.0f,
+                                1.0f, 0.0f);
+                        }
+                    }*/
+                }
                 break;
 
                 case CoreType::TID_CCamera:
