@@ -52,7 +52,7 @@ namespace te
 
     void Light::FrameSync()
     {
-        Light::Type oldType = _type;
+        Light::Type oldType = _type; // TODO oldType should be stored in the class. Here we are not able to determine if the type has changed or not, so we will always remove and add the light to the renderer. This is not optimal.
         UINT32 dirtyFlag = GetCoreDirtyFlags();
         UINT32 updateEverythingFlag = (UINT32)ActorDirtyFlag::Everything | (UINT32)ActorDirtyFlag::Active;
 
@@ -83,7 +83,7 @@ namespace te
                 _type = oldType;
                 _renderer->NotifyLightRemoved(this);
                 _type = newType;
-                _renderer->NotifyLightAdded(this);
+                if (_active) _renderer->NotifyLightAdded(this);
             }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)

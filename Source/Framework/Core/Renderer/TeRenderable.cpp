@@ -540,7 +540,7 @@ namespace te
             else if (_renderer)
             {
                 _renderer->NotifyRenderableRemoved(this);
-                _renderer->NotifyRenderableAdded(this);
+                if (_active) _renderer->NotifyRenderableAdded(this);
             }
         }
         else if ((dirtyFlag & (UINT32)ActorDirtyFlag::Mobility) != 0)

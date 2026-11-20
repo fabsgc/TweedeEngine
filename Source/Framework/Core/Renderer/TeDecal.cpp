@@ -129,7 +129,7 @@ namespace te
             else if (_renderer)
             {
                 _renderer->NotifyDecalRemoved(this);
-                _renderer->NotifyDecalAdded(this);
+                if (_active) _renderer->NotifyDecalAdded(this);
             }
         }
 
