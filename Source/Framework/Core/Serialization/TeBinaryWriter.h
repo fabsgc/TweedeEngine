@@ -21,11 +21,7 @@ namespace te
         
         ~BinaryWriter();
 
-        /**
-         * Returns the bytes written by an in-memory writer.
-         *
-         * @throws std::logic_error If this writer writes to a file.
-         */
+        /** Returns the bytes written by an in-memory writer. */
         Vector<UINT8> GetWrittenBuffer() const;
 
         bool IsStreamGood() const final { return _stream->Good(); }

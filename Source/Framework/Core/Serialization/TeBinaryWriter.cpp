@@ -40,7 +40,7 @@ namespace te
     Vector<UINT8> BinaryWriter::GetWrittenBuffer() const
     {
         if (_memoryStream == nullptr)
-            throw std::logic_error("Cannot retrieve a buffer from a file-backed BinaryWriter");
+            TE_ASSERT_ERROR(false, "Cannot retrieve a buffer from a file-backed BinaryWriter");
 
         Vector<UINT8> buffer(_writtenSize);
         if (_writtenSize > 0)
