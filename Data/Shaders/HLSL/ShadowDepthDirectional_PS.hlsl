@@ -1,4 +1,4 @@
-#define USES_PS 1
+#define USES_PS 0
 
 #include "Include/Shadow.hlsli"
 
