@@ -711,7 +711,7 @@ namespace te
 
             if (cameraSettings->ShadowSettings.Enabled)
             {
-                const float widthShadows = width - 10.0f;
+                const float widthShadows = width - 20.0f;
 
                 if (ImGuiExt::RenderOptionFloat(cameraSettings->ShadowSettings.DirectionalShadowDistance, "##shadows_directional_shadow_distance_option", "Dir. Shadow Dist.", 1.0f, 512.0f, widthShadows))
                     hasChanged = true;
@@ -722,7 +722,8 @@ namespace te
                 if (ImGuiExt::RenderOptionInt((int&)cameraSettings->ShadowSettings.ShadowFilteringQuality, "##shadows_filtering_quality_option", "Quality.", 1, 4, widthShadows))
                     hasChanged = true;
 
-                static ImGuiExt::ComboOptions<int> shadowMapSizeOptions;
+                static ImGuiExt::ComboOptions<UINT32> shadowMapSizeOptions;
+                static ImGuiExt::ComboOptions<UINT32> shadowMapOverrideOptions;
                 if (shadowMapSizeOptions.Options.size() == 0)
                 {
                     shadowMapSizeOptions.AddOption(32, "32");
@@ -734,9 +735,35 @@ namespace te
                     shadowMapSizeOptions.AddOption(2048, "2048");
                     shadowMapSizeOptions.AddOption(4096, "4096");
                     shadowMapSizeOptions.AddOption(8192, "8192");
+                    shadowMapOverrideOptions.AddOption(0, "Default");
+                    for (const auto& option : shadowMapSizeOptions.Options)
+                        shadowMapOverrideOptions.AddOption(option);
                 }
 
-                if (ImGuiExt::RenderOptionCombo<int>((int*)&gRenderer()->GetOptions()->ShadowMapSize, "##shadows_shadow_map_size", "Shadow Map Size", shadowMapSizeOptions, width - 10.f))
+                auto rendererOptions = gRenderer()->GetOptions();
+                auto defaultOptions = shadowMapSizeOptions;
+                auto overrideOptions = shadowMapOverrideOptions;
+                auto addCurrentSize = [](ImGuiExt::ComboOptions<UINT32>& options, UINT32 value)
+                {
+                    for (const auto& option : options.Options)
+                    {
+                        if (option.Key == value)
+                            return;
+                    }
+                    options.AddOption(value, ToString(value));
+                };
+                addCurrentSize(defaultOptions, rendererOptions->ShadowMapSize);
+                addCurrentSize(overrideOptions, rendererOptions->DirectionalShadowMapSize);
+                addCurrentSize(overrideOptions, rendererOptions->PointShadowMapSize);
+                addCurrentSize(overrideOptions, rendererOptions->SpotShadowMapSize);
+
+                if (ImGuiExt::RenderOptionCombo<UINT32>(&rendererOptions->ShadowMapSize, "##shadows_shadow_map_size", "Default Max Size", defaultOptions, widthShadows))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionCombo<UINT32>(&rendererOptions->DirectionalShadowMapSize, "##shadows_directional_map_size", "Dir. Max Size", overrideOptions, widthShadows))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionCombo<UINT32>(&rendererOptions->PointShadowMapSize, "##shadows_point_map_size", "Point Max Size", overrideOptions, widthShadows))
+                    hasChanged = true;
+                if (ImGuiExt::RenderOptionCombo<UINT32>(&rendererOptions->SpotShadowMapSize, "##shadows_spot_map_size", "Spot Max Size", overrideOptions, widthShadows))
                     hasChanged = true;
             }
         }

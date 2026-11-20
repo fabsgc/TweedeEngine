@@ -44,10 +44,18 @@ namespace te
         virtual ~RendererOptions() = default;
 
         /**
-         * Determines the maximum shadow map size, in pixels. The system might decide to use smaller resolution maps for
-         * shadows far away, but will never increase the resolution past the provided value.
+         * Default maximum shadow map size, in pixels, used by light types without an override.
+         * Point and spot shadows may use smaller maps depending on screen coverage.
+         * The minimum supported size is 32 pixels.
          */
         UINT32 ShadowMapSize = 8192;
+
+        /** Per-light-type maximum in pixels; 0 uses ShadowMapSize. Nonzero values must be at least 32.
+         * Directional and spot maps are additionally limited to 8192 pixels.
+         */
+        UINT32 DirectionalShadowMapSize = 0;
+        UINT32 PointShadowMapSize = 2048;
+        UINT32 SpotShadowMapSize = 2048;
     };
 
     class TE_CORE_EXPORT Renderer : public NonCopyable

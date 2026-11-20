@@ -179,8 +179,7 @@ namespace te
 
         if (needs3DRender)
         {
-            // Update ShadowMap size
-            viewGroup.GetShadowRenderer()->SetShadowMapSize(_options->ShadowMapSize);
+            viewGroup.GetShadowRenderer()->SetShadowMapSizes(*_options);
 
             // Find all visible renderables
             {

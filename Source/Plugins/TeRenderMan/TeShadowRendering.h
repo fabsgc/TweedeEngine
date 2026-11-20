@@ -16,6 +16,7 @@
 namespace te
 {
     struct InfluencingLight;
+    struct RendererOptions;
 
     TE_PARAM_BLOCK_BEGIN(ShadowParamsDef)
         TE_PARAM_BLOCK_ENTRY(Matrix4, gMatViewProj)
@@ -355,15 +356,15 @@ namespace te
         };
 
     public:
-        ShadowRendering(UINT32 shadowMapSize);
+        ShadowRendering(const RendererOptions& options);
 
         ~ShadowRendering();
 
         /** For each visible shadow casting light, renders a shadow map from its point of view. */
         void RenderShadowMaps(RendererScene& scene, const RendererViewGroup& viewGroup, const FrameInfo& frameInfo);
 
-        /** Changes the default shadow map size. Will cause all shadow maps to be rebuilt. */
-        void SetShadowMapSize(UINT32 size);
+        /** Updates shadow map size limits, rebuilding maps for affected light types. */
+        void SetShadowMapSizes(const RendererOptions& options);
 
         void BindForwardShadows(GpuParams& params, const RendererView& view, const InfluencingLight* lights,
             UINT32 lightCount, UINT32* shadowSlots);
@@ -389,13 +390,14 @@ namespace te
          * @param[in]	light			Light for which to calculate the shadow map properties. Cannot be a directional light.
          * @param[in]	viewGroup		All the views the shadow will (potentially) be seen through.
          * @param[in]	border			Border to reduce the shadow map size by, in pixels.
+         * @param[in]	maxResolution	Maximum map resolution including the border.
          * @param[out]	size			Optimal size of the shadow map, in pixels.
          * @param[out]	fadePercents	Value in range [0, 1] determining how much should the shadow map be faded out. Each
          *								entry corresponds to a single view.
          * @param[out]	maxFadePercent	Maximum value in the @p fadePercents array.
          */
         void CalcShadowMapProperties(const RendererLight& light, const RendererViewGroup& viewGroup, UINT32 border,
-            UINT32& size, Vector<float>& fadePercents, float& maxFadePercent) const;
+            UINT32 maxResolution, UINT32& size, Vector<float>& fadePercents, float& maxFadePercent) const;
 
         /**
          * Generates a frustum for a single cascade of a cascaded shadow map. Also outputs spherical bounds of the
@@ -454,7 +456,9 @@ namespace te
         static const float CASCADE_FRACTION_FADE;
 
     private:
-        UINT32 _shadowMapSize;
+        UINT32 _directionalShadowMapSize = 8192;
+        UINT32 _pointShadowMapSize = 8192;
+        UINT32 _spotShadowMapSize = 8192;
         /** Pixel format selected from the highest shadow filtering quality in the current view group. */
         PixelFormat _shadowMapFormat = PF_D32;
 

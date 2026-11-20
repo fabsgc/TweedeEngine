@@ -3,6 +3,7 @@
 #include "TeRendererScene.h"
 #include "Material/TeMaterial.h"
 #include "Renderer/TeRendererUtility.h"
+#include "Renderer/TeRenderer.h"
 #include "RenderAPI/TeRenderTexture.h"
 #include "Utility/TeBitwise.h"
 #include "Utility/TeFrameAllocator.h"
@@ -551,9 +552,10 @@ namespace te
     const UINT32 ShadowRendering::SHADOW_MAP_BORDER = 4;
     const float ShadowRendering::CASCADE_FRACTION_FADE = 0.1f;
 
-    ShadowRendering::ShadowRendering(UINT32 shadowMapSize)
-        : _shadowMapSize(shadowMapSize)
-    { }
+    ShadowRendering::ShadowRendering(const RendererOptions& options)
+    {
+        SetShadowMapSizes(options);
+    }
 
     ShadowRendering::~ShadowRendering()
     {
@@ -729,7 +731,8 @@ namespace te
             options.LightIdx = i;
 
             float maxFadePercent;
-            CalcShadowMapProperties(light, viewGroup, SHADOW_MAP_BORDER, options.MapSize, options.FadePercents, maxFadePercent);
+            CalcShadowMapProperties(light, viewGroup, SHADOW_MAP_BORDER, std::min(_spotShadowMapSize, MAX_ATLAS_SIZE),
+                options.MapSize, options.FadePercents, maxFadePercent);
 
             // Don't render shadow maps that will end up nearly completely faded out
             if (maxFadePercent < 0.005f)
@@ -754,7 +757,8 @@ namespace te
             options.LightIdx = i;
 
             float maxFadePercent;
-            CalcShadowMapProperties(light, viewGroup, 0, options.MapSize, options.FadePercents, maxFadePercent);
+            CalcShadowMapProperties(light, viewGroup, 0, _pointShadowMapSize,
+                options.MapSize, options.FadePercents, maxFadePercent);
 
             // Don't render shadow maps that will end up nearly completely faded out
             if (maxFadePercent < 0.005f)
@@ -836,16 +840,28 @@ namespace te
         }
     }
 
-    void ShadowRendering::SetShadowMapSize(UINT32 size)
+    void ShadowRendering::SetShadowMapSizes(const RendererOptions& options)
     {
-        if (_shadowMapSize == size)
+        const UINT32 directionalSize = options.DirectionalShadowMapSize != 0 ? options.DirectionalShadowMapSize : options.ShadowMapSize;
+        const UINT32 pointSize = options.PointShadowMapSize != 0 ? options.PointShadowMapSize : options.ShadowMapSize;
+        const UINT32 spotSize = options.SpotShadowMapSize != 0 ? options.SpotShadowMapSize : options.ShadowMapSize;
+
+        if (directionalSize < MIN_SHADOW_MAP_SIZE || pointSize < MIN_SHADOW_MAP_SIZE || spotSize < MIN_SHADOW_MAP_SIZE)
+        {
+            TE_ASSERT_ERROR(false, "Shadow map size limits must be at least 32 pixels.");
             return;
+        }
 
-        _cascadedShadowMaps.clear();
-        _dynamicShadowMaps.clear();
-        _shadowCubemaps.clear();
+        if (_directionalShadowMapSize != directionalSize)
+            _cascadedShadowMaps.clear();
+        if (_pointShadowMapSize != pointSize)
+            _shadowCubemaps.clear();
+        if (_spotShadowMapSize != spotSize)
+            _dynamicShadowMaps.clear();
 
-        _shadowMapSize = size;
+        _directionalShadowMapSize = directionalSize;
+        _pointShadowMapSize = pointSize;
+        _spotShadowMapSize = spotSize;
     }
 
     void ShadowRendering::RenderCascadedShadowMaps(const RendererView& view, UINT32 lightIdx, RendererScene& scene,
@@ -883,7 +899,7 @@ namespace te
         shadowInfo.LightIdx = lightIdx;
         shadowInfo.TextureIdx = (UINT32)-1;
 
-        UINT32 mapSize = std::min(_shadowMapSize, MAX_ATLAS_SIZE);
+        UINT32 mapSize = std::min(_directionalShadowMapSize, MAX_ATLAS_SIZE);
         shadowInfo.Area = Rect2I(0, 0, mapSize, mapSize);
         shadowInfo.UpdateNormArea(mapSize);
 
@@ -1330,7 +1346,7 @@ namespace te
     }
 
     void ShadowRendering::CalcShadowMapProperties(const RendererLight& light, const RendererViewGroup& viewGroup,
-        UINT32 border, UINT32& size, Vector<float>& fadePercents, float& maxFadePercent) const
+        UINT32 border, UINT32 maxResolution, UINT32& size, Vector<float>& fadePercents, float& maxFadePercent) const
     {
         const static float SHADOW_TEXELS_PER_PIXEL = 1.0f;
 
@@ -1381,8 +1397,7 @@ namespace te
         // If light fully (or nearly fully) covers the screen, use full shadow map resolution, otherwise
         // scale it down to smaller power of two, while clamping to minimal allowed resolution
         UINT32 effectiveMapSize = Bitwise::NextPow2((UINT32)maxMapSize);
-        const UINT32 maxMapSizeForType = border > 0 ? std::min(_shadowMapSize, MAX_ATLAS_SIZE) : _shadowMapSize;
-        effectiveMapSize = Math::Clamp(effectiveMapSize, MIN_SHADOW_MAP_SIZE, maxMapSizeForType);
+        effectiveMapSize = Math::Clamp(effectiveMapSize, MIN_SHADOW_MAP_SIZE, maxResolution);
 
         // Leave room for border
         size = std::max(effectiveMapSize - 2 * border, 1u);

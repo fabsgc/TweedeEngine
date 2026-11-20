@@ -668,7 +668,7 @@ namespace te
     RendererViewGroup::RendererViewGroup(RendererView** views, UINT32 numViews, SPtr<RenderManOptions> options)
         : _options(options)
     {
-        _shadowRenderer = te_shared_ptr_new<ShadowRendering>(options->ShadowMapSize);
+        _shadowRenderer = te_shared_ptr_new<ShadowRendering>(*options);
         SetViews(views, numViews);
     }
 
