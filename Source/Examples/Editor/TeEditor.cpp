@@ -1002,6 +1002,7 @@ namespace te
         gResourceManager().Release(_project);
         _project = Project::Create();
         _project->SetName("Project");
+        _project->SetPath(path);
 
         return true;
     }
@@ -1067,6 +1068,7 @@ namespace te
             return false;
         }
 
+        _project->SetPath(path);
         _project->ClearResources();
         _project->SetSceneObject(_sceneSO);
 

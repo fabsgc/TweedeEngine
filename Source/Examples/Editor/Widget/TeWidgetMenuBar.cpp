@@ -256,7 +256,7 @@ namespace te
 
         if (_fileBrowser.ShowFileDialog("New Project", ImGuiFileBrowser::DialogMode::SELECT, ImVec2(900, 450), true, ""))
         {
-            gEditor().NewProject(_fileBrowser.Data.SelectedPath + "project.json");
+            gEditor().NewProject(_fileBrowser.Data.SelectedPath + "project.project");
             _settings.NewProject = false;
         }
         else
