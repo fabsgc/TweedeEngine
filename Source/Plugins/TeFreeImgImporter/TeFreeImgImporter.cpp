@@ -170,6 +170,7 @@ namespace te
         mipOptions.RoundMode = MipMapRoundMode::RoundNone;
         mipOptions.WrapMode = MipMapWrapMode::Mirror;
         mipOptions.IsNormalMap = textureImportOptions.IsNormalMap;
+        mipOptions.PreserveAlphaCoverage = textureImportOptions.MipsPreserveCoverage;
 
         if (textureImportOptions.GenerateMips)
         {

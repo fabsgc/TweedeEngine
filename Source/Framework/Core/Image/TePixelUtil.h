@@ -86,6 +86,7 @@ namespace te
         bool IsNormalMap = false; /*< Determines does the input data represent a normal map. */
         bool NormalizeMipmaps = false; /*< Should the downsampled values be re-normalized. Only relevant for mip-maps representing normal maps. */
         bool IsSRGB = false; /*< Determines has the input data been gamma corrected. */
+        bool PreserveAlphaCoverage = false; /*< Rescales mip alpha so 0.5 alpha-test coverage matches the base level. */
     };
 
     /** Utility methods for converting and managing pixel data and formats. */

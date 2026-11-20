@@ -733,6 +733,7 @@ namespace te
                     shadowMapSizeOptions.AddOption(1024, "1024");
                     shadowMapSizeOptions.AddOption(2048, "2048");
                     shadowMapSizeOptions.AddOption(4096, "4096");
+                    shadowMapSizeOptions.AddOption(8192, "8192");
                 }
 
                 if (ImGuiExt::RenderOptionCombo<int>((int*)&gRenderer()->GetOptions()->ShadowMapSize, "##shadows_shadow_map_size", "Shadow Map Size", shadowMapSizeOptions, width - 10.f))

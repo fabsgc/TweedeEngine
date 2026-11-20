@@ -22,9 +22,18 @@ namespace te
         TE_PARAM_BLOCK_ENTRY(Vector2, gNDCZToDeviceZ)
         TE_PARAM_BLOCK_ENTRY(float, gDepthBias)
         TE_PARAM_BLOCK_ENTRY(float, gInvDepthRange)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gShadowLightDirection)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gShadowLightPosition)
     TE_PARAM_BLOCK_END
 
     extern ShadowParamsDef gShadowParamsDef;
+
+    TE_PARAM_BLOCK_BEGIN(ShadowParallaxParamsDef)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gShadowParallaxParams)
+        TE_PARAM_BLOCK_ENTRY(Vector4, gShadowUV0Transform)
+    TE_PARAM_BLOCK_END
+
+    extern ShadowParallaxParamsDef gShadowParallaxParamsDef;
 
     /** Material used for rendering a single face of a shadow map, while applying bias in the pixel shader. */
     class ShadowDepthNormalMat : public RendererMaterial<ShadowDepthNormalMat>
@@ -32,13 +41,14 @@ namespace te
         RMAT_DEF(BuiltinShader::ShadowDepthNormal);
 
         /** Helper method used for initializing variations of this material. */
-        template<bool skinned>
+        template<bool skinned, bool useParallaxMap>
         static const ShaderVariation& GetVariation()
         {
             static ShaderVariation variation;
             variation = ShaderVariation(
             {
-                ShaderVariation::Param("SKINNED", skinned)
+                ShaderVariation::Param("SKINNED", skinned),
+                ShaderVariation::Param("USE_PARALLAX_MAP", useParallaxMap)
             });
 
             return variation;
@@ -46,22 +56,26 @@ namespace te
 
     public:
         ShadowDepthNormalMat() = default;
+        SPtr<GpuParamBlockBuffer> ParallaxParamsBuffer;
 
         /** @copydoc RendererMaterialBase::Initialize */
-        void Initialize() override { }
+        void Initialize() override;
 
         /** Binds the material to the pipeline, ready to be used on subsequent draw calls. */
         void Bind(const SPtr<GpuParamBlockBuffer>& shadowParams);
 
         /** Sets a new buffer that determines per-object properties. */
-        void SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, const SPtr<te::GpuBuffer>& boneMatrices);
+        void SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams,
+            const SPtr<te::GpuBuffer>& boneMatrices, bool bindParams = true);
+        void SetParallaxParams(float scale, UINT32 samples, const Vector2& uvRepeat, const Vector2& uvOffset,
+            const SPtr<Texture>& parallaxMap);
 
         /**
          * Returns the material variation matching the provided parameters.
          *
          * @param[in]	skinned		True if the shadow caster supports bone animation.
          */
-        static ShadowDepthNormalMat* GetVariation(bool skinned);
+        static ShadowDepthNormalMat* GetVariation(bool skinned, bool useParallaxMap = false);
     };
 
     /** Material used for rendering a single face of a shadow map, for a directional light. */
@@ -70,13 +84,14 @@ namespace te
         RMAT_DEF(BuiltinShader::ShadowDepthDirectional);
 
         /** Helper method used for initializing variations of this material. */
-        template<bool skinned>
+        template<bool skinned, bool useParallaxMap>
         static const ShaderVariation& GetVariation()
         {
             static ShaderVariation variation;
             variation = ShaderVariation(
             {
-                ShaderVariation::Param("SKINNED", skinned)
+                ShaderVariation::Param("SKINNED", skinned),
+                ShaderVariation::Param("USE_PARALLAX_MAP", useParallaxMap)
             });
 
             return variation;
@@ -84,22 +99,26 @@ namespace te
 
     public:
         ShadowDepthDirectionalMat() = default;
+        SPtr<GpuParamBlockBuffer> ParallaxParamsBuffer;
 
         /** @copydoc RendererMaterialBase::Initialize */
-        void Initialize() override { }
+        void Initialize() override;
 
         /** Binds the material to the pipeline, ready to be used on subsequent draw calls. */
         void Bind(const SPtr<GpuParamBlockBuffer>& shadowParams);
 
         /** Sets a new buffer that determines per-object properties. */
-        void SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, const SPtr<te::GpuBuffer>& boneMatrices);
+        void SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams,
+            const SPtr<te::GpuBuffer>& boneMatrices, bool bindParams = true);
+        void SetParallaxParams(float scale, UINT32 samples, const Vector2& uvRepeat, const Vector2& uvOffset,
+            const SPtr<Texture>& parallaxMap);
 
         /**
          * Returns the material variation matching the provided parameters.
          *
          * @param[in]	skinned		True if the shadow caster supports bone animation.
          */
-        static ShadowDepthDirectionalMat* GetVariation(bool skinned);
+        static ShadowDepthDirectionalMat* GetVariation(bool skinned, bool useParallaxMap = false);
     };
 
     TE_PARAM_BLOCK_BEGIN(ShadowCubeMatricesDef)

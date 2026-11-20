@@ -85,10 +85,19 @@ PS_OUTPUT main( VS_OUTPUT IN )
 #endif
 
     // ###################### PARALLAX MAP MAPPING
+    float parallaxHeight = 1.0;
+    float3 shadowPosition = P;
+    float3 shadowLookupPosition = P;
 #if USE_PARALLAX_MAP == 1
     {
         uv0 = DoParallaxMapping(uv0, V, Pv, N, P, 
-            parallaxSamples, parallaxScale, IN.ParallaxOffsetTS);
+            parallaxSamples, parallaxScale, IN.ParallaxOffsetTS, parallaxHeight);
+        shadowPosition -= V * (parallaxScale * (1.0 - parallaxHeight) /
+            max(dot(N, V), 1e-4));
+
+        float3 parallaxOffset = shadowPosition - P;
+        shadowLookupPosition += parallaxOffset -
+            geometricNormal * dot(parallaxOffset, geometricNormal);
     }
 #endif // USE_PARALLAX_MAP
 
@@ -290,7 +299,8 @@ PS_OUTPUT main( VS_OUTPUT IN )
         OUT.Scene.rgb = lit.Diffuse + lit.Specular;
 
 #if DO_DIRECT_LIGHTING == 1
-        OUT.Scene.rgb += DoDirectLighting(V, P, N, geometricNormal, NoV, pixel, castLight, receiveShadows, occlusion);
+        OUT.Scene.rgb += DoDirectLighting(V, shadowPosition, shadowLookupPosition, N, geometricNormal, NoV, pixel,
+            castLight, receiveShadows, occlusion, uv0, TBN, parallaxSamples, parallaxScale, parallaxHeight);
 #endif // DO_DIRECT_LIGHTING
 
 #if TRANSPARENT == 1

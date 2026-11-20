@@ -1833,7 +1833,8 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         Vector<ShaderVariationParam*> variationParams = {
-            te_pool_new<ShaderVariationParam>(std::forward<String>("SKINNED"), std::forward<Vector<std::any>>({ false, true }))
+            te_pool_new<ShaderVariationParam>(std::forward<String>("SKINNED"), std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_PARALLAX_MAP", std::forward<Vector<std::any>>({ false, true }))
         };
 
         FillShaderDesc(variationParams, shaderDesc);
@@ -1879,6 +1880,7 @@ namespace te
         passDesc.DepthStencilStateDesc = _depthStencilStateDesc;
         passDesc.RasterizerStateDesc = _rasterizerStateDesc;
         passDesc.VertexProgramDesc = _vertexShaderShadowDepthDirectionalDesc;
+        passDesc.PixelProgramDesc = _pixelShaderShadowDepthDirectionalDesc;
 
         passDesc.RasterizerStateDesc.cullMode = CullingMode::CULL_NONE;
 
@@ -1891,7 +1893,8 @@ namespace te
         shaderDesc.Techniques.push_back(technique);
 
         Vector<ShaderVariationParam*> variationParams = {
-            te_pool_new<ShaderVariationParam>(std::forward<String>("SKINNED"), std::forward<Vector<std::any>>({ false, true }))
+            te_pool_new<ShaderVariationParam>(std::forward<String>("SKINNED"), std::forward<Vector<std::any>>({ false, true })),
+            te_pool_new<ShaderVariationParam>("USE_PARALLAX_MAP", std::forward<Vector<std::any>>({ false, true }))
         };
 
         FillShaderDesc(variationParams, shaderDesc);

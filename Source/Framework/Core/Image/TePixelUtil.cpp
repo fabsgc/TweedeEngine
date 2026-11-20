@@ -8,10 +8,111 @@
 #include "Renderer/TeRendererUtility.h"
 #include "Renderer/TeRendererMaterialManager.h"
 #include <nvtt.h>
+#include <algorithm>
+#include <cmath>
 #include <filesystem>
 
 namespace te
 {
+    namespace
+    {
+        constexpr float AlphaCoverageThreshold = 0.5f;
+
+        bool CanPreserveAlphaCoverage(PixelFormat format)
+        {
+            return PixelUtil::HasAlpha(format) && !PixelUtil::IsCompressed(format) && !PixelUtil::IsDepth(format)
+                && ((PixelUtil::GetFlags(format) & PFF_NORMALIZED) != 0 || PixelUtil::IsFloatingPoint(format));
+        }
+
+        // Rescale mip alpha so its pixels passing the 0.5 cutoff match the reference coverage as closely as possible.
+        void PreserveAlphaCoverage(const PixelData& reference, PixelData& mip)
+        {
+            const PixelFormat referenceFormat = reference.GetFormat();
+            const PixelFormat mipFormat = mip.GetFormat();
+            if (!CanPreserveAlphaCoverage(referenceFormat) || !CanPreserveAlphaCoverage(mipFormat))
+                return;
+
+            const UINT64 referencePixelCount = static_cast<UINT64>(reference.GetWidth())
+                * reference.GetHeight() * reference.GetDepth();
+            const UINT64 mipPixelCount = static_cast<UINT64>(mip.GetWidth()) * mip.GetHeight() * mip.GetDepth();
+            if (referencePixelCount == 0 || mipPixelCount == 0)
+                return;
+
+            UINT64 coveredPixels = 0;
+            UINT32 pixelSize = PixelUtil::GetNumElemBytes(referenceFormat);
+            const UINT8* referenceData = reference.GetData();
+            // Measure the fraction of reference pixels that pass the alpha test.
+            for (UINT32 z = 0; z < reference.GetDepth(); z++)
+            {
+                for (UINT32 y = 0; y < reference.GetHeight(); y++)
+                {
+                    for (UINT32 x = 0; x < reference.GetWidth(); x++)
+                    {
+                        const UINT8* pixel = referenceData + z * reference.GetSlicePitch()
+                            + y * reference.GetRowPitch() + x * pixelSize;
+                        Color color;
+                        PixelUtil::UnpackColor(&color, referenceFormat, pixel);
+                        if (std::isfinite(color.a) && color.a >= AlphaCoverageThreshold)
+                            coveredPixels++;
+                    }
+                }
+            }
+
+            const double targetCoverage = static_cast<double>(coveredPixels) / referencePixelCount;
+            const UINT64 targetCoveredPixels = static_cast<UINT64>(std::round(targetCoverage * mipPixelCount));
+            if (targetCoveredPixels == 0)
+                return;
+
+            // Find the alpha value that must reach the cutoff to match the target pixel count.
+            pixelSize = PixelUtil::GetNumElemBytes(mipFormat);
+            UINT8* mipData = mip.GetData();
+            Vector<float> alphas;
+            alphas.reserve(static_cast<size_t>(mipPixelCount));
+            for (UINT32 z = 0; z < mip.GetDepth(); z++)
+            {
+                for (UINT32 y = 0; y < mip.GetHeight(); y++)
+                {
+                    for (UINT32 x = 0; x < mip.GetWidth(); x++)
+                    {
+                        const UINT8* pixel = mipData + z * mip.GetSlicePitch()
+                            + y * mip.GetRowPitch() + x * pixelSize;
+                        Color color;
+                        PixelUtil::UnpackColor(&color, mipFormat, pixel);
+                        alphas.push_back(std::isfinite(color.a) ? color.a : 0.0f);
+                    }
+                }
+            }
+
+            std::sort(alphas.begin(), alphas.end(), [](float lhs, float rhs) { return lhs > rhs; });
+            const UINT64 positivePixelCount = static_cast<UINT64>(std::count_if(
+                alphas.begin(), alphas.end(), [](float alpha) { return alpha > 0.0f; }));
+            const UINT64 pixelsToCover = std::min(targetCoveredPixels, positivePixelCount);
+            if (pixelsToCover == 0)
+                return;
+
+            const double scale = static_cast<double>(AlphaCoverageThreshold) / alphas[pixelsToCover - 1];
+            // Apply one uniform scale, clamping alpha to its valid range.
+            for (UINT32 z = 0; z < mip.GetDepth(); z++)
+            {
+                for (UINT32 y = 0; y < mip.GetHeight(); y++)
+                {
+                    for (UINT32 x = 0; x < mip.GetWidth(); x++)
+                    {
+                        UINT8* pixel = mipData + z * mip.GetSlicePitch()
+                            + y * mip.GetRowPitch() + x * pixelSize;
+                        Color color;
+                        PixelUtil::UnpackColor(&color, mipFormat, pixel);
+                        const double scaledAlpha = std::isfinite(color.a)
+                            ? static_cast<double>(color.a) * scale
+                            : 0.0;
+                        color.a = static_cast<float>(std::max(0.0, std::min(1.0, scaledAlpha)));
+                        PixelUtil::PackColor(color, mipFormat, pixel);
+                    }
+                }
+            }
+        }
+    }
+
     RecursiveMutex PixelUtil::_recursiveMutex;
 
     /**
@@ -2998,6 +3099,9 @@ namespace te
             BulkPixelConversion(*argbBuffer, *outputBuffer, std::nullopt);
             argbBuffer->FreeInternalBuffer();
 
+            if (options.PreserveAlphaCoverage && i > 0)
+                PreserveAlphaCoverage(src, *outputBuffer);
+
             outputMipBuffers.push_back(outputBuffer);
         }
 
@@ -3099,7 +3203,14 @@ namespace te
 
             if (mipTexDesc.NumMips > 0 && everythingOk)
             {
-                // TODO PRESERVE ALPHA COVERAGE
+                SPtr<PixelData> baseMip;
+                if (options.PreserveAlphaCoverage
+                    && CanPreserveAlphaCoverage(srcs[0]->GetFormat())
+                    && CanPreserveAlphaCoverage(mipTexDesc.Format))
+                {
+                    baseMip = tmp->GetProperties().AllocBuffer(0, 0);
+                    tmp->ReadData(*baseMip, 0, 0);
+                }
 
                 for (UINT32 mip = 1; mip < mipTexDesc.NumMips; mip++)
                 {
@@ -3114,6 +3225,14 @@ namespace te
 
                         SPtr<RenderTarget> target = RenderTexture::Create(mipDesc);
                         textureMat->Execute(output, srcMip, target);
+
+                        if (baseMip)
+                        {
+                            SPtr<PixelData> mipData = tmp->GetProperties().AllocBuffer(0, mip);
+                            tmp->ReadData(*mipData, mip, 0);
+                            PreserveAlphaCoverage(*baseMip, *mipData);
+                            tmp->WriteData(*mipData, mip, 0);
+                        }
 
                         TEXTURE_COPY_DESC copyDesc;
                         copyDesc.SrcFace = 0;

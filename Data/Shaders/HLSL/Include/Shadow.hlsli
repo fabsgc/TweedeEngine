@@ -9,6 +9,8 @@ cbuffer PerShadowBuffer : register(b0)
     float2 gNDCZToDeviceZ;
     float gDepthBias;
     float gInvDepthRange;
+    float4 gShadowLightDirection;
+    float4 gShadowLightPosition;
 };
 
 cbuffer PerObjectBuffer : register(b1)
@@ -48,9 +50,27 @@ struct VS_OUTPUT
 #if USES_PS
     float ShadowPosition : TEXCOORD0;
 #endif // USES_PS
+#if USE_PARALLAX_MAP == 1
+    float2 UV0 : TEXCOORD1;
+    float3 WorldPosition : TEXCOORD2;
+    float3 WorldNormal : TEXCOORD3;
+    float3 WorldTangent : TEXCOORD4;
+    float3 WorldBitangent : TEXCOORD5;
+#endif // USE_PARALLAX_MAP
 };
 
 typedef VS_OUTPUT PS_INPUT;
+
+#if USE_PARALLAX_MAP == 1
+cbuffer ShadowParallaxBuffer : register(b4)
+{
+    float4 gShadowParallaxParams;
+    float4 gShadowUV0Transform;
+};
+
+Texture2D ParallaxMap : register(t13);
+SamplerState AnisotropicSampler : register(s0);
+#endif // USE_PARALLAX_MAP
 
 /** Converts Z value from device range ([0, 1]) to NDC space. */
 float DeviceZToNDCZ(float deviceZ)
@@ -68,6 +88,11 @@ VS_OUTPUT VS_MAIN(VS_INPUT IN)
 {
     VS_OUTPUT OUT = (VS_OUTPUT)0;
     float4 worldPosition = float4(IN.Position, 1.0f);
+#if USE_PARALLAX_MAP == 1
+    float3 worldNormal = IN.Normal;
+    float3 worldTangent = IN.Tangent.xyz;
+    float3 worldBitangent = IN.BiTangent.xyz;
+#endif // USE_PARALLAX_MAP
 
 #if SKINNED == 1
     if(gHasAnimation)
@@ -75,10 +100,20 @@ VS_OUTPUT VS_MAIN(VS_INPUT IN)
         float3x4 blendMatrix = (float3x4)0;
         blendMatrix = GetBlendMatrix(IN.BlendWeights, IN.BlendIndices);
         worldPosition = float4(mul(blendMatrix, worldPosition), 1.0);
+#if USE_PARALLAX_MAP == 1
+        worldNormal = mul(blendMatrix, float4(worldNormal, 0.0f)).xyz;
+        worldTangent = mul(blendMatrix, float4(worldTangent, 0.0f)).xyz;
+        worldBitangent = mul(blendMatrix, float4(worldBitangent, 0.0f)).xyz;
+#endif // USE_PARALLAX_MAP
     }
 #endif // SKINNED
 
     worldPosition = mul(gMatWorld, worldPosition);
+#if USE_PARALLAX_MAP == 1
+    worldNormal = normalize(mul(gMatWorld, float4(worldNormal, 0.0f)).xyz);
+    worldTangent = normalize(mul(gMatWorld, float4(worldTangent, 0.0f)).xyz);
+    worldBitangent = normalize(mul(gMatWorld, float4(worldBitangent, 0.0f)).xyz);
+#endif // USE_PARALLAX_MAP
 
 #if USES_GS
     OUT.WorldPosition = worldPosition;
@@ -112,6 +147,14 @@ VS_OUTPUT VS_MAIN(VS_INPUT IN)
 #else // Otherwise apply bias immediately
     clipPos.z = max(DeviceZToNDCZ(0), clipPos.z + gDepthBias);
 #endif // USES_PS
+
+#if USE_PARALLAX_MAP == 1
+    OUT.UV0 = float2(IN.UV0.x - 1.0f, IN.UV0.y);
+    OUT.WorldPosition = worldPosition.xyz;
+    OUT.WorldNormal = worldNormal;
+    OUT.WorldTangent = worldTangent;
+    OUT.WorldBitangent = worldBitangent;
+#endif // USE_PARALLAX_MAP
 
     OUT.Position = clipPos;
 

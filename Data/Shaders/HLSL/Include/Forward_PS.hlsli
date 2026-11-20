@@ -241,7 +241,8 @@ float3 DoNormalMapping(float3x3 TBN, Texture2D tex, SamplerState samplerState, f
 // parallaxOffsetTS : computed in vertex shader
 // numsteps : number of steps to execute (more steps lead to a more convincing effect)
 // parallaxScale : scale to apply on each step
-float2 DoParallaxMappingSteps(float2 uv, float2 parallaxOffsetTS, int numSteps, float parallaxScale)
+float2 DoParallaxMappingSteps(float2 uv, float2 parallaxOffsetTS, int numSteps, float parallaxScale,
+    out float parallaxHeight)
 {
     float2 dx = ddx( uv );
     float2 dy = ddy( uv );
@@ -300,6 +301,7 @@ float2 DoParallaxMappingSteps(float2 uv, float2 parallaxOffsetTS, int numSteps, 
         fParallaxAmount = ( pt1.x * fDelta2 - pt2.x * fDelta1 ) / fDenominator;
 
     float2 vParallaxOffset = parallaxOffsetTS  * parallaxScale * ( 1.0 - fParallaxAmount );
+    parallaxHeight = saturate(fParallaxAmount);
 
     return uv - vParallaxOffset;
 }
@@ -315,8 +317,10 @@ float2 DoParallaxMappingSteps(float2 uv, float2 parallaxOffsetTS, int numSteps, 
 // parallaxScale : scale to apply on each step
 // parallaxOffsetTS : computed in vertex shader
 float2 DoParallaxMapping(float2 uv, float3 V, float3 Pv, float3 N, float3 P,
-    uint numSamples, float parallaxScale, float2 parallaxOffsetTS)
+    uint numSamples, float parallaxScale, float2 parallaxOffsetTS, out float parallaxHeight)
 {
+    parallaxHeight = 1.0;
+
     if(numSamples < 16) numSamples = 16;
     if(numSamples > PARALLAX_MAX_SAMPLE) numSamples = 256;
 
@@ -346,10 +350,39 @@ float2 DoParallaxMapping(float2 uv, float3 V, float3 Pv, float3 N, float3 P,
         // We express the sampling rate as a linear function of the angle between 
         // the geometric normal and the view direction ray:
         int parallaxSteps = (int)lerp( numSamples, PARALLAX_MIN_SAMPLE, ClampNoV(dot( -V, N )) );
-        uv = DoParallaxMappingSteps(uv, parallaxOffsetTS, parallaxSteps, parallaxScale);
+        uv = DoParallaxMappingSteps(uv, parallaxOffsetTS, parallaxSteps, parallaxScale, parallaxHeight);
     }
 
     return uv;
+}
+
+float GetParallaxShadowVisibility(float2 uv, float3 lightDirectionTS, float parallaxHeight,
+    uint numSamples, float parallaxScale, float2 uvDx, float2 uvDy)
+{
+    if (abs(parallaxScale) <= 1e-6 || parallaxHeight >= 1.0)
+        return 1.0;
+
+    lightDirectionTS = normalize(lightDirectionTS);
+    if (lightDirectionTS.z <= 1e-4)
+        return 0.0;
+
+    uint numSteps = min(max(numSamples / 4, 8u), 32u);
+    float layerStep = (1.0 - parallaxHeight) / numSteps;
+    float2 uvStep = (lightDirectionTS.xy / lightDirectionTS.z) * (parallaxScale * layerStep);
+    float layerHeight = parallaxHeight;
+    float2 shadowUV = uv;
+
+    [loop]
+    for (uint step = 0; step < numSteps; step++)
+    {
+        shadowUV += uvStep;
+        layerHeight += layerStep;
+        float surfaceHeight = ParallaxMap.SampleGrad(AnisotropicSampler, shadowUV, uvDx, uvDy).r;
+        if (surfaceHeight > layerHeight + 0.01)
+            return 0.0;
+    }
+
+    return 1.0;
 }
 #endif // USE_PARALLAX_MAP
 
@@ -920,10 +953,15 @@ LightingResult DoIndirectLighting(float3 V, float3 P, float3 N, float NoV, const
 // V : view vector
 // P : position vector in world space
 // N : normal
-float3 DoDirectLighting(float3 V, float3 P, float3 N, float3 geometricNormal, float NoV, const PixelData pixel,
-    bool castLight, bool receiveShadows, float occlusion)
+float3 DoDirectLighting(float3 V, float3 P, float3 shadowPosition, float3 N, float3 geometricNormal,
+    float NoV, const PixelData pixel, bool castLight, bool receiveShadows, float occlusion,
+    float2 parallaxUV, float3x3 TBN, uint parallaxSamples, float parallaxScale, float parallaxHeight)
 {
     float3 result = (float3)0;
+#if USE_PARALLAX_MAP == 1
+    float2 parallaxUVDx = ddx(parallaxUV);
+    float2 parallaxUVDy = ddy(parallaxUV);
+#endif
 
     if (castLight)
     {
@@ -940,8 +978,20 @@ float3 DoDirectLighting(float3 V, float3 P, float3 N, float3 geometricNormal, fl
                 contribution = DoSpotLight(light, pixel, NoV, V, P, N, occlusion);
 
             [branch]
-            if (receiveShadows && light.ShadowSlot != 0 && any(contribution > 0.001))
-                contribution *= GetForwardShadowVisibility(light, P, geometricNormal);
+            if (receiveShadows && any(contribution > 0.001))
+            {
+#if USE_PARALLAX_MAP == 1
+                float3 lightDirection = light.Type == DIRECTIONAL_LIGHT
+                    ? -light.Direction
+                    : light.Position - P;
+                float3 lightDirectionTS = mul(TBN, normalize(lightDirection));
+                contribution *= GetParallaxShadowVisibility(parallaxUV, lightDirectionTS,
+                    parallaxHeight, parallaxSamples, parallaxScale, parallaxUVDx, parallaxUVDy);
+#endif
+
+                if (light.ShadowSlot != 0)
+                    contribution *= GetForwardShadowVisibility(light, shadowPosition, geometricNormal);
+            }
 
             result += contribution;
         }

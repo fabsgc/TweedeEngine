@@ -1,6 +1,7 @@
 #include "TeShadowRendering.h"
 
 #include "TeRendererScene.h"
+#include "Material/TeMaterial.h"
 #include "Renderer/TeRendererUtility.h"
 #include "RenderAPI/TeRenderTexture.h"
 #include "Utility/TeBitwise.h"
@@ -9,6 +10,28 @@
 namespace te
 {
     ShadowParamsDef gShadowParamsDef;
+    ShadowParallaxParamsDef gShadowParallaxParamsDef;
+
+    static void SetShadowParallaxParams(const SPtr<GpuParams>& params, const SPtr<GpuParamBlockBuffer>& buffer,
+        float scale, UINT32 samples, const Vector2& uvRepeat, const Vector2& uvOffset,
+        const SPtr<Texture>& parallaxMap)
+    {
+        gShadowParallaxParamsDef.gShadowParallaxParams.Set(buffer, Vector4(scale, (float)samples, 0.0f, 0.0f));
+        gShadowParallaxParamsDef.gShadowUV0Transform.Set(buffer,
+            Vector4(uvRepeat.x, uvRepeat.y, uvOffset.x, uvOffset.y));
+
+        params->SetParamBlockBuffer("ShadowParallaxBuffer", buffer);
+        params->SetTexture(GPT_PIXEL_PROGRAM, "ParallaxMap", parallaxMap);
+        RenderAPI::Instance().SetGpuParams(params);
+    }
+
+    void ShadowDepthNormalMat::Initialize()
+    {
+        ParallaxParamsBuffer = gShadowParallaxParamsDef.CreateBuffer();
+        if (_params->HasSamplerState(GPT_PIXEL_PROGRAM, "AnisotropicSampler"))
+            _params->SetSamplerState(GPT_PIXEL_PROGRAM, "AnisotropicSampler",
+                gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
+    }
 
     void ShadowDepthNormalMat::Bind(const SPtr<GpuParamBlockBuffer>& shadowParams)
     {
@@ -18,22 +41,44 @@ namespace te
         RenderAPI::Instance().SetStencilRef(_stencilRef);
     }
 
-    void ShadowDepthNormalMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, const SPtr<te::GpuBuffer>& boneMatrices)
+    void ShadowDepthNormalMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams,
+        const SPtr<te::GpuBuffer>& boneMatrices, bool bindParams)
     {
         _params->SetParamBlockBuffer("PerObjectBuffer", perObjectParams);
 
         if (_params->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))
             _params->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", boneMatrices);
 
-        RenderAPI::Instance().SetGpuParams(_params);
+        if (bindParams)
+            RenderAPI::Instance().SetGpuParams(_params);
     }
 
-    ShadowDepthNormalMat* ShadowDepthNormalMat::GetVariation(bool skinned)
+    void ShadowDepthNormalMat::SetParallaxParams(float scale, UINT32 samples, const Vector2& uvRepeat,
+        const Vector2& uvOffset, const SPtr<Texture>& parallaxMap)
+    {
+        SetShadowParallaxParams(_params, ParallaxParamsBuffer, scale, samples, uvRepeat, uvOffset, parallaxMap);
+    }
+
+    ShadowDepthNormalMat* ShadowDepthNormalMat::GetVariation(bool skinned, bool useParallaxMap)
     {
         if (skinned)
-            return Get(GetVariation<true>());
-        else
-            return Get(GetVariation<false>());
+        {
+            if (useParallaxMap)
+                return Get(GetVariation<true, true>());
+            return Get(GetVariation<true, false>());
+        }
+
+        if (useParallaxMap)
+            return Get(GetVariation<false, true>());
+        return Get(GetVariation<false, false>());
+    }
+
+    void ShadowDepthDirectionalMat::Initialize()
+    {
+        ParallaxParamsBuffer = gShadowParallaxParamsDef.CreateBuffer();
+        if (_params->HasSamplerState(GPT_PIXEL_PROGRAM, "AnisotropicSampler"))
+            _params->SetSamplerState(GPT_PIXEL_PROGRAM, "AnisotropicSampler",
+                gBuiltinResources().GetBuiltinSampler(BuiltinSampler::Anisotropic));
     }
 
     void ShadowDepthDirectionalMat::Bind(const SPtr<GpuParamBlockBuffer>& shadowParams)
@@ -44,22 +89,36 @@ namespace te
         RenderAPI::Instance().SetStencilRef(_stencilRef);
     }
 
-    void ShadowDepthDirectionalMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams, const SPtr<te::GpuBuffer>& boneMatrices)
+    void ShadowDepthDirectionalMat::SetPerObjectBuffer(const SPtr<GpuParamBlockBuffer>& perObjectParams,
+        const SPtr<te::GpuBuffer>& boneMatrices, bool bindParams)
     {
         _params->SetParamBlockBuffer("PerObjectBuffer", perObjectParams);
 
         if (_params->HasBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices"))
             _params->SetBuffer(GPT_VERTEX_PROGRAM, "BoneMatrices", boneMatrices);
 
-        RenderAPI::Instance().SetGpuParams(_params);
+        if (bindParams)
+            RenderAPI::Instance().SetGpuParams(_params);
     }
 
-    ShadowDepthDirectionalMat* ShadowDepthDirectionalMat::GetVariation(bool skinned)
+    void ShadowDepthDirectionalMat::SetParallaxParams(float scale, UINT32 samples, const Vector2& uvRepeat,
+        const Vector2& uvOffset, const SPtr<Texture>& parallaxMap)
+    {
+        SetShadowParallaxParams(_params, ParallaxParamsBuffer, scale, samples, uvRepeat, uvOffset, parallaxMap);
+    }
+
+    ShadowDepthDirectionalMat* ShadowDepthDirectionalMat::GetVariation(bool skinned, bool useParallaxMap)
     {
         if (skinned)
-            return Get(GetVariation<true>());
-        else
-            return Get(GetVariation<false>());
+        {
+            if (useParallaxMap)
+                return Get(GetVariation<true, true>());
+            return Get(GetVariation<true, false>());
+        }
+
+        if (useParallaxMap)
+            return Get(GetVariation<false, true>());
+        return Get(GetVariation<false, false>());
     }
 
     ShadowCubeMatricesDef gShadowCubeMatricesDef;
@@ -225,6 +284,7 @@ namespace te
 
             UINT32 Mask = 0;
             bool IsElement = false;
+            RendererRenderable* ParentRenderable = nullptr;
         };
 
         template<class Options>
@@ -280,24 +340,34 @@ namespace te
                                 renderableBound[arrayIdx] = true;
                             }
 
-                            commands[arrayIdx].push_back(Command(&element, true));
+                            Command elementCommand(&element, true);
+                            elementCommand.Mask = renderableCommand.Mask;
+                            elementCommand.ParentRenderable = renderableCommand.Renderable;
+                            commands[arrayIdx].push_back(elementCommand);
                         }
                     }
                 }
 
-                static const ShaderVariation* VAR_LOOKUP[2];
-                VAR_LOOKUP[0] = &GetVertexInputVariation<false, false>(false);
-                VAR_LOOKUP[1] = &GetVertexInputVariation<true, false>(false);
-
                 for (UINT32 i = 0; i < (UINT32)RenderableAnimType::Count; i++)
                 {
-                    opt.BindMaterial(*VAR_LOOKUP[i]);
+                    opt.BindMaterial(i == (UINT32)RenderableAnimType::Skinned, false);
 
                     for (auto& command : commands[i])
                     {
                         if (command.IsElement)
                         {
                             const RenderableElement& element = *command.Element;
+                            Material* material = element.MaterialElem;
+                            bool useParallaxMap = false;
+                            if (opt.SupportsParallax() && material != nullptr)
+                            {
+                                const MaterialProperties& properties = material->GetProperties();
+                                useParallaxMap = properties.UseParallaxMap && properties.ParallaxScale != 0.0f &&
+                                    material->GetTexture("ParallaxMap").IsLoaded();
+                            }
+
+                            opt.BindMaterial(i == (UINT32)RenderableAnimType::Skinned, useParallaxMap);
+                            opt.BindElement(command, useParallaxMap);
                             gRendererUtility().Draw(*element.MeshElem, *element.SubMeshElem, 0);
                         }
                         else
@@ -338,10 +408,22 @@ namespace te
                 command.Mask |= (Frustums[j].Intersects(bounds) ? 1 : 0) << j;
         }
 
-        void BindMaterial(const ShaderVariation& variation) const
+        bool SupportsParallax() const { return false; }
+
+        void BindMaterial(bool skinned, bool) const
         {
-            Mat = ShadowDepthCubeMat::Get(variation);
+            Mat = ShadowDepthCubeMat::GetVariation(skinned);
             Mat->Bind(ShadowParamsBuffer, ShadowCubeMatricesBuffer);
+        }
+
+        void BindElement(const ShadowRenderQueue::Command& command, bool) const
+        {
+            RendererRenderable* renderable = command.ParentRenderable;
+            for (UINT32 j = 0; j < 6; j++)
+                gShadowCubeMasksDef.gFaceMasks.Set(ShadowCubeMasksBuffer, (command.Mask & (1 << j)), j);
+
+            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer,
+                ShadowCubeMasksBuffer, renderable->RenderablePtr->GetBoneMatrixBuffer());
         }
 
         void BindRenderable(ShadowRenderQueue::Command& command) const
@@ -367,25 +449,43 @@ namespace te
     /** Specialization used for ShadowRenderQueue when rendering cube (omnidirectional) shadow maps (one face at a time). */
 	struct ShadowRenderQueueCubeSingleOptions
 	{
-        ShadowRenderQueueCubeSingleOptions(
-            const ConvexVolume& boundingVolume,
-            const SPtr<GpuParamBlockBuffer>& shadowParamsBuffer)
-            : BoundingVolume(boundingVolume), ShadowParamsBuffer(shadowParamsBuffer)
+		ShadowRenderQueueCubeSingleOptions(
+			const ConvexVolume& boundingVolume,
+			const SPtr<GpuParamBlockBuffer>& shadowParamsBuffer)
+			: BoundingVolume(boundingVolume), ShadowParamsBuffer(shadowParamsBuffer)
 		{ }
 
-        bool Intersects(const Sphere& bounds) const
-        {
-            return BoundingVolume.Intersects(bounds);
-        }
+		bool Intersects(const Sphere& bounds) const
+		{
+			return BoundingVolume.Intersects(bounds);
+		}
 
-        void Prepare(ShadowRenderQueue::Command& command, const Sphere& bounds) const
-        {
-        }
+		void Prepare(ShadowRenderQueue::Command& command, const Sphere& bounds) const
+		{
+		}
 
-        void BindMaterial(const ShaderVariation& variation) const
-        {
-            Mat = ShadowDepthNormalMat::Get(variation);
-            Mat->Bind(ShadowParamsBuffer);
+		bool SupportsParallax() const { return true; }
+
+		void BindMaterial(bool skinned, bool useParallaxMap) const
+		{
+			Mat = ShadowDepthNormalMat::GetVariation(skinned, useParallaxMap);
+			Mat->Bind(ShadowParamsBuffer);
+		}
+
+		void BindElement(const ShadowRenderQueue::Command& command, bool useParallaxMap) const
+		{
+			RendererRenderable* renderable = command.ParentRenderable;
+			const RenderableElement& element = *command.Element;
+			Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer,
+				renderable->RenderablePtr->GetBoneMatrixBuffer(), !useParallaxMap);
+
+            if (useParallaxMap)
+            {
+                const MaterialProperties& properties = element.MaterialElem->GetProperties();
+                HTexture parallaxMap = element.MaterialElem->GetTexture("ParallaxMap");
+                Mat->SetParallaxParams(properties.ParallaxScale, properties.ParallaxSamples,
+                    properties.TextureRepeat, properties.TextureOffset, parallaxMap.GetInternalPtr());
+            }
         }
 
         void BindRenderable(ShadowRenderQueue::Command& command) const
@@ -421,10 +521,28 @@ namespace te
         {
         }
 
-        void BindMaterial(const ShaderVariation& variation) const
+        bool SupportsParallax() const { return true; }
+
+        void BindMaterial(bool skinned, bool useParallaxMap) const
         {
-            Mat = ShadowDepthNormalMat::Get(variation);
+            Mat = ShadowDepthNormalMat::GetVariation(skinned, useParallaxMap);
             Mat->Bind(ShadowParamsBuffer);
+        }
+
+        void BindElement(const ShadowRenderQueue::Command& command, bool useParallaxMap) const
+        {
+            RendererRenderable* renderable = command.ParentRenderable;
+            const RenderableElement& element = *command.Element;
+            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer,
+                renderable->RenderablePtr->GetBoneMatrixBuffer(), !useParallaxMap);
+
+            if (useParallaxMap)
+            {
+                const MaterialProperties& properties = element.MaterialElem->GetProperties();
+                HTexture parallaxMap = element.MaterialElem->GetTexture("ParallaxMap");
+                Mat->SetParallaxParams(properties.ParallaxScale, properties.ParallaxSamples,
+                    properties.TextureRepeat, properties.TextureOffset, parallaxMap.GetInternalPtr());
+            }
         }
 
         void BindRenderable(ShadowRenderQueue::Command& command) const
@@ -459,10 +577,28 @@ namespace te
         {
         }
 
-        void BindMaterial(const ShaderVariation& variation) const
+        bool SupportsParallax() const { return true; }
+
+        void BindMaterial(bool skinned, bool useParallaxMap) const
         {
-            Mat = ShadowDepthDirectionalMat::Get(variation);
+            Mat = ShadowDepthDirectionalMat::GetVariation(skinned, useParallaxMap);
             Mat->Bind(ShadowParamsBuffer);
+        }
+
+        void BindElement(const ShadowRenderQueue::Command& command, bool useParallaxMap) const
+        {
+            RendererRenderable* renderable = command.ParentRenderable;
+            const RenderableElement& element = *command.Element;
+            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer,
+                renderable->RenderablePtr->GetBoneMatrixBuffer(), !useParallaxMap);
+
+            if (useParallaxMap)
+            {
+                const MaterialProperties& properties = element.MaterialElem->GetProperties();
+                HTexture parallaxMap = element.MaterialElem->GetTexture("ParallaxMap");
+                Mat->SetParallaxParams(properties.ParallaxScale, properties.ParallaxSamples,
+                    properties.TextureRepeat, properties.TextureOffset, parallaxMap.GetInternalPtr());
+            }
         }
 
         void BindRenderable(ShadowRenderQueue::Command& command) const
@@ -479,7 +615,7 @@ namespace te
         mutable ShadowDepthDirectionalMat* Mat = nullptr;
     };
 
-    const UINT32 ShadowRendering::MAX_ATLAS_SIZE = 4096;
+    const UINT32 ShadowRendering::MAX_ATLAS_SIZE = 8192;
     const UINT32 ShadowRendering::MAX_UNUSED_FRAMES = 60;
     const UINT32 ShadowRendering::MIN_SHADOW_MAP_SIZE = 32;
     const UINT32 ShadowRendering::SHADOW_MAP_FADE_SIZE = 64;
@@ -802,6 +938,9 @@ namespace te
         const Transform& tfrm = light->GetTransform();
         Vector3 lightDir = -tfrm.GetRotation().ZAxis();
         SPtr<GpuParamBlockBuffer> shadowParamsBuffer = gShadowParamsDef.CreateBuffer();
+        gShadowParamsDef.gShadowLightDirection.Set(shadowParamsBuffer,
+            Vector4(lightDir.x, lightDir.y, lightDir.z, 0.0f));
+        gShadowParamsDef.gShadowLightPosition.Set(shadowParamsBuffer, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
 
         ShadowInfo shadowInfo;
         shadowInfo.LightIdx = lightIdx;
@@ -1001,6 +1140,10 @@ namespace te
         gShadowParamsDef.gInvDepthRange.Set(_shadowParamsBuffer, 1.0f / mapInfo.DepthRange);
         gShadowParamsDef.gMatViewProj.Set(_shadowParamsBuffer, mapInfo.ShadowVPTransform);
         gShadowParamsDef.gNDCZToDeviceZ.Set(_shadowParamsBuffer, RendererView::GetNDCZToDeviceZ());
+        Vector3 lightPosition = rendererLight.GetShiftedLightPosition();
+        gShadowParamsDef.gShadowLightDirection.Set(_shadowParamsBuffer, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+        gShadowParamsDef.gShadowLightPosition.Set(_shadowParamsBuffer,
+            Vector4(lightPosition.x, lightPosition.y, lightPosition.z, 1.0f));
 
         const Vector<Plane>& frustumPlanes = localFrustum.GetPlanes();
         Matrix4 worldMatrix = view.InverseAffine();
@@ -1119,6 +1262,10 @@ namespace te
         gShadowParamsDef.gInvDepthRange.Set(shadowParamsBuffer, 1.0f / mapInfo.DepthRange);
         gShadowParamsDef.gMatViewProj.Set(shadowParamsBuffer, Matrix4::IDENTITY);
         gShadowParamsDef.gNDCZToDeviceZ.Set(shadowParamsBuffer, RendererView::GetNDCZToDeviceZ());
+        Vector3 lightPosition = light->GetTransform().GetPosition();
+        gShadowParamsDef.gShadowLightDirection.Set(shadowParamsBuffer, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+        gShadowParamsDef.gShadowLightPosition.Set(shadowParamsBuffer,
+            Vector4(lightPosition.x, lightPosition.y, lightPosition.z, 1.0f));
 
         ConvexVolume frustums[6];
         Vector<Plane> boundingPlanes;
