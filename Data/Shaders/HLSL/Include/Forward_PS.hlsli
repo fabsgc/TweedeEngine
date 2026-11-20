@@ -940,7 +940,7 @@ float3 DoDirectLighting(float3 V, float3 P, float3 N, float3 geometricNormal, fl
                 contribution = DoSpotLight(light, pixel, NoV, V, P, N, occlusion);
 
             [branch]
-            if (receiveShadows && light.ShadowSlot != 0 && any(contribution > 0.0))
+            if (receiveShadows && light.ShadowSlot != 0 && any(contribution > 0.001))
                 contribution *= GetForwardShadowVisibility(light, P, geometricNormal);
 
             result += contribution;
