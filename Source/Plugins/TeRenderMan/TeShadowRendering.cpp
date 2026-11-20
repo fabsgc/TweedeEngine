@@ -266,24 +266,8 @@ namespace te
     public:
         struct Command
         {
-            Command ()
-                : Element(nullptr)
-                , IsElement(false)
-            { }
-
-            Command (RenderableElement* element, bool isElement)
-                : Element(element)
-                , IsElement(isElement)
-            { }
-
-            union
-            {
-                RenderableElement* Element;
-                RendererRenderable* Renderable;
-            };
-
+            RenderableElement* Element = nullptr;
             UINT32 Mask = 0;
-            bool IsElement = false;
             RendererRenderable* ParentRenderable = nullptr;
         };
 
@@ -319,32 +303,18 @@ namespace te
                     if (!opt.Intersects(bounds))
                         continue;
 
+                    Command preparedCommand;
+                    preparedCommand.ParentRenderable = sceneInfo.Renderables[i];
+                    opt.Prepare(preparedCommand, bounds);
+
+                    for (auto& element : preparedCommand.ParentRenderable->Elements)
                     {
-                        Command renderableCommand;
-                        renderableCommand.Mask = 0;
-                        renderableCommand.Renderable = sceneInfo.Renderables[i];
-                        renderableCommand.IsElement = false;
-
-                        opt.Prepare(renderableCommand, bounds);
-
-                        bool renderableBound[2];
-                        te_zero_out(renderableBound);
-
-                        for (auto& element : renderableCommand.Renderable->Elements)
-                        {
-                            UINT32 arrayIdx = (int)element.AnimType;
-
-                            if (!renderableBound[arrayIdx])
-                            {
-                                commands[arrayIdx].push_back(renderableCommand);
-                                renderableBound[arrayIdx] = true;
-                            }
-
-                            Command elementCommand(&element, true);
-                            elementCommand.Mask = renderableCommand.Mask;
-                            elementCommand.ParentRenderable = renderableCommand.Renderable;
-                            commands[arrayIdx].push_back(elementCommand);
-                        }
+                        const UINT32 arrayIdx = (UINT32)element.AnimType;
+                        Command elementCommand;
+                        elementCommand.Element = &element;
+                        elementCommand.Mask = preparedCommand.Mask;
+                        elementCommand.ParentRenderable = preparedCommand.ParentRenderable;
+                        commands[arrayIdx].push_back(elementCommand);
                     }
                 }
 
@@ -354,26 +324,19 @@ namespace te
 
                     for (auto& command : commands[i])
                     {
-                        if (command.IsElement)
+                        const RenderableElement& element = *command.Element;
+                        Material* material = element.MaterialElem;
+                        bool useParallaxMap = false;
+                        if (opt.SupportsParallax() && material != nullptr)
                         {
-                            const RenderableElement& element = *command.Element;
-                            Material* material = element.MaterialElem;
-                            bool useParallaxMap = false;
-                            if (opt.SupportsParallax() && material != nullptr)
-                            {
-                                const MaterialProperties& properties = material->GetProperties();
-                                useParallaxMap = properties.UseParallaxMap && properties.ParallaxScale != 0.0f &&
-                                    material->GetTexture("ParallaxMap").IsLoaded();
-                            }
+                            const MaterialProperties& properties = material->GetProperties();
+                            useParallaxMap = properties.UseParallaxMap && properties.ParallaxScale != 0.0f &&
+                                material->GetTexture("ParallaxMap").IsLoaded();
+                        }
 
-                            opt.BindMaterial(i == (UINT32)RenderableAnimType::Skinned, useParallaxMap);
-                            opt.BindElement(command, useParallaxMap);
-                            gRendererUtility().Draw(*element.MeshElem, *element.SubMeshElem, 0);
-                        }
-                        else
-                        {
-                            opt.BindRenderable(command);
-                        }
+                        opt.BindMaterial(i == (UINT32)RenderableAnimType::Skinned, useParallaxMap);
+                        opt.BindElement(command, useParallaxMap);
+                        gRendererUtility().Draw(*element.MeshElem, *element.SubMeshElem, 0);
                     }
                 }
             }
@@ -423,17 +386,6 @@ namespace te
                 gShadowCubeMasksDef.gFaceMasks.Set(ShadowCubeMasksBuffer, (command.Mask & (1 << j)), j);
 
             Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer,
-                ShadowCubeMasksBuffer, renderable->RenderablePtr->GetBoneMatrixBuffer());
-        }
-
-        void BindRenderable(ShadowRenderQueue::Command& command) const
-        {
-            RendererRenderable* renderable = command.Renderable;
-
-            for (UINT32 j = 0; j < 6; j++)
-                gShadowCubeMasksDef.gFaceMasks.Set(ShadowCubeMasksBuffer, (command.Mask & (1 << j)), j);
-
-            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer, 
                 ShadowCubeMasksBuffer, renderable->RenderablePtr->GetBoneMatrixBuffer());
         }
 
@@ -488,14 +440,6 @@ namespace te
             }
         }
 
-        void BindRenderable(ShadowRenderQueue::Command& command) const
-        {
-            RendererRenderable* renderable = command.Renderable;
-
-            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer, 
-                renderable->RenderablePtr->GetBoneMatrixBuffer());
-        }
-
         const ConvexVolume& BoundingVolume;
 		const SPtr<GpuParamBlockBuffer>& ShadowParamsBuffer;
 
@@ -545,14 +489,6 @@ namespace te
             }
         }
 
-        void BindRenderable(ShadowRenderQueue::Command& command) const
-        {
-            RendererRenderable* renderable = command.Renderable;
-
-            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer, 
-                renderable->RenderablePtr->GetBoneMatrixBuffer());
-        }
-
         const ConvexVolume& BoundingVolume;
         const SPtr<GpuParamBlockBuffer>& ShadowParamsBuffer;
 
@@ -599,14 +535,6 @@ namespace te
                 Mat->SetParallaxParams(properties.ParallaxScale, properties.ParallaxSamples,
                     properties.TextureRepeat, properties.TextureOffset, parallaxMap.GetInternalPtr());
             }
-        }
-
-        void BindRenderable(ShadowRenderQueue::Command& command) const
-        {
-            RendererRenderable* renderable = command.Renderable;
-
-            Mat->SetPerObjectBuffer(renderable->PerObjectParamBuffer,
-                renderable->RenderablePtr->GetBoneMatrixBuffer());
         }
 
         const ConvexVolume& BoundingVolume;
