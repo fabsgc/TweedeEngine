@@ -9,7 +9,6 @@
 #include <filesystem>
 
 // TODO Serialization : handle Endianness
-// TODO Serialization : add API to retrieve the written buffer
 
 namespace te
 {
@@ -21,6 +20,13 @@ namespace te
         BinaryWriter(const std::filesystem::path& path);
         
         ~BinaryWriter();
+
+        /**
+         * Returns the bytes written by an in-memory writer.
+         *
+         * @throws std::logic_error If this writer writes to a file.
+         */
+        Vector<UINT8> GetWrittenBuffer() const;
 
         bool IsStreamGood() const final { return _stream->Good(); }
         
@@ -36,5 +42,7 @@ namespace te
     private:
         std::filesystem::path _path;
         DataStream* _stream;
+        MemoryDataStream* _memoryStream = nullptr;
+        size_t _writtenSize = 0;
     };
 }
