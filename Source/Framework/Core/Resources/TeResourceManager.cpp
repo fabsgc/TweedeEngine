@@ -1,7 +1,9 @@
 #include "Resources/TeResourceManager.h"
 #include "Resources/TeResource.h"
 
+#include <algorithm>
 #include <filesystem>
+#include <utility>
 
 namespace te
 {
@@ -61,48 +63,88 @@ namespace te
 
         if (uuid.Empty() || mode == LoadingMode::Force || mode == LoadingMode::Replace)
         {
-            resources = gImporter().ImportAll(filePath, options);
-
             if (mode == LoadingMode::Replace && !uuid.Empty())
             {
-                Vector<SubResourceUUID>& subResourcesUUID = _resourcesChunks[uuid];
-                auto currentSubResource = subResourcesUUID.begin();
-
                 HResource existingResource = Get(uuid);
-                TE_ASSERT_ERROR(existingResource.IsLoaded(), "Resource not loaded for UUID: " + uuid.ToString());
+                if (!existingResource.IsLoaded())
+                {
+                    TE_ASSERT_ERROR(false, "Resource not loaded for UUID: " + uuid.ToString());
+                    return te_shared_ptr_new<MultiResource>();
+                }
 
-                for (auto& entry : resources->Entries)
+                // Import raw resources so replacements can reuse existing handles without registering temporary UUIDs.
+                Vector<SubResourceRaw> importedResources = gImporter()._importAll(filePath, options);
+                auto primary = std::find_if(importedResources.begin(), importedResources.end(),
+                    [](const SubResourceRaw& entry) { return entry.Name == "primary" && entry.Res != nullptr; });
+
+                if (primary == importedResources.end())
+                {
+                    TE_DEBUG("Failed to replace resource because import did not produce a primary resource: " + filePath.generic_string());
+                    return te_shared_ptr_new<MultiResource>();
+                }
+
+                Vector<SubResourceUUID> oldSubResources;
+                auto oldSubResourcesIter = _resourcesChunks.find(uuid);
+                if (oldSubResourcesIter != _resourcesChunks.end())
+                    oldSubResources = oldSubResourcesIter->second;
+
+                resources = te_shared_ptr_new<MultiResource>();
+                Update(existingResource, primary->Res);
+                resources->Entries.push_back({ "primary", existingResource });
+
+                Vector<SubResourceUUID> newSubResources;
+                newSubResources.reserve(importedResources.size());
+                for (auto& entry : importedResources)
                 {
                     if (entry.Name == "primary")
+                        continue;
+
+                    if (!entry.Res)
                     {
-                        Update(existingResource, entry.Res.GetInternalPtr());
+                        TE_DEBUG("Failed to load resource " + filePath.generic_string() + "::" + entry.Name);
+                        continue;
                     }
-                    else if (entry.Res.IsLoaded())
+
+                    auto oldSubResource = std::find_if(oldSubResources.begin(), oldSubResources.end(),
+                        [&](const SubResourceUUID& subResource) { return subResource.Name == entry.Name; });
+                    if (oldSubResource != oldSubResources.end())
                     {
-                        if (currentSubResource != subResourcesUUID.end())
+                        HResource existingSubResource = Get(oldSubResource->Uuid);
+                        if (existingSubResource.IsLoaded() &&
+                            existingSubResource.Get()->GetCoreType() == entry.Res->GetCoreType())
                         {
-                            HResource existingSubResource = Get(currentSubResource->Uuid);
-                            TE_ASSERT_ERROR(existingSubResource.IsLoaded(), "Sub resource not loaded for UUID: " + currentSubResource->Uuid.ToString());
-
-                            if (entry.Res.Get()->GetCoreType() == existingSubResource.Get()->GetCoreType())
-                            {
-                                Update(existingSubResource, entry.Res.GetInternalPtr());
-                                currentSubResource++;
-                                continue;
-                            }
+                            Update(existingSubResource, entry.Res);
+                            newSubResources.push_back({ entry.Name, oldSubResource->Uuid });
+                            resources->Entries.push_back({ entry.Name, existingSubResource });
+                            continue;
                         }
+                    }
 
-                        const UUID& resourceUuid = entry.Res.GetUUID();
-                        _loadedResources[resourceUuid] = entry.Res;
-                        subResourcesUUID.push_back({ entry.Name, resourceUuid });
+                    HResource newSubResource = _createResourceHandle(entry.Res);
+                    newSubResources.push_back({ entry.Name, newSubResource.GetUUID() });
+                    resources->Entries.push_back({ entry.Name, newSubResource });
+                }
 
-                        currentSubResource++;
+                _resourcesChunks[uuid] = std::move(newSubResources);
+
+                for (const auto& oldSubResource : oldSubResources)
+                {
+                    const bool retained = std::find_if(_resourcesChunks[uuid].begin(), _resourcesChunks[uuid].end(),
+                        [&](const SubResourceUUID& subResource) { return subResource.Uuid == oldSubResource.Uuid; }) !=
+                        _resourcesChunks[uuid].end();
+                    if (!retained && oldSubResource.Uuid != uuid)
+                    {
+                        HResource removedSubResource = Get(oldSubResource.Uuid);
+                        if (removedSubResource.IsLoaded())
+                            Release(removedSubResource);
                     }
                 }
             }
             else
             {
-                Vector<SubResourceUUID>& subResourcesUUID = _resourcesChunks[uuid];
+                resources = gImporter().ImportAll(filePath, options);
+                Vector<SubResourceUUID> subResourcesUUID;
+                UUID primaryUuid;
 
                 for (auto& entry : resources->Entries)
                 {
@@ -111,7 +153,7 @@ namespace te
 
                     if (entry.Name == "primary")
                     {
-                        uuid = resourceUuid;
+                        primaryUuid = resourceUuid;
                         RegisterResource(resourceUuid, filePath);
                         _loadedResources[resourceUuid] = entry.Res;
                     }
@@ -121,15 +163,20 @@ namespace te
                         subResourcesUUID.push_back({ entry.Name, resourceUuid });
                         
                     }
-
-                    OnResourceLoaded(entry.Res);
                 }
+
+                if (!primaryUuid.Empty())
+                    _resourcesChunks[primaryUuid] = std::move(subResourcesUUID);
             }
         }
         else
         {
             HResource res = Get(uuid);
-            TE_ASSERT_ERROR(res.IsLoaded(), "Primary resource not loaded for UUID: " + uuid.ToString());
+            if (!res.IsLoaded())
+            {
+                TE_ASSERT_ERROR(false, "Primary resource not loaded for UUID: " + uuid.ToString());
+                return te_shared_ptr_new<MultiResource>();
+            }
 
             resources = te_shared_ptr_new<MultiResource>();
             resources->Entries.push_back({ "primary", res });
@@ -137,7 +184,11 @@ namespace te
             for (auto& subElement : _resourcesChunks[uuid])
             {
                 HResource subRes = Get(subElement.Uuid);
-                TE_ASSERT_ERROR(res.IsLoaded(), "Sub resource not loaded for UUID: " + subElement.Uuid.ToString());
+                if (!subRes.IsLoaded())
+                {
+                    TE_ASSERT_ERROR(false, "Sub resource not loaded for UUID: " + subElement.Uuid.ToString());
+                    continue;
+                }
                 resources->Entries.push_back({ subElement.Name, subRes });
             }
         }
