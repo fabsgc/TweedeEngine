@@ -557,9 +557,34 @@ namespace te
         String dump = document.dump();
         serializer->WriteString(dump);
 
-        // TODO Serialization
-        // buffers
-        // params
+        serializer->WriteRaw<UINT32>(static_cast<UINT32>(_buffers.size()));
+        for (const auto& buffer : _buffers)
+        {
+            const GpuBufferProperties& properties = buffer.second->GetProperties();
+            serializer->WriteString(buffer.first);
+            serializer->WriteRaw<UINT32>(static_cast<UINT32>(properties.GetType()));
+            serializer->WriteRaw<UINT32>(static_cast<UINT32>(properties.GetFormat()));
+            serializer->WriteRaw<UINT32>(static_cast<UINT32>(properties.GetUsage()));
+            serializer->WriteRaw<UINT32>(properties.GetElementCount());
+            serializer->WriteRaw<UINT32>(properties.GetElementSize());
+            serializer->WriteString(properties.GetDebugName());
+            serializer->WriteRaw<UINT32>(static_cast<UINT32>(buffer.second->GetDeviceMask()));
+
+            const UINT32 bufferSize = buffer.second->GetSize();
+            Vector<UINT8> bufferData(bufferSize);
+            if (bufferSize > 0)
+                buffer.second->ReadData(0, bufferSize, bufferData.data());
+
+            serializer->WriteBuffer(bufferData.data(), bufferData.size());
+        }
+
+        serializer->WriteRaw<UINT32>(static_cast<UINT32>(_params.size()));
+        for (const auto& param : _params)
+        {
+            serializer->WriteString(param.first);
+            serializer->WriteRaw<UINT32>(static_cast<UINT32>(param.second.ProgramType));
+            serializer->WriteBuffer(static_cast<const UINT8*>(param.second.Param), param.second.Size);
+        }
     }
 
     bool Material::Deserialize(StreamReader* deserializer, Material* object)
@@ -612,14 +637,126 @@ namespace te
         ShaderVariation::ImportJson(document["variation"], object->_variation);
 
         object->Initialize();
-        object->SetShader(gBuiltinResources().GetBuiltinShader(BuiltinShader::Opaque));
 
-        // TODO Serialization
-        // variation
-        // buffers
-        // params
+        UINT32 numBuffers = 0;
+        deserializer->ReadRaw<UINT32>(numBuffers);
+        for (UINT32 i = 0; i < numBuffers; i++)
+        {
+            String name;
+            UINT32 typeValue = 0;
+            UINT32 formatValue = 0;
+            UINT32 usageValue = 0;
+            UINT32 elementCount = 0;
+            UINT32 elementSize = 0;
+            String debugName;
+            UINT32 deviceMaskValue = 0;
 
-        return true;
+            deserializer->ReadString(name);
+            deserializer->ReadRaw<UINT32>(typeValue);
+            deserializer->ReadRaw<UINT32>(formatValue);
+            deserializer->ReadRaw<UINT32>(usageValue);
+            deserializer->ReadRaw<UINT32>(elementCount);
+            deserializer->ReadRaw<UINT32>(elementSize);
+            deserializer->ReadString(debugName);
+            deserializer->ReadRaw<UINT32>(deviceMaskValue);
+            if (!deserializer->IsStreamGood()
+                || typeValue > static_cast<UINT32>(GBT_INDIRECTARGUMENT)
+                || (usageValue != GBU_STATIC && usageValue != GBU_DYNAMIC && usageValue != GBU_LOADSTORE)
+                || (deviceMaskValue & ~static_cast<UINT32>(GDF_PRIMARY | GDF_GPU2 | GDF_GPU3 | GDF_GPU4 | GDF_GPU5)) != 0)
+            {
+                return false;
+            }
+
+            GPU_BUFFER_DESC desc;
+            desc.Type = static_cast<GpuBufferType>(typeValue);
+            desc.Usage = static_cast<GpuBufferUsage>(usageValue);
+            desc.ElementCount = elementCount;
+            desc.DebugName = debugName;
+
+            UINT64 expectedBufferSize = 0;
+            if (desc.Type == GBT_STANDARD)
+            {
+                if (formatValue >= static_cast<UINT32>(BF_COUNT)
+                    || elementSize != GpuBuffer::GetFormatSize(static_cast<GpuBufferFormat>(formatValue)))
+                {
+                    return false;
+                }
+
+                desc.Format = static_cast<GpuBufferFormat>(formatValue);
+                expectedBufferSize = static_cast<UINT64>(elementCount) * elementSize;
+            }
+            else
+            {
+                if (formatValue != static_cast<UINT32>(BF_UNKNOWN) || elementSize == 0)
+                    return false;
+
+                desc.Format = BF_UNKNOWN;
+                desc.ElementSize = elementSize;
+                expectedBufferSize = static_cast<UINT64>(elementCount) * elementSize;
+            }
+
+            if (expectedBufferSize > std::numeric_limits<UINT32>::max())
+                return false;
+
+            size_t serializedBufferSize = 0;
+            deserializer->ReadRaw<size_t>(serializedBufferSize);
+            if (!deserializer->IsStreamGood() || serializedBufferSize != expectedBufferSize)
+                return false;
+
+            Vector<UINT8> bufferData(static_cast<size_t>(expectedBufferSize));
+            if (serializedBufferSize > 0
+                && !deserializer->ReadData(bufferData.data(), serializedBufferSize))
+            {
+                return false;
+            }
+
+            SPtr<GpuBuffer> buffer = GpuBuffer::Create(desc, static_cast<GpuDeviceFlags>(deviceMaskValue));
+            if (!buffer)
+                return false;
+
+            if (!bufferData.empty())
+                buffer->WriteData(0, static_cast<UINT32>(bufferData.size()), bufferData.data());
+
+            object->SetBuffer(name, buffer);
+        }
+
+        UINT32 numParams = 0;
+        deserializer->ReadRaw<UINT32>(numParams);
+        for (UINT32 i = 0; i < numParams; i++)
+        {
+            String name;
+            UINT32 programTypeValue = 0;
+            deserializer->ReadString(name);
+            deserializer->ReadRaw<UINT32>(programTypeValue);
+            if (!deserializer->IsStreamGood()
+                || programTypeValue > static_cast<UINT32>(GPT_COUNT))
+            {
+                return false;
+            }
+
+            size_t paramSize = 0;
+            deserializer->ReadRaw<size_t>(paramSize);
+            if (!deserializer->IsStreamGood() || paramSize > std::numeric_limits<UINT32>::max())
+                return false;
+
+            ParamData param;
+            param.Param = paramSize > 0 ? te_allocate<UINT8>(static_cast<UINT32>(paramSize)) : nullptr;
+            param.Size = paramSize;
+            param.ProgramType = static_cast<GpuProgramType>(programTypeValue);
+            if (paramSize > 0 && !deserializer->ReadData(static_cast<UINT8*>(param.Param), paramSize))
+            {
+                te_deallocate(param.Param);
+                return false;
+            }
+
+            auto existingParam = object->_params.find(name);
+            if (existingParam != object->_params.end() && existingParam->second.Param)
+                te_deallocate(existingParam->second.Param);
+
+            object->_params[name] = param;
+        }
+
+        return deserializer->IsStreamGood();
     }
 
     void MaterialProperties::ExportJson(nlohmann::json& document) const
