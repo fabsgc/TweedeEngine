@@ -78,6 +78,7 @@ namespace te
         {
             UINT32 numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
             _materials.resize(numSubMeshes);
+            _subMeshesBounds.clear();
             _subMeshesBounds.resize(numSubMeshes);
         }
         else
@@ -307,6 +308,13 @@ namespace te
             Sphere sphere(tfrm.GetPosition(), 0.0f);
 
             return Bounds(box, sphere);
+        }
+
+        // Ensure the bounds cache size matches the current mesh's submesh count
+        UINT32 numSubMeshes = _mesh->GetProperties().GetNumSubMeshes();
+        if (_subMeshesBounds.size() != numSubMeshes)
+        {
+            _subMeshesBoundsDirty = true;
         }
 
         if (!_subMeshesBoundsDirty)
