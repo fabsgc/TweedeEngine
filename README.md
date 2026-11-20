@@ -16,6 +16,7 @@ The Tweede Engine Framework is my third attempt to develop a cross-platform full
 
 ## Previews
 
+![Editor](Documentation/sample-shadows.jpeg)
 ![Editor](Documentation/old_tyre_final.jpeg)
 ![Editor](Documentation/old_tyre_normals.jpeg)
 ![Editor](Documentation/old_tyre_ssao.jpeg)
