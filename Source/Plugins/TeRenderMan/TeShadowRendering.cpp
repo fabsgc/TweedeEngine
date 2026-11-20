@@ -163,6 +163,7 @@ namespace te
 
     ShadowMapAtlas::ShadowMapAtlas(UINT32 size, PixelFormat format)
         : _layout(0, 0, size, size, true)
+        , _size(size)
         , _lastUsedCounter(0)
         , _format(format)
     {
@@ -772,14 +773,12 @@ namespace te
         _shadowInfos.resize(shadowInfoCount);
 
         // Deallocate unused textures (must be done before rendering shadows, in order to ensure indices don't change)
-        for (auto iter = _dynamicShadowMaps.begin(); iter != _dynamicShadowMaps.end(); ++iter)
+        for (auto iter = _dynamicShadowMaps.begin(); iter != _dynamicShadowMaps.end();)
         {
             if (iter->GetLastUsedCounter() >= MAX_UNUSED_FRAMES)
-            {
-                // These are always populated in order, so we can assume all following atlases are also empty
-                _dynamicShadowMaps.erase(iter, _dynamicShadowMaps.end());
-                break;
-            }
+                iter = _dynamicShadowMaps.erase(iter);
+            else
+                ++iter;
         }
 
         for (auto iter = _cascadedShadowMaps.begin(); iter != _cascadedShadowMaps.end();)
@@ -1039,15 +1038,17 @@ namespace te
         if (!foundSpace)
         {
             mapInfo.TextureIdx = (UINT32)_dynamicShadowMaps.size();
-            _dynamicShadowMaps.push_back(ShadowMapAtlas(MAX_ATLAS_SIZE, _shadowMapFormat));
+            const UINT32 atlasSize = std::min(
+                Bitwise::NextPow2(options.MapSize + SHADOW_MAP_BORDER * 2), MAX_ATLAS_SIZE);
+            _dynamicShadowMaps.push_back(ShadowMapAtlas(atlasSize, _shadowMapFormat));
 
             ShadowMapAtlas& atlas = _dynamicShadowMaps.back();
             if (!atlas.AddMap(options.MapSize, mapInfo.Area, SHADOW_MAP_BORDER))
                 return;
         }
 
-        mapInfo.UpdateNormArea(MAX_ATLAS_SIZE);
         ShadowMapAtlas& atlas = _dynamicShadowMaps[mapInfo.TextureIdx];
+        mapInfo.UpdateNormArea(atlas.GetSize());
 
         rapi.PushMarker("[DRAW] Project Spot Shadow", Color(0.85f, 0.43f, 0.25f));
 

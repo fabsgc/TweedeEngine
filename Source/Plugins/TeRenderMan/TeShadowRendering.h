@@ -236,6 +236,9 @@ namespace te
         /** Returns the pixel format used by the atlas. */
         PixelFormat GetFormat() const { return _format; }
 
+        /** Returns the size of the atlas texture in pixels. */
+        UINT32 GetSize() const { return _size; }
+
         /** Returns the bindable atlas texture. */
         SPtr<Texture> GetTexture() const;
 
@@ -246,6 +249,7 @@ namespace te
         SPtr<PooledRenderTexture> _atlas;
 
         TextureAtlasLayout _layout;
+        UINT32 _size;
         UINT32 _lastUsedCounter;
         PixelFormat _format;
     };
