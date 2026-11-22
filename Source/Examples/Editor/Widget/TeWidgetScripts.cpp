@@ -12,9 +12,10 @@ namespace te
 {
     WidgetScripts::WidgetScripts()
         : Widget(WidgetType::Scripts)
+        , _fileBrowser(gEditor().GetFileBrowser())
         , _currentScript(nullptr)
         , _scriptCreationCounter(1)
-        , _fileBrowser(gEditor().GetFileBrowser())
+        
     { 
         _title = SCRIPTS_TITLE;
         _flags |= ImGuiWindowFlags_HorizontalScrollbar;

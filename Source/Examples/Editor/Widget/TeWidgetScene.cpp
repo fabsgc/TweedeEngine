@@ -372,6 +372,8 @@ namespace te
                 gEditor().PutFocus(Editor::WindowType::Properties);
                 gEditor().PutFocus(Editor::WindowType::Viewport);
                 break;
+            default:
+                break;
             }
 
             _handleSelectionWindowSwitch = false;

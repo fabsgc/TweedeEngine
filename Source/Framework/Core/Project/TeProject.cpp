@@ -75,7 +75,7 @@ namespace te
 
         Resource::Deserialize(deserializer, object);
 
-        Resource* resourceMetaData = new Resource(CoreType::TID_Resource);
+        Resource* resourceMetaData = te_new<Resource>(CoreType::TID_Resource);
         String documentStr;
 
         deserializer->ReadString(documentStr);
