@@ -96,7 +96,7 @@ namespace te
         return false;
     }
 
-    void Component::Destroy(bool immediate)
+    void Component::DestroyComponent(bool immediate)
     {
         SO()->DestroyComponent(this, immediate);
     }

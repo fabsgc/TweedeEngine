@@ -61,7 +61,7 @@ namespace te
          * @param[in]	immediate	If true the destruction will be performed immediately, otherwise it will be delayed
          *							until the end of the current frame (preferred option).
          */
-        void Destroy(bool immediate = false);
+        void DestroyComponent(bool immediate = false);
 
     public:
         /**
