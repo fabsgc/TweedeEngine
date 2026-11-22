@@ -6,6 +6,43 @@
 
 namespace te
 {
+#if TE_DEBUG_MODE == TE_DEBUG_ENABLED && TE_PLATFORM == TE_PLATFORM_WIN32
+    namespace
+    {
+        int PreserveStream(FILE* stream, bool& failed)
+        {
+            const int descriptor = _fileno(stream);
+            if (descriptor < 0)
+                return -1;
+
+            const int saved = _dup(descriptor);
+            if (saved == -1)
+                failed = true;
+            return saved;
+        }
+
+        bool RestoreStream(FILE* stream, int saved, bool redirected)
+        {
+            bool restored = true;
+            if (redirected)
+            {
+                if (saved != -1)
+                    restored = _dup2(saved, _fileno(stream)) != -1;
+                else
+                    restored = fclose(stream) == 0;
+            }
+            else if (saved != -1)
+                restored = false;
+
+            if (saved != -1 && _close(saved) == -1)
+                restored = false;
+            if (redirected && saved != -1 && restored)
+                clearerr(stream);
+            return restored;
+        }
+    }
+#endif
+
     TE_MODULE_STATIC_MEMBER(Console)
 
     Console::Console(bool createConsole)
@@ -18,10 +55,12 @@ namespace te
         if (!_createConsole)
             return;
 
-        _savedStdin = _dup(_fileno(stdin));
-        _savedStdout = _dup(_fileno(stdout));
-        _savedStderr = _dup(_fileno(stderr));
-        if (_savedStdin == -1 || _savedStdout == -1 || _savedStderr == -1)
+        bool preserveFailed = false;
+        _savedStdin = PreserveStream(stdin, preserveFailed);
+        _savedStdout = PreserveStream(stdout, preserveFailed);
+        _savedStderr = PreserveStream(stderr, preserveFailed);
+
+        if (!AllocConsole())
         {
             if (_savedStdin != -1)
                 _close(_savedStdin);
@@ -30,19 +69,29 @@ namespace te
             if (_savedStderr != -1)
                 _close(_savedStderr);
             _savedStdin = _savedStdout = _savedStderr = -1;
-            TE_ASSERT_ERROR(false, "Failed to preserve standard streams before creating the console.");
             return;
         }
 
         _streamsRedirected = true;
-        AllocConsole();
 
         FILE* consoleStdin = nullptr;
         FILE* consoleStdout = nullptr;
         FILE* consoleStderr = nullptr;
-        freopen_s(&consoleStdin, "CONIN$", "r", stdin);
-        freopen_s(&consoleStdout, "CONOUT$", "w", stdout);
-        freopen_s(&consoleStderr, "CONOUT$", "w", stderr);
+        _stdinRedirected = freopen_s(&consoleStdin, "CONIN$", "r", stdin) == 0;
+        _stdoutRedirected = freopen_s(&consoleStdout, "CONOUT$", "w", stdout) == 0;
+        _stderrRedirected = freopen_s(&consoleStderr, "CONOUT$", "w", stderr) == 0;
+
+        std::cin.clear();
+        std::cout.clear();
+        std::cerr.clear();
+        std::clog.clear();
+        std::wcin.clear();
+        std::wcout.clear();
+        std::wcerr.clear();
+        std::wclog.clear();
+
+        if (preserveFailed)
+            TE_DEBUG("Failed to preserve one or more standard streams before creating the console.");
 #endif
     }
 
@@ -52,23 +101,20 @@ namespace te
         if (!_createConsole || !_streamsRedirected)
             return;
 
-        fflush(stdout);
-        fflush(stderr);
-        const bool stdinRestored = _dup2(_savedStdin, _fileno(stdin)) != -1;
-        const bool stdoutRestored = _dup2(_savedStdout, _fileno(stdout)) != -1;
-        const bool stderrRestored = _dup2(_savedStderr, _fileno(stderr)) != -1;
-        _close(_savedStdin);
-        _close(_savedStdout);
-        _close(_savedStderr);
+        if (_stdoutRedirected)
+            fflush(stdout);
+        if (_stderrRedirected)
+            fflush(stderr);
+        const bool stdinRestored = RestoreStream(stdin, _savedStdin, _stdinRedirected);
+        const bool stdoutRestored = RestoreStream(stdout, _savedStdout, _stdoutRedirected);
+        const bool stderrRestored = RestoreStream(stderr, _savedStderr, _stderrRedirected);
         _savedStdin = _savedStdout = _savedStderr = -1;
         _streamsRedirected = false;
-        clearerr(stdin);
-        clearerr(stdout);
-        clearerr(stderr);
+        _stdinRedirected = _stdoutRedirected = _stderrRedirected = false;
         FreeConsole();
 
-        TE_ASSERT_ERROR(stdinRestored && stdoutRestored && stderrRestored,
-            "Failed to restore standard streams after destroying the console.");
+        if (!stdinRestored || !stdoutRestored || !stderrRestored)
+            TE_DEBUG("Failed to restore standard streams after destroying the console.");
 #endif
     }
 

@@ -23,6 +23,9 @@ namespace te
         int _savedStdout = -1;
         int _savedStderr = -1;
         bool _streamsRedirected = false;
+        bool _stdinRedirected = false;
+        bool _stdoutRedirected = false;
+        bool _stderrRedirected = false;
     };
 
     Console& gConsole();
