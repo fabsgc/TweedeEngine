@@ -75,7 +75,7 @@ namespace te
 
         Resource::Deserialize(deserializer, object);
 
-        Resource* resourceMetaData = te_new<Resource>(CoreType::TID_Resource);
+        Resource* resourceMetaData = new Resource(CoreType::TID_Resource);
         String documentStr;
 
         deserializer->ReadString(documentStr);
@@ -116,7 +116,7 @@ namespace te
         }
 
         resourceMetaData->Destroy();
-        te_delete(resourceMetaData);
+        delete resourceMetaData;
 
         if (document.contains("scene") && document["scene"].size() == 1)
         {
