@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 3.29.7)
 
 project (TweedeEngine)
 
+enable_testing()
+
 set (TE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/Source)
 set (APP_ROOT_DIR ${PROJECT_SOURCE_DIR})
 
