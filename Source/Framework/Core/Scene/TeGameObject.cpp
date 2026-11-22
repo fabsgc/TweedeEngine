@@ -3,7 +3,7 @@
 
 namespace te
 {
-    void GameObject::Initialize(const SPtr<GameObject>& object, UINT64 instanceId)
+    void GameObject::InitializeInstanceData(const SPtr<GameObject>& object, UINT64 instanceId)
     {
         _instanceData = te_shared_ptr_new<GameObjectInstanceData>();
         _instanceData->Object = object;

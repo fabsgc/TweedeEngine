@@ -70,7 +70,7 @@ namespace te
     GameObjectHandleBase GameObjectManager::RegisterObject(const SPtr<GameObject>& object)
     {
         const UINT64 id = _nextAvailableID.fetch_add(1, std::memory_order_relaxed);
-        object->Initialize(object, id);
+        object->InitializeInstanceData(object, id);
 
         GameObjectHandleBase handle(object);
         {

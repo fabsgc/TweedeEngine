@@ -72,8 +72,8 @@ namespace te
         friend class GameObjectHandleBase;
         friend class GameObjectManager;
 
-        /**	Initializes the GameObject after construction. */
-        virtual void Initialize(const SPtr<GameObject>& object, UINT64 instanceId);
+        /** Initializes the data shared by this object's handles. */
+        virtual void InitializeInstanceData(const SPtr<GameObject>& object, UINT64 instanceId);
 
         /**
          * Destroys this object.
