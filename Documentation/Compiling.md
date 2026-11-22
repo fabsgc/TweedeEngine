@@ -30,6 +30,17 @@
   - Alternatively you can run the install target in your chosen build tool
     - Note that files install to the default install folder, unless you have overriden it as specified above
 
+## Running tests
+
+From the repository root, build and run the tests with:
+
+```text
+cmake --build Build --config Debug --target Tests
+ctest --test-dir Build -C Debug --output-on-failure
+```
+
+The headless application test requires the Direct3D 11 backend on Windows and a working graphics device. It is skipped for other backends; headless mode still initializes the engine's renderer, audio, and physics plugins.
+
 ## Customizing the build
 
 Additional variables allow you to pick between the render API (DirectX, OpenGL). Run *CMake* to see all options. Note that non-default *CMake* options might require additional dependencies to be installed, see [here](#otherDeps).
