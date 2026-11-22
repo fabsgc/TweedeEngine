@@ -272,7 +272,7 @@ namespace te
         UINT64 _lastMouseUpdateFrame;
 
         // Raw input
-        UINT64 _windowHandle;
+        UINT64 _windowHandle = 0;
         InputPrivateData* _platformData;
     };
 

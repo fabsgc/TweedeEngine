@@ -4,6 +4,7 @@
 #include "Input/TeGamePad.h"
 #include "Input/TeKeyboard.h"
 #include "Private/Win32/TeWin32Input.h"
+#include "TeCoreApplication.h"
 
 namespace te
 {
@@ -159,6 +160,9 @@ namespace te
 
     void Input::InitRawInput()
     {
+        if (gCoreApplication().GetStartUpDesc().WindowDesc.HeadLess)
+            return;
+
         _platformData = te_new<InputPrivateData>();
 
         if(IsWindow((HWND)_windowHandle) == 0)
@@ -215,7 +219,7 @@ namespace te
             te_delete(gamepad);
         }
 
-        if (_platformData->DirectInput)
+        if (_platformData && _platformData->DirectInput)
         {
             _platformData->DirectInput->Release();
         }
@@ -228,6 +232,9 @@ namespace te
 
     UINT32 Input::GetDeviceCount(InputDevice device) const
     {
+        if (!_platformData)
+            return 0;
+
         switch (device)
         {
             case InputDevice::Keyboard: return 1;
