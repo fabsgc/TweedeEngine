@@ -2,61 +2,48 @@
 #include "Gui/TeGuiAPI.h"
 #include "Gui/TeGuiAPIFactory.h"
 #include "Utility/TeDynLib.h"
-#include "Utility/TeDynLibManager.h"
+#include "TeCoreApplication.h"
 
 namespace te
 {
     TE_MODULE_STATIC_MEMBER(GuiManager)
 
-    GuiManager::GuiManager()
-        : _guiInitialized(false)
+    GuiManager::GuiManager(const String& pluginName)
+        : _pluginName(pluginName)
+        , _pluginLibrary(nullptr)
     { }
 
     GuiManager::~GuiManager()
-    {
-        if (_gui != nullptr)
-        {
-            _gui->Destroy();
-        }
-    }
+    { }
 
-    SPtr<GuiAPI> GuiManager::Initialize(const String& pluginFilename)
+    void GuiManager::OnStartUp()
     {
-        DynLib* loadedLibrary = gDynLibManager().Load(pluginFilename);
+        gCoreApplication().LoadPlugin(_pluginName, &_pluginLibrary);
+
         const char* name = "";
-
-        if (loadedLibrary != nullptr)
+        if (_pluginLibrary != nullptr)
         {
             typedef const char* (*GetPluginNameFunc)();
 
-            GetPluginNameFunc getPluginNameFunc = (GetPluginNameFunc)loadedLibrary->GetSymbol("GetPluginName");
-            name = getPluginNameFunc();
+            GetPluginNameFunc getPluginNameFunc = (GetPluginNameFunc)_pluginLibrary->GetSymbol("GetPluginName");
+            if (getPluginNameFunc != nullptr)
+                name = getPluginNameFunc();
         }
 
         for (const auto& factory : _availableFactories)
         {
             if (factory->Name() == name)
             {
-                SPtr<GuiAPI> newGuiAPI = factory->Create();
-                _guiInitialized = true;
-
-                if (newGuiAPI != nullptr)
+                _gui = factory->Create();
+                if (_gui != nullptr)
                 {
-                    if (_gui != nullptr)
-                    {
-                        _gui->Destroy();
-                        te_delete(&_gui);
-                    }
-
-                    _gui = newGuiAPI;
-                    return _gui;
+                    _guiFactory = factory;
+                    return;
                 }
             }
         }
 
-        TE_ASSERT_ERROR(_gui != nullptr, "Cannot initialize renderer. Renderer with the name '" + pluginFilename + "' cannot be found.");
-
-        return nullptr;
+        TE_ASSERT_ERROR(false, "Cannot initialize GUI API. Factory for '" + _pluginName + "' cannot be found.");
     }
 
     void GuiManager::RegisterFactory(SPtr<GuiAPIFactory> factory)
@@ -64,5 +51,28 @@ namespace te
         assert(factory != nullptr);
 
         _availableFactories.push_back(factory);
+    }
+
+    void GuiManager::OnShutDown()
+    {
+        if (_gui != nullptr)
+        {
+            _gui->Destroy();
+            _gui = nullptr;
+        }
+
+        if (_guiFactory != nullptr)
+        {
+            _guiFactory->Destroy();
+            _guiFactory = nullptr;
+        }
+
+        _availableFactories.clear();
+
+        if (_pluginLibrary != nullptr)
+        {
+            gCoreApplication().UnloadPlugin(_pluginLibrary);
+            _pluginLibrary = nullptr;
+        }
     }
 }

@@ -10,8 +10,13 @@ namespace te
     public:
         static constexpr const char* SystemName = "TeD3D11ImGuiAPI";
 
+        /** @copydoc GuiAPIFactory::Create */
         SPtr<GuiAPI> Create() override;
 
+        /** @copydoc GuiAPIFactory::Destroy */
+        void Destroy() override;
+
+        /** @copydoc GuiAPIFactory::Name */
         const String& Name() const override;
     };
 }

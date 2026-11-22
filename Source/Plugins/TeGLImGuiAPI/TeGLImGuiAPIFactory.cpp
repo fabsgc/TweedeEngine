@@ -6,7 +6,12 @@ namespace te
     SPtr<GuiAPI> GLImGuiAPIFactory::Create()
     {
         GuiAPI::StartUp<GLImGuiAPI>();
-        return te_shared_ptr<GuiAPI>(GuiAPI::InstancePtr());
+        return te_shared_ptr<GuiAPI>(GuiAPI::InstancePtr(), [](GuiAPI*) {});
+    }
+
+    void GLImGuiAPIFactory::Destroy()
+    {
+        GLImGuiAPI::ShutDown();
     }
 
     const String& GLImGuiAPIFactory::Name() const

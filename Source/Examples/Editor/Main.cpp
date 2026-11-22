@@ -20,6 +20,8 @@ int main()
     desc.Audio = TE_AUDIO_MODULE;
     desc.Gui = TE_GUI_MODULE;
 
+    desc.EnabledRenderDoc = true;
+
     desc.Importers = {
         "TeFreeImgImporter",
         "TeObjectImporter",

@@ -21,6 +21,8 @@ namespace te
 
         Vector<String> Importers; /** A list of importer plugins to load. */
         Vector<String> Exporters; /** A list of exporter plugins to load. */
+
+        bool EnabledRenderDoc = false; /** Should RenderDoc be enabled on start-up? */
     };
 
     /** Represents the current state of the application */
@@ -168,7 +170,6 @@ namespace te
 
         DynLib* _rendererPlugin;
         DynLib* _renderAPIPlugin;
-        DynLib* _guiPlugin;
         UnorderedMap<DynLib*, UpdatePluginFunc> _pluginUpdateFunctions;
 
         bool _isFrameRenderingFinished;

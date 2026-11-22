@@ -14,6 +14,9 @@ namespace te
         /** Creates and starts up the render system managed by this factory.  */
         virtual SPtr<GuiAPI> Create() = 0;
 
+        /** Destroys the render system managed by this factory. */
+        virtual void Destroy() = 0;
+
         /** Returns the name of the render system this factory creates. */
         virtual const String& Name() const = 0;
     };

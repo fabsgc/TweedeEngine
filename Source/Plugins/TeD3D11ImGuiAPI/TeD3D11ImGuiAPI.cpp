@@ -19,6 +19,16 @@ namespace te
     D3D11ImGuiAPI::~D3D11ImGuiAPI()
     { }
 
+    void D3D11ImGuiAPI::OnStartUp()
+    {
+        TE_DEBUG("D3D11ImGuiAPI starting up.");
+    }
+
+    void D3D11ImGuiAPI::OnShutDown()
+    {
+        TE_DEBUG("D3D11ImGuiAPI shutting down.");
+    }
+
     void D3D11ImGuiAPI::Initialize(void* data)
     {
         GuiAPI::Initialize(data);

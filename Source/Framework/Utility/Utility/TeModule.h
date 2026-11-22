@@ -38,9 +38,10 @@
         if (!IsStartedUp())                                                                                             \
             TE_ASSERT_ERROR(false, "Trying to shut down a module which was never started.");                            \
         (_instance())->OnShutDown();                                                                                    \
-        _instance()->~class_name();                                                                                     \
-        ::free(_instance());                                                                                            \
+        delete _instance();                                                                                             \
+        _instance() = nullptr;                                                                                          \
         IsDestroyed() = true;                                                                                           \
+        IsStartedUp() = false;                                                                                          \
     }                                                                                                                   \
                                                                                                                         \
     bool class_name::IsStarted() { return IsStartedUp() && !IsDestroyed(); }
@@ -69,6 +70,7 @@
         if (IsStartedUp())                                                                                              \
             TE_ASSERT_ERROR(false, "Trying to start an already started module.");                                       \
         _instance() = new class_name(std::forward<Args>(args)...);                                                      \
+        IsDestroyed() = false;                                                                                          \
         IsStartedUp() = true;                                                                                           \
         ((class_name*)_instance())->OnStartUp();                                                                        \
     }                                                                                                                   \
@@ -81,6 +83,7 @@
         if (IsStartedUp())                                                                                              \
             TE_ASSERT_ERROR(false, "Trying to start an already started module.");                                       \
         _instance() = new SubType(std::forward<Args>(args)...);                                                         \
+        IsDestroyed() = false;                                                                                          \
         IsStartedUp() = true;                                                                                           \
         ((class_name*)_instance())->OnStartUp();                                                                        \
     }
@@ -150,6 +153,7 @@ namespace te
             }
 
             _instance() = new T(std::forward<Args>(args)...);
+            IsDestroyed() = false;
             IsStartedUp() = true;
 
             ((Module*)_instance())->OnStartUp();
@@ -167,6 +171,7 @@ namespace te
             }
 
             _instance() = new SubType(std::forward<Args>(args)...);
+            IsDestroyed() = false;
             IsStartedUp() = true;
 
             ((Module*)_instance())->OnStartUp();
@@ -182,13 +187,15 @@ namespace te
 
             if (!IsStartedUp())
             {
-                TE_ASSERT_ERROR(false, "Trying to shut down a module which was never started.");
+                TE_ASSERT_ERROR(false, "Trying to shut down a module which was not started.");
             }
 
             ((Module*)_instance())->OnShutDown();
 
             te_delete(_instance());
+            _instance() = nullptr;
             IsDestroyed() = true;
+            IsStartedUp() = false;
         }
 
         /** Query if the module has been started. */

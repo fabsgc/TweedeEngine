@@ -48,7 +48,6 @@ namespace te
         , _startUpDesc(desc)
         , _rendererPlugin(nullptr)
         , _renderAPIPlugin(nullptr)
-        , _guiPlugin(nullptr)
         , _isFrameRenderingFinished(true)
         , _runMainLoop(false)
         , _pause(false)
@@ -64,22 +63,22 @@ namespace te
     void CoreApplication::OnStartUp()
     {
         Platform::StartUp();
-        Console::StartUp();
+        Console::StartUp(!_startUpDesc.WindowDesc.HeadLess);
         Time::StartUp();
         TaskScheduler::StartUp();
         DynLibManager::StartUp();
         CoreObjectManager::StartUp();
         ProfilerGPU::StartUp();
-        RenderDocManager::StartUp();
+        if (_startUpDesc.EnabledRenderDoc)
+            RenderDocManager::StartUp();
         RenderAPIManager::StartUp();
-        GuiManager::StartUp();
+
         GpuProgramManager::StartUp();
         GameObjectManager::StartUp();
         ResourceManager::StartUp();
         ScriptManager::StartUp();
 
         LoadPlugin(_startUpDesc.RenderAPI, &_renderAPIPlugin);
-        LoadPlugin(_startUpDesc.Gui, &_guiPlugin);
 
         RenderAPIManager::Instance().Initialize(_startUpDesc.RenderAPI, _startUpDesc.WindowDesc);
         RenderAPI::Instance().Initialize();
@@ -111,7 +110,8 @@ namespace te
         Input::StartUp();
         VirtualInput::StartUp();
 
-        _gui = GuiManager::Instance().Initialize(_startUpDesc.Gui);
+        GuiManager::StartUp(_startUpDesc.Gui);
+        _gui = GuiManager::Instance().GetGui();
         TE_ASSERT_ERROR(_gui.get(), "Failed to create gui");
 
         _window->InitializeGui();
@@ -120,7 +120,8 @@ namespace te
         AnimationManager::StartUp();
 
 #if TE_PLATFORM == TE_PLATFORM_WIN32
-        Platform::SetIcon(gBuiltinResources().GetFrameworkIcon());
+        if (!_startUpDesc.WindowDesc.HeadLess)
+            Platform::SetIcon(gBuiltinResources().GetFrameworkIcon());
 #endif
 
         PostStartUp();
@@ -152,13 +153,12 @@ namespace te
         AudioManager::ShutDown();
         GuiManager::ShutDown();
         RenderAPIManager::ShutDown();
-        RenderDocManager::ShutDown();
+        if (_startUpDesc.EnabledRenderDoc)
+            RenderDocManager::ShutDown();
         GpuProgramManager::ShutDown();
 
         UnloadPlugin(_rendererPlugin);
         UnloadPlugin(_renderAPIPlugin);
-        UnloadPlugin(_guiPlugin);
-
         CoreObjectManager::ShutDown();
         Platform::ShutDown();
         DynLibManager::ShutDown();

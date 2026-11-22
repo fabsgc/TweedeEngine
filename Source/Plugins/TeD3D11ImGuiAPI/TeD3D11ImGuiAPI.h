@@ -55,5 +55,12 @@ namespace te
 
         /** @copydoc GuiAPI::KeyDown */
         void KeyDown(UINT32 keyCode) override;
+
+    protected:
+        /** @copydoc Module::OnStartUp */
+        void OnStartUp() override;
+        
+        /** @copydoc Module::OnShutDown */
+        void OnShutDown() override;
     };
 }
