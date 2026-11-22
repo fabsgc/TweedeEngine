@@ -28,6 +28,13 @@ endif ()
 # Libraries
 target_link_libraries (Tests tef GTest::gtest_main) 
 
+if (WIN32 AND RENDER_API_MODULE MATCHES "DirectX 11")
+    add_dependencies(Tests
+        TeD3D11RenderAPI TeD3D11ImGuiAPI TeRenderMan TeBulletPhysics TeOpenAudio
+        TeFreeImgImporter TeObjectImporter TeShaderImporter TeFontImporter
+        TeProjectImporter TeResourceImporter TeProjectExporter TeResourceExporter TeFreeImgExporter)
+endif ()
+
 # IDE specific
 set_property (TARGET Tests PROPERTY FOLDER Tests)
 set_property (TARGET gmock PROPERTY FOLDER Tests)
@@ -36,4 +43,6 @@ set_property (TARGET gtest PROPERTY FOLDER Tests)
 set_property (TARGET gtest_main PROPERTY FOLDER Tests)
 
 include(GoogleTest)
-gtest_discover_tests(Tests)
+gtest_discover_tests(Tests
+    WORKING_DIRECTORY "$<TARGET_FILE_DIR:Tests>"
+    PROPERTIES TIMEOUT 180)
