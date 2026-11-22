@@ -9,6 +9,7 @@
 /BuildCodeBlocks/
 /.vscode/
 /.vs/
+/_deps/
 
 *.DS_Store
 
