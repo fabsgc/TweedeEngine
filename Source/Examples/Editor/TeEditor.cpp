@@ -1481,7 +1481,7 @@ namespace te
             if (_selections.HoveredSceneObject == _selections.ClickedSceneObject)
                 _selections.HoveredSceneObject = nullptr;
 
-            _selections.ClickedSceneObject->Destroy(true);
+            _selections.ClickedSceneObject->DestroySceneObject(true);
             _selections.ClickedSceneObject = nullptr;
         }
 
@@ -1513,7 +1513,7 @@ namespace te
 
         if (!_runningSceneSO.IsDestroyed())
         {
-            _runningSceneSO->Destroy(true);
+            _runningSceneSO->DestroySceneObject(true);
             _sceneSO->SetActive(true);
         }
 
@@ -1529,7 +1529,7 @@ namespace te
 
         if (!_sceneSO.IsDestroyed())
         {
-            _sceneSO->Destroy(true);
+            _sceneSO->DestroySceneObject(true);
         }
 
         NeedsRedraw();

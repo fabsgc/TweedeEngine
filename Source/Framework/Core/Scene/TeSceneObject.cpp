@@ -69,7 +69,7 @@ namespace te
         return newObject;
     }
 
-    void SceneObject::Destroy(bool immediate)
+    void SceneObject::DestroySceneObject(bool immediate)
     {
         // Parent is our owner, so when his reference to us is removed, delete might be called.
         // So make sure this is the last thing we do.

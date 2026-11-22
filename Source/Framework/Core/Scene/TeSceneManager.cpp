@@ -69,7 +69,7 @@ namespace te
     SceneManager::~SceneManager()
     {
         if (_mainScene->_root.GetInternalPtr() != nullptr && !_mainScene->_root.IsDestroyed())
-            _mainScene->_root->Destroy(true);
+            _mainScene->_root->DestroySceneObject(true);
 
         _mainCameras.clear();
         _cameras.clear();
@@ -87,7 +87,7 @@ namespace te
             HSceneObject child = _mainScene->_root->GetChild(curIdx);
             
             if (forceAll || !child->HasFlag(SOF_Persistent))
-                child->Destroy();
+                child->DestroySceneObject();
             else
                 curIdx++;
         }
@@ -127,7 +127,7 @@ namespace te
         _mainScene->_root->_setParent(HSceneObject());
         _mainScene->_root->SetScene(_mainScene);
 
-        oldRoot->Destroy();
+        oldRoot->DestroySceneObject();
     }
 
     void SceneManager::_bindActor(const SPtr<SceneActor>& actor, const HSceneObject& so)

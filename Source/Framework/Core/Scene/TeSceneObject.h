@@ -64,7 +64,7 @@ namespace te
          * @param[in]	immediate	If true, the object will be deallocated and become unusable right away. Otherwise the
          *							deallocation will be delayed to the end of frame (preferred method).
          */
-        void Destroy(bool immediate = false);
+        void DestroySceneObject(bool immediate = false);
 
         /**	Returns a handle to this object. */
         HSceneObject GetHandle() const { return _thisHandle; }
@@ -127,7 +127,7 @@ namespace te
          * @param[in]	handle		Game object handle to this object.
          * @param[in]	immediate	If true, the object will be deallocated and become unusable right away. Otherwise the
          *							deallocation will be delayed to the end of frame (preferred method).
-         * @note	Unlike destroy(), does not remove the object from its parent.
+         * @note	Unlike DestroySceneObject(), does not remove the object from its parent.
          */
         void DestroyInternal(GameObjectHandleBase& handle, bool immediate = false) override;
 
