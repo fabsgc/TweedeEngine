@@ -8,7 +8,7 @@ namespace te
     class TE_UTILITY_EXPORT Console : public Module<Console>
     {
     public:
-        Console();
+        explicit Console(bool createConsole = true);
         ~Console() = default;
 
         TE_MODULE_STATIC_HEADER_MEMBER(Console)
@@ -18,7 +18,11 @@ namespace te
         void OnShutDown() override;
 
     protected:
-        FILE* fpstdin = stdin, * fpstdout = stdout, * fpstderr = stderr;
+        bool _createConsole;
+        int _savedStdin = -1;
+        int _savedStdout = -1;
+        int _savedStderr = -1;
+        bool _streamsRedirected = false;
     };
 
     Console& gConsole();
