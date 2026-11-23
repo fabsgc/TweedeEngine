@@ -261,6 +261,8 @@ namespace te
         void Initialize() override;
 
     protected:
+        void RefreshMeshState();
+
         /** Updates animation properties depending on the current mesh. */
         void RefreshAnimation();
 

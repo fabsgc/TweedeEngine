@@ -71,12 +71,17 @@ namespace te
             return;
 
         _mesh = mesh;
+        RefreshMeshState();
+    }
+
+    void Renderable::RefreshMeshState()
+    {
         _boneMatrixBuffer = nullptr;
         _bonePrevMatrixBuffer = nullptr;
 
         if (_mesh.IsLoaded())
         {
-            UINT32 numSubMeshes = mesh->GetProperties().GetNumSubMeshes();
+            UINT32 numSubMeshes = _mesh->GetProperties().GetNumSubMeshes();
             _materials.resize(numSubMeshes);
             _subMeshesBounds.clear();
             _subMeshesBounds.resize(numSubMeshes);
@@ -574,7 +579,7 @@ namespace te
     {
         if (_mesh.IsLoaded() && _mesh->GetUUID() == resource->GetUUID())
         {
-            SetMesh(static_resource_cast<Mesh>(resource));
+            RefreshMeshState();
         }
         else if (_ZPrepassMesh.IsLoaded() && _ZPrepassMesh->GetUUID() == resource->GetUUID())
         {
