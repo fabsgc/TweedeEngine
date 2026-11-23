@@ -2,6 +2,12 @@
 #include "String/TeString.h"
 
 #include <cctype>
+#include <limits>
+
+#if TE_PLATFORM == TE_PLATFORM_LINUX
+#include <cerrno>
+#include <iconv.h>
+#endif
 
 namespace te
 {
@@ -110,7 +116,104 @@ namespace te
 
     String ToString(const WString& source)
     {
-        return String(source.begin(), source.end());
+        if (source.empty())
+            return String();
+
+#if TE_PLATFORM == TE_PLATFORM_WIN32
+        if (source.size() > static_cast<size_t>((std::numeric_limits<int>::max)()))
+        {
+            TE_ASSERT_ERROR(false, "Wide string is too long to convert to UTF-8");
+            return String();
+        }
+
+        const int sourceLength = static_cast<int>(source.size());
+        const int outputLength = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, source.c_str(), sourceLength, nullptr, 0, nullptr, nullptr);
+        if (outputLength == 0)
+        {
+            TE_ASSERT_ERROR(false, "WideCharToMultiByte failed to size UTF-8 output");
+            return String();
+        }
+
+        String result(static_cast<size_t>(outputLength), '\0');
+        const int convertedLength = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, source.c_str(), sourceLength, &result[0], outputLength, nullptr, nullptr);
+        if (convertedLength == 0)
+        {
+            TE_ASSERT_ERROR(false, "WideCharToMultiByte failed to convert the wide string");
+            return String();
+        }
+
+        result.resize(static_cast<size_t>(convertedLength));
+        return result;
+#elif TE_PLATFORM == TE_PLATFORM_LINUX
+        if (source.size() > (std::numeric_limits<size_t>::max)() / sizeof(wchar_t))
+        {
+            TE_ASSERT_ERROR(false, "Wide string is too long to convert to UTF-8");
+            return String();
+        }
+
+        String result;
+        if (source.size() > result.max_size() / 4)
+        {
+            TE_ASSERT_ERROR(false, "Wide string is too long to convert to UTF-8");
+            return String();
+        }
+
+        iconv_t converter = iconv_open("UTF-8", "WCHAR_T");
+        if (converter == reinterpret_cast<iconv_t>(-1))
+        {
+            TE_ASSERT_ERROR(false, "iconv_open failed to initialize UTF-8 conversion");
+            return String();
+        }
+
+        struct IconvCloser
+        {
+            explicit IconvCloser(iconv_t descriptor) : descriptor(descriptor) {}
+            ~IconvCloser() { iconv_close(descriptor); }
+            iconv_t descriptor;
+        } closer(converter);
+
+        const size_t inputSize = source.size() * sizeof(wchar_t);
+        char* input = reinterpret_cast<char*>(const_cast<wchar_t*>(source.data()));
+        size_t inputBytesLeft = inputSize;
+
+        result.resize(source.size() * 4);
+        char* output = &result[0];
+        size_t outputBytesLeft = result.size();
+
+        while (iconv(converter, &input, &inputBytesLeft, &output, &outputBytesLeft)
+            == static_cast<size_t>(-1))
+        {
+            if (errno != E2BIG)
+            {
+                TE_ASSERT_ERROR(false, "iconv failed to convert the wide string to UTF-8");
+                return String();
+            }
+
+            const size_t bytesWritten = static_cast<size_t>(output - &result[0]);
+            const size_t additionalCapacity = result.size() > 16 ? result.size() : 16;
+            if (result.size() > result.max_size() - additionalCapacity)
+            {
+                TE_ASSERT_ERROR(false, "Wide string is too long to convert to UTF-8");
+                return String();
+            }
+
+            result.resize(result.size() + additionalCapacity);
+            output = &result[0] + bytesWritten;
+            outputBytesLeft = result.size() - bytesWritten;
+        }
+
+        if (inputBytesLeft != 0)
+        {
+            TE_ASSERT_ERROR(false, "iconv did not convert the complete wide string");
+            return String();
+        }
+
+        result.resize(static_cast<size_t>(output - &result[0]));
+        return result;
+#else
+        TE_ASSERT_ERROR(false, "Wide string to UTF-8 conversion is unsupported on this platform");
+        return String();
+#endif
     }
 
     String ToString(const wchar_t* source)

@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <regex>
+#include <vector>
 
 namespace te
 {
@@ -204,12 +205,12 @@ namespace te
     /**
     * \brief Split string according to delimiter
     */
-    TE_UTILITY_EXPORT Vector<String> Split(const String& s, char delimiter);
+    TE_UTILITY_EXPORT std::vector<String> Split(const String& s, char delimiter);
 
     /**
     * \brief Split string according to delimiter
     */
-    TE_UTILITY_EXPORT Vector<String> Split(const WString& s, char delimiter);
+    TE_UTILITY_EXPORT std::vector<String> Split(const WString& s, char delimiter);
 
     /** Converts all the characters in the string to lower case. Does not handle UTF8 encoded strings. */
     TE_UTILITY_EXPORT void ToLowerCase(String& str);
