@@ -1977,6 +1977,9 @@ namespace te
         case PF_UNKNOWN:
             TE_DEBUG("Can't pack to PF_UNKNOW");
             break;
+        default:
+            TE_DEBUG("Can't pack to unknown format");
+            break;
         }
     }
 
@@ -3006,6 +3009,9 @@ namespace te
                 break;
             case PF_BGR8:
                 io.setFormat(nvtt::InputFormat_BGRA_8UB);
+                break;
+            default:
+                TE_DEBUG("Unsupported interim format for NVTT input");
                 break;
         }
 

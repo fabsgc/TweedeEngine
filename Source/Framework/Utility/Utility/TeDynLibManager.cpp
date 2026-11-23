@@ -11,17 +11,17 @@ namespace te
         te_delete(lib);
     }
 
-    static bool operator<(const UPtr<DynLib>& lhs, const String& rhs)
+    static bool operator<(const UPtr<DynLib, Deleter<DynLib>>& lhs, const String& rhs)
     {
         return lhs->GetName() < rhs;
     }
 
-    static bool operator<(const String& lhs, const UPtr<DynLib>& rhs)
+    static bool operator<(const String& lhs, const UPtr<DynLib, Deleter<DynLib>>& rhs)
     {
         return lhs < rhs->GetName();
     }
 
-    static bool operator<(const UPtr<DynLib>& lhs, const UPtr<DynLib>& rhs)
+    static bool operator<(const UPtr<DynLib, Deleter<DynLib>>& lhs, const UPtr<DynLib, Deleter<DynLib>>& rhs)
     {
         return lhs->GetName() < rhs->GetName();
     }
@@ -48,9 +48,8 @@ namespace te
         }
         else
         {
-            DynLib* newLib = te_new<DynLib>(std::move(filename));
-             _loadedLibrairies.emplace_hint(iterFind, newLib);
-            return newLib;
+            UPtr<DynLib, Deleter<DynLib>> newLib(te_new<DynLib>(std::move(filename)));
+            return _loadedLibrairies.emplace_hint(iterFind, std::move(newLib))->get();
         }
     }
 

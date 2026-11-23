@@ -916,6 +916,9 @@ namespace te
                     }
                 }
                 break;
+
+                default:
+                    break;
                 }
             }
             

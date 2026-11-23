@@ -351,7 +351,7 @@ namespace te
         bool shouldRun;
         INT32 watchHandle;
         {
-            Lock(m->MainMutex);
+            Lock lock(m->MainMutex);
             watchHandle = m->InHandle;
             shouldRun = m->Started;
         }
@@ -368,7 +368,7 @@ namespace te
 
             // Note: Must be after read, so shutdown can be started when we remove the watches (as then read() will return)
             {
-                Lock(m->MainMutex);
+                Lock lock(m->MainMutex);
                 shouldRun = m->Started;
             }
 

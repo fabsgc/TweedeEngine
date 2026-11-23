@@ -153,7 +153,7 @@ namespace te
                     const Vector<AudioDevice>& devices = gAudio().GetAllDevices();
 
                     options.AddOption(AudioDevice(), "Default");
-                    for (const auto device : devices)
+                    for (const auto& device : devices)
                     {
                         if (device.Name != "")
                             options.AddOption(device, device.Name != "" ? device.Name : "Default");

@@ -22,7 +22,7 @@ namespace te
         TE_MODULE_STATIC_HEADER_MEMBER(DynLibManager)
 
     protected:
-        Set<UPtr<DynLib>, std::less<>> _loadedLibrairies;
+        Set<UPtr<DynLib, Deleter<DynLib>>, std::less<>> _loadedLibrairies;
     };
 
     /** Easy way of accessing DynLibManager. */

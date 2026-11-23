@@ -157,11 +157,9 @@ namespace te
         // Ensure keyframes are sorted
         if(!keyframes.empty())
         {
-            float time = keyframes[0].TimeInSpline;
             for (UINT32 i = 1; i < (UINT32)keyframes.size(); i++)
             {
-                assert(keyframes[i].TimeInSpline >= time);
-                time = keyframes[i].TimeInSpline;
+                assert(keyframes[i].TimeInSpline >= keyframes[i-1].TimeInSpline);
             }
         }
 

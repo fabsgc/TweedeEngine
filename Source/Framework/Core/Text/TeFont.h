@@ -46,6 +46,8 @@ namespace te
         /**  @copydoc Resource::GetResourceType */
         static CoreType GetResourceType() { return CoreType::TID_Font; }
 
+        using Resource::Initialize;
+
         /**
          * Initializes the font with specified per-size font data.
          * @note	Internal method. Factory methods will call this automatically for you.

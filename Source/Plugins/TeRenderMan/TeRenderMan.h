@@ -147,7 +147,7 @@ namespace te
         void DestroyBatchedRenderables() override;
 
         /** @copydoc Renderer::SetLastRenderTexture */
-        void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) const override;
+        bool SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) const override;
 
         /** @copydoc Renderer::GetLastRenderTexture */
         SPtr<Texture> GetLastRenderTexture(RenderOutputType type) const override;

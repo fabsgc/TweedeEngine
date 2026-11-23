@@ -441,32 +441,37 @@ namespace te
         _scene->DestroyBatchedRenderables();
     }
 
-    void RenderMan::SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) const
+    bool RenderMan::SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) const
     {
         switch (type)
         {
         case RenderOutputType::Final:
             _renderTextures.FinalTex = renderTexture;
-            break;
+            return true;
         case RenderOutputType::Color:
             _renderTextures.ColorTex = renderTexture;
-            break;
+            return true;
         case RenderOutputType::Normal:
             _renderTextures.NormalTex = renderTexture;
-            break;
+            return true;
         case RenderOutputType::Depth:
             _renderTextures.DepthTex = renderTexture;
-            break;
+            return true;
         case RenderOutputType::Emissive:
             _renderTextures.EmissiveTex = renderTexture;
-            break;
+            return true;
         case RenderOutputType::Velocity:
             _renderTextures.VelocityTex = renderTexture;
-            break;
+            return true;
         case RenderOutputType::SSAO:
             _renderTextures.SSAOTex = renderTexture;
+            return true;
+        default:
             break;
         }
+
+        TE_DEBUG("Invalid render output type");
+        return false;
     }
 
     SPtr<Texture> RenderMan::GetLastRenderTexture(RenderOutputType type) const
@@ -475,27 +480,23 @@ namespace te
         {
         case RenderOutputType::Final:
             return _renderTextures.FinalTex;
-            break;
         case RenderOutputType::Color:
             return _renderTextures.ColorTex;
-            break;
         case RenderOutputType::Normal:
             return _renderTextures.NormalTex;
-            break;
         case RenderOutputType::Depth:
             return _renderTextures.DepthTex;
-            break;
         case RenderOutputType::Emissive:
             return _renderTextures.EmissiveTex;
-            break;
         case RenderOutputType::Velocity:
             return _renderTextures.VelocityTex;
-            break;
         case RenderOutputType::SSAO:
             return _renderTextures.SSAOTex;
+        default:
             break;
         }
 
+        TE_DEBUG("Invalid render output type");
         return nullptr;
     }
 

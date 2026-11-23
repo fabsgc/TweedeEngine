@@ -27,7 +27,7 @@ namespace te
          *
          * @param[in]	input		A set of input samples. Total size of the buffer should be @p numSamples *
          *							@p inBitDepth / 8.
-         * @param[in]	inBitDepth	Size of a single sample in the @p input array, in bits.
+         * @param[in]	inBitDepth	Size of a single sample in the @p input array, in bits (8, 16, 24 or 32).
          * @param[out]	output		Pre-allocated buffer to store the output samples in. Total size of the buffer should be
          *							@p numSamples * @p outBitDepth / 8.
          * @param[in]	outBitDepth	Size of a single sample in the @p output array, in bits.

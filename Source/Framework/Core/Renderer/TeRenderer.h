@@ -204,7 +204,7 @@ namespace te
         /**
          * Save last generated corresponding rendered texture until next call to RenderAll()
          */
-        virtual void SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) const = 0;
+        virtual bool SetLastRenderTexture(RenderOutputType type, SPtr<Texture> renderTexture) const = 0;
 
         /**
          * Retrieve last generated corresponding rendered texture

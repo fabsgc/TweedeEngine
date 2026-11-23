@@ -170,8 +170,10 @@ namespace te
             // Do nothing
             break;
         default:
+            te_free(srcBuffer);
+            TE_DEBUG("Unsupported input audio bit depth.");
             assert(false);
-            break;
+            return;
         }
 
         switch (outBitDepth)
@@ -194,10 +196,7 @@ namespace te
         }
 
         if (needTempBuffer)
-        {
-            te_delete(srcBuffer);
-            srcBuffer = nullptr;
-        }
+            te_free(srcBuffer);
     }
 
     void AudioUtility::ConvertToFloat(const UINT8* input, UINT32 inBitDepth, float* output, UINT32 numSamples)

@@ -830,12 +830,13 @@ namespace te
         { 
             do
             {
-                mipMap = std::min(++mipMap, numMipMap);
+                if (mipMap < numMipMap)
+                    ++mipMap;
                 width /= 2;
             } while(size.x < width);
 
             if(mipMap > 0)
-                mipMap = std::max((UINT32)0, --mipMap);
+                --mipMap;
         }
 
         SPtr<TextureView> textureView = texture->RequestView(

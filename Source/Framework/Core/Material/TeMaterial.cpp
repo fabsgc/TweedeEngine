@@ -439,14 +439,15 @@ namespace te
         TE_ASSERT_ERROR(value.IsLoaded(), "Load store texture should not be null");
 #endif
         auto it = _loadStoreTextures.find(name);
-        if (it == _loadStoreTextures.end())
+        if (it != _loadStoreTextures.end())
         {
-            it->second = te_shared_ptr_new<TextureData>(value, surface);
-            return;
+            it->second->TextureElem = value;
+            it->second->TextureSurfaceElem = surface;
         }
-
-        it->second->TextureElem = value;
-        it->second->TextureSurfaceElem = surface;
+        else
+        {
+            _loadStoreTextures[name] = te_shared_ptr_new<TextureData>(value, surface);
+        }
 
         _markCoreDirty(MaterialDirtyFlags::ParamResource);
     }

@@ -2,6 +2,7 @@ set (TE_TESTS_INC_NOFILTER
 )
 
 set (TE_TESTS_SRC_NOFILTER
+    "AudioUtility.test.cpp"
     "Renderer.test.cpp"
     "String.test.cpp"
 )
