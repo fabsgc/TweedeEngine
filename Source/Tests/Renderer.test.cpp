@@ -54,7 +54,7 @@ static te::START_UP_DESC GetDefaultStartUpDesc(bool headless = true)
         .Exporters = {
             "TeProjectExporter", "TeResourceExporter", "TeFreeImgExporter"
         },
-        .EnabledRenderDoc = true
+        .EnabledRenderDoc = false // Disable RenderDoc for tests
     };
 }
 
