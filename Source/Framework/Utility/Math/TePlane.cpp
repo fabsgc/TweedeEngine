@@ -83,7 +83,7 @@ namespace te
     Vector3 Plane::ProjectVector(const Vector3& point) const
     {
         // We know plane normal is unit length, so use simple method
-        Matrix3 xform;
+        Matrix3 xform = {};
         xform[0][0] = 1.0f - normal.x * normal.x;
         xform[0][1] = -normal.x * normal.y;
         xform[0][2] = -normal.x * normal.z;
@@ -94,7 +94,6 @@ namespace te
         xform[2][1] = -normal.z * normal.y;
         xform[2][2] = 1.0f - normal.z * normal.z;
         return xform.Multiply(point);
-
     }
 
     float Plane::Normalize()
