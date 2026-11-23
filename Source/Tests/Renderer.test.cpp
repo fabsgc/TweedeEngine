@@ -53,7 +53,8 @@ static te::START_UP_DESC GetDefaultStartUpDesc(bool headless = true)
         },
         .Exporters = {
             "TeProjectExporter", "TeResourceExporter", "TeFreeImgExporter"
-        }
+        },
+        .EnabledRenderDoc = true
     };
 }
 
@@ -67,7 +68,7 @@ TEST(AppRenderer, StartsAndStopsHeadlessApplication)
         GTEST_SKIP() << "Headless rendering is only implemented for Direct3D 11.";
 
     te::CoreApplication::StartUp<Application>(desc);
-    auto& app = static_cast<Application&>(te::CoreApplication::Instance());
+    auto& app = static_cast<Application&>(te::gCoreApplication());
     EXPECT_TRUE(te::CoreApplication::IsStarted());
     EXPECT_NE(app.GetWindow(), nullptr);
     if (app.GetWindow())
@@ -91,7 +92,7 @@ TEST(AppRenderer, StartsAndStopsWindowedApplication)
         GTEST_SKIP() << "Windowed rendering is only implemented for Direct3D 11.";
 
     te::CoreApplication::StartUp<Application>(desc);
-    auto& app = static_cast<Application&>(te::CoreApplication::Instance());
+    auto& app = static_cast<Application&>(te::gCoreApplication());
     EXPECT_TRUE(te::CoreApplication::IsStarted());
     EXPECT_NE(app.GetWindow(), nullptr);
     if (app.GetWindow())
