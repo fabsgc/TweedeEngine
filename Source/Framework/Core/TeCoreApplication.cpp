@@ -159,6 +159,7 @@ namespace te
 
         UnloadPlugin(_rendererPlugin);
         UnloadPlugin(_renderAPIPlugin);
+        ProfilerGPU::ShutDown();
         CoreObjectManager::ShutDown();
         Platform::ShutDown();
         DynLibManager::ShutDown();
